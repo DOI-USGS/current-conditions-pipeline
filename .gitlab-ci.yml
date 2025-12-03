@@ -6,7 +6,6 @@ pages:
   script:
     #- cp -r 4_report/out/* public
     - mv ./current_conditions_site_list_sandbox.html public/index.html
-    - cp ./current_conditions_site_list_sandbox_files public/index
   artifacts:
     paths:
       # The folder that contains  the files to be exposed at the Page URL
