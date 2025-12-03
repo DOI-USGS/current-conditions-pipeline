@@ -1,0 +1,491 @@
+---
+title: "Current Conditions revamp code demo"
+format: 
+  html:
+    embed-resources: true
+    code-fold: show
+---
+
+
+::: {.panel-tabset}
+
+## Streamflow
+
+I'm more dextrous with R than Python, so this code is mainly intended as basic starting point for exploration.
+All of this code runs without parallelization (I'm less familiar with how to do that in Python), so
+
+```{python}
+#| label: setup-py
+
+from dataretrieval import waterdata
+import os
+import datetime as dt
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# ignore this:
+envvar = open(".Renviron").read().split("\n")[2].replace("API_USGS_PAT3=", "")
+
+os.environ["API_USGS_PAT"] = envvar
+```
+
+Discharge (00065) and gage height (00060) are the most popular streamflow pcodes.
+We should still reach out to a Streamflow SME about other pcodes we should consider fetching (e.g., tidally filtered gage height).
+
+```{python}
+#| label: sf-table-setting
+
+sf_pcodes = ['00060', '00065']
+
+# get_ogc_data is low-level function for querying services
+sf_pcode_meta = waterdata.utils.get_ogc_data(
+  args = {'pcodes': sf_pcodes}, 
+  output_id = "pcodes", 
+  service = "parameter-codes")[0]
+
+# only want sites with at least one obs. in last X days. Used for initial
+# filtering
+earliest_date_needs_observation = dt.date.today() - pd.DateOffset(days = 365)
+
+# sites need to have at least Y-year POR. Used for initial filtering
+latest_date_por = dt.date.today() - pd.DateOffset(years = 10)
+
+# Set this manually to reduce computational load. Earliest is '1700-01-01'
+earliest_date_por = dt.date(1985, 1, 1)
+
+# Span of time (in days) a single "frame" of the visual represents. Used when
+# assessing if a site has sufficient data
+update_timestep = 1
+
+required_dates = pd.date_range(
+  start = earliest_date_por, 
+  end = dt.date.today(), 
+  freq = str(update_timestep) + 'D'
+  )
+```
+
+A **timeseries ID** uniquely identifies a combination of:
+
+- monitoring location
+- pcode collected at that monitoring location
+- statistic ID (e.g., daily mean, instantaneous)
+- period of record (e.g., if a sensor is moved at a location, then a new timeseries ID is typically created)
+- (in rare instances) additional metadata about the data collection. For example, a monitoring location might have two sensors that collect the exact same data but in different locations (e.g, on both sides of a sluice gate). These would have different timeseries IDs.
+
+Note that the `geometry` column contains spatial point data for each row.
+We'll be pulling site metadata like this later on, so we can set `skip_geometry` to cut down on the response size (saves us memory, saves the API folks money).
+We could set the `properties` argument to further whittle the response down, if we want.
+
+```{python}
+#| label: sf-timeseries-ids
+
+sf_all_ts_ids = waterdata.get_time_series_metadata(
+    parameter_code = sf_pcodes,
+    begin = "1700-01-01T00:00:00Z/" + latest_date_por.strftime("%Y-%m-%dT%H:%M:%SZ"),
+    end = earliest_date_needs_observation.strftime("%Y-%m-%dT%H:%M:%SZ") + "/..",
+    skip_geometry = True,
+)[0]
+
+# instant. (00011) discharge is most commonly reported, mean daily (00003) discharge being less common.
+# instant. and daily mean gage height are about equally common
+# See https://api.waterdata.usgs.gov/ogcapi/v0/collections/statistic-codes/items for other stat IDs
+sf_all_ts_ids.groupby(["parameter_code", "statistic_id"]).size().sort_values(ascending = False)
+```
+
+Let's explore the timeseries IDs a bit more.
+Sites with daily mean data will be easiest to work with, so we should first assess daily data coverage.
+Only if a site has missing daily mean data (either periodically missing or 00003 simply isn't collected there) should we consider pulling from /continuous.
+
+```{python}
+#| label: sf-daily-mean-vs-instant
+sf_ts_ids_daily_mean = sf_all_ts_ids[sf_all_ts_ids.statistic_id == '00003']
+
+sf_ts_ids_continuous = sf_all_ts_ids[sf_all_ts_ids.statistic_id == '00011']
+
+sf_ts_ids_daily_mean.groupby('monitoring_location_id').size().sort_values(ascending = False)
+```
+
+As an example of multiple timeseries IDs for one monitoring location, consider this site with 4 gage height TS IDs, each distinguished by their "sublocation_identifier". Sometimes the web_description column contains distinguishing information too. 
+
+```{python}
+#| label: sf-noteworthy-site
+sf_ts_ids_daily_mean[sf_ts_ids_daily_mean.monitoring_location_id=="USGS-411219096010601"][['monitoring_location_id', 'parameter_code','begin', 'end', 'sublocation_identifier', 'web_description']]
+```
+
+I'm not sure how best to deal with these multiple timeseries.
+We might consider filtering to the IDs with the longest period of record (`end - begin`).
+If there are ties based on this ranking, we might have to pull all data for both time series, then determine which have fewer data gaps (e.g., observations missing for a given day).
+At some point, we'll need to pick one timeseries ID for each monitoring location.
+
+Here's an example of pulling all daily data for one site:
+
+```{python}
+#| label: sf-daily
+sf_daily_obs = waterdata.get_daily(
+  monitoring_location_id = sf_ts_ids_daily_mean.monitoring_location_id.unique().tolist()[0],
+  skip_geometry = True
+  )
+
+sf_daily_obs
+```
+
+Note that many of the api.waterdata endpoints have implicit limits -- they'll often throw a 500 or 403 if they don't like something you've requested.
+I've yet to determine whether these limitations derive from a request character limit, size, or some other factor.
+I've found it safest to chunk large requests, which the helper functions below are meant to facilitate.
+
+```{python}
+#| label: sf-site-metadata
+def chunked(iterable, size):
+    """Yield successive `size`-sized chunks from iterable."""
+    for i in range(0, len(iterable), size):
+        yield iterable[i:i + size]
+
+def fetch_monitoring_locations(ids, chunk_size=50):
+    """
+    Fetch metadata for a large list of monitoring location IDs using chunked requests.
+    
+    Parameters
+    ----------
+    ids : list of str
+        Monitoring location IDs.
+    chunk_size : int
+        Number of IDs per API request (depends on service limits).
+        
+    Returns
+    -------
+    pandas.DataFrame
+        Combined metadata table.
+    """
+    frames = []
+
+    for chunk in chunked(ids, chunk_size):
+        df, _ = waterdata.get_monitoring_locations(monitoring_location_id=chunk)
+        frames.append(df)
+
+    if frames:
+        return pd.concat(frames, ignore_index=True)
+
+    return pd.DataFrame()
+
+
+
+sf_site_metadata = fetch_monitoring_locations(ids = sf_all_ts_ids.monitoring_location_id.unique().tolist(), chunk_size = 100)
+
+sf_site_metadata.plot(markersize = 1)
+plt.show()
+```
+
+## Groundwater
+
+I've created a few api.waterdata tokens and saved them to a local .Renviron file.
+While I don't think you're *supposed* to make multiple API tokens, I do recommend saving your token to a .Renviron.
+You can even call it `API_USGS_PAT=....` in the .Renviron file, saving you from needing to run the `Sys.setenv` call below.
+
+Note also that I've set up some parallelization code below.
+I typically use a `multisession` plan for parallelizing, which fires up multiple R sessions in the background to perform computation on a subset of data you've provided.
+However, `multicore` plans are more computationally efficient than `multisession`, though they only work on certain operating systems (including MacOS, I think?).
+See the `gw-field-measurements` code chunk below for an example of using `furrr::future_map_dfr` to parallelize a `purrr::map_dfr` call.
+
+```{r}
+#| label: setup-r
+library(dataRetrieval)
+library(dplyr)
+library(ggplot2)
+library(purrr)
+library(plotly)
+
+Sys.setenv("API_USGS_PAT" = Sys.getenv("API_USGS_PAT3"))
+
+# Uncomment for parallelization setup
+
+# library(future)
+# library(furrr)
+# library(parallelly)
+# if(parallelly::supportsMulticore()){
+#   future::plan(future::multicore,
+#                workers = ceiling(parallel::detectCores() / 3))
+# } else{
+#   future::plan(future::multisession,
+#                workers = ceiling(parallel::detectCores() / 3))
+# }
+
+# Run this to "turn off" parallelization
+# future::plan(future::sequential)
+```
+
+Candice sent us a big list of Groundwater pcodes to pull.
+These are all some variation of "water level," meaning we can compute percentiles without worrying about their comparability with the other pcodes.
+I also include the inclusion criteria used by NGWMN.
+
+```{r}
+#| label: gw-table-setting
+gw_pcodes <- c(
+  "72019",
+  "72150",
+  "62600",
+  "30210",
+  "62611",
+  "62610",
+  "62613",
+  "62612",
+  "72231",
+  "72232",
+  "72230",
+  "72229",
+  "72227",
+  "72228",
+  "72226",
+  "61055",
+  "62601"
+)
+
+gw_pcode_meta <- read_waterdata_parameter_codes(parameter_code = gw_pcodes)
+
+# NGWMN inclusion criteria:
+## At least one observation in last 406 days
+earliest_date_needs_observation <- Sys.Date() - lubridate::days(406)
+## At least 10-year POR
+latest_date_por <- Sys.Date() - lubridate::years(10)
+## How long will a given "frame" of the visual represent? "day", "week",
+## "month", etc. Used to determine whether a site has enough data to be included in the visual.
+update_timestep <- "month"
+
+# Earliest date to fetch data when computing percentiles -- set later to reduce
+# comp. time. Earliest value is "1700-01-01"
+earliest_date_por <- "1985-01-01"
+
+# Compute timesteps for which an "active" site should have at least one
+# observation in each
+required_dates <- seq.Date(
+  earliest_date_por,
+  lubridate::floor_date(Sys.Date(), unit = update_timestep),
+  by = update_timestep
+)
+```
+
+A **timeseries ID** uniquely identifies a combination of:
+
+- monitoring location
+- pcode collected at that monitoring location
+- statistic ID (e.g., daily mean, instantaneous)
+- period of record (e.g., if a sensor is moved at a location, then a new timeseries ID is typically created)
+- (in rare instances) additional metadata about the data collection. For example, a monitoring location might have two sensors that collect the exact same data but in different locations (e.g, on both sides of a sluice gate). These would have different timeseries IDs.
+
+Note that the `geometry` column contains spatial point data for each row.
+We'll be pulling site metadata like this later on, so we can set `skip_geometry` to cut down on the response size (saves us memory, saves the API folks money).
+We could set the `properties` argument to further whittle the response down, if we want.
+
+```{r}
+#| label: gw-timeseries-ids
+# 1. Pull timeseries IDs with POR >= 7 years and obs within last 406 days
+gw_all_ts_ids <- read_waterdata_ts_meta(
+  begin = paste0("1700-01-01/", latest_date_por),
+  end = paste0(earliest_date_needs_observation, "/.."),
+  parameter_code = gw_pcodes,
+  skipGeometry = TRUE
+) |>
+  select(
+    monitoring_location_id,
+    parameter_code,
+    statistic_id,
+    begin,
+    end,
+    time_series_id,
+    everything()
+  ) |>
+  arrange(monitoring_location_id, parameter_code, statistic_id)
+
+# 2. daily data are going to be the easiest to work with. We should first figure
+# out which sites have enough daily data before looking at alternatives
+ml_ids_daily_means <-
+  gw_all_ts_ids |>
+  filter(statistic_id == "00003")
+
+# 3. some sites might not have daily data but *do* have continuous.
+ml_ids_continuous <-
+  gw_all_ts_ids |>
+  filter(statistic_id == "00011")
+```
+
+-------------------------------
+
+The code below starts to get into the weeds of assessing data coverage for Groundwater sites.
+This is just based on my own experimentation, but you're welcome to ignore this code and write your own.
+
+```{r}
+#| label: gw-field-measurements
+#| eval: false
+
+# this cell isn't evaluated by-default as it takes a long time to run. It could be useful for filling data gaps, though.
+# 4. Also pull from field-measurements, which includes different sites.
+# First fetch sub-list of sites with at least one obs in last 406 days
+gw_recent_field_measurements <-
+  read_waterdata_field_measurements(
+    parameter_code = gw_pcodes,
+    time = paste0(earliest_date_por, "/..")
+  )
+
+gw_ml_ids_field_measurement <- unique(
+  gw_recent_field_measurements$monitoring_location_id
+)
+
+# Among sites with at least one obs in last 406 days, determine which have a
+# long enough POR
+gw_old_field_measurements <-
+  # NOTE: parallelized here
+  furrr::future_map_dfr(
+    # purrr::map_dfr(
+    split(
+      unique(gw_recent_field_measurements$monitoring_location_id),
+      ceiling(
+        seq_along(unique(gw_recent_field_measurements$monitoring_location_id)) /
+          100
+      )
+    ),
+    ~ read_waterdata_field_measurements(
+      monitoring_location_id = .x,
+      parameter_code = gw_pcodes,
+      skipGeometry = TRUE
+    )
+  )
+
+gw_field_measurements_sufficient_por <-
+  gw_old_field_measurements |>
+  sf::st_drop_geometry() |>
+  filter(time <= latest_date_por) |>
+  distinct(monitoring_location_id) |>
+  pull(monitoring_location_id)
+
+gw_old_field_measurements |>
+  sf::st_drop_geometry() |>
+  filter(monitoring_location_id %in% gw_field_measurements_sufficient_por) |>
+  mutate(month = lubridate::floor_date(time, unit = "months")) |>
+  select(monitoring_location_id, parameter_code, month) |>
+  tidyr::nest(month)
+```
+
+Here's where things get more complex.
+For each site, we want to determine whether there is at least one observation per month across its entire POR.
+Ideally, these observations would be from /daily, as these are going to be the easiest to fetch in the future (easier than /continuous).
+So first we fetch the entire daily POR for sites (below is an example of only pulling 50 sites) and determine whether there is at least one observation per month.
+
+Some sites might have data missing for specific months.
+Instead of exlcuding these sites, we might consider if we can fill in the data gaps with data from /field-measurements or (as a last resort) /continuous.
+
+```{r}
+#| label: gw-compute-frequency
+# 5. Assess frequency of observations -- is there at least one obs per timestep
+# over POR?
+
+# Fetch daily data since earliest_date_por -- requires splitting TS IDs into
+# chunks of 50
+all_daily_obs <-
+  purrr::map_dfr(
+    split(
+      ml_ids_daily_means$time_series_id,
+      ceiling(seq_along(ml_ids_daily_means$time_series_id) / 50)
+    )[1], # NOTE: testing with one chunk of 50 IDs
+    ~ read_waterdata_daily(
+      time_series_id = .x,
+      time = paste0(earliest_date_por, "/.."),
+      skipGeometry = TRUE,
+      limit = 50000
+    )
+  )
+
+# Determine if there are any months of missing daily data for each monitoring
+# location
+daily_missing_timesteps <-
+  all_daily_obs |>
+  mutate(month = lubridate::floor_date(time, unit = update_timestep)) |>
+  arrange(time_series_id, month) |>
+  distinct(
+    monitoring_location_id,
+    parameter_code,
+    statistic_id,
+    time_series_id,
+    month
+  ) |>
+  group_by(monitoring_location_id, parameter_code) |>
+  summarize(
+    missing_timesteps = list(required_dates[!required_dates %in% month])
+  ) |>
+  left_join(
+    distinct(ml_ids_daily_means, monitoring_location_id, parameter_code, begin),
+    by = c("monitoring_location_id", "parameter_code")
+  ) |>
+  # only want to track missing months since start of POR ("begin") for each site:
+  mutate(
+    missing_timesteps = purrr::map2(missing_timesteps, begin, ~ .x[.x >= .y])
+  ) |>
+  select(-begin) |>
+  # only keep ML IDs with missing daily data
+  filter(purrr::map_lgl(missing_timesteps, ~ length(.x) > 0))
+
+
+# These are sites with no gaps in daily data for their entire POR -- these will
+# be easiest to pull data for
+gw_ml_ids_complete_daily <-
+  all_daily_obs |>
+  distinct(monitoring_location_id, parameter_code, time_series_id) |>
+  anti_join(
+    daily_missing_timesteps,
+    by = c("monitoring_location_id", "parameter_code")
+  )
+
+# These are sites that have gaps in daily data that *may* be filled with
+# continuous data, we'll check below
+gw_ml_ids_partial_daily <-
+  ml_ids_continuous |>
+  select(monitoring_location_id, parameter_code, time_series_id, begin) |>
+  right_join(
+    daily_missing_timesteps,
+    by = c("monitoring_location_id", "parameter_code")
+  ) |>
+  # check if missing daily data dates are before a site started collection
+  # continuous data. If yes, then there's really no hope to fill the daily data
+  # gaps.
+  filter(purrr::map2_lgl(missing_timesteps, begin, ~ all(.x > .y)))
+
+
+# These are sites with daily data gaps that can't be filled with continuous data
+# (daily data gaps occur before continuous measurement began). We can't do
+# anything with these. NOTE: maybe we should check /field-measurements data too
+gw_ml_ids_lost_causes <- all_daily_obs |>
+  distinct(monitoring_location_id, parameter_code, time_series_id) |>
+  anti_join(
+    bind_rows(gw_ml_ids_complete_daily, gw_ml_ids_partial_daily),
+    by = c("monitoring_location_id", "parameter_code")
+  )
+
+gw_ml_ids_lost_causes
+```
+
+```{r}
+#| label: gw-metadata
+# Fetch metadata for each monitoring location -- requires splitting list of ML
+# IDs into chunks of 100
+gw_ml_ids <- unique(c(ml_ids_daily_means$monitoring_location_id, ml_ids_continuous$monitoring_location_id))
+
+gw_ml_metadata <-
+  purrr::map_dfr(
+    split(gw_ml_ids, ceiling(seq_along(gw_ml_ids) / 100)),
+    read_waterdata_monitoring_location
+  ) |>
+  left_join(
+    bind_rows(ml_ids_daily_means, ml_ids_continuous) |>
+      select(monitoring_location_id, parameter_code, statistic_id),
+    by = "monitoring_location_id"
+  )
+
+# Plot ML IDs by parameter code
+{
+  gw_ml_metadata |>
+    ggplot() +
+    geom_sf(aes(colour = parameter_code))
+} |>
+  plotly::ggplotly()
+```
+
+:::
+
