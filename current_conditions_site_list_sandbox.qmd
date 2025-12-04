@@ -3,20 +3,201 @@ title: "Current Conditions revamp code demo"
 format: 
   html:
     embed-resources: true
-    code-fold: show
+    code-fold: true
+    toc: true
+    toc-depth: 3
 ---
 
+This document outlines a workflow for generating “current conditions” visuals for streamflow and groundwater sites. 
+The goal is a reproducible R/Python pipeline that produces graphics showing present-day conditions in the context of historical percentiles (daily, weekly, or monthly — TBD).  
+Feedback is welcome — especially around API limitations and efficient data-pull strategies.
 
-::: {.panel-tabset}
+## High-level skeleton
+
+We break the workflow into **four independent processes**. Each can run on its own schedule. GitLab CI is the likely orchestration layer; AWS S3 is the storage backend.
+
+1. **Site List Construction**: Build and store the authoritative list of “active” sites and their metadata.
+
+2. **Regular Data Pull**: For each active site, collect the newest observations + percentile values, and assign categories (e.g., “below 10th percentile”).
+
+3. **Visual Creation** Combine site metadata + categorized conditions into map frames.
+
+4. **Display** Host/export visuals from a public S3 bucket.
+
+Each section below expands on these stages.
+
+---
+
+## 1. Site List Construction
+
+This job defines the set of sites tracked by the downstream pipeline. 
+All downstream tasks assume this set is stable until the next rebuild.
+
+### What counts as “active”?
+
+Possible criteria:
+
+- **Parameter codes:** must collect at least one pcode of interest (e.g., 00065, 72019).
+- **Recency:** at least one observation in the last *X* months.
+- **Period of record (POR):** must have ≥ *Y* years of data.  
+  (E.g., deciles need ≥ 11 years; quartiles need ≥ 5.)
+- **Frequency:** each time-grouping used by the visual must have ≥ *Y* observations across years.
+
+### Alternate definition: use `/statistics` availability
+
+Instead of building our own definition, we could simply use whatever sites are available through the `/statistics` endpoint.  
+
+Pros:
+
+- Very simple to check.
+- We want to use `/statistics` for percentiles anyway, so checking availability doubles as pulling the percentiles we need.
+
+Cons:
+
+- `/statistics` excludes provisional data.
+- Its POR/frequency rules may not match our needs, and exclude more sites that we want.
+- Need to assess performance at large scales.
+
+### Tentative Procedure
+
+1. **Pull candidate IDs** via `/time-series-metadata`, filtering by:  
+
+   - parameter_codes  
+   - begin date ≥ POR threshold  
+   - end date ≤ recency threshold  
+   - *Note*: this initial pull only screens *possible* IDs; it does not check observation density.
+
+2. **Split IDs** by statistic ID:
+
+   - `00003`: daily mean  
+   - `00011`: instantaneous (continuous)  
+   - Everything else (“min”, “max”, etc.) is ignored but worth tracking for diagnostics.
+
+3. **Branching decision: do we enforce observation frequency?**
+
+#### If *not* enforcing frequency
+
+Keep one time-series ID per site:
+
+- Prefer daily mean (`00003`) when available.
+- Choose the ID with the longest POR.
+- Break ties using preferred pcodes (00060/00065 or 72019) or by ordering.
+
+#### If *enforcing* frequency
+
+For each daily-mean ID:
+
+1. Pull full POR from `/daily`.  
+   (Groundwater additionally merges `/field-measurements`.)
+2. Run `determine_data_sufficiency()` (see below).
+
+For instantaneous IDs:
+
+1. Skip if the site already has a sufficient daily-mean timeseries.  
+2. Otherwise:
+   - Pull full POR from `/continuous`.  
+   - If identified earlier as “potentially salvageable,” merge with daily/field-measurement data.
+   - Run `determine_data_sufficiency()`.
+
+Finally, for each monitoring location:
+
+- Keep all timeseries deemed **sufficient**.  
+- If multiple pcodes are sufficient, choose the one with longest POR (tie-break as above).
+
+### Pseudocode: `determine_data_sufficiency()`
+
+Purpose:  
+Determine whether a timeseries has enough historical coverage to compute percentiles for every “frame” of the visual.
+
+Inputs:
+
+- Observations from one endpoint (or merged sources).
+- `F` = frame size (daily/weekly/monthly).
+- `n_F` = number of groups in a year (e.g., 12 for monthly).  
+- `Y` = required number of years of coverage (e.g., 11 for deciles).
+
+Logic:
+
+1. Group all observations into their corresponding temporal group `G_i`.  
+2. For each `G_i`:
+   - Count number of years with ≥1 observation (call this `N_i`).  
+3. Classify:
+   - If all `N_i >= Y` → **sufficient**.  
+   - If some `N_i < Y`:
+     - If continuous data already in merged source → **insufficient**.  
+     - If a corresponding 00011 ID exists → **potentially salvageable** (gaps may be filled).  
+     - Else → **insufficient**.
+
+Output: one of {sufficient, potentially_sufficient, insufficient} per timeseries ID.
+
+---
+
+## 2. Regular Data Pull
+
+Executed daily/weekly/monthly depending on parameter type.
+
+Steps:
+1. Load active site list from S3.
+2. For each site:
+   - Pull most recent observation (daily or continuous).
+   - Pull percentile values.
+   - Categorize observation into percentile bins.
+3. Merge all site categorizations into one table.
+4. Push the table to S3.
+
+Settings developers can tune:
+- Frequency of the job.
+- Fallback logic (e.g., use `/continuous` when `/daily` missing).
+- Percentile resolution (quartiles, deciles, etc.).
+- Whether frequency-based sufficiency is re-evaluated periodically.
+
+---
+
+## 3. Visual Creation
+
+Inputs:
+- Categorizations + metadata from S3.
+
+Outputs:
+- Map-like frames (e.g., PNG/SVG).
+- Possibly animation slices (daily/weekly/monthly).
+
+Configurable:
+- Frame duration (`F`): daily/weekly/monthly.
+- Output resolution and file types.
+- Whether to generate animated sequences vs static tiles.
+
+## 4. Display Layer
+
+Steps:
+1. Pull completed visuals from S3.
+2. Make them available to downstream apps (public S3, CloudFront, etc.).
+
+
+## Code demo: Initial filter with time-series-metadata
+
+The `/time-series-metadata` endpoint includes filterable fields `parameter_codes`, `begin`, and `end`, which would allow us to quickly filter sites based on its POR and collected pcodes.
+However, this doesn't take into account observation **frequency**.
+
+A **timeseries ID** uniquely identifies a combination of:
+
+- monitoring location
+- pcode collected at that monitoring location
+- statistic ID (e.g., daily mean, instantaneous)
+- period of record (e.g., if a sensor is moved at a location, then a new timeseries ID is typically created)
+- (in rare instances) additional metadata about the data collection. For example, a monitoring location might have two sensors that collect the exact same data but in different locations (e.g, on both sides of a sluice gate). These would have different timeseries IDs.
+
+::: {.panel-tabset group="sitetype"}
+
+Note that the `geometry` column returned by the API contains spatial point data for each row.
+We'll be pulling site metadata like this later on, so we can set `skip_geometry` / `skipGeometry` to cut down on the response size (saves us memory, saves the API folks money).
+We could set the `properties` argument to only return specific columns to further save on cost.
 
 ## Streamflow
 
-I'm more dextrous with R than Python, so this code is mainly intended as basic starting point for exploration.
-All of this code runs without parallelization (I'm less familiar with how to do that in Python), so
-
 ```{python}
-#| label: setup-py
-
+#| label: sf-setup
+#| eval: true
 from dataretrieval import waterdata
 import os
 import datetime as dt
@@ -24,16 +205,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # ignore this:
-envvar = open(".Renviron").read().split("\n")[2].replace("API_USGS_PAT3=", "")
-
+envvar = open(".Renviron").read().split("\n")[0].replace("API_USGS_PAT1=", "")
 os.environ["API_USGS_PAT"] = envvar
-```
-
-Discharge (00065) and gage height (00060) are the most popular streamflow pcodes.
-We should still reach out to a Streamflow SME about other pcodes we should consider fetching (e.g., tidally filtered gage height).
-
-```{python}
-#| label: sf-table-setting
 
 sf_pcodes = ['00060', '00065']
 
@@ -43,7 +216,7 @@ sf_pcode_meta = waterdata.utils.get_ogc_data(
   output_id = "pcodes", 
   service = "parameter-codes")[0]
 
-# only want sites with at least one obs. in last X days. Used for initial
+# only want sites with at least one observation in last X days. Used for initial
 # filtering
 earliest_date_needs_observation = dt.date.today() - pd.DateOffset(days = 365)
 
@@ -64,21 +237,10 @@ required_dates = pd.date_range(
   )
 ```
 
-A **timeseries ID** uniquely identifies a combination of:
-
-- monitoring location
-- pcode collected at that monitoring location
-- statistic ID (e.g., daily mean, instantaneous)
-- period of record (e.g., if a sensor is moved at a location, then a new timeseries ID is typically created)
-- (in rare instances) additional metadata about the data collection. For example, a monitoring location might have two sensors that collect the exact same data but in different locations (e.g, on both sides of a sluice gate). These would have different timeseries IDs.
-
-Note that the `geometry` column contains spatial point data for each row.
-We'll be pulling site metadata like this later on, so we can set `skip_geometry` to cut down on the response size (saves us memory, saves the API folks money).
-We could set the `properties` argument to further whittle the response down, if we want.
-
 ```{python}
-#| label: sf-timeseries-ids
-
+#| label: sf-ts-ids
+#| eval: true
+# initial filter using parameter_code, begin, and end fields
 sf_all_ts_ids = waterdata.get_time_series_metadata(
     parameter_code = sf_pcodes,
     begin = "1700-01-01T00:00:00Z/" + latest_date_por.strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -86,93 +248,21 @@ sf_all_ts_ids = waterdata.get_time_series_metadata(
     skip_geometry = True,
 )[0]
 
-# instant. (00011) discharge is most commonly reported, mean daily (00003) discharge being less common.
-# instant. and daily mean gage height are about equally common
 # See https://api.waterdata.usgs.gov/ogcapi/v0/collections/statistic-codes/items for other stat IDs
 sf_all_ts_ids.groupby(["parameter_code", "statistic_id"]).size().sort_values(ascending = False)
 ```
 
-Let's explore the timeseries IDs a bit more.
-Sites with daily mean data will be easiest to work with, so we should first assess daily data coverage.
-Only if a site has missing daily mean data (either periodically missing or 00003 simply isn't collected there) should we consider pulling from /continuous.
-
 ```{python}
-#| label: sf-daily-mean-vs-instant
+#| label: sf-ts-id-exploration
+#| eval: true
 sf_ts_ids_daily_mean = sf_all_ts_ids[sf_all_ts_ids.statistic_id == '00003']
 
 sf_ts_ids_continuous = sf_all_ts_ids[sf_all_ts_ids.statistic_id == '00011']
 
 sf_ts_ids_daily_mean.groupby('monitoring_location_id').size().sort_values(ascending = False)
-```
 
-As an example of multiple timeseries IDs for one monitoring location, consider this site with 4 gage height TS IDs, each distinguished by their "sublocation_identifier". Sometimes the web_description column contains distinguishing information too. 
-
-```{python}
-#| label: sf-noteworthy-site
+# "sublocation_identifier" and "web_description" columns sometimes contain distinguishing information for sites with multiple TS IDs. 
 sf_ts_ids_daily_mean[sf_ts_ids_daily_mean.monitoring_location_id=="USGS-411219096010601"][['monitoring_location_id', 'parameter_code','begin', 'end', 'sublocation_identifier', 'web_description']]
-```
-
-I'm not sure how best to deal with these multiple timeseries.
-We might consider filtering to the IDs with the longest period of record (`end - begin`).
-If there are ties based on this ranking, we might have to pull all data for both time series, then determine which have fewer data gaps (e.g., observations missing for a given day).
-At some point, we'll need to pick one timeseries ID for each monitoring location.
-
-Here's an example of pulling all daily data for one site:
-
-```{python}
-#| label: sf-daily
-sf_daily_obs = waterdata.get_daily(
-  monitoring_location_id = sf_ts_ids_daily_mean.monitoring_location_id.unique().tolist()[0],
-  skip_geometry = True
-  )
-
-sf_daily_obs
-```
-
-Note that many of the api.waterdata endpoints have implicit limits -- they'll often throw a 500 or 403 if they don't like something you've requested.
-I've yet to determine whether these limitations derive from a request character limit, size, or some other factor.
-I've found it safest to chunk large requests, which the helper functions below are meant to facilitate.
-
-```{python}
-#| label: sf-site-metadata
-def chunked(iterable, size):
-    """Yield successive `size`-sized chunks from iterable."""
-    for i in range(0, len(iterable), size):
-        yield iterable[i:i + size]
-
-def fetch_monitoring_locations(ids, chunk_size=50):
-    """
-    Fetch metadata for a large list of monitoring location IDs using chunked requests.
-    
-    Parameters
-    ----------
-    ids : list of str
-        Monitoring location IDs.
-    chunk_size : int
-        Number of IDs per API request (depends on service limits).
-        
-    Returns
-    -------
-    pandas.DataFrame
-        Combined metadata table.
-    """
-    frames = []
-
-    for chunk in chunked(ids, chunk_size):
-        df, _ = waterdata.get_monitoring_locations(monitoring_location_id=chunk)
-        frames.append(df)
-
-    if frames:
-        return pd.concat(frames, ignore_index=True)
-
-    return pd.DataFrame()
-
-
-
-sf_site_metadata = fetch_monitoring_locations(ids = sf_all_ts_ids.monitoring_location_id.unique().tolist(), chunk_size = 100)
-
-sf_site_metadata.plot(markersize = 1)
-plt.show()
 ```
 
 ## Groundwater
@@ -181,44 +271,19 @@ I've created a few api.waterdata tokens and saved them to a local .Renviron file
 While I don't think you're *supposed* to make multiple API tokens, I do recommend saving your token to a .Renviron.
 You can even call it `API_USGS_PAT=....` in the .Renviron file, saving you from needing to run the `Sys.setenv` call below.
 
-Note also that I've set up some parallelization code below.
-I typically use a `multisession` plan for parallelizing, which fires up multiple R sessions in the background to perform computation on a subset of data you've provided.
-However, `multicore` plans are more computationally efficient than `multisession`, though they only work on certain operating systems (including MacOS, I think?).
-See the `gw-field-measurements` code chunk below for an example of using `furrr::future_map_dfr` to parallelize a `purrr::map_dfr` call.
-
 ```{r}
-#| label: setup-r
+#| label: gw-setup
+#| eval: true
 library(dataRetrieval)
 library(dplyr)
 library(ggplot2)
 library(purrr)
 library(plotly)
 
-Sys.setenv("API_USGS_PAT" = Sys.getenv("API_USGS_PAT3"))
+Sys.setenv("API_USGS_PAT" = Sys.getenv("API_USGS_PAT2"))
 
-# Uncomment for parallelization setup
-
-# library(future)
-# library(furrr)
-# library(parallelly)
-# if(parallelly::supportsMulticore()){
-#   future::plan(future::multicore,
-#                workers = ceiling(parallel::detectCores() / 3))
-# } else{
-#   future::plan(future::multisession,
-#                workers = ceiling(parallel::detectCores() / 3))
-# }
-
-# Run this to "turn off" parallelization
-# future::plan(future::sequential)
-```
-
-Candice sent us a big list of Groundwater pcodes to pull.
-These are all some variation of "water level," meaning we can compute percentiles without worrying about their comparability with the other pcodes.
-I also include the inclusion criteria used by NGWMN.
-
-```{r}
-#| label: gw-table-setting
+# These are all some variation of "water level," meaning we can compute
+# percentiles without worrying about their comparability with the other pcodes.
 gw_pcodes <- c(
   "72019",
   "72150",
@@ -263,21 +328,9 @@ required_dates <- seq.Date(
 )
 ```
 
-A **timeseries ID** uniquely identifies a combination of:
-
-- monitoring location
-- pcode collected at that monitoring location
-- statistic ID (e.g., daily mean, instantaneous)
-- period of record (e.g., if a sensor is moved at a location, then a new timeseries ID is typically created)
-- (in rare instances) additional metadata about the data collection. For example, a monitoring location might have two sensors that collect the exact same data but in different locations (e.g, on both sides of a sluice gate). These would have different timeseries IDs.
-
-Note that the `geometry` column contains spatial point data for each row.
-We'll be pulling site metadata like this later on, so we can set `skip_geometry` to cut down on the response size (saves us memory, saves the API folks money).
-We could set the `properties` argument to further whittle the response down, if we want.
-
 ```{r}
-#| label: gw-timeseries-ids
-# 1. Pull timeseries IDs with POR >= 7 years and obs within last 406 days
+#| label: gw-ts-ids
+#| eval: true
 gw_all_ts_ids <- read_waterdata_ts_meta(
   begin = paste0("1700-01-01/", latest_date_por),
   end = paste0(earliest_date_needs_observation, "/.."),
@@ -307,17 +360,51 @@ ml_ids_continuous <-
   filter(statistic_id == "00011")
 ```
 
--------------------------------
+:::
 
-The code below starts to get into the weeds of assessing data coverage for Groundwater sites.
-This is just based on my own experimentation, but you're welcome to ignore this code and write your own.
+### Code demo: Determining observation frequency
+
+Insufficient data could impact our ability to compute percentiles.
+We might consider filtering sites with insufficient data when creating the active site list.
+
+::: {.callout-important}
+
+Whether a site has "sufficient" data is impacted by other decisions we make. For example, 
+
+* Computing *quartiles* only requires 5 observations for a given frame duration over a site's POR.
+* We could choose to have each frame represent one *week*'s worth of data, meaning a site would only need to have at least one observation in a 7-day period.
+  * Said another way, only sites that have multiple periods of 7 days straight of missing data would be excluded from the visual.
+* We could potentially use packages like `hyswap` to *interpolate* percentiles when there's insufficient data, though I'd want to check with an SME about the statistical validity/assumptions of these calculations.
+
+:::
+
+The cost of assessing observation frequency is high given the APIs available to us.
+From my understanding, there is not (nor are the plans) for an endpoint that specifically summarizes observation counts for a given site.
+Therefore, we would need to pull the full POR of every site (that passes the initial `/time-series-metadata` filters) to assess data sufficiency for a given list of percentiles and frame duration.
+
+The `/daily` endpoint suffices for our use case and will be computationally easier to pull from than `/continuous`.
+The `/field-measurements` endpoint will be helpful for pulling groundwater data, though most likely for filling gaps in `/daily` data since there are much longer spans between manually collected observations.
+Candice also mentioned pulling groundwater data from `/samples-data`, though that service both seems to be slow (fewer resources) and does not provide much "extra" data.
+
+
+::: {.panel-tabset group="sitetype"}
+
+## Streamflow
+
+I'm more dextrous with R than Python, so I'd recommend checking out the R code or the pseudocode I provided in the tentative active site list skeleton for guidance on assessing observation frequency.
+
+## Groundwater
+
+The code below is a start to implementing the pseudocode in the "Tentative active site list skeleton" section.
+It doesn't implement the full logic of piecing together data from the three API endpoints (`/daily`, `/field-measurements`, `/continuous`), but it does do some data gap computation.
 
 ```{r}
 #| label: gw-field-measurements
 #| eval: false
+# this cell isn't evaluated by-default as it takes a long time to run.
+# It could be useful for filling data gaps in groundwater sites
 
-# this cell isn't evaluated by-default as it takes a long time to run. It could be useful for filling data gaps, though.
-# 4. Also pull from field-measurements, which includes different sites.
+# Pull full POR from field-measurements.
 # First fetch sub-list of sites with at least one obs in last 406 days
 gw_recent_field_measurements <-
   read_waterdata_field_measurements(
@@ -332,9 +419,7 @@ gw_ml_ids_field_measurement <- unique(
 # Among sites with at least one obs in last 406 days, determine which have a
 # long enough POR
 gw_old_field_measurements <-
-  # NOTE: parallelized here
-  furrr::future_map_dfr(
-    # purrr::map_dfr(
+  purrr::map_dfr(
     split(
       unique(gw_recent_field_measurements$monitoring_location_id),
       ceiling(
@@ -364,17 +449,10 @@ gw_old_field_measurements |>
   tidyr::nest(month)
 ```
 
-Here's where things get more complex.
-For each site, we want to determine whether there is at least one observation per month across its entire POR.
-Ideally, these observations would be from /daily, as these are going to be the easiest to fetch in the future (easier than /continuous).
-So first we fetch the entire daily POR for sites (below is an example of only pulling 50 sites) and determine whether there is at least one observation per month.
-
-Some sites might have data missing for specific months.
-Instead of exlcuding these sites, we might consider if we can fill in the data gaps with data from /field-measurements or (as a last resort) /continuous.
-
 ```{r}
-#| label: gw-compute-frequency
-# 5. Assess frequency of observations -- is there at least one obs per timestep
+#| label: gw-assess-sufficiency
+#| eval: true
+# Assess frequency of observations -- is there at least one obs per timestep
 # over POR?
 
 # Fetch daily data since earliest_date_por -- requires splitting TS IDs into
@@ -461,10 +539,31 @@ gw_ml_ids_lost_causes <- all_daily_obs |>
 gw_ml_ids_lost_causes
 ```
 
+
+:::
+
+### Code demo: Fetching site metadata
+
+The `/monitoring-location` endpoint complains if you ask for too many monitoring location IDs at one.
+I have an example in the Groundwater section that shows splitting and iterating over a list of monitoring location IDs, broken into chunks of 50 IDs.
+
+::: {.panel-tabset group="sitetype"}
+
+## Streamflow
+
+```{python}
+#| label: sf-site-metadata
+#| eval: true
+sf_site_metadata = waterdata.get_monitoring_locations(monitoring_location_id=sf_all_ts_ids.monitoring_location_id.unique().tolist()[0:9])
+
+sf_site_metadata
+```
+
+## Groundwater
+
 ```{r}
-#| label: gw-metadata
-# Fetch metadata for each monitoring location -- requires splitting list of ML
-# IDs into chunks of 100
+#| label: gw-site-metadata
+#| eval: true
 gw_ml_ids <- unique(c(ml_ids_daily_means$monitoring_location_id, ml_ids_continuous$monitoring_location_id))
 
 gw_ml_metadata <-
@@ -488,4 +587,115 @@ gw_ml_metadata <-
 ```
 
 :::
+
+## Code demo: regular data pull
+
+The [`/statistics`](https://api.waterdata.usgs.gov/statistics/v0/docs) API provides day and month-of-year statistics.
+More experimentation is needed to determine the limitations of the `/statistics` API.
+For example, I'm not sure what the logic is for computing percentiles -- what's the minimum POR required?
+Are there constraints on what sites/parameter codes provided by the API?
+
+Additionally, as you might be able to tell from the R Groundwater example code, the API response is densely nested JSON.
+We'd want to write some Python/R helper functions to parse the output consistently.
+
+::: {.panel-tabset group="sitetype"}
+
+## Streamflow
+
+```{python}
+#| label: sf-statistics-example
+import requests
+import pandas as pd
+
+# Build and send request
+base_url = "https://api.waterdata.usgs.gov/statistics/v0/observationNormals"
+
+params = {
+    "monitoring_location_id": "USGS-07141780",
+    "computation_type": "percentile",
+}
+
+resp = requests.get(base_url, params=params)
+resp.raise_for_status()
+data = resp.json()
+
+# Extract values table (mirrors gw_stats$features$properties$data[[1]]$values[[1]])
+values = data["features"][0]["properties"]["data"][0]["values"][0]
+
+df = pd.DataFrame(values)
+
+# Filter equivalent to dplyr::filter(time_of_year_type == "month_of_year")
+df = df[df["time_of_year_type"] == "month_of_year"]
+
+df
+```
+
+## Groundwater
+
+```{r}
+#| label: gw-statistics-example
+gw_stats <-
+  httr2::request("https://api.waterdata.usgs.gov") |>
+  httr2::req_url_path("statistics/v0/observationNormals") |>
+  httr2::req_url_query(
+    "monitoring_location_id" = "USGS-430739078502701",
+    "computation_type" = "percentile"
+  ) |>
+  httr2::req_perform() |>
+  httr2::resp_body_string() |>
+  jsonlite::fromJSON()
+
+tibble::tibble(gw_stats$features$properties$data[[1]]$values[[1]]) |>
+  filter(time_of_year_type == "month_of_year")
+```
+
+:::
+
+## Questions / considerations
+
+**Vizualization Questions**:
+
+* What is the frame duration?
+* What percentiles are needed?
+* How often will the visual be updated?
+
+**Streamflow SME Questions:**
+
+* Is relationship between discharge and gage height *monotonic*? If yes, then we can pull both and compute percentiles without worrying about comparability.
+* Any other pcodes we should consider than 00060, 00065?
+
+**\statistics API questions**:
+
+* What data are available through the service (e.g., only specific site types/parameter codes allowed/statistic IDs)?
+* What criteria are used for computing day/month-of-year percentiles (e.g., POR, missing data handling, etc.)?
+
+## Computational Details
+
+Note that many of the api.waterdata endpoints have implicit limits -- they'll often throw a 500 or 403 if they don't like something you've requested.
+I've yet to determine whether these limitations derive from a request character limit, size, or some other factor.
+I've found it safest to chunk large requests, which the helper functions below are meant to facilitate.
+
+
+I have some R code below for setting up parallelization.
+The `furrr` package has drop-in replacements of `purrr` functions that make it very easy to parallelize code; example: `purrr::map_dfr` -> `furrr::future_map_dfr`.
+
+```{r}
+#| label: gw-parallelization
+#| eval: false
+library(future)
+library(furrr)
+library(parallelly)
+if (parallelly::supportsMulticore()) {
+  future::plan(future::multicore,
+    workers = ceiling(parallel::detectCores() / 3)
+  )
+} else {
+  future::plan(future::multisession,
+    workers = ceiling(parallel::detectCores() / 3)
+  )
+}
+
+# Run this to "turn off" parallelization
+# future::plan(future::sequential)
+```
 
