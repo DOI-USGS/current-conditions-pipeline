@@ -26,8 +26,6 @@ We break the workflow into **four independent processes**. Each can run on its o
 
 Each section below expands on these stages.
 
----
-
 ## 1. Site List Construction
 
 This job defines the set of sites tracked by the downstream pipeline. 
@@ -81,7 +79,7 @@ Keep one time-series ID per site:
 
 - Prefer daily mean (`00003`) when available.
 - Choose the ID with the longest POR.
-- Break ties using preferred pcodes (00060/00065 or 72019) or by ordering.
+- Break ties using preferred pcodes (00060/00065 or 72019). Otherwise, pick an arbitrary timeseries.
 
 #### If *enforcing* frequency
 
@@ -97,12 +95,12 @@ For instantaneous IDs:
 2. Otherwise:
    - Pull full POR from `/continuous`.  
    - If identified earlier as “potentially salvageable,” merge with daily/field-measurement data.
-   - Run `determine_data_sufficiency()`.
+   - Run `determine_data_sufficiency()` (see below).
 
 Finally, for each monitoring location:
 
 - Keep all timeseries deemed **sufficient**.  
-- If multiple pcodes are sufficient, choose the one with longest POR (tie-break as above).
+- If multiple pcodes are sufficient for a specific site, choose the one with longest POR (tie-break as above).
 
 ### Pseudocode: `determine_data_sufficiency()`
 
@@ -113,30 +111,31 @@ Inputs:
 
 - Observations from one endpoint (or merged sources).
 - `F` = frame size (daily/weekly/monthly).
-- `n_F` = number of groups in a year (e.g., 12 for monthly).  
+- `n_F` = number of frames in a year (e.g., 12 for monthly).  
 - `Y` = required number of years of coverage (e.g., 11 for deciles).
 
 Logic:
 
-1. Group all observations into their corresponding temporal group `G_i`.  
+1. Group all observations into their corresponding frame group `G_i`.  
 2. For each `G_i`:
    - Count number of years with ≥1 observation (call this `N_i`).  
 3. Classify:
    - If all `N_i >= Y` → **sufficient**.  
    - If some `N_i < Y`:
      - If continuous data already in merged source → **insufficient**.  
-     - If a corresponding 00011 ID exists → **potentially salvageable** (gaps may be filled).  
+     - If a corresponding 00011 ID exists → **potentially sufficient** (gaps may be filled).  
      - Else → **insufficient**.
 
 Output: one of {sufficient, potentially_sufficient, insufficient} per timeseries ID.
 
----
+
 
 ## 2. Regular Data Pull
 
 Executed daily/weekly/monthly depending on parameter type.
 
 Steps:
+
 1. Load active site list from S3.
 2. For each site:
    - Pull most recent observation (daily or continuous).
@@ -146,23 +145,27 @@ Steps:
 4. Push the table to S3.
 
 Settings developers can tune:
+
 - Frequency of the job.
 - Fallback logic (e.g., use `/continuous` when `/daily` missing).
 - Percentile resolution (quartiles, deciles, etc.).
 - Whether frequency-based sufficiency is re-evaluated periodically.
 
----
+
 
 ## 3. Visual Creation
 
 Inputs:
+
 - Categorizations + metadata from S3.
 
 Outputs:
+
 - Map-like frames (e.g., PNG/SVG).
 - Possibly animation slices (daily/weekly/monthly).
 
 Configurable:
+
 - Frame duration (`F`): daily/weekly/monthly.
 - Output resolution and file types.
 - Whether to generate animated sequences vs static tiles.
@@ -170,9 +173,27 @@ Configurable:
 ## 4. Display Layer
 
 Steps:
+
 1. Pull completed visuals from S3.
 2. Make them available to downstream apps (public S3, CloudFront, etc.).
 
+## Open questions / considerations
+
+**Vizualization Questions**:
+
+* What is the frame duration?
+* What percentiles are needed?
+* How often will the visual be updated?
+
+**Streamflow SME Questions:**
+
+* Is relationship between discharge and gage height *monotonic*? If yes, then we can pull both and compute percentiles without worrying about comparability.
+* Any other pcodes we should consider than 00060, 00065?
+
+**\statistics API questions**:
+
+* What data are available through the service (e.g., only specific site types/parameter codes allowed/statistic IDs)?
+* What criteria are used for computing day/month-of-year percentiles (e.g., POR, missing data handling, etc.)?
 
 ## Code demo: Initial filter with time-series-metadata
 
@@ -650,24 +671,6 @@ tibble::tibble(gw_stats$features$properties$data[[1]]$values[[1]]) |>
 ```
 
 :::
-
-## Questions / considerations
-
-**Vizualization Questions**:
-
-* What is the frame duration?
-* What percentiles are needed?
-* How often will the visual be updated?
-
-**Streamflow SME Questions:**
-
-* Is relationship between discharge and gage height *monotonic*? If yes, then we can pull both and compute percentiles without worrying about comparability.
-* Any other pcodes we should consider than 00060, 00065?
-
-**\statistics API questions**:
-
-* What data are available through the service (e.g., only specific site types/parameter codes allowed/statistic IDs)?
-* What criteria are used for computing day/month-of-year percentiles (e.g., POR, missing data handling, etc.)?
 
 ## Computational Details
 
