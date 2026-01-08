@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# R packages
+# R  packages
 RUN R -e "install.packages(c( \
     'dataRetrieval', \
     'ggplot2', \
