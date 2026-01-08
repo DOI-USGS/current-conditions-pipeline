@@ -64,6 +64,7 @@ gw_filt_ts_ids <-
 ideal_rows_per_shard <- 3.5e6 #50000
 n_parallel_ci_jobs <- 10 # NOTE: this should mach the number of shards defined in the gitlab-ci.yml file
 
+# Split TS IDs into more chunks, which can be run in-parallel for greater efficiency
 shard_table <-
   gw_filt_ts_ids |>
   filter(statistic_id %in% c("00003", "00011")) |>
