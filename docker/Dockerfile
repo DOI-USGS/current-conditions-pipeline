@@ -21,7 +21,7 @@ RUN R -e "install.packages(c( \
     'lubridate', \
     'arrow', \
     'purrr', \
-    'tidytable', \
+    'tidytable' \
   ), repos='https://cloud.r-project.org')"
 
 # Python packages
