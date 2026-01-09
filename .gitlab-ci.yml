@@ -33,7 +33,7 @@ gw_shard_prep:
   image: $IMAGE
   timeout: 24h
   script:
-    - Rscript gw_initial_pull.R
+    - Rscript gw_ci/gw_initial_pull.R
   artifacts:
     paths:
       - artifacts/shard_table.parquet
@@ -49,7 +49,7 @@ gw_coverage:
     matrix:
       - SHARD_ID: [0,1,2,3,4,5,6,7,8,9]
   script:
-    - Rscript gw_coverage_per_shard.R ${SHARD_ID}
+    - Rscript gw_ci/gw_coverage_per_shard.R ${SHARD_ID}
   artifacts:
     paths:
       - artifacts/coverage_${SHARD_ID}.parquet
@@ -62,7 +62,7 @@ gw_coverage_merge:
     - job: gw_coverage
       artifacts: true
   script:
-    - Rscript gw_merge_active_ts_ids.R
+    - Rscript gw_ci/gw_merge_active_ts_ids.R
     - aws s3 cp artifacts/gw_active_ts_ids.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/
   artifacts:
     paths:
