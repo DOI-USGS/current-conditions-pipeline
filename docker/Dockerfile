@@ -1,19 +1,26 @@
-FROM rocker/r-ver:4.3.2
+FROM rocker/r2u:22.04
 
-# System  deps
+# Avoid interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
+# ----------------------------
+# System + R binary deps
+# ----------------------------
 RUN apt-get update && apt-get install -y \
-    python3 \
-    python3-pip \
-    python3-venv \
+    # --- system utilities ---
     git \
     curl \
     ca-certificates \
+    awscli \
     libgl1 \
     libglib2.0-0 \
-    # awscli  \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN apt-get update && apt-get install -y \
+    \
+    # --- python ---
+    python3 \
+    python3-pip \
+    python3-venv \
+    \
+    # --- R system libs (defensive, cheap) ---
     libcurl4-openssl-dev \
     libssl-dev \
     libxml2-dev \
@@ -21,25 +28,22 @@ RUN apt-get update && apt-get install -y \
     libfontconfig1-dev \
     libharfbuzz-dev \
     libfribidi-dev \
+    \
+    # --- R packages via r2u (binary installs) ---
+    r-cran-dataretrieval \
+    r-cran-dplyr \
+    r-cran-tidyr \
+    r-cran-lubridate \
+    r-cran-purrr \
+    r-cran-tidytable \
+    r-cran-arrow \
+    r-cran-ggplot2 \
+    \
     && rm -rf /var/lib/apt/lists/*
 
-# R  packages
-RUN R -e "install.packages(c( \
-    'curl', \
-    'xml2', \
-    'httr2', \
-    'sf', \
-    'dataRetrieval', \
-    'ggplot2', \
-    'dplyr', \
-    'tidyr', \
-    'lubridate', \
-    'arrow', \
-    'purrr', \
-    'tidytable' \
-  ), repos='https://cloud.r-project.org')"
-
+# ----------------------------
 # Python packages
+# ----------------------------
 RUN pip3 install --no-cache-dir \
     dataretrieval \
     pandas \
@@ -49,13 +53,14 @@ RUN pip3 install --no-cache-dir \
     boto3 \
     s3fs
 
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
-  && unzip awscliv2.zip \
-  && ./aws/install \
-  && rm -rf aws awscliv2.zip
-
-# check that dataRetrieval successfully installed
+# ----------------------------
+# Sanity checks (fail fast)
+# ----------------------------
 RUN R -e "library(dataRetrieval); packageVersion('dataRetrieval')"
-
+RUN python3 - << 'EOF'
+import dataretrieval
+import pandas
+import pyarrow
+EOF
 
 # WORKDIR /work
