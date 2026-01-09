@@ -77,12 +77,15 @@ shard_table <-
     )
   ) |>
   group_by(statistic_id) |>
-  arrange(est_rows) |>
-  mutate(
-    group_id = (cumsum(est_rows) - 1) %/% ideal_rows_per_shard,
-    shard_id = group_id %% n_parallel_ci_jobs
-  ) |>
-  ungroup() |>
+  group_split() |>
+  map_dfr(function(dat){
+    dat |>
+      arrange(est_rows) |>
+      mutate(
+        group_id = (cumsum(est_rows) - 1) %/% ideal_rows_per_shard,
+        shard_id = group_id %% n_parallel_ci_jobs
+      )
+  }) |>
   select(time_series_id, statistic_id, begin_utc, end_utc, group_id, shard_id)
 
 dir.create("artifacts", showWarnings = FALSE)
