@@ -15,14 +15,9 @@ if (length(files) == 0) {
   stop("No coverage shard artifacts found")
 }
 
-coverage_all <-
-  map_dfr(files, arrow::read_parquet)
-
-# Sites that pass coverage
 gw_active_ts_ids <-
-  coverage_all |>
-  filter(n_good_days == 365) |>
-  distinct(time_series_id)
+  map_dfr(files, arrow::read_parquet) |>
+  filter(has_coverage)
 
 arrow::write_parquet(
   gw_active_ts_ids,
