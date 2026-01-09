@@ -13,6 +13,7 @@ variables:
 build-image:
   stage: build
   image: ${DEVOPS_REGISTRY}usgs/docker:latest
+  timeout: 24h
   services:
   - name: ${DEVOPS_REGISTRY}usgs/docker:latest-dind
     alias: docker
@@ -30,8 +31,9 @@ build-image:
 gw_shard_prep:
   stage: sites
   image: $IMAGE
+  timeout: 24h
   script:
-    - Rscript build_shard_table.R
+    - Rscript gw_initial_pull.R
   artifacts:
     paths:
       - artifacts/shard_table.parquet
@@ -39,6 +41,7 @@ gw_shard_prep:
 gw_coverage:
   stage: sites
   image: $IMAGE
+  timeout: 24h
   needs:
     - job: gw_shard_prep
       artifacts: true
@@ -46,7 +49,7 @@ gw_coverage:
     matrix:
       - SHARD_ID: [0,1,2,3,4,5,6,7,8,9]
   script:
-    - Rscript check_coverage_shard.R ${SHARD_ID}
+    - Rscript gw_coverage_per_shard.R ${SHARD_ID}
   artifacts:
     paths:
       - artifacts/coverage_${SHARD_ID}.parquet
@@ -54,11 +57,12 @@ gw_coverage:
 gw_coverage_merge:
   stage: sites
   image: $IMAGE
+  timeout: 24h
   needs:
     - job: gw_coverage
       artifacts: true
   script:
-    - Rscript merge_coverage.R
+    - Rscript gw_merge_active_ts_ids.R
     - aws s3 cp artifacts/gw_active_ts_ids.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/
   artifacts:
     paths:

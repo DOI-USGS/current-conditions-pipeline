@@ -76,11 +76,14 @@ shard_table <-
       por_len * 4 * 24 # continuous (obs. every 15 minutes) = 96 obs. per day
     )
   ) |>
+  group_by(statistic_id) |>
   arrange(est_rows) |>
   mutate(
     group_id = (cumsum(est_rows) - 1) %/% ideal_rows_per_shard,
     shard_id = group_id %% n_parallel_ci_jobs
-  )
+  ) |>
+  ungroup() |>
+  select(time_series_id, statistic_id, begin_utc, end_utc, group_id, shard_id)
 
 dir.create("artifacts", showWarnings = FALSE)
 
