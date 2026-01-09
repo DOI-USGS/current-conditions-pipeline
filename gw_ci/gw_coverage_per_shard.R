@@ -38,7 +38,7 @@ raw_data <-
   group_by(group_id) |>
   group_split() |>
   map_dfr(function(dat) {
-    if(dat$statistic_id == "00003"){
+    if(unique(dat$statistic_id) == "00003"){
       read_waterdata_daily(
         time_series_id = dat$time_series_id,
         skipGeometry = TRUE,
@@ -58,66 +58,50 @@ raw_data <-
 
 message("Computing missing days")
 
-missing_ydays <-
-  raw_data |>
-  group_by(time_series_id) |>
-  mutate(time_lag = lag(time), time_diff = as.numeric(time - time_lag)) |>
-  ungroup() |>
-  # we care about time series IDs where there's a gap >30 days
-  filter(time_diff > 30) |>
-  # next, compute which date(s) are impacted by the >30 day gap
-  mutate(
-    missing_window_start = lubridate::yday(time_lag + lubridate::days(31)),
-    missing_window_end = lubridate::yday(time - lubridate::days(1))
-  ) |>
-  select(time_series_id, missing_window_start, missing_window_end) |>
-  # We care about which day of the year the missing stretches of data affect
-  pmap_dfr(
-    ~ {
-      (if (..2 > ..3) {
-        tidytable::tidytable(
-          yday = c(seq(..2, 366, by = 1), seq(1, ..3, by = 1))
-        )
-      } else {
-        tidytable::tidytable(yday = seq(..2, ..3, by = 1))
-      }) |>
-        mutate(time_series_id = ..1) |>
-        arrange(yday)
-    }
-  ) |>
-  group_by(time_series_id, yday) |>
-  tally(name = "n_missing") |>
-  ungroup() |>
-  mutate(yday = as.numeric(yday))
+  # Determine ydays with <20 years of complete data
+  missing_doy <-
+    gw_daily_dt |>
+    distinct(time_series_id, time) |>
+    arrange(time_series_id, time) |>
+    mutate(yday = lubridate::yday(time)) |>
+    group_by(time_series_id, yday) |>
+    tally(name = "n_years") |>
+    filter(n_years < 20)
 
-# Next, determine whether each TS ID has enough data, correcting for
-# any missingness
-por_obs_corrected <-
-  shard_table |>
-  select(time_series_id, begin_utc, end_utc) |>
-  pmap_dfr(
-    ~ {
-      table(lubridate::yday(seq.Date(..2, ..3, by = "day"))) |>
-        tidytable::as_tidytable() |>
-        rename(
-          yday = V1,
-          n_obs = N
-        ) |>
-        mutate(
-          time_series_id = ..1,
-          yday = as.numeric(yday)
-        )
-    }
-  ) |>
-  left_join(
-    missing_ydays,
-    by = c("yday", "time_series_id")
-  ) |>
-  tidytable::replace_na(replace = list(n_missing = 0)) |>
-  mutate(total_obs = n_obs - n_missing) |>
-  group_by(time_series_id) |>
-  # count number of ydays that have at least (20) years of data
-  summarize(n_good_days = sum(total_obs >= min_years_per_yday))
+  # duplicate yday to wrap around a new year (in case there >30 day periods across 2 calendar years)
+  missing_doy_circular <- missing_doy |>
+    mutate(yday2 = yday + 365) |>
+    bind_rows(
+      missing_doy |>
+        mutate(yday2 = yday)
+    )
+
+  # compute the number of consecutive days with <20 years of data
+  missing_runs <- missing_doy_circular |>
+    arrange(time_series_id, yday2) |>
+    group_by(time_series_id) |>
+    mutate(
+      run_id = cumsum(c(1, diff(yday2) != 1))
+    ) |>
+    group_by(time_series_id, run_id) |>
+    summarise(
+      run_length = n(),
+      .groups = "drop"
+    )
+
+  # if there's a run of consecutive days with <20 years of data that is
+  # at least 30-days long, then we couldn't compute the percentiles needed
+  invalid_ts_ids <-
+    missing_runs |>
+    filter(run_length >= 30) |>
+    distinct(time_series_id)
+
+  # gw_active_ts_ids <-
+  #   setdiff(unique(gw_daily_dt$time_series_id), invalid_ts_ids$time_series_id)
+coverage_summary <-
+  gw_daily_dt |>
+  distinct(time_series_id, statistic_id) |>
+  mutate(has_coverage = !(time_series_id %in% invalid_ts_ids$time_series_id))
 
 # ---- Write result ----
 arrow::write_parquet(
