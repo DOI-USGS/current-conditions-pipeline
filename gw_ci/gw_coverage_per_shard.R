@@ -71,48 +71,48 @@ if(nrow(raw_data) == 0){
 
 message("Computing missing days")
 
-  # Determine ydays with <20 years of complete data
-  missing_doy <-
-    gw_daily_dt |>
-    distinct(time_series_id, time) |>
-    arrange(time_series_id, time) |>
-    mutate(yday = lubridate::yday(time)) |>
-    group_by(time_series_id, yday) |>
-    tally(name = "n_years") |>
-    filter(n_years < 20)
+# Determine ydays with <20 years of complete data
+missing_doy <-
+  raw_data |>
+  distinct(time_series_id, time) |>
+  arrange(time_series_id, time) |>
+  mutate(yday = lubridate::yday(time)) |>
+  group_by(time_series_id, yday) |>
+  tally(name = "n_years") |>
+  filter(n_years < 20)
 
-  # duplicate yday to wrap around a new year (in case there >30 day periods across 2 calendar years)
-  missing_doy_circular <- missing_doy |>
-    mutate(yday2 = yday + 365) |>
-    bind_rows(
-      missing_doy |>
-        mutate(yday2 = yday)
-    )
+# duplicate yday to wrap around a new year (in case there >30 day periods across 2 calendar years)
+missing_doy_circular <- missing_doy |>
+  mutate(yday2 = yday + 365) |>
+  bind_rows(
+    missing_doy |>
+      mutate(yday2 = yday)
+  )
 
-  # compute the number of consecutive days with <20 years of data
-  missing_runs <- missing_doy_circular |>
-    arrange(time_series_id, yday2) |>
-    group_by(time_series_id) |>
-    mutate(
-      run_id = cumsum(c(1, diff(yday2) != 1))
-    ) |>
-    group_by(time_series_id, run_id) |>
-    summarise(
-      run_length = n(),
-      .groups = "drop"
-    )
+# compute the number of consecutive days with <20 years of data
+missing_runs <- missing_doy_circular |>
+  arrange(time_series_id, yday2) |>
+  group_by(time_series_id) |>
+  mutate(
+    run_id = cumsum(c(1, diff(yday2) != 1))
+  ) |>
+  group_by(time_series_id, run_id) |>
+  summarise(
+    run_length = n(),
+    .groups = "drop"
+  )
 
-  # if there's a run of consecutive days with <20 years of data that is
-  # at least 30-days long, then we couldn't compute the percentiles needed
-  invalid_ts_ids <-
-    missing_runs |>
-    filter(run_length >= 30) |>
-    distinct(time_series_id)
+# if there's a run of consecutive days with <20 years of data that is
+# at least 30-days long, then we couldn't compute the percentiles needed
+invalid_ts_ids <-
+  missing_runs |>
+  filter(run_length >= 30) |>
+  distinct(time_series_id)
 
-  # gw_active_ts_ids <-
-  #   setdiff(unique(gw_daily_dt$time_series_id), invalid_ts_ids$time_series_id)
+# gw_active_ts_ids <-
+#   setdiff(unique(raw_data$time_series_id), invalid_ts_ids$time_series_id)
 coverage_summary <-
-  gw_daily_dt |>
+  raw_data |>
   distinct(time_series_id, statistic_id) |>
   mutate(has_coverage = !(time_series_id %in% invalid_ts_ids$time_series_id))
 
