@@ -68,11 +68,11 @@ gw_coverage_merge:
     paths:
       - artifacts/gw_active_ts_ids.parquet
   # these tags are needed to checkout a runner that has automatic access to AWS
-  tags:
-    - aws
-    - production
-    - us-west-2
-    - wma
+  # tags:
+  #   - aws
+  #   - production
+  #   - us-west-2
+  #   - wma
 
 # active_sites_sf:
 #   stage: sites

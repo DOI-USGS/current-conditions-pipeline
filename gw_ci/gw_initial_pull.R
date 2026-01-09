@@ -78,6 +78,10 @@ shard_table <-
   ) |>
   # group_by(statistic_id) |>
   arrange(est_rows) |>
+  # TS IDs in the same "group" are submitted in the same request. 
+  #   The goal is to max out the 50,000 row/request limit without going over (e.g., a 50,001 row would still require 2 requests)
+  # Groups in the same shard are submitted sequentially.
+  #   This is just a limitation that we can't have too many separate "shards" runniing at the same time
   mutate(
     group_id = ((cumsum(est_rows) - 1) %/% ideal_rows_per_shard),
     shard_id = group_id %% n_parallel_ci_jobs
