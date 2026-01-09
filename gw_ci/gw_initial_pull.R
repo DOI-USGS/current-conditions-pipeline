@@ -67,7 +67,7 @@ n_parallel_ci_jobs <- 10 # NOTE: this should mach the number of shards defined i
 # Split TS IDs into more chunks, which can be run in-parallel for greater efficiency
 shard_table <-
   gw_filt_ts_ids |>
-  filter(statistic_id %in% c("00003", "00011")) |>
+  filter(statistic_id %in% c("00003")) |>#, "00011")) |>
   select(time_series_id, statistic_id, begin_utc, end_utc, por_len) |>
   mutate(
     est_rows = ifelse(
@@ -76,17 +76,10 @@ shard_table <-
       por_len * 4 * 24 # continuous (obs. every 15 minutes) = 96 obs. per day
     )
   ) |>
-  group_by(statistic_id) |>
-  group_split() |>
-  map_dfr(function(dat) {
-    dat |>
-      arrange(est_rows) |>
-      mutate(
-        group_id = 1 + ((cumsum(est_rows) - 1) %/% ideal_rows_per_shard)
-      )
-  }) |>
+  # group_by(statistic_id) |>
+  arrange(est_rows) |>
   mutate(
-    group_id = cumsum(group_id),
+    group_id = ((cumsum(est_rows) - 1) %/% ideal_rows_per_shard),
     shard_id = group_id %% n_parallel_ci_jobs
   ) |>
   select(time_series_id, statistic_id, begin_utc, end_utc, group_id, shard_id)
