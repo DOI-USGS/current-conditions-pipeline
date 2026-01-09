@@ -54,7 +54,7 @@ raw_data <-
     }
   }) |>
   mutate(time = as.Date(time)) |>
-  distinct(time_series_id, time)
+  distinct(time_series_id, statistic_id, time)
 
 if(nrow(raw_data) == 0){
   arrow::write_parquet(
