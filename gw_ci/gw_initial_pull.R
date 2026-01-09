@@ -61,7 +61,7 @@ gw_filt_ts_ids <-
   select(-c(stat_rank, pcode_rank)) |>
   mutate(begin_utc = as.Date(begin_utc), end_utc = as.Date(end_utc))
 
-ideal_rows_per_shard <- 3.5e6 #50000
+ideal_rows_per_shard <- 50000
 n_parallel_ci_jobs <- 10 # NOTE: this should mach the number of shards defined in the gitlab-ci.yml file
 
 # Split TS IDs into more chunks, which can be run in-parallel for greater efficiency

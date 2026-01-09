@@ -23,7 +23,7 @@ shard_table <-
 if (nrow(shard_table) == 0) {
   message("No TS IDs in shard ", SHARD_ID)
   arrow::write_parquet(
-    tibble(
+    tidytable::tidytable(
       time_series_id = character(),
       n_good_days = integer()
     ),
