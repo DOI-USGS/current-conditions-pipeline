@@ -56,6 +56,19 @@ raw_data <-
   mutate(time = as.Date(time)) |>
   distinct(time_series_id, time)
 
+if(nrow(raw_data) == 0){
+  arrow::write_parquet(
+    data.frame(
+      time_series_id = character(0),
+      statistic_id = character(0),
+      has_coverage = logical(0)
+    ),
+    paste0("artifacts/coverage_", SHARD_ID, ".parquet")
+  )
+  
+  quit(save = "no")
+}
+
 message("Computing missing days")
 
   # Determine ydays with <20 years of complete data
