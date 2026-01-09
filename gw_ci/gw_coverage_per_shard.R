@@ -13,7 +13,7 @@ library(tidytable)
 
 dir.create("artifacts", showWarnings = FALSE)
 
-min_years_per_yday <- 21
+min_years_per_yday <- 20
 
 # ---- Read shard table ----
 shard_table <-
@@ -33,62 +33,91 @@ if (nrow(shard_table) == 0) {
 }
 
 # ---- Pull data ----
-pull_one <- function(ts_id, stat_id) {
-  if (stat_id == "00003") {
-    read_waterdata_daily(
-      time_series_id = ts_id,
-      skipGeometry = TRUE
-    )
-  } else {
-    # read_waterdata_continuous(
-    #   time_series_id = ts_id,
-    #   skipGeometry = TRUE
-    # )
-    tibble(
-      time_series_id = character(),
-      n_good_days = integer()
-    )
-  }
-}
-
 raw_data <-
   shard_table |>
-  split(seq_len(nrow(shard_table))) |>
-  lapply(function(row) {
-    pull_one(row$time_series_id, row$statistic_id)
+  group_by(group_id) |>
+  group_split() |>
+  map_dfr(function(dat) {
+    if(dat$statistic_id == "00003"){
+      read_waterdata_daily(
+        time_series_id = dat$time_series_id,
+        skipGeometry = TRUE,
+        limit = 50000
+      )
+    } else{
+      # read_waterdata_continuous(
+      #   time_series_id = dat$time_series_id,
+      #   skipGeometry = TRUE,
+      #   limit = 50000
+      # )
+      NULL
+    }
   }) |>
-  bind_rows()
+  mutate(time = as.Date(time)) |>
+  distinct(time_series_id, time)
 
-# ---- Collapse to daily presence ----
-daily_presence <-
+message("Computing missing days")
+
+missing_ydays <-
   raw_data |>
-  transmute(
-    time_series_id,
-    date = as.Date(time)
-  ) |>
-  distinct()
-
-rm(raw_data)
-gc()
-
-# ---- Coverage counting ----
-coverage <-
-  daily_presence |>
-  mutate(
-    year = year(date),
-    yday = yday(date)
-  ) |>
-  filter(yday <= 365) |>
-  distinct(time_series_id, year, yday)
-
-coverage_summary <-
-  coverage |>
-  count(time_series_id, yday, name = "n_years") |>
   group_by(time_series_id) |>
-  summarise(
-    n_good_days = sum(n_years >= min_years_per_yday),
-    .groups = "drop"
-  )
+  mutate(time_lag = lag(time), time_diff = as.numeric(time - time_lag)) |>
+  ungroup() |>
+  # we care about time series IDs where there's a gap >30 days
+  filter(time_diff > 30) |>
+  # next, compute which date(s) are impacted by the >30 day gap
+  mutate(
+    missing_window_start = lubridate::yday(time_lag + lubridate::days(31)),
+    missing_window_end = lubridate::yday(time - lubridate::days(1))
+  ) |>
+  select(time_series_id, missing_window_start, missing_window_end) |>
+  # We care about which day of the year the missing stretches of data affect
+  pmap_dfr(
+    ~ {
+      (if (..2 > ..3) {
+        tidytable::tidytable(
+          yday = c(seq(..2, 366, by = 1), seq(1, ..3, by = 1))
+        )
+      } else {
+        tidytable::tidytable(yday = seq(..2, ..3, by = 1))
+      }) |>
+        mutate(time_series_id = ..1) |>
+        arrange(yday)
+    }
+  ) |>
+  group_by(time_series_id, yday) |>
+  tally(name = "n_missing") |>
+  ungroup() |>
+  mutate(yday = as.numeric(yday))
+
+# Next, determine whether each TS ID has enough data, correcting for
+# any missingness
+por_obs_corrected <-
+  shard_table |>
+  select(time_series_id, begin_utc, end_utc) |>
+  pmap_dfr(
+    ~ {
+      table(lubridate::yday(seq.Date(..2, ..3, by = "day"))) |>
+        tidytable::as_tidytable() |>
+        rename(
+          yday = V1,
+          n_obs = N
+        ) |>
+        mutate(
+          time_series_id = ..1,
+          yday = as.numeric(yday)
+        )
+    }
+  ) |>
+  left_join(
+    missing_ydays,
+    by = c("yday", "time_series_id")
+  ) |>
+  tidytable::replace_na(replace = list(n_missing = 0)) |>
+  mutate(total_obs = n_obs - n_missing) |>
+  group_by(time_series_id) |>
+  # count number of ydays that have at least (20) years of data
+  summarize(n_good_days = sum(total_obs >= min_years_per_yday))
 
 # ---- Write result ----
 arrow::write_parquet(
