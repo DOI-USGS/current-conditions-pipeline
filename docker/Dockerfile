@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     libgl1 \
     libglib2.0-0 \
-    # awscli \
+    # awscli  \
     && rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update && apt-get install -y \
