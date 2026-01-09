@@ -13,8 +13,22 @@ RUN apt-get update && apt-get install -y \
     # awscli \
     && rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update && apt-get install -y \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    libxml2-dev \
+    libgit2-dev \
+    libfontconfig1-dev \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 # R  packages
 RUN R -e "install.packages(c( \
+    'curl', \
+    'xml2', \
+    'httr2', \
+    'sf', \
     'dataRetrieval', \
     'ggplot2', \
     'dplyr', \
@@ -39,5 +53,9 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
   && unzip awscliv2.zip \
   && ./aws/install \
   && rm -rf aws awscliv2.zip
+
+# check that dataRetrieval successfully installed
+RUN R -e "library(dataRetrieval); packageVersion('dataRetrieval')"
+
 
 # WORKDIR /work
