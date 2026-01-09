@@ -7,7 +7,7 @@ stages:
   - pages
 
 variables:
-  IMAGE: $CI_REGISTRY_IMAGE/water/computations-tools/current-conditions-pipeline:latest
+  IMAGE: $CI_REGISTRY_IMAGE:latest
 
 # ---------- build image ----------
 build-image:
