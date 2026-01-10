@@ -17,7 +17,7 @@ min_years_per_yday <- 20
 
 # ---- Read shard table ----
 shard_table <-
-  arrow::read_parquet("artifacts/shard_table.parquet") |>
+  arrow::read_parquet("artifacts/gw_shard_table.parquet") |>
   filter(shard_id == SHARD_ID)
 
 if (nrow(shard_table) == 0) {

@@ -15,7 +15,7 @@ rolling_average_window <- lubridate::days(30)
 min_recent_obs <- focal_date - rolling_average_window
 
 check_coverage <- TRUE
-min_years_per_yday <- 20
+min_years_per_yday <- 10
 
 gw_pcodes <- 
   factor(c("72019", "62611", "62610", "72150", "72229",
@@ -91,5 +91,5 @@ shard_table <-
 dir.create("artifacts", showWarnings = FALSE)
 
 arrow::write_parquet(
-  shard_table, "artifacts/shard_table.parquet"
+  shard_table, "artifacts/gw_shard_table.parquet"
 )
