@@ -3,24 +3,22 @@ FROM rocker/r2u:22.04
 # Avoid interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
 
-# ----------------------------
 # System + R binary deps
-# ----------------------------
 RUN apt-get update && apt-get install -y \
-    # --- system utilities ---
+    # system utilities
     git \
     curl \
     ca-certificates \
-    awscli \
+    # awscli \
     libgl1 \
     libglib2.0-0 \
     \
-    # --- python ---
+    # python
     python3 \
     python3-pip \
     python3-venv \
     \
-    # --- R system libs (defensive, cheap) ---
+    # R system libs
     libcurl4-openssl-dev \
     libssl-dev \
     libxml2-dev \
@@ -29,7 +27,7 @@ RUN apt-get update && apt-get install -y \
     libharfbuzz-dev \
     libfribidi-dev \
     \
-    # --- R packages via r2u (binary installs) ---
+    # R packages via r2u
     r-cran-dataretrieval \
     r-cran-dplyr \
     r-cran-tidyr \
@@ -41,26 +39,23 @@ RUN apt-get update && apt-get install -y \
     \
     && rm -rf /var/lib/apt/lists/*
 
-# ----------------------------
 # Python packages
-# ----------------------------
 RUN pip3 install --no-cache-dir \
     dataretrieval \
     pandas \
+    pyarrow \
+    fastparquet \
     numpy \
     matplotlib \
     pyarrow \
+    awscli \
     boto3 \
     s3fs
 
-# ----------------------------
-# Sanity checks (fail fast)
-# ----------------------------
+# Sanity checks
 RUN R -e "library(dataRetrieval); packageVersion('dataRetrieval')"
 RUN python3 - << 'EOF'
 import dataretrieval
 import pandas
 import pyarrow
 EOF
-
-# WORKDIR /work

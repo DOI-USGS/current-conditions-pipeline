@@ -35,8 +35,9 @@ gw_shard_prep:
   script:
     - Rscript gw_ci/gw_initial_pull.R
   artifacts:
+  # expire_in: 7 days
     paths:
-      - artifacts/shard_table.parquet
+      - artifacts/gw_shard_table.parquet
 
 gw_coverage:
   stage: sites
@@ -74,12 +75,36 @@ gw_coverage_merge:
   #   - us-west-2
   #   - wma
 
-# active_sites_sf:
-#   stage: sites
-#   image: $IMAGE
-#   script: python3 sf_ci/active_sites_streamflow.py
-#   rules:
-#     - if: $YEARLY_RUN == "true"
+sf_shard_prep:
+  stage: sites
+  image: $IMAGE
+  timeout: 24h
+  script:
+    - python sf_ci/sf_initial_pull.py
+  artifacts:
+    paths:
+      - artifacts/sf_shard_table.parquet
+
+sf_coverage:
+  stage: sites
+  image: $IMAGE
+  parallel:
+    matrix:
+      - SHARD_ID: [0,1,2,3,4,5,6,7,8,9]
+  script:
+    - python sf_ci/sf_coverage_per_shard.py ${SHARD_ID}
+  artifacts:
+    paths:
+      - artifacts/sf_active_ts_ids_shard_${SHARD_ID}.parquet
+
+sf_coverage_merge:
+  stage: sites
+  image: $IMAGE
+  needs:
+    - sf_coverage
+  script:
+    - python sf_ci/sf_coverage_merge.py
+
 
 # # ---------- ad hoc ----------
 # gw_percentile_baseline:
