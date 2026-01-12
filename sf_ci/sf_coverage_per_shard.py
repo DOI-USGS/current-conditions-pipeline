@@ -9,9 +9,6 @@ STATS_BATCH_SIZE = 10
 shard_id = int(sys.argv[1])
 # shard_id = 1
 
-import pandas as pd
-REQUIRED_PERCENTILES = {0, 5, 10, 25, 50, 75, 90, 95, 100}
-
 def clean_percentiles(df: pd.DataFrame) -> pd.DataFrame:
     """
     Expands nested percentile outputs from observationNormals and returns
@@ -66,42 +63,33 @@ def chunked(seq, size):
     for i in range(0, len(seq), size):
         yield seq[i:i + size]
 
-active_ts_ids = []
+active_ts_ids = set()
 
 for batch in chunked(ts_ids, STATS_BATCH_SIZE):
-    print(batch)
-    # try:
     raw = waterdata.get_por_stats(
         parent_time_series_id=batch,
         computation_type=["minimum", "median", "maximum", "percentile"],
     )[0]
-    # except Exception:
-    #     continue
 
     if raw.empty:
         continue
 
     raw = raw.loc[raw["time_of_year_type"] == "day_of_year"]
-
     tidy = clean_percentiles(raw)
+    tidy = tidy.loc[tidy["time_of_year"] != "02-29"]  # drop Feb 29
 
-    # Drop Feb 29 globally
-    tidy = tidy.loc[tidy["time_of_year"] != "02-29"]
-
-    # ---- PER–TIME-SERIES COVERAGE CHECK ----
+    # Check coverage per TS ID
     for ts_id, g in tidy.groupby("parent_time_series_id"):
-
-        # For each day-of-year, check full percentile set
-        doy_ok = (
-            g.groupby("time_of_year")["percentile"]
-            .apply(lambda x: REQUIRED_PERCENTILES.issubset(set(x)))
+        doy_ok = g.groupby("time_of_year")["percentile"].apply(
+            lambda x: REQUIRED_PERCENTILES.issubset(set(x))
         )
-
         if doy_ok.all():
-            active_ts_ids.append(ts_id)
+            active_ts_ids.add(ts_id)
 
-# Write shard result
+# Merge coverage back onto shard table
+shard_result = shard_table.loc[shard_table["shard_id"] == shard_id, ["time_series_id", "statistic_id"]].copy()
+shard_result["has_coverage"] = shard_result["time_series_id"].isin(active_ts_ids)
+
+# Write full shard with coverage flag
 Path("artifacts").mkdir(exist_ok=True)
-pd.DataFrame({"time_series_id": active_ts_ids}).drop_duplicates().to_parquet(
-    f"artifacts/sf_active_ts_ids_shard_{shard_id}.parquet"
-)
+shard_result.to_parquet(f"artifacts/sf_shard_{shard_id}_coverage.parquet", index=False)
