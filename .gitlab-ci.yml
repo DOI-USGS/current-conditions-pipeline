@@ -28,52 +28,52 @@ build-image:
     - if [ -n "${CI_COMMIT_TAG}" ]; then docker tag "${CI_REGISTRY_IMAGE}:BUILD_${CI_COMMIT_SHORT_SHA}" "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}"; fi
     - docker push --all-tags ${CI_REGISTRY_IMAGE}
 
-gw_shard_prep:
-  stage: sites
-  image: $IMAGE
-  timeout: 24h
-  script:
-    - Rscript gw_ci/gw_initial_pull.R
-  artifacts:
-  # expire_in: 7 days
-    paths:
-      - artifacts/gw_shard_table.parquet
+# gw_shard_prep:
+#   stage: sites
+#   image: $IMAGE
+#   timeout: 24h
+#   script:
+#     - Rscript gw_ci/gw_initial_pull.R
+#   artifacts:
+#   # expire_in: 7 days
+#     paths:
+#       - artifacts/gw_shard_table.parquet
 
-gw_coverage:
-  stage: sites
-  image: $IMAGE
-  timeout: 24h
-  needs:
-    - job: gw_shard_prep
-      artifacts: true
-  parallel:
-    matrix:
-      - SHARD_ID: [0,1,2,3,4,5,6,7,8,9]
-  script:
-    - Rscript gw_ci/gw_coverage_per_shard.R ${SHARD_ID}
-  artifacts:
-    paths:
-      - artifacts/coverage_${SHARD_ID}.parquet
+# gw_coverage:
+#   stage: sites
+#   image: $IMAGE
+#   timeout: 24h
+#   needs:
+#     - job: gw_shard_prep
+#       artifacts: true
+#   parallel:
+#     matrix:
+#       - SHARD_ID: [0,1,2,3,4,5,6,7,8,9]
+#   script:
+#     - Rscript gw_ci/gw_coverage_per_shard.R ${SHARD_ID}
+#   artifacts:
+#     paths:
+#       - artifacts/coverage_${SHARD_ID}.parquet
 
-gw_coverage_merge:
-  stage: sites
-  image: $IMAGE
-  timeout: 24h
-  needs:
-    - job: gw_coverage
-      artifacts: true
-  script:
-    - Rscript gw_ci/gw_merge_active_ts_ids.R
-    - aws s3 cp artifacts/gw_active_ts_ids.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/
-  artifacts:
-    paths:
-      - artifacts/gw_active_ts_ids.parquet
-  # these tags are needed to checkout a runner that has automatic access to AWS
-  tags:
-    - aws
-    - production
-    - us-west-2
-    - wma
+# gw_coverage_merge:
+#   stage: sites
+#   image: $IMAGE
+#   timeout: 24h
+#   needs:
+#     - job: gw_coverage
+#       artifacts: true
+#   script:
+#     - Rscript gw_ci/gw_merge_active_ts_ids.R
+#     - aws s3 cp artifacts/gw_active_ts_ids.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/
+#   artifacts:
+#     paths:
+#       - artifacts/gw_active_ts_ids.parquet
+#   # these tags are needed to checkout a runner that has automatic access to AWS
+#   tags:
+#     - aws
+#     - production
+#     - us-west-2
+#     - wma
 
 sf_shard_prep:
   stage: sites
@@ -90,7 +90,10 @@ sf_coverage:
   image: $IMAGE
   parallel:
     matrix:
-      - SHARD_ID: [0,1,2,3,4,5,6,7,8,9]
+      - SHARD_ID: [0] #,1,2,3,4,5,6,7,8,9] # commented while troubleshooting
+  needs:
+    - job: sf_shard_prep
+      artifacts: true
   script:
     - python sf_ci/sf_coverage_per_shard.py ${SHARD_ID}
   artifacts:
@@ -104,51 +107,6 @@ sf_coverage_merge:
     - sf_coverage
   script:
     - python sf_ci/sf_coverage_merge.py
-
-
-# # ---------- ad hoc ----------
-# gw_percentile_baseline:
-#   stage: baselines
-#   image: $IMAGE
-#   script: Rscript gw_ci/gw_percentiles.R
-#   rules:
-#     - if: $BASELINE_RUN == "true"
-
-# sf_percentile_baseline:
-#   stage: baselines
-#   image: $IMAGE
-#   script: python3 sf_ci/sf_percentiles.py
-#   rules:
-#     - if: $BASELINE_RUN == "true"
-
-# # ---------- daily ----------
-# gw_frame_data:
-#   stage: frame_data
-#   image: $IMAGE
-#   script: Rscript gw_ci/gw_frame_data.R
-#   rules:
-#     - if: $CI_PIPELINE_SOURCE == "schedule"
-
-# sf_frame_data:
-#   stage: frame_data
-#   image: $IMAGE
-#   script: python3 sf_ci/sf_frame_data.py
-#   rules:
-#     - if: $CI_PIPELINE_SOURCE == "schedule"
-
-# gw_render:
-#   stage: render
-#   image: $IMAGE
-#   script: Rscript gw_ci/gw_render.R
-#   rules:
-#     - if: $CI_PIPELINE_SOURCE == "schedule"
-
-# sf_render:
-#   stage: render
-#   image: $IMAGE
-#   script: python3 sf_ci/sf_render.py
-#   rules:
-#     - if: $CI_PIPELINE_SOURCE == "schedule"
 
 # pages:
 #   stage: pages
