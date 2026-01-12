@@ -43,7 +43,8 @@ RUN ln -s /usr/bin/python3 /usr/bin/python
 
 # Python packages
 RUN pip3 install --no-cache-dir \
-    dataretrieval \
+    # dataretrieval \
+    git+https://github.com/ehinman/dataretrieval-python.git@98e3e867ccdb96056287ef155e17ffb4eb7b12e5
     pandas \
     pyarrow \
     fastparquet \
