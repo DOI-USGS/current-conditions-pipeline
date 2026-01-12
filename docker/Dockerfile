@@ -45,7 +45,7 @@ RUN ln -s /usr/bin/python3 /usr/bin/python
 RUN python3 -m pip install --upgrade pip setuptools wheel
 
 # Python packages
-RUN pip3 install --no-cache-dir --no-build-isolation \
+RUN pip3 install --no-cache-dir --no-build-isolation --no-use-pep517 \
     # dataretrieval \
     # Install drpy from Elise's dev fork (for now)
     git+https://github.com/ehinman/dataretrieval-python.git@98e3e867ccdb96056287ef155e17ffb4eb7b12e5 \
@@ -63,6 +63,7 @@ RUN pip3 install --no-cache-dir --no-build-isolation \
 RUN R -e "library(dataRetrieval); packageVersion('dataRetrieval')"
 RUN python3 - << 'EOF'
 import dataretrieval
+import dataretrieval.waterdata
 import pandas
 import pyarrow
 EOF
