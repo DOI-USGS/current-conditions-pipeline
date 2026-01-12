@@ -95,6 +95,8 @@ shard_table = sf_filt_ts_ids[
     ]
 ]
 
+shard_table = shard_table.loc[:, ~shard_table.columns.duplicated()]
+
 # Write artifact
 Path("artifacts").mkdir(exist_ok=True)
 
