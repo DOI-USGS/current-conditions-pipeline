@@ -32,6 +32,7 @@ build-image:
     - if [ -n "${CI_COMMIT_TAG}" ]; then docker tag "${CI_REGISTRY_IMAGE}:BUILD_${CI_COMMIT_SHORT_SHA}" "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}"; fi
     - docker push --all-tags ${CI_REGISTRY_IMAGE}
 
+# ---------- gw active sites ----------
 gw_shard_prep:
   stage: sites
   image: $IMAGE
@@ -78,6 +79,7 @@ gw_coverage_merge:
     - computational_tools
     - production
 
+# ---------- sf active sites ----------
 sf_shard_prep:
   stage: sites
   image: $IMAGE
