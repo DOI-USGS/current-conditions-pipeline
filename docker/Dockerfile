@@ -39,6 +39,8 @@ RUN apt-get update && apt-get install -y \
     \
     && rm -rf /var/lib/apt/lists/*
 
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
 # Python packages
 RUN pip3 install --no-cache-dir \
     dataretrieval \
