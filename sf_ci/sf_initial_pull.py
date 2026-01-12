@@ -25,8 +25,8 @@ sf_all_ts_ids = waterdata.get_time_series_metadata(
 sf_filt_ts_ids = sf_all_ts_ids[0].copy()
 
 # Ensure date columns are datetime
-sf_filt_ts_ids["begin_utc"] = pd.to_datetime(sf_filt_ts_ids["begin_utc"])
-sf_filt_ts_ids["end_utc"]   = pd.to_datetime(sf_filt_ts_ids["end_utc"])
+sf_filt_ts_ids["begin_utc"] = pd.to_datetime(sf_filt_ts_ids["begin_utc"], format = "mixed", utc = True)
+sf_filt_ts_ids["end_utc"]   = pd.to_datetime(sf_filt_ts_ids["end_utc"], format = "mixed", utc = True)
 
 # Rank statistic_id and parameter_code
 stat_rank_map  = {v: i for i, v in enumerate(sf_stat_ids)}
