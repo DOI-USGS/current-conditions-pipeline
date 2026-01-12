@@ -10,8 +10,8 @@ if (length(args) != 2) {
   stop("Usage: Rscript gw_initial_pull.R <MIN_YEARS_PER_DAY> <ROLLING_AVERAGE_WINDOW>")
 }
 
-MIN_YEARS_PER_YDAY <- as.integer(args[[2]])
-ROLLING_AVERAGE_WINDOW <- as.integer(args[[3]])
+MIN_YEARS_PER_YDAY <- as.integer(args[[1]])
+ROLLING_AVERAGE_WINDOW <- as.integer(args[[2]])
 
 # 0. Config parameters
 focal_date <- Sys.Date() - 1
