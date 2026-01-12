@@ -7,7 +7,7 @@ dir.create("artifacts", showWarnings = FALSE)
 
 files <- list.files(
   "artifacts",
-  pattern = "^coverage_.*\\.parquet$",
+  pattern = "^gw_coverage_.*\\.parquet$",
   full.names = TRUE
 )
 
