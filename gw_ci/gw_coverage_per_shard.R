@@ -1,10 +1,12 @@
 #!/usr/bin/env Rscript
 
 args <- commandArgs(trailingOnly = TRUE)
-if (length(args) != 1) {
-  stop("Usage: Rscript check_coverage_shard.R <SHARD_ID>")
+if (length(args) != 3) {
+  stop("Usage: Rscript gw_coverage_per_shard.R <SHARD_ID> <MIN_YEARS_PER_DAY> <ROLLING_AVERAGE_WINDOW>")
 }
 SHARD_ID <- as.integer(args[[1]])
+MIN_YEARS_PER_YDAY <- as.integer(args[[2]])
+ROLLING_AVERAGE_WINDOW <- as.integer(args[[3]])
 
 library(dataRetrieval)
 library(lubridate)
@@ -12,8 +14,6 @@ library(arrow)
 library(tidytable)
 
 dir.create("artifacts", showWarnings = FALSE)
-
-min_years_per_yday <- 20
 
 # ---- Read shard table ----
 shard_table <-
@@ -71,7 +71,7 @@ if(nrow(raw_data) == 0){
 
 message("Computing missing days")
 
-# Determine ydays with <20 years of complete data
+# Determine ydays with <(20) years of complete data
 missing_doy <-
   raw_data |>
   distinct(time_series_id, time) |>
@@ -79,9 +79,9 @@ missing_doy <-
   mutate(yday = lubridate::yday(time)) |>
   group_by(time_series_id, yday) |>
   tally(name = "n_years") |>
-  filter(n_years < 20)
+  filter(n_years < MIN_YEARS_PER_YDAY)
 
-# duplicate yday to wrap around a new year (in case there >30 day periods across 2 calendar years)
+# duplicate yday to wrap around a new year (in case there >(30) day periods that span 2 calendar years)
 missing_doy_circular <- missing_doy |>
   mutate(yday2 = yday + 365) |>
   bind_rows(
@@ -89,7 +89,7 @@ missing_doy_circular <- missing_doy |>
       mutate(yday2 = yday)
   )
 
-# compute the number of consecutive days with <20 years of data
+# compute the number of consecutive days with <(20) years of data
 missing_runs <- missing_doy_circular |>
   arrange(time_series_id, yday2) |>
   group_by(time_series_id) |>
@@ -102,11 +102,11 @@ missing_runs <- missing_doy_circular |>
     .groups = "drop"
   )
 
-# if there's a run of consecutive days with <20 years of data that is
-# at least 30-days long, then we couldn't compute the percentiles needed
+# if there's a run of at least (30) consecutive days with <(20) years of data,
+# then we couldn't compute the percentiles needed
 invalid_ts_ids <-
   missing_runs |>
-  filter(run_length >= 30) |>
+  filter(run_length >= ROLLING_AVERAGE_WINDOW) |>
   distinct(time_series_id)
 
 # gw_active_ts_ids <-
@@ -119,5 +119,5 @@ coverage_summary <-
 # ---- Write result ----
 arrow::write_parquet(
   coverage_summary,
-  paste0("artifacts/coverage_", SHARD_ID, ".parquet")
+  paste0("artifacts/gw_coverage_", SHARD_ID, ".parquet")
 )

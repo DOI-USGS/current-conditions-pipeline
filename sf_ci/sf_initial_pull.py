@@ -5,9 +5,10 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 
+min_years_per_yday = int(sys.argv[1])
+
 focal_date = dt.date.today() - pd.DateOffset(days = 1)
-sf_min_por_years = pd.DateOffset(years = 10)
-max_por_start = focal_date - sf_min_por_years
+max_por_start = focal_date - pd.DateOffset(years = min_years_per_yday)
 
 sf_pcodes = ['00060', '00065']
 sf_stat_ids = ['00003', '00011']

@@ -1,13 +1,14 @@
+import os
 import sys
 from pathlib import Path
 import pandas as pd
 from dataretrieval import waterdata
 
-REQUIRED_PERCENTILES = {0, 10, 25, 50, 75, 90, 100}
-STATS_BATCH_SIZE = 10
-
 shard_id = int(sys.argv[1])
-# shard_id = 1
+min_years_per_yday = int(sys.argv[2])
+required_percentiles = set(int(x) for x in sys.argv[3].split(","))
+
+STATS_BATCH_SIZE = 10 # number of TS IDs per /statistics request
 
 def clean_percentiles(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -81,7 +82,7 @@ for batch in chunked(ts_ids, STATS_BATCH_SIZE):
     # Check coverage per TS ID
     for ts_id, g in tidy.groupby("parent_time_series_id"):
         doy_ok = g.groupby("time_of_year")["percentile"].apply(
-            lambda x: REQUIRED_PERCENTILES.issubset(set(x))
+            lambda x: required_percentiles.issubset(set(x))
         )
         if doy_ok.all():
             active_ts_ids.add(ts_id)
@@ -92,4 +93,4 @@ shard_result["has_coverage"] = shard_result["time_series_id"].isin(active_ts_ids
 
 # Write full shard with coverage flag
 Path("artifacts").mkdir(exist_ok=True)
-shard_result.to_parquet(f"artifacts/sf_shard_{shard_id}_coverage.parquet", index=False)
+shard_result.to_parquet(f"artifacts/sf_coverage_{shard_id}.parquet", index=False)
