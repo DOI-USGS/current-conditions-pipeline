@@ -45,10 +45,9 @@ RUN ln -s /usr/bin/python3 /usr/bin/python
 RUN python3 -m pip install --upgrade pip setuptools wheel
 
 # Python packages
-RUN pip3 install --no-cache-dir --no-build-isolation --no-use-pep517 \
+RUN pip3 install --no-cache-dir \
     # dataretrieval \
     # Install drpy from Elise's dev fork (for now)
-    git+https://github.com/ehinman/dataretrieval-python.git@98e3e867ccdb96056287ef155e17ffb4eb7b12e5 \
     pandas \
     pyarrow \
     fastparquet \
@@ -57,7 +56,8 @@ RUN pip3 install --no-cache-dir --no-build-isolation --no-use-pep517 \
     pyarrow \
     awscli \
     boto3 \
-    s3fs
+    s3fs \
+    -e git+https://github.com/ehinman/dataretrieval-python.git@98e3e867ccdb96056287ef155e17ffb4eb7b12e5#egg=dataretrieval
 
 # Sanity checks
 RUN R -e "library(dataRetrieval); packageVersion('dataRetrieval')"
