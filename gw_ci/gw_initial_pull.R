@@ -6,7 +6,7 @@ library(arrow)
 library(tidytable)
 
 args <- commandArgs(trailingOnly = TRUE)
-print(length(args))
+print(args)
 if (length(args) != 2) {
   stop("Usage: Rscript gw_initial_pull.R <MIN_YEARS_PER_DAY> <ROLLING_AVERAGE_WINDOW>")
 }
