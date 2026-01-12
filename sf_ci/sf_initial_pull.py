@@ -5,9 +5,6 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 
-envvar = open(".Renviron").read().split("\n")[0].replace("API_USGS_PAT=", "")
-os.environ["API_USGS_PAT"] = envvar
-
 focal_date = dt.date.today() - pd.DateOffset(days = 1)
 sf_min_por_years = pd.DateOffset(years = 10)
 max_por_start = focal_date - sf_min_por_years
