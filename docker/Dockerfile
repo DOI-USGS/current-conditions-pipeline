@@ -42,8 +42,10 @@ RUN apt-get update && apt-get install -y \
 # Add symlink so "python" calls work
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
+RUN python3 -m pip install --upgrade pip setuptools wheel
+
 # Python packages
-RUN pip3 install --no-cache-dir \
+RUN pip3 install --no-cache-dir --no-build-isolation \
     # dataretrieval \
     # Install drpy from Elise's dev fork (for now)
     git+https://github.com/ehinman/dataretrieval-python.git@98e3e867ccdb96056287ef155e17ffb4eb7b12e5 \
@@ -56,14 +58,6 @@ RUN pip3 install --no-cache-dir \
     awscli \
     boto3 \
     s3fs
-
-# temp check for dataretrieval-python import name
-RUN python3 - << 'EOF'
-import pkgutil
-mods = [m.name for m in pkgutil.iter_modules()]
-print([m for m in mods if "retriev" in m.lower()])
-EOF
-
 
 # Sanity checks
 RUN R -e "library(dataRetrieval); packageVersion('dataRetrieval')"
