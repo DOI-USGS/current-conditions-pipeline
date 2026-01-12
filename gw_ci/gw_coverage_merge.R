@@ -21,7 +21,7 @@ gw_active_ts_ids <-
 
 arrow::write_parquet(
   gw_active_ts_ids,
-  "artifacts/gw_active_ts_ids.parquet"
+  "artifacts/gw_coverage.parquet"
 )
 
 message("Wrote ", nrow(gw_active_ts_ids), " active TS IDs")

@@ -8,6 +8,10 @@ stages:
 
 variables:
   IMAGE: $CI_REGISTRY_IMAGE:latest
+  GW_MIN_YEARS_PER_DAY: 20
+  GW_ROLLING_AVERAGE_WINDOW: 30
+  SF_MIN_YEARS_PER_YDAY: 20
+  SF_REQUIRED_PERCENTILES: "[0,5,10,25,50,75,90,95,100]"
 
 # ---------- build image ----------
 build-image:
@@ -33,7 +37,7 @@ gw_shard_prep:
   image: $IMAGE
   timeout: 24h
   script:
-    - Rscript gw_ci/gw_initial_pull.R
+    - Rscript gw_ci/gw_initial_pull.R ${GW_MIN_YEARS_PER_YDAY} ${GW_ROLLING_AVERAGE_WINDOW}
   artifacts:
   # expire_in: 7 days
     paths:
@@ -50,10 +54,10 @@ gw_coverage:
     matrix:
       - SHARD_ID: [0,1,2,3,4,5,6,7,8,9]
   script:
-    - Rscript gw_ci/gw_coverage_per_shard.R ${SHARD_ID}
+    - Rscript gw_ci/gw_coverage_per_shard.R ${SHARD_ID} ${GW_MIN_YEARS_PER_YDAY} ${GW_ROLLING_AVERAGE_WINDOW}
   artifacts:
     paths:
-      - artifacts/coverage_${SHARD_ID}.parquet
+      - artifacts/gw_coverage_${SHARD_ID}.parquet
 
 gw_coverage_merge:
   stage: sites
@@ -63,11 +67,11 @@ gw_coverage_merge:
     - job: gw_coverage
       artifacts: true
   script:
-    - Rscript gw_ci/gw_merge_active_ts_ids.R
-    - aws s3 cp artifacts/gw_active_ts_ids.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/
+    - Rscript gw_ci/gw_coverage_merge.R
+    - aws s3 cp artifacts/gw_coverage.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/
   artifacts:
     paths:
-      - artifacts/gw_active_ts_ids.parquet
+      - artifacts/gw_coverage.parquet
   # these tags are needed to checkout a runner that has automatic access to AWS
   tags:
     - water
@@ -79,7 +83,7 @@ sf_shard_prep:
   image: $IMAGE
   timeout: 24h
   script:
-    - python sf_ci/sf_initial_pull.py
+    - python sf_ci/sf_initial_pull.py ${SF_MIN_YEARS_PER_YDAY}
   artifacts:
     paths:
       - artifacts/sf_shard_table.parquet
@@ -94,10 +98,10 @@ sf_coverage:
     - job: sf_shard_prep
       artifacts: true
   script:
-    - python sf_ci/sf_coverage_per_shard.py ${SHARD_ID}
+    - python sf_ci/sf_coverage_per_shard.py ${SHARD_ID} ${SF_MIN_YEARS_PER_YDAY} ${SF_REQUIRED_PERCENTILES}
   artifacts:
     paths:
-      - artifacts/sf_active_ts_ids_shard_${SHARD_ID}.parquet
+      - artifacts/sf_coverage_${SHARD_ID}.parquet
 
 sf_coverage_merge:
   stage: sites
@@ -107,10 +111,10 @@ sf_coverage_merge:
       artifacts: true
   script:
     - python sf_ci/sf_coverage_merge.py
-    - aws s3 cp artifacts/sf_active_ts_ids.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/
+    - aws s3 cp artifacts/sf_coverage.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/
   artifacts:
     paths:
-      - artifacts/gw_active_ts_ids.parquet
+      - artifacts/sf_coverage.parquet
   # these tags are needed to checkout a runner that has automatic access to AWS
   tags:
     - water

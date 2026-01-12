@@ -5,17 +5,20 @@ library(dataRetrieval)
 library(arrow)
 library(tidytable)
 
+args <- commandArgs(trailingOnly = TRUE)
+if (length(args) != 2) {
+  stop("Usage: Rscript gw_initial_pull.R <MIN_YEARS_PER_DAY> <ROLLING_AVERAGE_WINDOW>")
+}
+
+MIN_YEARS_PER_YDAY <- as.integer(args[[2]])
+ROLLING_AVERAGE_WINDOW <- as.integer(args[[3]])
+
 # 0. Config parameters
 focal_date <- Sys.Date() - 1
-gw_min_por_years <- lubridate::years(10)
-max_por_start <- focal_date - gw_min_por_years
+max_por_start <- focal_date - lubridate::years(MIN_YEARS_PER_YDAY)
 
-rolling_average_window <- lubridate::days(30)
 # at least one obs. within last window
-min_recent_obs <- focal_date - rolling_average_window
-
-check_coverage <- TRUE
-min_years_per_yday <- 10
+min_recent_obs <- focal_date - lubridate::days(ROLLING_AVERAGE_WINDOW)
 
 gw_pcodes <- 
   factor(c("72019", "62611", "62610", "72150", "72229",
