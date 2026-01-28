@@ -84,6 +84,7 @@ def plot_current_conditions(
         ] = 0
 
         coverage_plot(
+            date,
             figure_params,
             us_states_gdf,
             cleaned_merged,

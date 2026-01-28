@@ -10,6 +10,10 @@ figure_params:
   scale_params:
     linewidth: 0.5
     color: "#363636"
+  datelabel:
+    fontsize: 10.5
+    xloc: 0.99
+    yloc: 0.01
 
 movie_params:
   framerate: 8
@@ -102,3 +106,9 @@ marker_params:
     - "Above normal"
     - "Much above"
     - "Extremely above"
+  NA:
+    marker: 'x'
+    color: '#808080'
+    linewidth: 0.25
+    size: 1
+    zorder: 1

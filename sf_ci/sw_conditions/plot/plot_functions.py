@@ -80,6 +80,36 @@ def plot_data(
 
     sf_gdf_proj = sf_gdf.to_crs(proj)
 
+    # plot na values
+    sf_gdf_proj[sf_gdf_proj["percentile_bin"].isna()].plot(
+        ax=ax,
+        marker=marker_params["NA"]["marker"],
+        color=marker_params["NA"]["color"],
+        linewidth=marker_params["NA"]["linewidth"],
+        markersize=marker_params["NA"]["size"],
+        zorder=marker_params["NA"]["zorder"],
+    )
+
+    # dummy marker in case there are no NA values
+    ax.scatter(
+        -9999,
+        -9999,
+        s=marker_params["NA"]["size"],
+        marker=marker_params["NA"]["marker"],
+        color=marker_params["NA"]["color"],
+        linewidth=marker_params["NA"]["linewidth"],
+        zorder=marker_params["NA"]["zorder"],
+        label="Data unavailable - "
+        + str(
+            round(
+                sf_gdf_proj["percentile_bin"].isna().sum() / len(sf_gdf_proj) * 100.0,
+                1,
+            )
+        )
+        + "%",
+    )
+
+    # plot non na values
     for i in range(0, 8):
         sf_gdf_proj[sf_gdf_proj["percentile_bin"] == float(i)].plot(
             ax=ax,
@@ -138,6 +168,7 @@ def plot_data(
 
 
 def coverage_plot(
+    date,
     figure_params,
     us_states_gdf,
     gdf_sf,
@@ -240,16 +271,25 @@ def coverage_plot(
     labels = labels[::-1]
 
     # Aggregate low and high normal
-    handles.pop(3)
-    labels.pop(3)
-    labels[3] = "Normal"
+    handles.pop(4)
+    labels.pop(4)
+    labels[4] = "Normal"
 
     conus_ax.legend(
         handles,
         labels,
         loc="lower left",
-        bbox_to_anchor=(0, 0),
+        bbox_to_anchor=(-0.025, -0.025),
         frameon=False,
+    )
+
+    fig.text(
+        figure_params["datelabel"]["xloc"],
+        figure_params["datelabel"]["yloc"],
+        date,
+        fontsize=figure_params["datelabel"]["fontsize"],
+        ha="right",
+        va="bottom",
     )
 
     # Save figure
