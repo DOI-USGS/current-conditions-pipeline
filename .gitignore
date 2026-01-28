@@ -5,3 +5,15 @@
 current-conditions-pipeline.Rproj
 .Renviron
 .vscode
+
+# Python Surface Water Visualization Pipeline
+sf_ci/api_key.txt
+sf_ci/.pixi
+sf_ci/.snakemake
+sf_ci/data/*
+!sf_ci/data/.empty
+sf_ci/figures/*
+!sf_ci/figures/.empty
+sf_ci/movies/*
+!sf_ci/movies/.empty
+sf_ci/sw_conditions/__pycache__

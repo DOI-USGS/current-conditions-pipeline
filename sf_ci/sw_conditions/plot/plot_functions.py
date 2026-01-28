@@ -1,0 +1,357 @@
+import numpy as np
+import pandas as pd
+from pygris import states
+import geopandas as gpd
+from PIL import Image
+from scipy.ndimage import gaussian_filter
+from matplotlib import font_manager
+from matplotlib import rcParams
+import matplotlib.pyplot as plt
+from matplotlib.collections import LineCollection
+
+
+def mpl_setup(figure_params):
+    rcParams["font.family"] = figure_params["fontfamily"]
+    rcParams["font.sans-serif"] = figure_params["font"]
+    rcParams["font.weight"] = figure_params["fontweight"]
+    rcParams["font.size"] = figure_params["fontsize"]
+    rcParams["text.color"] = figure_params["fontcolor"]
+
+
+def get_ax_size_inches(ax, fig):
+    """Gets the size of the plot area (axes) in inches."""
+    bbox = ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
+    width_inches = bbox.width
+    height_inches = bbox.height
+    return width_inches, height_inches
+
+
+def setup_boundary(ax, boundary_gdf_proj, state_style):
+    outer_boundary = boundary_gdf_proj.dissolve()
+    state_lines_all = boundary_gdf_proj.boundary.unary_union
+    usa_outer_lines = outer_boundary.geometry.unary_union.boundary
+    inner_lines = state_lines_all.difference(usa_outer_lines)
+    if inner_lines.geom_type == "GeometryCollection":
+        inner_lines_geoms = [
+            g
+            for g in inner_lines.geoms
+            if g.geom_type in ("LineString", "MultiLineString")
+        ]
+        inner_state_lines = gpd.GeoSeries(inner_lines_geoms, crs=boundary_gdf_proj.crs)
+    else:
+        inner_state_lines = gpd.GeoSeries([inner_lines], crs=boundary_gdf_proj.crs)
+    outer_boundary.plot(
+        ax=ax,
+        edgecolor="none",
+        facecolor=state_style["facecolor"],
+        linewidth=state_style["linewidth"],
+        zorder=1,
+    )
+    if inner_state_lines.is_empty.all() == False:
+        inner_state_lines.plot(
+            ax=ax,
+            color=state_style["edgecolor"],
+            linewidth=state_style["linewidth"],
+            zorder=1,
+            capstyle="round",
+            joinstyle="round",
+        )
+
+
+def plot_data(
+    fig,
+    ax,
+    sf_gdf,
+    boundary_gdf,
+    proj,
+    scale_mult,
+    state_style,
+    marker_params,
+    scale_params,
+    reference_scale,
+    reference_length,
+):
+    ax_dims = get_ax_size_inches(ax, fig)
+    boundary_gdf_proj = boundary_gdf.to_crs(proj)
+    setup_boundary(ax, boundary_gdf_proj, state_style)
+    minx, miny, maxx, maxy = boundary_gdf_proj.total_bounds
+    center_x = 0.5 * (minx + maxx)
+    center_y = 0.5 * (miny + maxy)
+
+    sf_gdf_proj = sf_gdf.to_crs(proj)
+
+    for i in range(0, 8):
+        sf_gdf_proj[sf_gdf_proj["percentile_bin"] == float(i)].plot(
+            ax=ax,
+            marker=marker_params["marker"],
+            color=marker_params["facecolor"][i],
+            edgecolor=marker_params["edgecolor"][i],
+            linewidth=marker_params["linewidth"][i],
+            markersize=marker_params["markersize"][i],
+            zorder=marker_params["zorder"][i],
+            label=marker_params["label"][i],
+        )
+
+    ax.set_xlim(
+        center_x - 0.5 * reference_scale * ax_dims[0] / scale_mult,
+        center_x + 0.5 * reference_scale * ax_dims[0] / scale_mult,
+    )
+    ax.set_ylim(
+        center_y - 0.5 * reference_scale * ax_dims[1] / scale_mult,
+        center_y + 0.5 * reference_scale * ax_dims[1] / scale_mult,
+    )
+
+    ax.set_axis_off()
+
+    # scale bar
+    scale_line_size = reference_length * 0.05
+    ax.plot(
+        [
+            center_x - 0.5 * reference_scale * ax_dims[0] / scale_mult,
+            center_x - 0.5 * reference_scale * ax_dims[0] / scale_mult,
+            center_x
+            - 0.5 * reference_scale * ax_dims[0] / scale_mult
+            + scale_line_size,
+        ],
+        [
+            center_y
+            + 0.5 * reference_scale * ax_dims[1] / scale_mult
+            - scale_line_size,
+            center_y + 0.5 * reference_scale * ax_dims[1] / scale_mult,
+            center_y + 0.5 * reference_scale * ax_dims[1] / scale_mult,
+        ],
+        color=scale_params["color"],
+        linewidth=scale_params["linewidth"],
+        clip_on=False,
+    )
+
+    ax_pos = ax.get_position()
+    ax.text(
+        ax_pos.x0 + 0.0025,
+        ax_pos.y0 + ax_pos.height - 0.005,
+        str(scale_mult) + "x",
+        horizontalalignment="left",
+        verticalalignment="top",
+        transform=fig.transFigure,
+        bbox=dict(boxstyle="round,pad=0.5", fc="none", alpha=0.0),
+    )
+
+
+def coverage_plot(
+    figure_params,
+    us_states_gdf,
+    gdf_sf,
+    plotname,
+    marker_params,
+    state_params,
+    shadow_image,
+):
+
+    # set defaults for matplotlib
+    mpl_setup(figure_params)
+
+    # Reference scale to CONUS
+    conus = us_states_gdf[~us_states_gdf["STUSPS"].isin(["HI", "AK", "PR"])]
+    minx, miny, maxx, maxy = conus.to_crs(state_params["conus"]["proj"]).total_bounds
+    reference_length = maxx - minx
+
+    # Set up figure
+    fig = plt.figure(1, figsize=(figure_params["dimensions"]))
+
+    # Add shadow axes
+    sigma = 25
+    img_shadow = plt.imread(shadow_image)
+    img_shadow_blur = gaussian_filter(img_shadow[:, :, 1], sigma=sigma)
+    ax_shadow = fig.add_axes([0, 0, 1, 1])
+    ax_shadow.imshow(img_shadow_blur, cmap="gray", vmin=0.0, vmax=1.0)
+    ax_shadow.set_axis_off()
+
+    # Add regional axes
+    conus_ax = fig.add_axes(state_params["conus"]["ax_loc"])
+    ak_ax = fig.add_axes(state_params["alaska"]["ax_loc"])
+    hi_ax = fig.add_axes(state_params["hawaii"]["ax_loc"])
+    pr_ax = fig.add_axes(state_params["puertorico"]["ax_loc"])
+
+    # Get dimensions
+    conus_ax_dims = get_ax_size_inches(conus_ax, fig)
+    reference_scale = reference_length / conus_ax_dims[0]
+
+    plot_data(
+        fig,
+        conus_ax,
+        gdf_sf,
+        conus,
+        state_params["conus"]["proj"],
+        state_params["conus"]["multi"],
+        state_params["style"],
+        marker_params,
+        figure_params["scale_params"],
+        reference_scale,
+        reference_length,
+    )
+
+    plot_data(
+        fig,
+        ak_ax,
+        gdf_sf,
+        us_states_gdf[us_states_gdf["STUSPS"].isin(["AK"])],
+        state_params["alaska"]["proj"],
+        state_params["alaska"]["multi"],
+        state_params["style"],
+        marker_params,
+        figure_params["scale_params"],
+        reference_scale,
+        reference_length,
+    )
+
+    plot_data(
+        fig,
+        hi_ax,
+        gdf_sf,
+        us_states_gdf[us_states_gdf["STUSPS"].isin(["HI"])],
+        state_params["hawaii"]["proj"],
+        state_params["hawaii"]["multi"],
+        state_params["style"],
+        marker_params,
+        figure_params["scale_params"],
+        reference_scale,
+        reference_length,
+    )
+
+    plot_data(
+        fig,
+        pr_ax,
+        gdf_sf,
+        us_states_gdf[us_states_gdf["STUSPS"].isin(["PR"])],
+        state_params["puertorico"]["proj"],
+        state_params["puertorico"]["multi"],
+        state_params["style"],
+        marker_params,
+        figure_params["scale_params"],
+        reference_scale,
+        reference_length,
+    )
+
+    # Get legend info
+    handles, labels = conus_ax.get_legend_handles_labels()
+
+    # Reverse order
+    handles = handles[::-1]
+    labels = labels[::-1]
+
+    # Aggregate low and high normal
+    handles.pop(3)
+    labels.pop(3)
+    labels[3] = "Normal"
+
+    conus_ax.legend(
+        handles,
+        labels,
+        loc="lower left",
+        bbox_to_anchor=(0, 0),
+        frameon=False,
+    )
+
+    # Save figure
+    fig.savefig(plotname, dpi=600)
+
+    # Close figure
+    plt.close(fig)
+
+
+def plot_shadow(fig, ax, boundary_gdf, proj, scale_mult, state_style, reference_scale):
+    ax_dims = get_ax_size_inches(ax, fig)
+    boundary_gdf_proj = boundary_gdf.to_crs(proj)
+    boundary_gdf_proj.plot(
+        ax=ax,
+        facecolor="#000000",
+        edgecolor="#000000",
+        linewidth=state_style["linewidth"],
+        zorder=1,
+    )
+    minx, miny, maxx, maxy = boundary_gdf_proj.total_bounds
+    center_x = 0.5 * (minx + maxx)
+    center_y = 0.5 * (miny + maxy)
+
+    ax.set_xlim(
+        center_x - 0.5 * reference_scale * ax_dims[0] / scale_mult,
+        center_x + 0.5 * reference_scale * ax_dims[0] / scale_mult,
+    )
+    ax.set_ylim(
+        center_y - 0.5 * reference_scale * ax_dims[1] / scale_mult,
+        center_y + 0.5 * reference_scale * ax_dims[1] / scale_mult,
+    )
+
+    ax.set_axis_off()
+
+
+def shadow_plot(
+    figure_params,
+    us_states_gdf,
+    plotname,
+    state_params,
+):
+
+    # Reference scale to CONUS
+    conus = us_states_gdf[~us_states_gdf["STUSPS"].isin(["HI", "AK", "PR"])]
+    minx, miny, maxx, maxy = conus.to_crs(state_params["conus"]["proj"]).total_bounds
+    reference_length = maxx - minx
+
+    # Set up figure
+    fig = plt.figure(
+        1, figsize=(figure_params["dimensions"]), facecolor=figure_params["facecolor"]
+    )
+    conus_ax = fig.add_axes(state_params["conus"]["ax_loc"])
+    ak_ax = fig.add_axes(state_params["alaska"]["ax_loc"])
+    hi_ax = fig.add_axes(state_params["hawaii"]["ax_loc"])
+    pr_ax = fig.add_axes(state_params["puertorico"]["ax_loc"])
+
+    # Get dimensions
+    conus_ax_dims = get_ax_size_inches(conus_ax, fig)
+    reference_scale = reference_length / conus_ax_dims[0]
+
+    plot_shadow(
+        fig,
+        conus_ax,
+        conus,
+        state_params["conus"]["proj"],
+        state_params["conus"]["multi"],
+        state_params["style"],
+        reference_scale,
+    )
+
+    plot_shadow(
+        fig,
+        ak_ax,
+        us_states_gdf[us_states_gdf["STUSPS"].isin(["AK"])],
+        state_params["alaska"]["proj"],
+        state_params["alaska"]["multi"],
+        state_params["style"],
+        reference_scale,
+    )
+
+    plot_shadow(
+        fig,
+        hi_ax,
+        us_states_gdf[us_states_gdf["STUSPS"].isin(["HI"])],
+        state_params["hawaii"]["proj"],
+        state_params["hawaii"]["multi"],
+        state_params["style"],
+        reference_scale,
+    )
+
+    plot_shadow(
+        fig,
+        pr_ax,
+        us_states_gdf[us_states_gdf["STUSPS"].isin(["PR"])],
+        state_params["puertorico"]["proj"],
+        state_params["puertorico"]["multi"],
+        state_params["style"],
+        reference_scale,
+    )
+
+    # Save figure
+    fig.savefig(plotname, dpi=600)
+
+    # Close figure
+    plt.close(fig)

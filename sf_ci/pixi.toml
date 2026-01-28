@@ -1,0 +1,26 @@
+[workspace]
+authors = ["Jeffrey Kwang <jkwang@usgs.gov>"]
+channels = ["conda-forge", "bioconda"]
+name = "current_conditions"
+platforms = ["osx-arm64"]
+version = "0.1.0"
+
+[tasks]
+install-mapshaper = "npm install -g mapshaper"
+
+[dependencies]
+snakemake = "*"
+dataretrieval = ">=1.1.0,<2"
+pandas = ">=2.3.3,<3"
+geopandas = ">=1.1.1,<2"
+tqdm = ">=4.67.1,<5"
+matplotlib = ">=3.10.8,<4"
+pynhd = ">=0.19.4,<0.20"
+jupyterlab = ">=4.5.0,<5"
+ipykernel = ">=7.1.0,<8"
+pip = ">=25.3,<26"
+nodejs = ">=25.2.1,<25.3"
+proj-data = ">=1.24,<2"
+
+[pypi-dependencies]
+pygris = "*"

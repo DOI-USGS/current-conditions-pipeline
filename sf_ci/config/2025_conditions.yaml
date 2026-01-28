@@ -1,0 +1,104 @@
+figure_params:
+  prefix: "sw_current_conditions"
+  dimensions: [8,4]
+  facecolor: "#FAFAFA"
+  fontfamily: "sans-serif"
+  font: "Source Sans 3"
+  fontweight: "normal"
+  fontcolor: "#363636"
+  fontsize: 7
+  scale_params:
+    linewidth: 0.5
+    color: "#363636"
+
+movie_params:
+  framerate: 8
+
+date_range:
+  start: "2025-01-01"
+  end: "2025-12-31"
+
+census_data:
+  resolution: "20m"
+  year: 2024
+
+geometry_simplify_percent: 20
+
+state_params:
+  style:
+    linewidth: 0.5
+    edgecolor: "#949494"
+    facecolor: "#ffffff"
+  conus:
+    ax_loc: [0.31, 0.01, 0.68, 0.98]
+    proj: "EPSG:5070"
+    multi: 1.0
+  alaska:
+    ax_loc: [0.01, 0.51, 0.28, 0.48]
+    proj: "EPSG:3338"
+    multi: 0.5
+  hawaii:
+    ax_loc: [0.01, 0.21, 0.28, 0.28]
+    proj: "EPSG:2784"
+    multi: 2.0
+  puertorico:
+    ax_loc: [0.01, 0.01, 0.28, 0.18]
+    proj: "EPSG:2866"
+    multi: 2.0
+
+marker_params:
+  marker: "o"
+  zorder:
+    - 7  # Extremely below
+    - 5  # Much below
+    - 3  # Below normal
+    - 2  # Low normal
+    - 2  # High normal
+    - 4  # Above normal
+    - 6  # Much above
+    - 8  # Extremely above
+  facecolor:
+    - "#ffffffcc"  # Extremely below
+    - "#ffffffcc"  # Much below
+    - "#ffffffcc"  # Below normal
+    - "#494949ff"    # Low normal
+    - "#494949ff"    # High normal
+    - "#74acd1ff"    # Above normal
+    - "#4575b4ff"    # Much above
+    - "#313694ff"    # Extremely above
+  edgecolor:
+    - "#532f05ff"  # Extremely below
+    - "#8a5109ff"  # Much below
+    - "#be812bff"  # Below normal
+    - "#ffffffff"  # Low normal
+    - "#ffffffff"  # High normal
+    - "#ffffffff"  # Above normal
+    - "#ffffffff"  # Much above
+    - "#ffffffff"  # Extremely above
+  markersize:
+    - 6  # Extremely below
+    - 4  # Much below
+    - 3  # Below normal
+    - 1  # Low normal
+    - 1  # High normal
+    - 3  # Above normal
+    - 4  # Much above
+    - 6  # Extremely above
+  linewidth:
+    - 0.5  # Extremely below
+    - 0.5  # Much below
+    - 0.5  # Below normal
+    - 0.2  # Low normal
+    - 0.2  # High normal
+    - 0.2  # Above normal
+    - 0.2  # Much above
+    - 0.2  # Extremely above
+  label:
+    - "Extremely below"
+    - "Much below"
+    - "Below normal"
+    - "Low normal"
+    - "High normal"
+    - "Above normal"
+    - "Much above"
+    - "Extremely above"
