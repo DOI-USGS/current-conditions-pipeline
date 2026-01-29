@@ -5,7 +5,9 @@
 #'
 #' @param gw_sf An sf object containing processed groundwater data for one date.
 #' @param date A Date corresponding to the frame timestep.
-#' @param conus_states_sf An sf object of CONUS state boundaries.
+#' @param conus_states An sf object of CONUS inner and outer state boundaries.
+#' @param conus_inner_states_sf An sf object of CONUS innner state boundaries.
+#' @param conus_inner_states_sf An sf object of CONUS outline boundary.
 #' @param palette Named vector of colors for groundwater condition bins.
 #' @param viz_cfg A list or tibble of visualization configuration values.
 #' @param scale_cfg A list or tibble of scaling parameters for peak geometry.
@@ -13,7 +15,9 @@
 #'
 #' @return A character string giving the path to the saved image file.
 plot_gw_frame <- function(gw_sf, date,
-                          conus_states_sf,
+                          conus_states,
+                          conus_inner_states_sf,
+                          conus_outer_states_sf,
                           palette, viz_cfg,
                           scale_cfg, out_path) {
 
@@ -29,14 +33,30 @@ plot_gw_frame <- function(gw_sf, date,
   p <- ggplot() +
     ggfx::with_shadow(
       geom_sf(
-        data = conus_states_sf,
+        # entire states polygons for shadow effect
+        data = conus_states, 
         fill = viz_cfg$bg_col,
-        color = viz_cfg$conus_states_col,
-        size = 0.2
+        color = NA 
       ),
       colour = viz_cfg$ggfx_col,
+      x_offset = 0,
+      y_offset = 0,
       sigma = 12
     ) +
+    # internal state borders
+    geom_sf(
+      data = conus_inner_states_sf,
+      color = viz_cfg$conus_states_col,
+      linewidth = 0.2,
+      fill = NA
+    ) +
+    # minimal external boundary
+    geom_sf(
+      data = conus_outer_states_sf,
+      color = viz_cfg$bg_col, 
+      linewidth = 0.05,
+      fill = NA
+    ) + 
     # NA sites
     geom_sf(
       data = dplyr::filter(gw_sf, is.na(per)),
@@ -127,9 +147,8 @@ plot_gw_frame <- function(gw_sf, date,
     scale_x_continuous(expand = c(0.06, 0.06)) +
     scale_y_continuous(expand = c(0.06, 0.06)) +
     theme_void() +
-    theme(legend.position = "none")
-  # +
-  #   ggtitle(plot_date)
+    theme(legend.position = "none") +
+    ggtitle(plot_date)
 
 
   ggsave(

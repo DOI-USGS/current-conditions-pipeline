@@ -7,7 +7,9 @@ p3_targets <- list(
     plot_gw_frame(
       gw_sf = p2_gw_processed_sf,
       date = plot_date,
-      conus_states_sf = p1_conus_states_sf,
+      conus_states = p1_conus_states_sf,
+      conus_inner_states_sf = p1_conus_inner_states_sf,
+      conus_outer_states_sf = p1_conus_outer_boundary_sf,
       palette = p0_viz_gw_pal,
       viz_cfg = p0_viz_config_df,
       scale_cfg = p0_gw_binned_scales,
