@@ -15,8 +15,6 @@ sf_pcodes = ['00060', '00065']
 sf_stat_ids = ['00003']
 sf_comp_period_ids = ['Daily']
 
-***REMOVED***
-
 sf_all_ts_ids = waterdata.get_time_series_metadata(
     parameter_code=sf_pcodes,
     statistic_id=sf_stat_ids,
