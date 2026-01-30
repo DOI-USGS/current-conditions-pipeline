@@ -53,7 +53,7 @@ gw_coverage:
       artifacts: true
   parallel:
     matrix:
-      - SHARD_ID: [0,1,2,3,4,5,6,7,8,9]
+      - SHARD_ID: [0,1,2,3,4] #,5,6,7,8,9]
   script:
     - Rscript gw_ci/gw_coverage_per_shard.R ${SHARD_ID} ${GW_MIN_YEARS_PER_YDAY} ${GW_ROLLING_AVERAGE_WINDOW}
   artifacts:
@@ -95,7 +95,7 @@ sf_coverage:
   image: $IMAGE
   parallel:
     matrix:
-      - SHARD_ID: [0,1,2,3,4,5,6,7,8,9] # commented while troubleshooting
+      - SHARD_ID: [0,1,2,3,4] #,5,6,7,8,9]
   needs:
     - job: sf_shard_prep
       artifacts: true
