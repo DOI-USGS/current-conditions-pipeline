@@ -3,13 +3,15 @@ p1_targets <- list(
   # Note this will be swapped out down the line for more recent data (likely a parquet)
   tar_target(
     p1_gw_quantiles_2024_csv,
-    "1_fetch/in/gw_daily_quantiles.csv"
+    "1_fetch/in/gw_daily_quantiles.csv",
+    format = "file"
     ),
   # Load 2024 gw coordinates data
   # Same note above
   tar_target(
     p1_gw_sites_2024_csv,
-    "1_fetch/in/gw_site_info.csv"
+    "1_fetch/in/gw_site_info.csv",
+    format = "file"
     ),
   # 2024 GW data
   tar_target(
