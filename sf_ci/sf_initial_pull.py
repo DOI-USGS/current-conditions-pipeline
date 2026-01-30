@@ -31,12 +31,14 @@ sf_all_ts_ids["begin_utc"] = pd.to_datetime(sf_all_ts_ids["begin_utc"], format =
 sf_all_ts_ids["end_utc"]   = pd.to_datetime(sf_all_ts_ids["end_utc"], format = "mixed", utc = True)
 sf_all_ts_ids["por_len"] = (sf_all_ts_ids["end_utc"] - sf_all_ts_ids["begin_utc"]).dt.days
 
+ideal_rows_per_shard = 50_000
 n_parallel_ci_jobs = 5  # must match gitlab-ci.yml
 
 # Sort so small TS IDs are packed first
 sf_all_ts_ids = sf_all_ts_ids.sort_values("por_len")
 
 # Assign group_id and shard_id
+sf_all_ts_ids["group_id"] = ((sf_all_ts_ids["por_len"].cumsum() - 1) // ideal_rows_per_shard).astype(int)
 sf_all_ts_ids["shard_id"] = (sf_all_ts_ids["group_id"] % n_parallel_ci_jobs).astype(int)
 
 # Final columns
