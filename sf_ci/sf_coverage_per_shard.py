@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 from pathlib import Path
 import pandas as pd
 from dataretrieval import waterdata
@@ -8,7 +9,7 @@ shard_id = int(sys.argv[1])
 min_years_per_yday = int(sys.argv[2])
 required_percentiles = set(int(x) for x in sys.argv[3].split(","))
 
-STATS_BATCH_SIZE = 10 # number of TS IDs per /statistics request
+STATS_BATCH_SIZE = 15 # number of TS IDs per /statistics request
 
 def clean_percentiles(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -18,7 +19,6 @@ def clean_percentiles(df: pd.DataFrame) -> pd.DataFrame:
     Output guarantees:
     - One row per (parent_time_series_id, time_of_year, percentile)
     - Percentile column is numeric and complete
-    - Median duplication removed
     """
 
     if df.empty:
@@ -28,7 +28,6 @@ def clean_percentiles(df: pd.DataFrame) -> pd.DataFrame:
     # --- 2. Fill implicit percentiles for min / median / max ---
     percentile_map = {
         "minimum": 0,
-        "median": 50,
         "maximum": 100,
     }
 
@@ -53,6 +52,42 @@ def clean_percentiles(df: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
+def is_429_error(exc):
+    # Common patterns seen from requests / httpx / wrapped HTTP errors
+    status = getattr(exc, "status_code", None)
+    if status == 429:
+        return True
+
+    response = getattr(exc, "response", None)
+    if response is not None and getattr(response, "status_code", None) == 429:
+        return True
+
+    return False
+
+
+def get_por_stats_with_retry(
+    *,
+    parent_time_series_id,
+    computation_type,
+    max_retries=3,
+    base_sleep=1.0,
+):
+    for attempt in range(1, max_retries + 1):
+        try:
+            res = waterdata.get_por_stats(
+                parent_time_series_id=parent_time_series_id,
+                computation_type=computation_type,
+            )
+            return res[0]
+
+        except Exception as e:
+            if not is_429_error(e):
+                raise  # fail fast on non-rate-limit errors
+
+            if attempt == max_retries:
+                raise
+
+            time.sleep(base_sleep * (2 ** (attempt - 1)))
 
 # Load shard table
 shard_table = pd.read_parquet("artifacts/sf_shard_table.parquet")
@@ -67,19 +102,21 @@ def chunked(seq, size):
 active_ts_ids = set()
 
 for batch in chunked(ts_ids, STATS_BATCH_SIZE):
-    raw = waterdata.get_por_stats(
+    #print(batch)
+
+    raw = get_por_stats_with_retry(
         parent_time_series_id=batch,
-        computation_type=["minimum", "median", "maximum", "percentile"],
-    )[0]
+        computation_type=["minimum", "maximum", "percentile"],
+        max_retries=5,
+    )
 
     if raw.empty:
         continue
 
     raw = raw.loc[raw["time_of_year_type"] == "day_of_year"]
     tidy = clean_percentiles(raw)
-    tidy = tidy.loc[tidy["time_of_year"] != "02-29"]  # drop Feb 29
+    tidy = tidy.loc[tidy["time_of_year"] != "02-29"]
 
-    # Check coverage per TS ID
     for ts_id, g in tidy.groupby("parent_time_series_id"):
         doy_ok = g.groupby("time_of_year")["percentile"].apply(
             lambda x: required_percentiles.issubset(set(x))
