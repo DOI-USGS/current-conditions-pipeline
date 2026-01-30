@@ -286,9 +286,9 @@ def coverage_plot(
     labels = labels[::-1]
 
     # Aggregate low and high normal
-    handles.pop(4)
-    labels.pop(4)
-    labels[4] = "Normal"
+    handles.pop(3)
+    labels.pop(3)
+    labels[3] = "Normal"
 
     # set axis in lower left corner of CONUS plot
     conus_ax.legend(
