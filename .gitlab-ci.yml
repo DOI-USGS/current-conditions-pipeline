@@ -8,6 +8,7 @@ stages:
 
 variables:
   IMAGE: $CI_REGISTRY_IMAGE:latest
+  API_USGS_PAT: $API_USGS_PAT
   GW_MIN_YEARS_PER_YDAY: "20"
   GW_ROLLING_AVERAGE_WINDOW: "30"
   SF_MIN_YEARS_PER_YDAY: "20"
@@ -85,7 +86,7 @@ sf_shard_prep:
   image: $IMAGE
   timeout: 24h
   script:
-    - python sf_ci/sf_initial_pull.py ${SF_MIN_YEARS_PER_YDAY}
+    - python sf_ci/sf_initial_pull.py ${SF_MIN_YEARS_PER_YDAY} ${API_USGS_PAT}
   artifacts:
     paths:
       - artifacts/sf_shard_table.parquet
