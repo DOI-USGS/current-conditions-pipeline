@@ -7,7 +7,7 @@ import numpy as np
 from pathlib import Path
 
 min_years_per_yday = int(sys.argv[1])
-os.environ["API_USGS_PAT"] = sys.argv[2]
+# os.environ["API_USGS_PAT"] = sys.argv[2]
 
 focal_date = dt.date.today() - pd.DateOffset(days = 1)
 max_por_start = focal_date - pd.DateOffset(years = min_years_per_yday)
