@@ -19,13 +19,12 @@ tar_option_set(packages = c('tidyverse',
                             ))
 
 # Phase target makefiles
-tar_source("0_config.R")
-tar_source("1_fetch.R")
-tar_source("2_process/src/process_gw_data.R")
-tar_source("2_process.R")
-tar_source("3_visualize.R")
-tar_source("3_visualize.R/src/mapping_utils")
-
+source("0_config.R")
+source("1_fetch.R")
+source("2_process/src/process_gw_data.R")
+source("2_process.R")
+source("3_visualize.R")
+source("3_visualize/src/mapping_utils.R")
 
 # Combined list of target outputs
 c(

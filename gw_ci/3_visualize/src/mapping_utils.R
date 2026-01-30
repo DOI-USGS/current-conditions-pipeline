@@ -24,12 +24,6 @@ plot_gw_frame <- function(gw_sf, date,
   # Ensure the directory exists so ggsave doesn't error
   if(!dir.exists(dirname(out_path))) dir.create(dirname(out_path), recursive = TRUE)
 
-  plot_date <- gw_sf |>
-    as_tibble() |>
-    pull(Date) |>
-    unique() |>
-    head(1)
-
   p <- ggplot() +
     ggfx::with_shadow(
       geom_sf(
@@ -148,8 +142,7 @@ plot_gw_frame <- function(gw_sf, date,
     scale_y_continuous(expand = c(0.06, 0.06)) +
     theme_void() +
     theme(legend.position = "none") +
-    ggtitle(plot_date)
-
+    ggtitle(date)
 
   ggsave(
     filename = out_path,
@@ -166,101 +159,107 @@ plot_gw_frame <- function(gw_sf, date,
 
 # Make legend marker with same dimensions for website build
 #' Plot a single legend marker
-#' @param category The name of the category (ex, "Much above")
+#'@param leg_row Single row tibble/sf object for a specific category
 #' @param palette The color palette
 #' @param viz_cfg Visual config (for dimensions/colors)
 #' @param scale_cfg Scaling config (for linewidth/height)
 #' @param out_path Path to save the PNGs
-plot_gw_leg <- function(category, palette, viz_cfg, scale_cfg, out_path) {
+plot_gw_leg <- function(leg_row, palette, viz_cfg, scale_cfg, out_path) {
 
   if(!dir.exists(dirname(out_path))) dir.create(dirname(out_path), recursive = TRUE)
-
-  # Logic for peak height and direction
-  plotting_order_val <- case_when(
-    category == "Extremely above" ~ 4,
-    category == "Much above" ~ 3,
-    category == "Above normal" ~ 2,
-    category == "Normal" ~ 1,
-    category == "Below normal" ~ 2,
-    category == "Much below" ~ 3,
-    category == "Extremely below" ~ 4,
-    TRUE ~ NA_real_
-  )
-  # Apply directionality for above vs below
-  direction_val <- ifelse(category %in% c("Normal", "Above normal",
-                                          "Much above", "Extremely above"),
-                          1, -1)
-
-  # Logic for peak dimensions
-  x_dif_val <- case_when(
-    plotting_order_val == 1 ~ scale_cfg$normal_width,
-    plotting_order_val == 2 ~ scale_cfg$min_vector_width,
-    plotting_order_val == 3 ~ scale_cfg$mid_vector_width,
-    plotting_order_val == 4 ~ scale_cfg$max_vector_width,
-    TRUE ~ 0
-  )
-
-  y_dif_val <- case_when(
-    plotting_order_val == 1 ~ 0,
-    plotting_order_val == 2 ~ scale_cfg$min_vector_height * direction_val,
-    plotting_order_val == 3 ~ scale_cfg$mid_vector_height * direction_val,
-    plotting_order_val == 4 ~ scale_cfg$max_vector_height * direction_val,
-    TRUE ~ 0
-  )
-
-  # Use smaller sizes for the NA dot and normal line
-  na_dot_size <- ifelse(is.na(category), 1.5, 0)
-  norm_line_width <- ifelse(!is.na(category) && plotting_order_val == 1, 0.2, 0)
-
-  leg_df <- tibble(
-    x = 0, y = 0,
-    x_start = - (x_dif_val / 2),
-    x_end = (x_dif_val / 2),
-    y_end = y_dif_val,
-    per_bin = category,
-    plotting_order = plotting_order_val
-  )
-
-  # scaling factor for the fill
+  
+  # Assign values
+  cat_val   <- leg_row$per_bin
+  is_na_cat <- is.na(cat_val)
+  order_val <- ifelse(is.na(leg_row$plotting_order), 0, leg_row$plotting_order)
+  
+  # Recenter the geometry based on the row's coordinates
+  # But force 0s for NA site for marker
+  if (is_na_cat) {
+    # Force 0s for NA site so ggplot has valid coordinates to plot
+    leg_df <- leg_row |>
+      as_tibble() |>
+      mutate(x = 0, y = 0, x_start = 0, x_end = 0, y_end = 0)
+  } else {
+    leg_df <- leg_row |>
+      as_tibble() |>
+      mutate(
+        x_start = x_start - x,
+        x_end = x_end - x,
+        y_end = y_end - y,
+        x = 0,
+        y = 0
+      )
+  }
+  
+  # Logic for peak fill width
   current_sf <- case_when(
-    plotting_order_val == 4 ~ 1,
-    plotting_order_val == 3 ~ scale_cfg$mid_factor,
-    plotting_order_val == 2 ~ scale_cfg$min_factor,
+    leg_df$plotting_order == 4 ~ scale_cfg$leg_scale_mult_factor,
+    leg_df$plotting_order == 3 ~ scale_cfg$mid_factor * scale_cfg$leg_scale_mult_factor,
+    leg_df$plotting_order == 2 ~ scale_cfg$min_factor * scale_cfg$leg_scale_mult_factor,
     TRUE ~ 0
   )
-
+  
+  # Use smaller sizes for the NA dot and normal line
+  na_dot_size     <- ifelse(is_na_cat, 2, 0)
+  norm_line_width <- ifelse(!is_na_cat && order_val == 1, 0.3, 0)
+  
   p <- ggplot(leg_df) +
     # NA sites
-    {if(is.na(category)) geom_point(aes(x = 0, y = 0),
-                                    color = viz_cfg$na_sites_col,
-                                    size = na_dot_size)} +
+    {if (is_na_cat) 
+      geom_point(
+        aes(x = 0, y = 0),
+        color = viz_cfg$na_sites_col,
+        size  = na_dot_size
+      )} +
     # Normal lines (order 1)
-    {if(!is.na(category) && plotting_order_val == 1)
-      geom_segment(aes(x = x_start, xend = x_end, y = y, yend = y_end,
-                       color = per_bin), linewidth = norm_line_width)} +
+    {if (!is.na(is_na_cat) && order_val == 1) 
+      geom_segment(
+        aes(
+          x = x_start, xend = x_end,
+          y = y, yend = y_end,
+          color = per_bin
+          ),
+        linewidth = norm_line_width
+        )} +
     # Peaks (order 2, 3, 4)
-    {if(!is.na(category) && plotting_order_val > 1) list(
-      geom_link(aes(
-        x = x, xend = x, y = y, yend = y_end, color = per_bin,
-        mf = scale_cfg$max_factor,
-        sf = current_sf,
-        linewidth = after_stat(I((1 - index) * mf * sf * 1.2)),
-        alpha = after_stat(I((0.99^index - 1) / (0.99 - 1)))
-      )
-      # ,
-      # n = 100
-      ),
-      geom_segment(aes(x = x_start, xend = x, y = y, yend = y_end,
-                       color = per_bin), linewidth = 0.15),
-      geom_segment(aes(x = x, xend = x_end, y = y_end, yend = y,
-                       color = per_bin), linewidth = 0.15)
-    )} +
+    {if (!is.na(is_na_cat) && order_val > 1) 
+      list(
+        geom_link(
+          aes(
+            x = x, xend = x,
+            y = y, yend = y_end,
+            color = per_bin,
+            mf = scale_cfg$max_factor,
+            sf = current_sf,
+            linewidth = after_stat(I((1 - index) * mf * sf * 1.2)),
+            alpha = after_stat(I((0.99^index - 1) / (0.99 - 1)))
+            )
+          ),
+        geom_segment(
+          aes(
+            x = x_start, xend = x,
+            y = y, yend = y_end,
+            color = per_bin
+            ),
+          linewidth = 0.15
+          ),
+        geom_segment(
+          aes(
+            x = x, xend = x_end,
+            y = y_end, yend = y,
+            color = per_bin
+            ),
+          linewidth = 0.15
+          )
+        )} +
     scale_color_manual(values = palette, na.value = viz_cfg$na_sites_col) +
     # expanded limits so "below" categories aren't cut off
-    coord_cartesian(xlim = c(-80000, 80000), ylim = c(-70000, 70000)) +
+    coord_cartesian(xlim = c(-scale_cfg$leg_xlim, scale_cfg$leg_xlim), 
+                    ylim = c(-scale_cfg$leg_ylim, scale_cfg$leg_ylim)) +
     theme_void() +
     theme(legend.position = "none")
-
+  
   ggsave(
     filename = out_path,
     plot = p,
@@ -273,3 +272,5 @@ plot_gw_leg <- function(category, palette, viz_cfg, scale_cfg, out_path) {
 
   return(out_path)
 }
+
+

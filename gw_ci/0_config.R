@@ -26,8 +26,8 @@ p0_targets <- list(
     tibble(
       width = 1600,
       height = 1200,
-      leg_width = 100,
-      leg_height = 100,
+      leg_width = 300,
+      leg_height = 300,
       units = "px",
       fps = 10,
       dpi = 300,
@@ -50,7 +50,10 @@ p0_targets <- list(
       min_factor = 0.5,
       mid_vector_width = max_vector_width * mid_factor,
       min_vector_width = max_vector_width * min_factor,
-      normal_width = max_vector_width * min_factor
+      normal_width = max_vector_width * min_factor,
+      leg_scale_mult_factor = 3.5,
+      leg_xlim = 80000,
+      leg_ylim = 70000
     )
   )
 )
