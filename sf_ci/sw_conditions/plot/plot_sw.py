@@ -7,6 +7,8 @@ from sw_conditions.plot.plot_functions import coverage_plot, shadow_plot
 
 
 def idx_group(g):
+    """Sorts data in percentile bins based on given bin extents."""
+
     edges = g[[0.0, 5.0, 10.0, 25.0, 50.0, 75.0, 90.0, 95.0, 100.0]].iloc[0].to_numpy()
     # side='right' then subtract 1 mimics [left, right) bins
     idx = np.searchsorted(edges, g["value"].to_numpy(), side="right") - 1
@@ -25,6 +27,8 @@ def plot_current_conditions(
     marker_params,
     state_params,
 ):
+    """Set up data and make plots for the given date list."""
+
     stats_df = pd.read_parquet(stats_file)
 
     dv_df = pd.read_parquet(daily_values_file)
@@ -83,6 +87,7 @@ def plot_current_conditions(
             cleaned_merged["value"] <= cleaned_merged[0.0], "percentile_bin"
         ] = 0
 
+        # generate the CONUS + OCONUS plot
         coverage_plot(
             date,
             figure_params,

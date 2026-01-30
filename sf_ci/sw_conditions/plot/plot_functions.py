@@ -11,6 +11,7 @@ from matplotlib.collections import LineCollection
 
 
 def mpl_setup(figure_params):
+    """Sets the default values for matplotlib."""
     rcParams["font.family"] = figure_params["fontfamily"]
     rcParams["font.sans-serif"] = figure_params["font"]
     rcParams["font.weight"] = figure_params["fontweight"]
@@ -27,6 +28,7 @@ def get_ax_size_inches(ax, fig):
 
 
 def setup_boundary(ax, boundary_gdf_proj, state_style):
+    """Plots boundary lines. Removes outer state lines and retains the inner ones."""
     outer_boundary = boundary_gdf_proj.dissolve()
     state_lines_all = boundary_gdf_proj.boundary.unary_union
     usa_outer_lines = outer_boundary.geometry.unary_union.boundary
@@ -47,6 +49,7 @@ def setup_boundary(ax, boundary_gdf_proj, state_style):
         linewidth=state_style["linewidth"],
         zorder=1,
     )
+    # If there are no inner statelines (alaska for example, don't plot inner lines)
     if inner_state_lines.is_empty.all() == False:
         inner_state_lines.plot(
             ax=ax,
@@ -71,6 +74,9 @@ def plot_data(
     reference_scale,
     reference_length,
 ):
+    """Plots surface water data on the specified axis."""
+
+    # get axis dimensions
     ax_dims = get_ax_size_inches(ax, fig)
     boundary_gdf_proj = boundary_gdf.to_crs(proj)
     setup_boundary(ax, boundary_gdf_proj, state_style)
@@ -78,6 +84,7 @@ def plot_data(
     center_x = 0.5 * (minx + maxx)
     center_y = 0.5 * (miny + maxy)
 
+    # reproject data
     sf_gdf_proj = sf_gdf.to_crs(proj)
 
     # plot na values
@@ -122,6 +129,7 @@ def plot_data(
             label=marker_params["label"][i],
         )
 
+    # set up the x and y limits of the axis
     ax.set_xlim(
         center_x - 0.5 * reference_scale * ax_dims[0] / scale_mult,
         center_x + 0.5 * reference_scale * ax_dims[0] / scale_mult,
@@ -131,6 +139,7 @@ def plot_data(
         center_y + 0.5 * reference_scale * ax_dims[1] / scale_mult,
     )
 
+    # remove box around axis
     ax.set_axis_off()
 
     # scale bar
@@ -155,6 +164,7 @@ def plot_data(
         clip_on=False,
     )
 
+    # scale bar text
     ax_pos = ax.get_position()
     ax.text(
         ax_pos.x0 + 0.0025,
@@ -177,6 +187,7 @@ def coverage_plot(
     state_params,
     shadow_image,
 ):
+    """Sets up the figures with multiple axes for CONUS and OCONUS."""
 
     # set defaults for matplotlib
     mpl_setup(figure_params)
@@ -207,6 +218,7 @@ def coverage_plot(
     conus_ax_dims = get_ax_size_inches(conus_ax, fig)
     reference_scale = reference_length / conus_ax_dims[0]
 
+    # plot on conus
     plot_data(
         fig,
         conus_ax,
@@ -221,6 +233,7 @@ def coverage_plot(
         reference_length,
     )
 
+    # plot on alaska
     plot_data(
         fig,
         ak_ax,
@@ -235,6 +248,7 @@ def coverage_plot(
         reference_length,
     )
 
+    # plot on hawaii
     plot_data(
         fig,
         hi_ax,
@@ -249,6 +263,7 @@ def coverage_plot(
         reference_length,
     )
 
+    # plot on puerto rico
     plot_data(
         fig,
         pr_ax,
@@ -275,6 +290,7 @@ def coverage_plot(
     labels.pop(4)
     labels[4] = "Normal"
 
+    # set axis in lower left corner of CONUS plot
     conus_ax.legend(
         handles,
         labels,
@@ -283,6 +299,7 @@ def coverage_plot(
         frameon=False,
     )
 
+    # add date label
     fig.text(
         figure_params["datelabel"]["xloc"],
         figure_params["datelabel"]["yloc"],
@@ -300,8 +317,13 @@ def coverage_plot(
 
 
 def plot_shadow(fig, ax, boundary_gdf, proj, scale_mult, state_style, reference_scale):
+    """Sets up solid black geometry on a given axis."""
+
     ax_dims = get_ax_size_inches(ax, fig)
+    # project boundary
     boundary_gdf_proj = boundary_gdf.to_crs(proj)
+
+    # plot as solid black
     boundary_gdf_proj.plot(
         ax=ax,
         facecolor="#000000",
@@ -313,6 +335,7 @@ def plot_shadow(fig, ax, boundary_gdf, proj, scale_mult, state_style, reference_
     center_x = 0.5 * (minx + maxx)
     center_y = 0.5 * (miny + maxy)
 
+    # set up axis limits like the plot with data
     ax.set_xlim(
         center_x - 0.5 * reference_scale * ax_dims[0] / scale_mult,
         center_x + 0.5 * reference_scale * ax_dims[0] / scale_mult,
@@ -322,6 +345,7 @@ def plot_shadow(fig, ax, boundary_gdf, proj, scale_mult, state_style, reference_
         center_y + 0.5 * reference_scale * ax_dims[1] / scale_mult,
     )
 
+    # remove box around axis
     ax.set_axis_off()
 
 
@@ -331,6 +355,7 @@ def shadow_plot(
     plotname,
     state_params,
 ):
+    """Sets up the figures with multiple axes for CONUS and OCONUS for the shadow effect."""
 
     # Reference scale to CONUS
     conus = us_states_gdf[~us_states_gdf["STUSPS"].isin(["HI", "AK", "PR"])]
@@ -350,6 +375,7 @@ def shadow_plot(
     conus_ax_dims = get_ax_size_inches(conus_ax, fig)
     reference_scale = reference_length / conus_ax_dims[0]
 
+    # plot on conus
     plot_shadow(
         fig,
         conus_ax,
@@ -360,6 +386,7 @@ def shadow_plot(
         reference_scale,
     )
 
+    # plot on alaska
     plot_shadow(
         fig,
         ak_ax,
@@ -370,6 +397,7 @@ def shadow_plot(
         reference_scale,
     )
 
+    # plot on hawaii
     plot_shadow(
         fig,
         hi_ax,
@@ -380,6 +408,7 @@ def shadow_plot(
         reference_scale,
     )
 
+    # plot on puerto rico
     plot_shadow(
         fig,
         pr_ax,

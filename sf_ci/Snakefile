@@ -8,10 +8,12 @@ with open("config/2025_conditions.yaml", "r") as file:
 
 date_list = generate_date_list(params["date_range"]["start"], params["date_range"]["end"])
 
+# set final intended output
 rule all:
     input: 
         "movies/" + params["figure_params"]["prefix"] + ".mp4"
 
+# gather the state census boundaries
 rule gather_census_data:
     params:
         resolution = params["census_data"]["resolution"],
@@ -21,6 +23,7 @@ rule gather_census_data:
     script:
         "sw_conditions/fetch/get_conus.py"
 
+# simplify the state census boundaries
 rule simplify_census_data:
     params:
         simplify = params["geometry_simplify_percent"]
@@ -31,6 +34,7 @@ rule simplify_census_data:
     shell:
         "mapshaper {input.infile} -simplify {params.simplify}% -o {output.outfile}"
 
+# create sf current conditions plots for the given list of dates
 rule plot_current_conditions:
     params:
         date_list = date_list,
@@ -46,6 +50,7 @@ rule plot_current_conditions:
     script:
         "sw_conditions/plot/plot_sw.py"
 
+# create a movie from the list of generated images
 rule animate_current_conditions:
     params:
         prefix = "figures/" + params["figure_params"]["prefix"] + "_*.png",
