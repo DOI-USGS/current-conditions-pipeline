@@ -3,7 +3,7 @@ from pathlib import Path
 
 import sys
 
-files = Path("artifacts").glob("sf_coverage_*.parquet")
+files = list(Path("artifacts").glob("sf_coverage_*.parquet"))
 
 if len(files) == 0:
     sys.exit("No coverage shard artifacts found")
