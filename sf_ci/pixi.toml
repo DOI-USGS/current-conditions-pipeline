@@ -2,7 +2,7 @@
 authors = ["Jeffrey Kwang <jkwang@usgs.gov>"]
 channels = ["conda-forge", "bioconda"]
 name = "current_conditions"
-platforms = ["osx-arm64"]
+platforms = ["linux-64", "osx-arm64", "win-64"]
 version = "0.1.0"
 
 [tasks]
