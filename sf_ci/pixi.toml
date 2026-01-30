@@ -22,6 +22,7 @@ ipykernel = ">=7.1.0,<8"
 pip = ">=25.3,<26"
 nodejs = ">=25.2.1,<25.3"
 proj-data = ">=1.24,<2"
+ffmpeg = ">=8.0.1,<9"
 
 [pypi-dependencies]
 pygris = "*"
