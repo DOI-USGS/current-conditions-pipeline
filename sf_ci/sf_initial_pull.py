@@ -7,6 +7,7 @@ import numpy as np
 from pathlib import Path
 
 min_years_per_yday = int(sys.argv[1])
+os.environ["API_USGS_PAT"] = int(sys.argv[2])
 
 focal_date = dt.date.today() - pd.DateOffset(days = 1)
 max_por_start = focal_date - pd.DateOffset(years = min_years_per_yday)
@@ -14,6 +15,8 @@ max_por_start = focal_date - pd.DateOffset(years = min_years_per_yday)
 sf_pcodes = ['00060', '00065']
 sf_stat_ids = ['00003']
 sf_comp_period_ids = ['Daily']
+
+
 
 sf_all_ts_ids = waterdata.get_time_series_metadata(
     parameter_code=sf_pcodes,
