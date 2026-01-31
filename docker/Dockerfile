@@ -36,6 +36,8 @@ RUN apt-get update && apt-get install -y \
     r-cran-tidytable \
     r-cran-arrow \
     r-cran-ggplot2 \
+    r-cran-stringr \
+    r-cran-sf \
     \
     && rm -rf /var/lib/apt/lists/*
 

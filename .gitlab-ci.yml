@@ -9,10 +9,15 @@ stages:
 variables:
   IMAGE: $CI_REGISTRY_IMAGE:latest
   # API_USGS_PAT: $API_USGS_PAT
-  GW_MIN_YEARS_PER_YDAY: "20"
-  GW_ROLLING_AVERAGE_WINDOW: "30"
+  REQUIRED_PERCENTILES: "0,5,10,25,50,75,90,95,100"
+  GW_MIN_YEARS_PER_YDAY: "10"
+  GW_PCODES: "72019,62611,62610,72150,72229,62600,30210,62613,62612,72231,72232,72230,72227,72228,72226,61055,62601"
+  GW_STAT_IDS: "00003,00001"
+  GW_COMP_PERIOD_IDS: "Daily"
   SF_MIN_YEARS_PER_YDAY: "20"
-  SF_REQUIRED_PERCENTILES: "0,5,10,25,50,75,90,95,100"
+  SF_PCODES: "00060,00065"
+  SF_STAT_IDS: "00003"  
+  SF_COMP_PERIOD_IDS: "Daily"
 
 # ---------- build image ----------
 build-image:
@@ -39,7 +44,7 @@ gw_shard_prep:
   image: $IMAGE
   timeout: 24h
   script:
-    - Rscript gw_ci/gw_initial_pull.R ${GW_MIN_YEARS_PER_YDAY} ${GW_ROLLING_AVERAGE_WINDOW}
+    - Rscript gw_ci/gw_initial_pull.R ${GW_MIN_YEARS_PER_YDAY} ${GW_PCODES} ${GW_STAT_IDS} ${GW_COMP_PERIOD_IDS}
   artifacts:
   # expire_in: 7 days
     paths:
@@ -56,7 +61,7 @@ gw_coverage:
     matrix:
       - SHARD_ID: [0,1,2,3,4] #,5,6,7,8,9]
   script:
-    - Rscript gw_ci/gw_coverage_per_shard.R ${SHARD_ID} ${GW_MIN_YEARS_PER_YDAY} ${GW_ROLLING_AVERAGE_WINDOW}
+    - Rscript gw_ci/gw_coverage_per_shard.R ${SHARD_ID} ${GW_MIN_YEARS_PER_YDAY} ${GW_PCODES} ${GW_STAT_IDS} ${REQUIRED_PERCENTILES}
   artifacts:
     paths:
       - artifacts/gw_coverage_${SHARD_ID}.parquet
@@ -86,7 +91,7 @@ sf_shard_prep:
   image: $IMAGE
   timeout: 24h
   script:
-    - python sf_ci/sf_initial_pull.py ${SF_MIN_YEARS_PER_YDAY} #${API_USGS_PAT}
+    - python sf_ci/sf_initial_pull.py ${SF_MIN_YEARS_PER_YDAY} ${SF_PCODES} ${SF_STAT_IDS} ${SF_COMP_PERIOD_IDS}
   artifacts:
     paths:
       - artifacts/sf_shard_table.parquet
@@ -101,7 +106,7 @@ sf_coverage:
     - job: sf_shard_prep
       artifacts: true
   script:
-    - python sf_ci/sf_coverage_per_shard.py ${SHARD_ID} ${SF_MIN_YEARS_PER_YDAY} ${SF_REQUIRED_PERCENTILES}
+    - python sf_ci/sf_coverage_per_shard.py ${SHARD_ID} ${SF_MIN_YEARS_PER_YDAY} ${REQUIRED_PERCENTILES}
   artifacts:
     paths:
       - artifacts/sf_coverage_${SHARD_ID}.parquet
@@ -113,7 +118,7 @@ sf_coverage_merge:
     - job: sf_coverage
       artifacts: true
   script:
-    - python sf_ci/sf_coverage_merge.py
+    - python sf_ci/sf_coverage_merge.py ${SF_PCODES} ${SF_STAT_IDS}
     - aws s3 cp artifacts/sf_coverage.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/
   artifacts:
     paths:

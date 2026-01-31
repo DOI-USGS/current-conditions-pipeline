@@ -1,12 +1,14 @@
 #!/usr/bin/env Rscript
 
 args <- commandArgs(trailingOnly = TRUE)
-if (length(args) != 3) {
-  stop("Usage: Rscript gw_coverage_per_shard.R <SHARD_ID> <MIN_YEARS_PER_DAY> <ROLLING_AVERAGE_WINDOW>")
+if (length(args) != 6) {
+  stop("Usage: Rscript gw_coverage_per_shard.R <SHARD_ID> <MIN_YEARS_PER_DAY> <PCODES> <STAT_IDS> <COMP_PERIOD_IDS> <PERCENTILES>")
 }
 SHARD_ID <- as.integer(args[[1]])
 MIN_YEARS_PER_YDAY <- as.integer(args[[2]])
-ROLLING_AVERAGE_WINDOW <- as.integer(args[[3]])
+required_percentiles <- unlist(stringr::str_split(args[[5]], ","))
+
+STATS_BATCH_SIZE = 15 # number of TS IDs per /statistics request
 
 library(dataRetrieval)
 library(lubridate)
@@ -32,89 +34,63 @@ if (nrow(shard_table) == 0) {
   quit(save = "no")
 }
 
-# ---- Pull data ----
-raw_data <-
-  shard_table |>
-  group_by(group_id) |>
-  group_split() |>
-  map_dfr(function(dat) {
-    if(unique(dat$statistic_id) == "00003"){
-      read_waterdata_daily(
-        time_series_id = dat$time_series_id,
-        skipGeometry = TRUE,
-        limit = 50000
-      )
-    } else{
-      # read_waterdata_continuous(
-      #   time_series_id = dat$time_series_id,
-      #   skipGeometry = TRUE,
-      #   limit = 50000
-      # )
-      NULL
-    }
-  }) |>
-  mutate(time = as.Date(time)) |>
-  distinct(time_series_id, statistic_id, time)
-
-if(nrow(raw_data) == 0){
-  arrow::write_parquet(
-    data.frame(
-      time_series_id = character(0),
-      statistic_id = character(0),
-      has_coverage = logical(0)
-    ),
-    paste0("artifacts/coverage_", SHARD_ID, ".parquet")
-  )
-  
-  quit(save = "no")
-}
-
-message("Computing missing days")
-
-# Determine ydays with <(20) years of complete data
-missing_doy <-
-  raw_data |>
-  distinct(time_series_id, time) |>
-  arrange(time_series_id, time) |>
-  mutate(yday = lubridate::yday(time)) |>
-  group_by(time_series_id, yday) |>
-  tally(name = "n_years") |>
-  filter(n_years < MIN_YEARS_PER_YDAY)
-
-# duplicate yday to wrap around a new year (in case there >(30) day periods that span 2 calendar years)
-missing_doy_circular <- missing_doy |>
-  mutate(yday2 = yday + 365) |>
-  bind_rows(
-    missing_doy |>
-      mutate(yday2 = yday)
+gw_ts_id_split <-
+    split(
+    unique(shard_table$time_series_id),
+    ceiling(
+      seq_along(unique(shard_table$time_series_id)) /
+        STATS_BATCH_SIZE
+    )
   )
 
-# compute the number of consecutive days with <(20) years of data
-missing_runs <- missing_doy_circular |>
-  arrange(time_series_id, yday2) |>
-  group_by(time_series_id) |>
-  mutate(
-    run_id = cumsum(c(1, diff(yday2) != 1))
-  ) |>
-  group_by(time_series_id, run_id) |>
-  summarise(
-    run_length = n(),
-    .groups = "drop"
-  )
+# # Note: run in-parallel locally:
+# library(future)
+# library(furrr)
+# library(parallelly)
+# future::plan(future::multisession,
+#                workers = ceiling(parallel::detectCores() / 3))
 
-# if there's a run of at least (30) consecutive days with <(20) years of data,
-# then we couldn't compute the percentiles needed
-invalid_ts_ids <-
-  missing_runs |>
-  filter(run_length >= ROLLING_AVERAGE_WINDOW) |>
-  distinct(time_series_id)
+gw_monthly_stats <-
+  # # Note: run in-parallel locally:
+  # furrr::future_map_dfr(
+  tidytable::map_dfr(
+    gw_ts_id_split, function(ids) {
+    retry::retry(
+      dataRetrieval::read_waterdata_stats_por(
+      parent_time_series_id = ids,
+      computation = c("minimum", "maximum", "percentile")
+    ) |>
+      filter(time_of_year_type == "month_of_year"),
+      when = "429", max_tries = Inf
+    )
+  })
 
-# gw_active_ts_ids <-
-#   setdiff(unique(raw_data$time_series_id), invalid_ts_ids$time_series_id)
+# Filter to TS IDs with full set of percentiles for all 12 months 
+gw_complete_percs <-
+  gw_monthly_stats |>
+  filter(!is.na(value)) |>
+  group_by(parent_time_series_id, monitoring_location_id, parameter_code) |>
+  tally() |>
+  ungroup() |>
+  filter(n == 12 * length(required_percentiles)) |>
+  distinct(parent_time_series_id) |>
+  mutate(has_coverage = TRUE)
+
+# Join this table back to TS ID metadata
 coverage_summary <-
-  raw_data |>
-  distinct(time_series_id, statistic_id) |>
-  mutate(has_coverage = !(time_series_id %in% invalid_ts_ids$time_series_id))
+  shard_table |>
+  left_join(
+    gw_complete_percs,
+    by = c("time_series_id" = "parent_time_series_id")
+  )
+
+message(paste0(
+  unique(coverage_summary$monitoring_location_id[
+    coverage_summary$has_coverage
+  ]),
+  " sites with full month-of-year percentiles in shard ",
+  SHARD_ID
+))
 
 # ---- Write result ----
 arrow::write_parquet(
