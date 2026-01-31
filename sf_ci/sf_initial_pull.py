@@ -7,16 +7,13 @@ import numpy as np
 from pathlib import Path
 
 min_years_per_yday = int(sys.argv[1])
-# os.environ["API_USGS_PAT"] = sys.argv[2]
+sf_pcodes = list(int(x) for x in sys.argv[2].split(","))
+sf_stat_ids = list(int(x) for x in sys.argv[3].split(","))
+sf_comp_period_ids = list(int(x) for x in sys.argv[4].split(","))
+
 
 focal_date = dt.date.today() - pd.DateOffset(days = 1)
 max_por_start = focal_date - pd.DateOffset(years = min_years_per_yday)
-
-sf_pcodes = ['00060', '00065']
-sf_stat_ids = ['00003']
-sf_comp_period_ids = ['Daily']
-
-
 
 sf_all_ts_ids = waterdata.get_time_series_metadata(
     parameter_code=sf_pcodes,
@@ -45,6 +42,7 @@ shard_table = sf_all_ts_ids[
     [
         "time_series_id",
         "monitoring_location_id",
+        "parameter_code",
         "statistic_id",
         "begin_utc",
         "end_utc",
