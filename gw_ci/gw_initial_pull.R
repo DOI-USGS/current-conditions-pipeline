@@ -20,7 +20,7 @@ focal_date <- Sys.Date() - 1
 max_por_start <- focal_date - lubridate::years(MIN_YEARS_PER_YDAY)
 
 # at least one obs. within last window
-min_recent_obs <- focal_date - lubridate::days(2)
+min_recent_obs <- focal_date - lubridate::days(7)
 
 
 ##################################################
@@ -32,7 +32,7 @@ gw_all_ts_ids <-
   statistic_id = gw_stat_ids, 
   computation_period_identifier = gw_comp_period_ids, 
   begin = paste0("1700-01-01/",max_por_start),
-  end = paste0(min_recent_obs,"/.."),
+  # end = paste0(min_recent_obs,"/.."),
   skipGeometry = TRUE
 ) |>
   tidytable::as_tidytable()

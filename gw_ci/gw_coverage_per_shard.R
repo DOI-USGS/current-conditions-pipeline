@@ -61,7 +61,7 @@ gw_monthly_stats <-
       computation = c("minimum", "maximum", "percentile")
     ) |>
       filter(time_of_year_type == "month_of_year"),
-      when = "429", max_tries = Inf
+      when = "429|500", max_tries = 10
     )
   })
 
@@ -85,9 +85,9 @@ coverage_summary <-
   )
 
 message(paste0(
-  unique(coverage_summary$monitoring_location_id[
+  length(unique(coverage_summary$monitoring_location_id[
     coverage_summary$has_coverage
-  ]),
+  ])),
   " sites with full month-of-year percentiles in shard ",
   SHARD_ID
 ))

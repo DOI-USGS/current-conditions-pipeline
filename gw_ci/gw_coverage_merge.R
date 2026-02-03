@@ -29,9 +29,9 @@ gw_active_ts_ids <-
   arrange(
     monitoring_location_id,
     has_coverage,
-    factor(statistic_id, levels = gw_stat_ids),
-    desc(end_utc - begin_utc),
     desc(end_utc),
+    desc(end_utc - begin_utc),
+    factor(statistic_id, levels = gw_stat_ids),
     factor(parameter_code, levels = gw_pcodes)
   ) |>
   group_by(monitoring_location_id) |>
