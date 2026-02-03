@@ -11,7 +11,7 @@ sf_pcodes = list(x for x in sys.argv[2].split(","))
 sf_stat_ids = list(x for x in sys.argv[3].split(","))
 sf_comp_period_ids = list(x for x in sys.argv[4].split(","))
 
-focal_date = dt.date.today() - pd.DateOffset(days = 1)
+focal_date = dt.date.today()
 max_por_start = focal_date - pd.DateOffset(years = min_years_per_yday)
 
 sf_all_ts_ids = waterdata.get_time_series_metadata(
@@ -19,7 +19,7 @@ sf_all_ts_ids = waterdata.get_time_series_metadata(
     statistic_id=sf_stat_ids,
     computation_period_identifier=sf_comp_period_ids,
     begin="1700-01-01/" + str(max_por_start.date()),
-    end=str((focal_date - pd.DateOffset(days=1)).date()) + "/..",
+    # end=str((focal_date - pd.DateOffset(days=7)).date()) + "/..",
     skip_geometry=True,
 )[0]
 

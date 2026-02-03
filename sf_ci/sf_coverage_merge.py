@@ -28,9 +28,10 @@ active["por_len"] = (active["end_utc"] - active["begin_utc"]).dt.days
 active = active.sort_values(
     by=[
         "monitoring_location_id",
-        "stat_rank",
-        "por_len",
+        "has_coverage",
         "end_utc",
+        "por_len",
+        "stat_rank",
         "pcode_rank",
     ],
     ascending=[
