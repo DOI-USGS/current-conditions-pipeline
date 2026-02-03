@@ -125,7 +125,7 @@ for batch in chunked(ts_ids, STATS_BATCH_SIZE):
             active_ts_ids.add(ts_id)
 
 # Merge coverage back onto shard table
-shard_result = shard_table.loc[shard_table["shard_id"] == shard_id, ["time_series_id", "statistic_id"]].copy()
+shard_result = shard_table.loc[shard_table["shard_id"] == shard_id,].copy()
 shard_result["has_coverage"] = shard_result["time_series_id"].isin(active_ts_ids)
 
 # Write full shard with coverage flag
