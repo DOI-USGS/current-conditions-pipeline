@@ -45,7 +45,6 @@ shard_table = sf_all_ts_ids[
         "statistic_id",
         "begin_utc",
         "end_utc",
-        "group_id",
         "shard_id",
         "parent_time_series_id"
     ]
