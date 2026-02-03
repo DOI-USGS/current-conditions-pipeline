@@ -61,7 +61,7 @@ gw_coverage:
     matrix:
       - SHARD_ID: [0,1,2,3,4] #,5,6,7,8,9]
   script:
-    - Rscript gw_ci/gw_coverage_per_shard.R ${SHARD_ID} ${GW_MIN_YEARS_PER_YDAY} ${GW_PCODES} ${GW_STAT_IDS} ${REQUIRED_PERCENTILES}
+    - Rscript gw_ci/gw_coverage_per_shard.R ${SHARD_ID} ${GW_MIN_YEARS_PER_YDAY} ${REQUIRED_PERCENTILES}
   artifacts:
     paths:
       - artifacts/gw_coverage_${SHARD_ID}.parquet
@@ -74,7 +74,7 @@ gw_coverage_merge:
     - job: gw_coverage
       artifacts: true
   script:
-    - Rscript gw_ci/gw_coverage_merge.R
+    - Rscript gw_ci/gw_coverage_merge.R ${GW_PCODES} ${GW_STAT_IDS}
     - aws s3 cp artifacts/gw_coverage.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/
   artifacts:
     paths:
