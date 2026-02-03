@@ -28,7 +28,7 @@ RUN apt-get update && apt-get install -y \
     libfribidi-dev \
     \
     # R packages via r2u
-    r-cran-dataretrieval \
+    # r-cran-dataretrieval \
     r-cran-dplyr \
     r-cran-tidyr \
     r-cran-lubridate \
@@ -39,8 +39,12 @@ RUN apt-get update && apt-get install -y \
     r-cran-stringr \
     r-cran-sf \
     r-cran-retry \
+    r-cran-remotes \
     \
     && rm -rf /var/lib/apt/lists/*
+
+# Change/delete this once stats functions are added to USGS-DOI/dataRetrieval@develop
+RUN Rscript -e "remotes::install_github('jzemmels/dataRetrieval', ref = 'stats', upgrade = 'never')"
 
 # Add symlink so "python" calls work
 RUN ln -s /usr/bin/python3 /usr/bin/python
