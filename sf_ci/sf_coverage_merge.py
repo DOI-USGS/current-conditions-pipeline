@@ -2,8 +2,8 @@ import pandas as pd
 from pathlib import Path
 import sys
 
-sf_pcodes = list(int(x) for x in sys.argv[1].split(","))
-sf_stat_ids = list(int(x) for x in sys.argv[2].split(","))
+sf_pcodes = list(x for x in sys.argv[1].split(","))
+sf_stat_ids = list(x for x in sys.argv[2].split(","))
 
 files = list(Path("artifacts").glob("sf_coverage_*.parquet"))
 
