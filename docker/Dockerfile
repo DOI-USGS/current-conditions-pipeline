@@ -44,7 +44,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Change/delete this once stats functions are added to USGS-DOI/dataRetrieval@develop
-RUN Rscript -e "remotes::install_github('jzemmels/dataRetrieval', ref = 'stats', upgrade = 'never')"
+RUN Rscript -e "remotes::install_github('jzemmels/dataRetrieval', ref = 'statistics', upgrade = 'never')"
 
 # Add symlink so "python" calls work
 RUN ln -s /usr/bin/python3 /usr/bin/python
