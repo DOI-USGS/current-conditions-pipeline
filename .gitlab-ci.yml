@@ -7,7 +7,7 @@ stages:
   - pages
 
 variables:
-  IMAGE: $CI_REGISTRY_IMAGE:latest
+  IMAGE: $CI_REGISTRY_IMAGE:BUILD_${CI_COMMIT_SHORT_SHA}
   # API_USGS_PAT: $API_USGS_PAT
   REQUIRED_PERCENTILES: "0,5,10,25,50,75,90,95,100"
   GW_MIN_YEARS_PER_YDAY: "10"
@@ -48,7 +48,7 @@ gw_shard_prep:
   stage: sites
   image: 
     name: $IMAGE
-    pull_policy: if-not-present
+    pull_policy: always
   timeout: 24h
   script:
     - Rscript gw_ci/gw_initial_pull.R ${GW_MIN_YEARS_PER_YDAY} ${GW_PCODES} ${GW_STAT_IDS} ${GW_COMP_PERIOD_IDS}
@@ -66,7 +66,7 @@ gw_coverage:
   stage: sites
   image: 
     name: $IMAGE
-    pull_policy: if-not-present
+    pull_policy: always
   timeout: 24h
   needs:
     - job: gw_shard_prep
@@ -89,7 +89,7 @@ gw_coverage_merge:
   stage: sites
   image: 
     name: $IMAGE
-    pull_policy: if-not-present
+    pull_policy: always
   timeout: 24h
   needs:
     - job: gw_coverage
@@ -111,7 +111,7 @@ sf_shard_prep:
   stage: sites
   image: 
     name: $IMAGE
-    pull_policy: if-not-present
+    pull_policy: always
   timeout: 24h
   script:
     - python sf_ci/sf_initial_pull.py ${SF_MIN_YEARS_PER_YDAY} ${SF_PCODES} ${SF_STAT_IDS} ${SF_COMP_PERIOD_IDS}
@@ -128,7 +128,7 @@ sf_coverage:
   stage: sites
   image: 
     name: $IMAGE
-    pull_policy: if-not-present
+    pull_policy: always
   parallel:
     matrix:
       - SHARD_ID: [0,1,2,3,4] #,5,6,7,8,9]
@@ -150,7 +150,7 @@ sf_coverage_merge:
   stage: sites
   image: 
     name: $IMAGE
-    pull_policy: if-not-present
+    pull_policy: always
   needs:
     - job: sf_coverage
       artifacts: true
