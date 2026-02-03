@@ -7,10 +7,9 @@ import numpy as np
 from pathlib import Path
 
 min_years_per_yday = int(sys.argv[1])
-sf_pcodes = list(int(x) for x in sys.argv[2].split(","))
-sf_stat_ids = list(int(x) for x in sys.argv[3].split(","))
-sf_comp_period_ids = list(int(x) for x in sys.argv[4].split(","))
-
+sf_pcodes = list(x for x in sys.argv[2].split(","))
+sf_stat_ids = list(x for x in sys.argv[3].split(","))
+sf_comp_period_ids = list(x for x in sys.argv[4].split(","))
 
 focal_date = dt.date.today() - pd.DateOffset(days = 1)
 max_por_start = focal_date - pd.DateOffset(years = min_years_per_yday)
