@@ -1,12 +1,12 @@
 #!/usr/bin/env Rscript
 
 args <- commandArgs(trailingOnly = TRUE)
-if (length(args) != 6) {
-  stop("Usage: Rscript gw_coverage_per_shard.R <SHARD_ID> <MIN_YEARS_PER_DAY> <PCODES> <STAT_IDS> <COMP_PERIOD_IDS> <PERCENTILES>")
+if (length(args) != 3) {
+  stop("Usage: Rscript gw_coverage_per_shard.R <SHARD_ID> <MIN_YEARS_PER_DAY> <PERCENTILES>")
 }
 SHARD_ID <- as.integer(args[[1]])
 MIN_YEARS_PER_YDAY <- as.integer(args[[2]])
-required_percentiles <- unlist(stringr::str_split(args[[5]], ","))
+required_percentiles <- unlist(stringr::str_split(args[[3]], ","))
 
 STATS_BATCH_SIZE = 15 # number of TS IDs per /statistics request
 

@@ -3,8 +3,12 @@
 library(arrow)
 library(tidytable)
 
-gw_pcodes <- unlist(stringr::str_split(args[[3]], ","))
-gw_stat_ids <- unlist(stringr::str_split(args[[4]], ","))
+args <- commandArgs(trailingOnly = TRUE)
+if (length(args) != 2) {
+  stop("Usage: Rscript gw_coverage_per_shard.R <PCODES> <STAT_IDS>")
+}
+gw_pcodes <- unlist(stringr::str_split(args[[1]], ","))
+gw_stat_ids <- unlist(stringr::str_split(args[[2]], ","))
 
 dir.create("artifacts", showWarnings = FALSE)
 
@@ -19,6 +23,7 @@ if (length(files) == 0) {
 }
 
 # Indicate a "preferred" TS ID per monitoring location based on opinionated ranking
+# But keep the non-preferred TS IDs in case there's missing data in the future
 gw_active_ts_ids <-
   map_dfr(files, arrow::read_parquet) |>
   arrange(
