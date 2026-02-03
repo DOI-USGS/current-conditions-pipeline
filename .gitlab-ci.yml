@@ -37,11 +37,18 @@ build-image:
     # If this is building a git tag, also push the corresponding docker tag
     - if [ -n "${CI_COMMIT_TAG}" ]; then docker tag "${CI_REGISTRY_IMAGE}:BUILD_${CI_COMMIT_SHORT_SHA}" "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}"; fi
     - docker push --all-tags ${CI_REGISTRY_IMAGE}
+  # these tags are needed to checkout a runner that has automatic access to AWS
+  tags:
+    - water
+    - computational_tools
+    - production
 
 # ---------- gw active sites ----------
 gw_shard_prep:
   stage: sites
-  image: $IMAGE
+  image: 
+    name: $IMAGE
+    pull_policy: if-not-present
   timeout: 24h
   script:
     - Rscript gw_ci/gw_initial_pull.R ${GW_MIN_YEARS_PER_YDAY} ${GW_PCODES} ${GW_STAT_IDS} ${GW_COMP_PERIOD_IDS}
@@ -49,10 +56,17 @@ gw_shard_prep:
   # expire_in: 7 days
     paths:
       - artifacts/gw_shard_table.parquet
+  # these tags are needed to checkout a runner that has automatic access to AWS
+  tags:
+    - water
+    - computational_tools
+    - production
 
 gw_coverage:
   stage: sites
-  image: $IMAGE
+  image: 
+    name: $IMAGE
+    pull_policy: if-not-present
   timeout: 24h
   needs:
     - job: gw_shard_prep
@@ -65,10 +79,17 @@ gw_coverage:
   artifacts:
     paths:
       - artifacts/gw_coverage_${SHARD_ID}.parquet
+  # these tags are needed to checkout a runner that has automatic access to AWS
+  tags:
+    - water
+    - computational_tools
+    - production
 
 gw_coverage_merge:
   stage: sites
-  image: $IMAGE
+  image: 
+    name: $IMAGE
+    pull_policy: if-not-present
   timeout: 24h
   needs:
     - job: gw_coverage
@@ -88,17 +109,26 @@ gw_coverage_merge:
 # ---------- sf active sites ----------
 sf_shard_prep:
   stage: sites
-  image: $IMAGE
+  image: 
+    name: $IMAGE
+    pull_policy: if-not-present
   timeout: 24h
   script:
     - python sf_ci/sf_initial_pull.py ${SF_MIN_YEARS_PER_YDAY} ${SF_PCODES} ${SF_STAT_IDS} ${SF_COMP_PERIOD_IDS}
   artifacts:
     paths:
       - artifacts/sf_shard_table.parquet
+  # these tags are needed to checkout a runner that has automatic access to AWS
+  tags:
+    - water
+    - computational_tools
+    - production
 
 sf_coverage:
   stage: sites
-  image: $IMAGE
+  image: 
+    name: $IMAGE
+    pull_policy: if-not-present
   parallel:
     matrix:
       - SHARD_ID: [0,1,2,3,4] #,5,6,7,8,9]
@@ -110,10 +140,17 @@ sf_coverage:
   artifacts:
     paths:
       - artifacts/sf_coverage_${SHARD_ID}.parquet
+  # these tags are needed to checkout a runner that has automatic access to AWS
+  tags:
+    - water
+    - computational_tools
+    - production
 
 sf_coverage_merge:
   stage: sites
-  image: $IMAGE
+  image: 
+    name: $IMAGE
+    pull_policy: if-not-present
   needs:
     - job: sf_coverage
       artifacts: true
