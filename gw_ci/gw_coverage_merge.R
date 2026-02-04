@@ -28,7 +28,7 @@ gw_active_ts_ids <-
   map_dfr(files, arrow::read_parquet) |>
   arrange(
     monitoring_location_id,
-    has_coverage,
+    desc(has_coverage),
     desc(end_utc),
     desc(end_utc - begin_utc),
     factor(statistic_id, levels = gw_stat_ids),
