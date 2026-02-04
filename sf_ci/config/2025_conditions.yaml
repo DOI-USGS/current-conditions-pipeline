@@ -22,8 +22,8 @@ movie_params:
   framerate: 8
 
 date_range:
-  start: "2025-02-09"
-  end: "2025-02-09"
+  start: "2025-01-01"
+  end: "2025-12-01"
 
 census_data:
   resolution: "20m"
