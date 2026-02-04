@@ -14,148 +14,192 @@
 #' @param out_path File path where the rendered frame will be saved.
 #'
 #' @return A character string giving the path to the saved image file.
-plot_gw_frame <- function(gw_sf, date,
-                          conus_states,
-                          conus_inner_states_sf,
-                          conus_outer_states_sf,
-                          palette, viz_cfg,
-                          scale_cfg, out_path) {
-
-  # Ensure the directory exists so ggsave doesn't error
-  if(!dir.exists(dirname(out_path))) dir.create(dirname(out_path), recursive = TRUE)
-
-  p <- ggplot() +
-    ggfx::with_shadow(
-      geom_sf(
-        # entire states polygons for shadow effect
-        data = conus_states, 
-        fill = viz_cfg$bg_col,
-        color = NA 
-      ),
-      colour = viz_cfg$ggfx_col,
-      x_offset = 0,
-      y_offset = 0,
-      sigma = 12
-    ) +
-    # internal state borders
-    geom_sf(
-      data = conus_inner_states_sf,
-      color = viz_cfg$conus_states_col,
-      linewidth = 0.2,
-      fill = NA
-    ) +
-    # minimal external boundary
-    geom_sf(
-      data = conus_outer_states_sf,
-      color = viz_cfg$bg_col, 
-      linewidth = 0.05,
-      fill = NA
-    ) + 
-    # NA sites
-    geom_sf(
-      data = dplyr::filter(gw_sf, is.na(per)),
-      color = viz_cfg$na_sites_col,
-      size = 0.3,
-      stroke = 0
-    ) +
-    # plotting order 1, lines
-    geom_segment(
-      data = dplyr::filter(gw_sf, plotting_order == 1),
-      aes(
-        x = x_start,
-        xend = x_end,
-        y = y,
-        yend = y_end,
-        color = per_bin
-      ),
-      linewidth = 0.08
-    ) +
-    # plotting order 2, peaks and segments
-    geom_link(
-      data = dplyr::filter(gw_sf, plotting_order == 2),
-      aes(
-        x = x, xend = x,
-        y = y, yend = y_end,
-        color = per_bin,
-        linewidth = after_stat(I((1 - index) * scale_cfg$max_factor *  scale_cfg$min_factor)),
-        # alpha = after_stat(I(index)), # linear gradient
-        alpha = after_stat(I((0.2^index - 1) / (0.2 - 1))) # non-linear gradient
-      )
-    ) +
-    geom_segment(
-      data = dplyr::filter(gw_sf, plotting_order == 2),
-      aes(x = x_start, xend = x, y = y, yend = y_end, color = per_bin),
-      linewidth = 0.08
-    ) +
-    geom_segment(
-      data = dplyr::filter(gw_sf, plotting_order == 2),
-      aes(x = x, xend = x_end, y = y_end, yend = y, color = per_bin),
-      linewidth = 0.08
-    ) +
-    # plotting order 3, peaks and segments
-    geom_link(
-      data = dplyr::filter(gw_sf, plotting_order == 3),
-      aes(
-        x = x, xend = x,
-        y = y, yend = y_end,
-        color = per_bin,
-        linewidth = after_stat(I((1 - index) * scale_cfg$max_factor *  scale_cfg$mid_factor)),
-        # alpha = after_stat(I(index)), # linear gradient
-        alpha = after_stat(I((0.2^index - 1) / (0.2 - 1))) # non-linear gradient
-      )
-    ) +
-    geom_segment(
-      data = dplyr::filter(gw_sf, plotting_order == 3),
-      aes(x = x_start, xend = x, y = y, yend = y_end, color = per_bin),
-      linewidth = 0.08
-    ) +
-    geom_segment(
-      data = dplyr::filter(gw_sf, plotting_order == 3),
-      aes(x = x, xend = x_end, y = y_end, yend = y, color = per_bin),
-      linewidth = 0.08
-    ) +
-    # plotting order 4, peaks and segments
-    geom_link(
-      data = dplyr::filter(gw_sf, plotting_order == 4),
-      aes(
-        x = x, xend = x,
-        y = y, yend = y_end,
-        color = per_bin,
-        linewidth = after_stat(I((1 - index) * scale_cfg$max_factor)),
-        # alpha = after_stat(I(index)), # linear gradient
-        alpha = after_stat(I((0.2^index - 1) / (0.2 - 1))) # non-linear gradient
-      )
-    ) +
-    geom_segment(
-      data = dplyr::filter(gw_sf, plotting_order == 4),
-      aes(x = x_start, xend = x, y = y, yend = y_end, color = per_bin),
-      linewidth = 0.08
-    ) +
-    geom_segment(
-      data = dplyr::filter(gw_sf, plotting_order == 4),
-      aes(x = x, xend = x_end, y = y_end, yend = y, color = per_bin),
-      linewidth = 0.08
-    ) +
-    # scales
-    scale_color_manual(values = palette) +
-    scale_x_continuous(expand = c(0.06, 0.06)) +
-    scale_y_continuous(expand = c(0.06, 0.06)) +
-    theme_void() +
-    theme(legend.position = "none") +
-    ggtitle(date)
-
-  ggsave(
-    filename = out_path,
-    plot = p,
-    width = viz_cfg$width,
-    height = viz_cfg$height,
-    dpi = viz_cfg$dpi,
-    bg = viz_cfg$bg_col,
-    units = viz_cfg$units
-  )
-
-  return(out_path)
-}
+# plot_gw_frame <- function(gw_sf, date,
+#                           conus_states,
+#                           conus_inner_states_sf,
+#                           conus_outer_states_sf,
+#                           palette, viz_cfg,
+#                           scale_cfg, out_path) {
+# 
+#   # Ensure the directory exists so ggsave doesn't error
+#   if(!dir.exists(dirname(out_path))) dir.create(dirname(out_path), recursive = TRUE)
+#   
+#   white_peaks <- gw_sf |>
+#     dplyr::filter(plotting_order %in% 2:4) |>
+#     make_peak_polygon(expand = 0.07)
+# 
+#   p <- ggplot() +
+#     ggfx::with_shadow(
+#       geom_sf(
+#         # entire states polygons for shadow effect
+#         data = conus_states,
+#         fill = viz_cfg$bg_col,
+#         color = NA
+#       ),
+#       colour = viz_cfg$ggfx_col,
+#       x_offset = 0,
+#       y_offset = 0,
+#       sigma = 12
+#     ) +
+#     # internal state borders
+#     geom_sf(
+#       data = conus_inner_states_sf,
+#       color = viz_cfg$conus_states_col,
+#       linewidth = 0.2,
+#       fill = NA
+#     ) +
+#     # minimal external boundary
+#     geom_sf(
+#       data = conus_outer_states_sf,
+#       color = viz_cfg$bg_col,
+#       linewidth = 0.05,
+#       fill = NA
+#     ) +
+#     # NA sites
+#     geom_sf(
+#       data = dplyr::filter(gw_sf, is.na(per)),
+#       color = viz_cfg$na_sites_col,
+#       shape = 4,
+#       size = 0.4,
+#       stroke = 0.2
+#     ) +
+#     # plotting order 1, lines
+#     geom_segment(
+#       data = dplyr::filter(gw_sf, plotting_order == 1),
+#       aes(
+#         x = x_start - 0.04 * (x_end - x_start),
+#         y = y - 0.04 * (y_end - y),
+#         xend = x_end + 0.04 * (x_end - x_start),
+#         yend = y_end + 0.04 * (y_end - y),
+#         color = per_bin
+#       ),
+#       linewidth = 0.125
+#     ) +
+#     # add white peaks beneath to help pop
+#     geom_polygon(
+#       data =  dplyr::filter(white_peaks, plotting_order == 2),
+#       aes(
+#         x = x_poly,
+#         y = y_poly,
+#         group = site_no
+#       ),
+#       fill = viz_cfg$bg_col,
+#       color = NA,
+#       alpha = 1
+#     ) +
+#     # plotting order 2, peaks and segments
+#     geom_link(
+#       data = dplyr::filter(gw_sf, plotting_order == 2),
+#       aes(
+#         x = x, xend = x,
+#         y = y, yend = y_end,
+#         color = per_bin,
+#         halo_factor = halo_factor,
+#         linewidth = after_stat(I((1 - index) * scale_cfg$max_factor * halo_factor)),
+#         # alpha = after_stat(I(index)), # linear gradient
+#         alpha = after_stat(I((0.2^index - 1) / (0.2 - 1))) # non-linear gradient
+#       )
+#     ) +
+#     geom_segment(
+#       data = dplyr::filter(gw_sf, plotting_order == 2),
+#       aes(x = x_start, xend = x, y = y, yend = y_end, color = per_bin),
+#       linewidth = 0.08
+#     ) +
+#     geom_segment(
+#       data = dplyr::filter(gw_sf, plotting_order == 2),
+#       aes(x = x, xend = x_end, y = y_end, yend = y, color = per_bin),
+#       linewidth = 0.08
+#     ) +
+#     # add white peaks beneath to help pop
+#     geom_polygon(
+#       data =  dplyr::filter(white_peaks, plotting_order == 3),
+#       aes(
+#         x = x_poly,
+#         y = y_poly,
+#         group = site_no
+#       ),
+#       fill = viz_cfg$bg_col,
+#       color = NA,
+#       alpha = 1
+#     ) +
+#     # plotting order 3, peaks and segments
+#     geom_link(
+#       data = dplyr::filter(gw_sf, plotting_order == 3),
+#       aes(
+#         x = x, xend = x,
+#         y = y, yend = y_end,
+#         color = per_bin,
+#         halo_factor = halo_factor,
+#         linewidth = after_stat(I((1 - index) * scale_cfg$max_factor * halo_factor)),
+#         # alpha = after_stat(I(index)), # linear gradient
+#         alpha = after_stat(I((0.2^index - 1) / (0.2 - 1))) # non-linear gradient
+#       )
+#     ) +
+#     geom_segment(
+#       data = dplyr::filter(gw_sf, plotting_order == 3),
+#       aes(x = x_start, xend = x, y = y, yend = y_end, color = per_bin),
+#       linewidth = 0.08
+#     ) +
+#     geom_segment(
+#       data = dplyr::filter(gw_sf, plotting_order == 3),
+#       aes(x = x, xend = x_end, y = y_end, yend = y, color = per_bin),
+#       linewidth = 0.08
+#     ) +
+#     # add white peaks beneath to help pop
+#     geom_polygon(
+#       data =  dplyr::filter(white_peaks, plotting_order == 4),
+#       aes(
+#         x = x_poly,
+#         y = y_poly,
+#         group = site_no
+#       ),
+#       fill = viz_cfg$bg_col,
+#       color = NA,
+#       alpha = 1
+#     ) + 
+#     # plotting order 4, peaks and segments
+#     geom_link(
+#       data = dplyr::filter(gw_sf, plotting_order == 4),
+#       aes(
+#         x = x, xend = x,
+#         y = y, yend = y_end,
+#         color = per_bin,
+#         halo_factor = halo_factor,
+#         linewidth = after_stat(I((1 - index) * scale_cfg$max_factor * halo_factor)),
+#         # alpha = after_stat(I(index)), # linear gradient
+#         alpha = after_stat(I((0.2^index - 1) / (0.2 - 1))) # non-linear gradient
+#       )
+#     ) +
+#     geom_segment(
+#       data = dplyr::filter(gw_sf, plotting_order == 4),
+#       aes(x = x_start, xend = x, y = y, yend = y_end, color = per_bin),
+#       linewidth = 0.08
+#     ) +
+#     geom_segment(
+#       data = dplyr::filter(gw_sf, plotting_order == 4),
+#       aes(x = x, xend = x_end, y = y_end, yend = y, color = per_bin),
+#       linewidth = 0.08
+#     ) +
+#     # scales
+#     scale_color_manual(values = palette) +
+#     scale_x_continuous(expand = c(0.06, 0.06)) +
+#     scale_y_continuous(expand = c(0.06, 0.06)) +
+#     theme_void() +
+#     theme(legend.position = "none") +
+#     ggtitle(date)
+# 
+#   ggsave(
+#     filename = out_path,
+#     plot = p,
+#     width = viz_cfg$width,
+#     height = viz_cfg$height,
+#     dpi = viz_cfg$dpi,
+#     bg = viz_cfg$bg_col,
+#     units = viz_cfg$units
+#   )
+# 
+#   return(out_path)
+# }
 
 # Make legend marker with same dimensions for website build
 #' Plot a single legend marker
@@ -273,4 +317,156 @@ plot_gw_leg <- function(leg_row, palette, viz_cfg, scale_cfg, out_path) {
   return(out_path)
 }
 
+make_peak_polygon <- function(df, expand = 0.06) {
+  df |>
+    dplyr::mutate(
+      dx_left  = x - x_start,
+      dx_right = x_end - x,
+      dy       = y_end - y
+    ) |>
+    tidyr::uncount(3) |>   # 3 vertices
+    dplyr::group_by(site_no) |>
+    dplyr::mutate(
+      vertex = row_number(),
+      x_poly = dplyr::case_when(
+        vertex == 1 ~ x_start - expand * dx_left,
+        vertex == 2 ~ x,
+        vertex == 3 ~ x_end + expand * dx_right
+      ),
+      y_poly = dplyr::case_when(
+        vertex == 1 ~ y,
+        vertex == 2 ~ y_end + expand * dy,
+        vertex == 3 ~ y
+      )
+    ) |>
+    dplyr::ungroup()
+}
 
+plot_gw_frame <- function(gw_sf, date,
+                          conus_states,
+                          conus_inner_states_sf,
+                          conus_outer_states_sf,
+                          palette, viz_cfg,
+                          scale_cfg, out_path) {
+  
+  if (!dir.exists(dirname(out_path))) {
+    dir.create(dirname(out_path), recursive = TRUE)
+  }
+  
+  white_peaks <- gw_sf |>
+    dplyr::filter(plotting_order %in% 2:4) |>
+    make_peak_polygon(expand = 0.07)
+  
+  # ============================================================
+  # Base plot
+  # ============================================================
+  p <- ggplot() +
+    ggfx::with_shadow(
+      geom_sf(data = conus_states, fill = viz_cfg$bg_col, color = NA),
+      colour = viz_cfg$ggfx_col,
+      x_offset = 0, y_offset = 0, sigma = 12
+    ) +
+    geom_sf(
+      data = conus_inner_states_sf,
+      color = viz_cfg$conus_states_col,
+      linewidth = 0.2,
+      fill = NA
+    ) +
+    geom_sf(
+      data = conus_outer_states_sf,
+      color = viz_cfg$bg_col,
+      linewidth = 0.05,
+      fill = NA
+    ) +
+    geom_sf(
+      data = dplyr::filter(gw_sf, is.na(per)),
+      color = viz_cfg$na_sites_col,
+      shape = 4,
+      size = 0.4,
+      stroke = 0.2
+    ) +
+    geom_segment(
+      data = dplyr::filter(gw_sf, plotting_order == 1),
+      aes(
+        x = x_start - 0.04 * (x_end - x_start),
+        y = y - 0.04 * (y_end - y),
+        xend = x_end + 0.04 * (x_end - x_start),
+        yend = y_end + 0.04 * (y_end - y),
+        color = per_bin
+      ),
+      linewidth = 0.125
+    )
+  
+  # ============================================================
+  # Per-site atomic rendering (2 → 3 → 4)
+  # ============================================================
+  for (ord in c(2, 3, 4)) {
+    
+    sites_this_order <- gw_sf |>
+      dplyr::filter(plotting_order == ord) |>
+      dplyr::distinct(site_no) |>
+      dplyr::pull(site_no)
+    
+    for (s in sites_this_order) {
+      
+      site_df <- dplyr::filter(gw_sf, site_no == s, plotting_order == ord)
+      site_white <- dplyr::filter(white_peaks, site_no == s, plotting_order == ord)
+      
+      p <- p +
+        geom_polygon(
+          data = site_white,
+          aes(x = x_poly, y = y_poly, group = site_no),
+          fill = viz_cfg$bg_col,
+          color = NA
+        ) +
+        geom_link(
+          data = site_df,
+          aes(
+            x = x, xend = x,
+            y = y, yend = y_end,
+            color = per_bin,
+            halo_factor = halo_factor,
+            linewidth = after_stat(
+              I((1 - index) * scale_cfg$max_factor * halo_factor)
+            ),
+            alpha = after_stat(
+              I((0.2^index - 1) / (0.2 - 1))
+            )
+          )
+        ) +
+        geom_segment(
+          data = site_df,
+          aes(x = x_start, xend = x, y = y, yend = y_end, color = per_bin),
+          linewidth = 0.08
+        ) +
+        geom_segment(
+          data = site_df,
+          aes(x = x, xend = x_end, y = y_end, yend = y, color = per_bin),
+          linewidth = 0.08
+        )
+    }
+  }
+  
+  # ============================================================
+  # Final styling
+  # ============================================================
+  p <- p +
+    scale_color_manual(values = palette) +
+    scale_x_continuous(expand = c(0.06, 0.06)) +
+    scale_y_continuous(expand = c(0.06, 0.06)) +
+    theme_void() +
+    theme(legend.position = "none") +
+    ggtitle(date)
+  
+  ggsave(
+    filename = out_path,
+    plot = p,
+    width = viz_cfg$width,
+    height = viz_cfg$height,
+    dpi = viz_cfg$dpi,
+    bg = viz_cfg$bg_col,
+    units = viz_cfg$units
+  )
+  
+  out_path
+}
