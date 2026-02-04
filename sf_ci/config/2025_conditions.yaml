@@ -80,14 +80,14 @@ marker_params:
     - "#ffffffff"  # Much above
     - "#ffffffff"  # Extremely above
   markersize:
-    - 6  # Extremely below
-    - 4  # Much below
+    - 7  # Extremely below
+    - 5  # Much below
     - 3  # Below normal
     - 1  # Low normal
     - 1  # High normal
     - 3  # Above normal
-    - 4  # Much above
-    - 6  # Extremely above
+    - 5  # Much above
+    - 7  # Extremely above
   linewidth:
     - 0.5  # Extremely below
     - 0.5  # Much below
