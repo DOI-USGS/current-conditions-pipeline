@@ -1,7 +1,7 @@
 figure_params:
   prefix: "sw_current_conditions"
   dimensions: [8,4]
-  facecolor: "#FAFAFA"
+  facecolor: "#ffffff"
   fontfamily: "sans-serif"
   font: "Source Sans 3"
   fontweight: "normal"
@@ -14,13 +14,16 @@ figure_params:
     fontsize: 10.5
     xloc: 0.99
     yloc: 0.01
+  shadow:
+    sigma: 25
+    color: "#999999"
 
 movie_params:
   framerate: 8
 
 date_range:
-  start: "2025-01-01"
-  end: "2025-12-31"
+  start: "2025-02-09"
+  end: "2025-02-09"
 
 census_data:
   resolution: "20m"
@@ -85,18 +88,18 @@ marker_params:
     - 3  # Below normal
     - 1  # Low normal
     - 1  # High normal
-    - 3  # Above normal
-    - 5  # Much above
-    - 7  # Extremely above
+    - 4.731  # Above normal - modified to have a radius that is larger by 0.25pt
+    - 7.178  # Much above - modified to have a radius that is larger by 0.25pt
+    - 9.541  # Extremely above - modified to have a radius that is larger by 0.25pt
   linewidth:
     - 0.5  # Extremely below
     - 0.5  # Much below
     - 0.5  # Below normal
-    - 0.2  # Low normal
-    - 0.2  # High normal
-    - 0.2  # Above normal
-    - 0.2  # Much above
-    - 0.2  # Extremely above
+    - 0.25  # Low normal
+    - 0.25  # High normal
+    - 0.25  # Above normal
+    - 0.25  # Much above
+    - 0.25  # Extremely above
   label:
     - "Extremely below"
     - "Much below"

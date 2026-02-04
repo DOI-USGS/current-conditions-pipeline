@@ -201,9 +201,8 @@ def coverage_plot(
     fig = plt.figure(1, figsize=(figure_params["dimensions"]))
 
     # Add shadow axes
-    sigma = 25
     img_shadow = plt.imread(shadow_image)
-    img_shadow_blur = gaussian_filter(img_shadow[:, :, 1], sigma=sigma)
+    img_shadow_blur = gaussian_filter(img_shadow[:, :, 1], sigma=figure_params["shadow"]["sigma"])
     ax_shadow = fig.add_axes([0, 0, 1, 1])
     ax_shadow.imshow(img_shadow_blur, cmap="gray", vmin=0.0, vmax=1.0)
     ax_shadow.set_axis_off()
@@ -316,7 +315,7 @@ def coverage_plot(
     plt.close(fig)
 
 
-def plot_shadow(fig, ax, boundary_gdf, proj, scale_mult, state_style, reference_scale):
+def plot_shadow(fig, ax, boundary_gdf, proj, scale_mult, state_style, reference_scale, shadow_color):
     """Sets up solid black geometry on a given axis."""
 
     ax_dims = get_ax_size_inches(ax, fig)
@@ -326,8 +325,8 @@ def plot_shadow(fig, ax, boundary_gdf, proj, scale_mult, state_style, reference_
     # plot as solid black
     boundary_gdf_proj.plot(
         ax=ax,
-        facecolor="#000000",
-        edgecolor="#000000",
+        facecolor=shadow_color,
+        edgecolor=shadow_color,
         linewidth=state_style["linewidth"],
         zorder=1,
     )
@@ -384,6 +383,7 @@ def shadow_plot(
         state_params["conus"]["multi"],
         state_params["style"],
         reference_scale,
+        figure_params["shadow"]["color"]
     )
 
     # plot on alaska
@@ -395,6 +395,7 @@ def shadow_plot(
         state_params["alaska"]["multi"],
         state_params["style"],
         reference_scale,
+        figure_params["shadow"]["color"]
     )
 
     # plot on hawaii
@@ -406,6 +407,7 @@ def shadow_plot(
         state_params["hawaii"]["multi"],
         state_params["style"],
         reference_scale,
+        figure_params["shadow"]["color"]
     )
 
     # plot on puerto rico
@@ -417,6 +419,7 @@ def shadow_plot(
         state_params["puertorico"]["multi"],
         state_params["style"],
         reference_scale,
+        figure_params["shadow"]["color"]
     )
 
     # Save figure
