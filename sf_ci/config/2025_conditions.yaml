@@ -62,14 +62,14 @@ marker_params:
     - 6  # Much above
     - 8  # Extremely above
   facecolor:
-    - "#ffffffcc"  # Extremely below
-    - "#ffffffcc"  # Much below
-    - "#ffffffcc"  # Below normal
-    - "#494949ff"    # Low normal
-    - "#494949ff"    # High normal
-    - "#74acd1ff"    # Above normal
-    - "#4575b4ff"    # Much above
-    - "#313694ff"    # Extremely above
+    - "#ffffffbf"  # Extremely below
+    - "#ffffffbf"  # Much below
+    - "#ffffffbf"  # Below normal
+    - "#494949ff"  # Low normal
+    - "#494949ff"  # High normal
+    - "#74acd1ff"  # Above normal
+    - "#4575b4ff"  # Much above
+    - "#313694ff"  # Extremely above
   edgecolor:
     - "#532f05ff"  # Extremely below
     - "#8a5109ff"  # Much below
