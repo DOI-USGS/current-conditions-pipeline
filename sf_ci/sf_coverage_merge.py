@@ -36,9 +36,10 @@ active = active.sort_values(
     ],
     ascending=[
         True,   # monitoring_location_id
-        True,   # stat_rank (prefer lower)
-        False,  # por_len (longest first)
+        True,   # has_coverage
         False,  # end_utc (most recent first)
+        False,  # por_len (longest first)
+        True,   # stat_rank (prefer lower)
         True,   # pcode_rank
     ]
 )
