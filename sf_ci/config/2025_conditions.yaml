@@ -88,7 +88,7 @@ marker_params:
     - 3  # Below normal
     - 1  # Low normal
     - 1  # High normal
-    - 4.731  # Above normal - modified to have a radius that is larger by 0.25pt
+    - 4.731  # Above normal - modified to have a radius that is larger by 0.25pt (Area_wet = pi * (R_increase + sqrt(Area_dry / pi)) ^ 2)
     - 7.178  # Much above - modified to have a radius that is larger by 0.25pt
     - 9.541  # Extremely above - modified to have a radius that is larger by 0.25pt
   linewidth:
