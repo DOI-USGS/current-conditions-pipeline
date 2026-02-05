@@ -1,6 +1,7 @@
 library(dataRetrieval)
 library(arrow)
 library(sf)
+library(data.table)
 library(tidytable)
 
 gw_ts_ids <- arrow::read_parquet("artifacts/gw_coverage.parquet")
@@ -11,13 +12,14 @@ gw_preferred <-
   # arbitrary end_utc cut-off, just to limit superfluous api.waterdata requests
   filter(end_utc >= "2015-01-01")
 
+# Daily API can handle ~200 site IDs per request
 gw_split_daily <-
   split(
     unique(gw_preferred$time_series_id),
     ceiling(seq_along(unique(gw_preferred$time_series_id)) / 200)
   )
 
-
+# Pull yesterday's daily obs
 gw_yesterday <-
   tidytable::map_dfr(
     gw_split_daily,
@@ -25,27 +27,31 @@ gw_yesterday <-
       read_waterdata_daily(
         time_series_id = .x,
         time = Sys.Date() - lubridate::days(1),
-        skipGeometry = TRUE
+        skipGeometry = FALSE
       )
     }
   ) |>
+  # unclear why some rows have missing values?
   filter(!is.na(value))
 
+# Of the sites with an observation yesterday, split them 15 TS ID-chunks
 gw_split_stat <-
   split(
     unique(gw_yesterday$time_series_id),
     ceiling(seq_along(unique(gw_yesterday$time_series_id)) / 15)
   )
 
+# Month in YY-DD format
 focal_month <-
   format(
     lubridate::floor_date(
-      Sys.Date() - lubridate::days(2),
+      Sys.Date() - lubridate::days(1),
       unit = "months"
     ),
     "%m-%d"
   )
 
+# Pull month-of-year stats for GW sites
 gw_monthly_stat <-
   tidytable::map_dfr(
     gw_split_stat,
@@ -80,12 +86,13 @@ gw_monthly_stat <-
     names_prefix = "p_"
   )
 
+# Categorize daily obs relative to month-of-year percentiles
 perc_labels <- c("<5", "5-10", "10-25", "25-75", "75-90", "90-95", ">95")
 
 gw_categorizations <-
   gw_yesterday |>
   mutate(
-    time_of_year = lubridate::floor_date(time, unit = "months"),
+    # flip "water level depth" pcodes to same direction as "elevation"
     value = case_when(
       parameter_code %in% c("30210", "72019") ~ -1 * value,
       .default = value
@@ -117,7 +124,8 @@ gw_categorizations <-
     value,
     category,
     unit_of_measure,
-    time_series_id
+    time_series_id,
+    geometry
   )
 
 arrow::write_parquet(gw_categorizations, paste0("artifacts/gw_categorizations_",Sys.Date() - lubridate::days(1),".parquet"))
