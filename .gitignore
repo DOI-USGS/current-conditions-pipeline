@@ -5,8 +5,22 @@
 current-conditions-pipeline.Rproj
 .Renviron
 .vscode
+.DS_Store
 
-# Python Surface Water Visualization Pipeline
+# Gw conditions viz
+gw_ci/1_fetch/in/gw_daily_quantiles.csv
+gw_ci/1_fetch/in/gw_site_info.csv
+
+# Ignore the contents of the output folder
+gw_ci/3_visualize/out/*
+
+# But don't ignore the .empty file
+!gw_ci/3_visualize/out/.empty
+
+# Ignore the targets metadata folder
+gw_ci/_targets/
+
+# Gw conditions viz
 sf_ci/api_key.txt
 sf_ci/.pixi
 sf_ci/.snakemake
