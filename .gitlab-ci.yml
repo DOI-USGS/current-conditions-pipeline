@@ -35,6 +35,7 @@ build-image:
       alias: docker
   rules:
     - if: '$CI_PIPELINE_SOURCE == "push"'
+    - if: '$CI_PIPELINE_SOURCE == "push"'
     - changes:
         - docker/Dockerfile
   script:
@@ -53,7 +54,6 @@ build-image:
 # ---------- gw active sites ----------
 gw_shard_prep:
   stage: active_sites
-  image:
   image:
     name: $IMAGE
     pull_policy: always
@@ -110,6 +110,7 @@ gw_coverage:
 
 gw_coverage_merge:
   stage: active_sites
+  image:
   image:
     name: $IMAGE
     pull_policy: always
@@ -173,7 +174,6 @@ gw_categorize_daily_vals:
 # ---------- sf active sites ----------
 sf_shard_prep:
   stage: active_sites
-  image:
   image:
     name: $IMAGE
     pull_policy: always
