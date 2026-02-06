@@ -5,6 +5,11 @@ stages:
   - render
   - pages
 
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - when: never
+
 variables:
   IMAGE: $CI_REGISTRY_IMAGE:latest
   # API_USGS_PAT: $API_USGS_PAT
@@ -27,6 +32,7 @@ build-image:
     - name: ${DEVOPS_REGISTRY}usgs/docker:latest-dind
       alias: docker
   rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
     - changes:
         - docker/Dockerfile
   script:
@@ -46,8 +52,12 @@ build-image:
 gw_shard_prep:
   stage: active_sites
   image:
+  image:
     name: $IMAGE
     pull_policy: always
+  rules:
+    - if: '$PIPELINE_MODE == "gw_daily"'
+    - when: never
   timeout: 24h
   script:
     - Rscript gw_ci/gw_initial_pull.R ${GW_MIN_YEARS_PER_YDAY} ${GW_PCODES} ${GW_STAT_IDS} ${GW_COMP_PERIOD_IDS}
@@ -66,6 +76,9 @@ gw_coverage:
   image:
     name: $IMAGE
     pull_policy: always
+  rules:
+    - if: '$PIPELINE_MODE == "gw_daily"'
+    - when: never
   timeout: 24h
   needs:
     - job: gw_shard_prep
@@ -89,6 +102,9 @@ gw_coverage_merge:
   image:
     name: $IMAGE
     pull_policy: always
+  rules:
+    - if: '$PIPELINE_MODE == "gw_daily"'
+    - when: never
   timeout: 24h
   needs:
     - job: gw_coverage
@@ -112,6 +128,9 @@ gw_categorize_daily_vals:
   image:
     name: $IMAGE
     pull_policy: always
+  rules:
+    - if: '$PIPELINE_MODE == "gw_daily"'
+    - when: never
   timeout: 24h
   needs:
     - job: gw_coverage_merge
@@ -134,8 +153,12 @@ gw_categorize_daily_vals:
 sf_shard_prep:
   stage: active_sites
   image:
+  image:
     name: $IMAGE
     pull_policy: always
+  rules:
+    - if: '$PIPELINE_MODE == "sf_weekly"'
+    - when: never
   timeout: 24h
   script:
     - python sf_ci/sf_initial_pull.py ${SF_MIN_YEARS_PER_YDAY} ${SF_PCODES} ${SF_STAT_IDS} ${SF_COMP_PERIOD_IDS}
@@ -153,6 +176,9 @@ sf_coverage:
   image:
     name: $IMAGE
     pull_policy: always
+  rules:
+    - if: '$PIPELINE_MODE == "sf_weekly"'
+    - when: never
   parallel:
     matrix:
       - SHARD_ID: [0, 1, 2, 3, 4] #,5,6,7,8,9]
@@ -175,6 +201,9 @@ sf_coverage_merge:
   image:
     name: $IMAGE
     pull_policy: always
+  rules:
+    - if: '$PIPELINE_MODE == "sf_weekly"'
+    - when: never
   needs:
     - job: sf_coverage
       artifacts: true
@@ -196,10 +225,11 @@ sf_categorize_inst_values:
     name: $IMAGE
     pull_policy: always
   timeout: 24h
-  needs:
-    - job: sf_coverage_merge
-      artifacts: true
+  rules:
+    - if: '$PIPELINE_MODE == "sf_inst"'
+    - when: never
   script:
+    - aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/stage/sf_coverage.parquet artifacts/sf_coverage.parquet
     - export RUNTIME=$(date +%Y-%m-%d-%H)
     - python sf_ci/sf_categorize_inst_values.py ${RUNTIME}
     - aws s3 cp artifacts/sf_categorizations_${RUNTIME}.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/stage/
