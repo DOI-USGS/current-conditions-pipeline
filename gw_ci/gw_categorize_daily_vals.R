@@ -21,16 +21,17 @@ gw_split_daily <-
 
 # Pull yesterday's daily obs
 gw_yesterday <-
-  tidytable::map_dfr(
+  purrr::map_dfr(
     gw_split_daily,
     ~ {
-      read_waterdata_daily(
+      sf::st_as_sf(read_waterdata_daily(
         time_series_id = .x,
         time = Sys.Date() - lubridate::days(1),
         skipGeometry = FALSE
-      )
+      ))
     }
   ) |>
+  tidytable::as_tidytable() |>
   # unclear why some rows have missing values?
   filter(!is.na(value))
 
@@ -128,4 +129,11 @@ gw_categorizations <-
     geometry
   )
 
-arrow::write_parquet(gw_categorizations, paste0("artifacts/gw_categorizations_",Sys.Date() - lubridate::days(1),".parquet"))
+arrow::write_parquet(
+  gw_categorizations,
+  paste0(
+    "artifacts/gw_categorizations_",
+    Sys.Date() - lubridate::days(1),
+    ".parquet"
+  )
+)
