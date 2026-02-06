@@ -167,7 +167,7 @@ sf_coverage_merge:
     - production
 
 sf_categorize_inst_values:
-  stage: sites
+  stage: categorize_obs
   image:
     name: $IMAGE
     pull_policy: always
