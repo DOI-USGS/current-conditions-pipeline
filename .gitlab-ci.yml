@@ -8,6 +8,8 @@ stages:
 workflow:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    # push runs (manual jobs only)
+    - if: '$CI_PIPELINE_SOURCE == "push"'
     - when: never
 
 variables:
@@ -57,12 +59,16 @@ gw_shard_prep:
     pull_policy: always
   rules:
     - if: '$PIPELINE_MODE == "gw_daily"'
+    # manual run from push
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: manual
     - when: never
   timeout: 24h
   script:
+    - echo "PIPELINE_MODE=${PIPELINE_MODE}"
+    - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
     - Rscript gw_ci/gw_initial_pull.R ${GW_MIN_YEARS_PER_YDAY} ${GW_PCODES} ${GW_STAT_IDS} ${GW_COMP_PERIOD_IDS}
   artifacts:
-    # expire_in: 7 days
     paths:
       - artifacts/gw_shard_table.parquet
   # these tags are needed to checkout a runner that has automatic access to AWS
@@ -78,6 +84,9 @@ gw_coverage:
     pull_policy: always
   rules:
     - if: '$PIPELINE_MODE == "gw_daily"'
+    # manual run from push
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: manual
     - when: never
   timeout: 24h
   needs:
@@ -87,6 +96,8 @@ gw_coverage:
     matrix:
       - SHARD_ID: [0, 1, 2, 3, 4] #,5,6,7,8,9]
   script:
+    - echo "PIPELINE_MODE=${PIPELINE_MODE}"
+    - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
     - Rscript gw_ci/gw_coverage_per_shard.R ${SHARD_ID} ${GW_MIN_YEARS_PER_YDAY} ${REQUIRED_PERCENTILES}
   artifacts:
     paths:
@@ -104,12 +115,17 @@ gw_coverage_merge:
     pull_policy: always
   rules:
     - if: '$PIPELINE_MODE == "gw_daily"'
+    # manual run from push
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: manual
     - when: never
   timeout: 24h
   needs:
     - job: gw_coverage
       artifacts: true
   script:
+    - echo "PIPELINE_MODE=${PIPELINE_MODE}"
+    - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
     - Rscript gw_ci/gw_coverage_merge.R ${GW_PCODES} ${GW_STAT_IDS}
     - aws s3 cp artifacts/gw_coverage.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/
   artifacts:
@@ -130,12 +146,17 @@ gw_categorize_daily_vals:
     pull_policy: always
   rules:
     - if: '$PIPELINE_MODE == "gw_daily"'
+    # manual run from push
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: manual
     - when: never
   timeout: 24h
   needs:
     - job: gw_coverage_merge
       artifacts: true
   script:
+    - echo "PIPELINE_MODE=${PIPELINE_MODE}"
+    - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
     - Rscript gw_ci/gw_categorize_daily_vals.R
     - export YESTERDAY=$(date -d "yesterday" +%Y-%m-%d)
     - test -f artifacts/gw_categorizations_${YESTERDAY}.parquet
@@ -158,9 +179,14 @@ sf_shard_prep:
     pull_policy: always
   rules:
     - if: '$PIPELINE_MODE == "sf_weekly"'
+    # manual run from push
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: manual
     - when: never
   timeout: 24h
   script:
+    - echo "PIPELINE_MODE=${PIPELINE_MODE}"
+    - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
     - python sf_ci/sf_initial_pull.py ${SF_MIN_YEARS_PER_YDAY} ${SF_PCODES} ${SF_STAT_IDS} ${SF_COMP_PERIOD_IDS}
   artifacts:
     paths:
@@ -178,6 +204,9 @@ sf_coverage:
     pull_policy: always
   rules:
     - if: '$PIPELINE_MODE == "sf_weekly"'
+    # manual run from push
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: manual
     - when: never
   parallel:
     matrix:
@@ -186,6 +215,8 @@ sf_coverage:
     - job: sf_shard_prep
       artifacts: true
   script:
+    - echo "PIPELINE_MODE=${PIPELINE_MODE}"
+    - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
     - python sf_ci/sf_coverage_per_shard.py ${SHARD_ID} ${SF_MIN_YEARS_PER_YDAY} ${REQUIRED_PERCENTILES}
   artifacts:
     paths:
@@ -203,11 +234,16 @@ sf_coverage_merge:
     pull_policy: always
   rules:
     - if: '$PIPELINE_MODE == "sf_weekly"'
+    # manual run from push
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: manual
     - when: never
   needs:
     - job: sf_coverage
       artifacts: true
   script:
+    - echo "PIPELINE_MODE=${PIPELINE_MODE}"
+    - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
     - python sf_ci/sf_coverage_merge.py ${SF_PCODES} ${SF_STAT_IDS}
     - aws s3 cp artifacts/sf_coverage.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/stage/
   artifacts:
@@ -227,8 +263,13 @@ sf_categorize_inst_values:
   timeout: 24h
   rules:
     - if: '$PIPELINE_MODE == "sf_inst"'
+    # manual run from push
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: manual
     - when: never
   script:
+    - echo "PIPELINE_MODE=${PIPELINE_MODE}"
+    - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
     - aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/stage/sf_coverage.parquet artifacts/sf_coverage.parquet
     - export RUNTIME=$(date +%Y-%m-%d-%H)
     - python sf_ci/sf_categorize_inst_values.py ${RUNTIME}
