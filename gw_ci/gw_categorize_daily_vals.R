@@ -20,7 +20,7 @@ gw_preferred <- gw_preferred |>
   select(-geometry)
 
 # Daily API can handle ~200 site IDs per request
-gw_preferredgw_split_daily <-
+gw_split_daily <-
   split(
     unique(gw_preferred$time_series_id),
     ceiling(seq_along(unique(gw_preferred$time_series_id)) / 200)
