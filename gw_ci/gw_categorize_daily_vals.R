@@ -129,8 +129,8 @@ gw_categorizations <-
     geometry
   )
 
-arrow::write_parquet(
-  gw_categorizations,
+sfarrow::st_write_parquet(
+  sf::st_as_sf(gw_categorizations),
   paste0(
     "artifacts/gw_categorizations_",
     Sys.Date() - lubridate::days(1),

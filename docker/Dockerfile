@@ -38,6 +38,7 @@ RUN apt-get update && apt-get install -y \
     r-cran-ggplot2 \
     r-cran-stringr \
     r-cran-sf \
+    r-cran-sfarrow \
     r-cran-retry \
     r-cran-remotes \
     \
