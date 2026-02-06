@@ -4,6 +4,7 @@ import time
 import random
 from pathlib import Path
 import pandas as pd
+from requests.exceptions import JSONDecodeError
 from dataretrieval import waterdata
 
 shard_id = int(sys.argv[1])
@@ -69,6 +70,23 @@ def is_429_error(exc):
     return False
 
 
+def is_retryable_error(exc):
+    # Explicit 429
+    if is_429_error(exc):
+        return True
+
+    # Non-JSON gateway response
+    if isinstance(exc, JSONDecodeError):
+        return True
+
+    # dataretrieval wraps these as generic Exceptions
+    msg = str(exc).lower()
+    if "expecting value" in msg or "json" in msg:
+        return True
+
+    return False
+
+
 def get_por_stats_with_retry(
     *,
     parent_time_series_id,
@@ -85,13 +103,18 @@ def get_por_stats_with_retry(
             return res[0]
 
         except Exception as e:
+            # log response on an exception
+            if hasattr(e, "response"):
+                print("RAW RESPONSE:", e.response.text[:200])
             if not is_429_error(e):
                 raise  # fail fast on non-rate-limit errors
-
+            if not is_retryable_error(e):
+                raise
             if attempt == max_retries:
                 raise
 
-            time.sleep(base_sleep * (2 ** (attempt - 1)) * random.uniform(0.7, 1.3))
+            sleep = max(1.0, base_sleep * (2 ** (attempt - 1)) * random.uniform(0.7, 1.3))
+            time.sleep(sleep)
 
 
 # Load shard table
