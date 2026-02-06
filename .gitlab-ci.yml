@@ -16,7 +16,7 @@ variables:
   GW_COMP_PERIOD_IDS: "Daily"
   SF_MIN_YEARS_PER_YDAY: "20"
   SF_PCODES: "00060,00065"
-  SF_STAT_IDS: "00003"  
+  SF_STAT_IDS: "00003"
   SF_COMP_PERIOD_IDS: "Daily"
 
 # ---------- build image ----------
@@ -25,11 +25,11 @@ build-image:
   image: ${DEVOPS_REGISTRY}usgs/docker:latest
   timeout: 24h
   services:
-  - name: ${DEVOPS_REGISTRY}usgs/docker:latest-dind
-    alias: docker
+    - name: ${DEVOPS_REGISTRY}usgs/docker:latest-dind
+      alias: docker
   rules:
     - changes:
-      - docker/Dockerfile
+        - docker/Dockerfile
   script:
     - echo "${CI_REGISTRY_PASSWORD}" | docker login -u "${CI_REGISTRY_USER}" --password-stdin $CI_REGISTRY
     - docker pull ${CI_REGISTRY_IMAGE}:latest || true
@@ -46,14 +46,14 @@ build-image:
 # ---------- gw active sites ----------
 gw_shard_prep:
   stage: sites
-  image: 
+  image:
     name: $IMAGE
     pull_policy: always
   timeout: 24h
   script:
     - Rscript gw_ci/gw_initial_pull.R ${GW_MIN_YEARS_PER_YDAY} ${GW_PCODES} ${GW_STAT_IDS} ${GW_COMP_PERIOD_IDS}
   artifacts:
-  # expire_in: 7 days
+    # expire_in: 7 days
     paths:
       - artifacts/gw_shard_table.parquet
   # these tags are needed to checkout a runner that has automatic access to AWS
@@ -64,7 +64,7 @@ gw_shard_prep:
 
 gw_coverage:
   stage: sites
-  image: 
+  image:
     name: $IMAGE
     pull_policy: always
   timeout: 24h
@@ -73,7 +73,7 @@ gw_coverage:
       artifacts: true
   parallel:
     matrix:
-      - SHARD_ID: [0,1,2,3,4] #,5,6,7,8,9]
+      - SHARD_ID: [0, 1, 2, 3, 4] #,5,6,7,8,9]
   script:
     - Rscript gw_ci/gw_coverage_per_shard.R ${SHARD_ID} ${GW_MIN_YEARS_PER_YDAY} ${REQUIRED_PERCENTILES}
   artifacts:
@@ -87,7 +87,7 @@ gw_coverage:
 
 gw_coverage_merge:
   stage: sites
-  image: 
+  image:
     name: $IMAGE
     pull_policy: always
   timeout: 24h
@@ -109,7 +109,7 @@ gw_coverage_merge:
 # ---------- sf active sites ----------
 sf_shard_prep:
   stage: sites
-  image: 
+  image:
     name: $IMAGE
     pull_policy: always
   timeout: 24h
@@ -126,12 +126,12 @@ sf_shard_prep:
 
 sf_coverage:
   stage: sites
-  image: 
+  image:
     name: $IMAGE
     pull_policy: always
   parallel:
     matrix:
-      - SHARD_ID: [0,1,2,3,4] #,5,6,7,8,9]
+      - SHARD_ID: [0, 1, 2, 3, 4] #,5,6,7,8,9]
   needs:
     - job: sf_shard_prep
       artifacts: true
@@ -148,7 +148,7 @@ sf_coverage:
 
 sf_coverage_merge:
   stage: sites
-  image: 
+  image:
     name: $IMAGE
     pull_policy: always
   needs:
@@ -160,6 +160,28 @@ sf_coverage_merge:
   artifacts:
     paths:
       - artifacts/sf_coverage.parquet
+  # these tags are needed to checkout a runner that has automatic access to AWS
+  tags:
+    - water
+    - computational_tools
+    - production
+
+sf_categorize_inst_values:
+  stage: sites
+  image:
+    name: $IMAGE
+    pull_policy: always
+  timeout: 24h
+  needs:
+    - job: sf_coverage
+      artifacts: true
+  script:
+    - export RUNTIME=$(date +%Y-%m-%d-%H)
+    - python sf_ci/sf_categorize_inst_values.py ${RUNTIME}
+    - aws s3 cp artifacts/sf_categorizations_${RUNTIME}.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/stage/
+  artifacts:
+    paths:
+      - artifacts/sf_categorizations_*.parquet
   # these tags are needed to checkout a runner that has automatic access to AWS
   tags:
     - water

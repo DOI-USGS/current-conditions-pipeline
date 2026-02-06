@@ -12,7 +12,7 @@ sf_stat_ids = list(x for x in sys.argv[3].split(","))
 sf_comp_period_ids = list(x for x in sys.argv[4].split(","))
 
 focal_date = dt.date.today()
-max_por_start = focal_date - pd.DateOffset(years = min_years_per_yday)
+max_por_start = focal_date - pd.DateOffset(years=min_years_per_yday)
 
 sf_all_ts_ids = waterdata.get_time_series_metadata(
     parameter_code=sf_pcodes,
@@ -20,12 +20,12 @@ sf_all_ts_ids = waterdata.get_time_series_metadata(
     computation_period_identifier=sf_comp_period_ids,
     begin="1700-01-01/" + str(max_por_start.date()),
     # end=str((focal_date - pd.DateOffset(days=7)).date()) + "/..",
-    skip_geometry=True,
+    skip_geometry=False,
 )[0]
 
 # Ensure date columns are datetime
-sf_all_ts_ids["begin_utc"] = pd.to_datetime(sf_all_ts_ids["begin_utc"], format = "mixed", utc = True)
-sf_all_ts_ids["end_utc"]   = pd.to_datetime(sf_all_ts_ids["end_utc"], format = "mixed", utc = True)
+sf_all_ts_ids["begin_utc"] = pd.to_datetime(sf_all_ts_ids["begin_utc"], format="mixed", utc=True)
+sf_all_ts_ids["end_utc"] = pd.to_datetime(sf_all_ts_ids["end_utc"], format="mixed", utc=True)
 sf_all_ts_ids["por_len"] = (sf_all_ts_ids["end_utc"] - sf_all_ts_ids["begin_utc"]).dt.days
 
 n_parallel_ci_jobs = 5  # must match gitlab-ci.yml
@@ -46,7 +46,8 @@ shard_table = sf_all_ts_ids[
         "begin_utc",
         "end_utc",
         "shard_id",
-        "parent_time_series_id"
+        "parent_time_series_id",
+        "geometry",
     ]
 ]
 
@@ -55,6 +56,4 @@ shard_table = shard_table.loc[:, ~shard_table.columns.duplicated()]
 # Write artifact
 Path("artifacts").mkdir(exist_ok=True)
 
-shard_table.to_parquet(
-    "artifacts/sf_shard_table.parquet"
-)
+shard_table.to_parquet("artifacts/sf_shard_table.parquet")
