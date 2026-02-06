@@ -1,8 +1,7 @@
 stages:
   - build
-  - sites
-  - baselines
-  - frame_data
+  - active_sites
+  - categorize_obs
   - render
   - pages
 
@@ -45,7 +44,7 @@ build-image:
 
 # ---------- gw active sites ----------
 gw_shard_prep:
-  stage: sites
+  stage: active_sites
   image:
     name: $IMAGE
     pull_policy: always
@@ -63,7 +62,7 @@ gw_shard_prep:
     - production
 
 gw_coverage:
-  stage: sites
+  stage: active_sites
   image:
     name: $IMAGE
     pull_policy: always
@@ -86,7 +85,7 @@ gw_coverage:
     - production
 
 gw_coverage_merge:
-  stage: sites
+  stage: active_sites
   image:
     name: $IMAGE
     pull_policy: always
@@ -108,7 +107,7 @@ gw_coverage_merge:
 
 # ---------- sf active sites ----------
 sf_shard_prep:
-  stage: sites
+  stage: active_sites
   image:
     name: $IMAGE
     pull_policy: always
@@ -125,7 +124,7 @@ sf_shard_prep:
     - production
 
 sf_coverage:
-  stage: sites
+  stage: active_sites
   image:
     name: $IMAGE
     pull_policy: always
@@ -147,7 +146,7 @@ sf_coverage:
     - production
 
 sf_coverage_merge:
-  stage: sites
+  stage: active_sites
   image:
     name: $IMAGE
     pull_policy: always
