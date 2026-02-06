@@ -12,8 +12,15 @@ gw_preferred <-
   # arbitrary end_utc cut-off, just to limit superfluous api.waterdata requests
   filter(end_utc >= "2015-01-01")
 
+geometry_table <-
+  gw_preferred |>
+  select(time_series_id, geometry)
+
+gw_preferred <- gw_preferred |>
+  select(-geometry)
+
 # Daily API can handle ~200 site IDs per request
-gw_split_daily <-
+gw_preferredgw_split_daily <-
   split(
     unique(gw_preferred$time_series_id),
     ceiling(seq_along(unique(gw_preferred$time_series_id)) / 200)
@@ -27,7 +34,7 @@ gw_yesterday <-
       sf::st_as_sf(read_waterdata_daily(
         time_series_id = .x,
         time = Sys.Date() - lubridate::days(1),
-        skipGeometry = FALSE
+        skipGeometry = TRUE
       ))
     }
   ) |>
@@ -118,19 +125,19 @@ gw_categorizations <-
     )
   ) |>
   select(
-    monitoring_location_id,
-    parameter_code,
-    statistic_id,
-    time,
-    value,
-    category,
-    unit_of_measure,
     time_series_id,
-    geometry
+    value,
+    category
   )
 
-sfarrow::st_write_parquet(
-  sf::st_as_sf(gw_categorizations),
+gw_out <-
+  gw_preferred |>
+  select(-shard_id) |>
+  left_join(gw_categorizations, by = "time_series_id") |>
+  left_join(geometry_table, by = "time_series_id")
+
+arrow::write_parquet(
+  gw_out,
   paste0(
     "artifacts/gw_categorizations_",
     Sys.Date() - lubridate::days(1),
