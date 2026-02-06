@@ -28,17 +28,16 @@ gw_split_daily <-
 
 # Pull yesterday's daily obs
 gw_yesterday <-
-  purrr::map_dfr(
+  tidytable::map_dfr(
     gw_split_daily,
     ~ {
-      sf::st_as_sf(read_waterdata_daily(
+      read_waterdata_daily(
         time_series_id = .x,
         time = Sys.Date() - lubridate::days(1),
         skipGeometry = TRUE
-      ))
+      )
     }
   ) |>
-  tidytable::as_tidytable() |>
   # unclear why some rows have missing values?
   filter(!is.na(value))
 
