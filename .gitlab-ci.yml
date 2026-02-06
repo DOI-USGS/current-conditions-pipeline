@@ -45,7 +45,7 @@ build-image:
 # ---------- gw active sites ----------
 gw_shard_prep:
   stage: active_sites
-  image:
+  image: 
     name: $IMAGE
     pull_policy: always
   timeout: 24h
@@ -63,7 +63,7 @@ gw_shard_prep:
 
 gw_coverage:
   stage: active_sites
-  image:
+  image: 
     name: $IMAGE
     pull_policy: always
   timeout: 24h
@@ -86,7 +86,7 @@ gw_coverage:
 
 gw_coverage_merge:
   stage: active_sites
-  image:
+  image: 
     name: $IMAGE
     pull_policy: always
   timeout: 24h
@@ -105,10 +105,35 @@ gw_coverage_merge:
     - computational_tools
     - production
 
+# ---------- categorize daily values ----------
+
+gw_categorize_daily_vals:
+  stage: categorize_obs
+  image: 
+    name: $IMAGE
+    pull_policy: always
+  timeout: 24h
+  needs:
+    - job: gw_coverage_merge
+      artifacts: true
+  script:
+    - Rscript gw_ci/gw_categorize_daily_vals.R
+    - export YESTERDAY=$(date -d "yesterday" +%Y-%m-%d)
+    - test -f artifacts/gw_categorizations_${YESTERDAY}.parquet
+    - aws s3 cp artifacts/gw_categorizations_${YESTERDAY}.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/
+  artifacts:
+    paths:
+      - artifacts/gw_categorizations_*.parquet
+  # these tags are needed to checkout a runner that has automatic access to AWS
+  tags:
+    - water
+    - computational_tools
+    - production
+
 # ---------- sf active sites ----------
 sf_shard_prep:
   stage: active_sites
-  image:
+  image: 
     name: $IMAGE
     pull_policy: always
   timeout: 24h
@@ -125,7 +150,7 @@ sf_shard_prep:
 
 sf_coverage:
   stage: active_sites
-  image:
+  image: 
     name: $IMAGE
     pull_policy: always
   parallel:
@@ -147,7 +172,7 @@ sf_coverage:
 
 sf_coverage_merge:
   stage: active_sites
-  image:
+  image: 
     name: $IMAGE
     pull_policy: always
   needs:
