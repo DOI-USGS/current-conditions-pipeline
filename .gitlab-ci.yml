@@ -45,7 +45,7 @@ build-image:
 # ---------- gw active sites ----------
 gw_shard_prep:
   stage: active_sites
-  image: 
+  image:
     name: $IMAGE
     pull_policy: always
   timeout: 24h
@@ -63,7 +63,7 @@ gw_shard_prep:
 
 gw_coverage:
   stage: active_sites
-  image: 
+  image:
     name: $IMAGE
     pull_policy: always
   timeout: 24h
@@ -86,7 +86,7 @@ gw_coverage:
 
 gw_coverage_merge:
   stage: active_sites
-  image: 
+  image:
     name: $IMAGE
     pull_policy: always
   timeout: 24h
@@ -109,7 +109,7 @@ gw_coverage_merge:
 
 gw_categorize_daily_vals:
   stage: categorize_obs
-  image: 
+  image:
     name: $IMAGE
     pull_policy: always
   timeout: 24h
@@ -133,7 +133,7 @@ gw_categorize_daily_vals:
 # ---------- sf active sites ----------
 sf_shard_prep:
   stage: active_sites
-  image: 
+  image:
     name: $IMAGE
     pull_policy: always
   timeout: 24h
@@ -150,7 +150,7 @@ sf_shard_prep:
 
 sf_coverage:
   stage: active_sites
-  image: 
+  image:
     name: $IMAGE
     pull_policy: always
   parallel:
@@ -172,7 +172,7 @@ sf_coverage:
 
 sf_coverage_merge:
   stage: active_sites
-  image: 
+  image:
     name: $IMAGE
     pull_policy: always
   needs:
@@ -197,7 +197,7 @@ sf_categorize_inst_values:
     pull_policy: always
   timeout: 24h
   needs:
-    - job: sf_coverage
+    - job: sf_coverage_merge
       artifacts: true
   script:
     - export RUNTIME=$(date +%Y-%m-%d-%H)
