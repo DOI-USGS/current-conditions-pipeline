@@ -134,4 +134,4 @@ sf_out["runtime"] = datetime.now()
 # runtime = datetime.now().replace(minute=0, second=0, microsecond=0).strftime("%Y-%m-%d-%Hh")
 out_path = "artifacts/sf_categorizations_" + runtime + ".parquet"
 
-sf_joined.to_parquet(path=out_path)
+sf_out.to_parquet(path=out_path)
