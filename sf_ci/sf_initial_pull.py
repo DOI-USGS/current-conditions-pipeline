@@ -6,6 +6,11 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 
+
+API_USGS_PAT = os.getenv("API_USGS_PAT")
+if not API_USGS_PAT:
+    raise RuntimeError("Missing API_USGS_PAT CI variable")
+
 min_years_per_yday = int(sys.argv[1])
 sf_pcodes = list(x for x in sys.argv[2].split(","))
 sf_stat_ids = list(x for x in sys.argv[3].split(","))
