@@ -3,34 +3,20 @@ tar_source('3_visualize/src/mapping_utils.R')
 p3_targets <- list(
   tar_target(
     # Build gw frames
-    p3_gw_frame_pngs,
+    p3_gw_frame_png,
     plot_gw_frame(
-      gw_sf = p2_gw_processed_sf,
-      date = p2_gw_dates,
+      gw_sf = p2_gw_clean_sf,
+      date = p0_yesterday_date,
       conus_states = p2_conus_states_sf,
       conus_inner_states_sf = p2_conus_inner_states_sf,
       conus_outer_states_sf = p2_conus_outer_boundary_sf,
       palette = p0_viz_gw_pal,
       viz_cfg = p0_viz_config_df,
       scale_cfg = p0_gw_binned_scales,
-      out_path = glue::glue("3_visualize/out/gw/gw_{p2_gw_dates}.png")
+      out_path = glue::glue("3_visualize/out/gw/gw_{p0_yesterday_date}.png")
       ),
-    pattern = map(p2_gw_processed_sf, p2_gw_dates),
     format = "file"
     ),
-  tar_target(
-    # Create gw animation mp4 format
-    p3_gw_mp4,
-    {
-      av::av_encode_video(
-        input = p3_gw_frame_pngs,
-        output = "3_visualize/out/gw/gw_binned_scaled_glow_peak.mp4",
-        framerate = p0_viz_config_df$fps,
-        vfilter = "scale=trunc(iw/2)*2:trunc(ih/2)*2"
-      )
-    },
-    format = "file"
-  ),
   # Export png of each legend marker with same dimensions for website build
   tar_target(
     p3_gw_legend_pngs,
@@ -49,5 +35,14 @@ p3_targets <- list(
     },
     pattern = map(p2_legend_data),
     format = "file"
+  ),
+  # uplaod image to S3 bucket
+  tar_target(
+    p3_gw_frame_s3,
+    # Make note of how to access S3 bucket in ReadME
+    upload_to_s3(
+      bucket = "water-visualizations-prod-website",
+      local_file = p3_gw_frame_png,
+      date = p0_yesterday_date)
   )
-)
+  )

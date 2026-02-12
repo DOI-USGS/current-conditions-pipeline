@@ -1,46 +1,34 @@
 #' Process groundwater conditions for a single date
 #'
-#' Joins daily groundwater quantile data onto site locations and computes
-#' derived fields used for binned peak visualizations.
+#' Compute derived fields used for binned peak visualizations.
 #'
-#' @param date A single date corresponding to one timestep.
 #' @param gw_conditions Daily groundwater condition data.
-#' @param gw_site_coords An sf object of groundwater site locations.
 #' @param scales Visualization scale parameters.
 #'
 #' @return An sf object with derived plotting variables.
-process_gw_for_date <- function(date, gw_conditions,
-                                gw_site_coords, scales) {
-
-  # join onto sf
-  sf_df <- gw_site_coords |>
-    left_join(
-      gw_conditions |> filter(Date == date),
-      by = "site_no"
-    ) |>
+process_gw_join <- function(gw_conditions, scales) {
+  sf_df <- gw_conditions |>
     mutate(
-      per = daily_quant / 100,
-      shifted_per = per - 0.5,
-      abs_shifted_per = abs(shifted_per),
       per_bin = case_when(
-        per >= 0.95 ~ "Extremely above",
-        per >= 0.90 ~ "Much above",
-        per >= 0.75 ~ "Above normal",
-        per >= 0.25 ~ "Normal",
-        per >= 0.10 ~ "Below normal",
-        per >= 0.05 ~ "Much below",
-        per >= 0.00 ~ "Extremely below",
+        category == "<5"  ~ "Extremely below",
+        category == "5-10" ~ "Much below",
+        category == "10-25" ~ "Below normal",
+        category == "25-75" ~ "Normal",
+        category == "75-90" ~ "Above normal",
+        category == "90-95" ~ "Much above",
+        category == ">95" ~ "Extremely above",
         TRUE ~ NA_character_
       ),
-      direction = if_else(per >= 0.25, 1, -1),
+      direction = case_when(
+        category %in% c("25-75", "75-90", "90-95", ">95") ~ 1,
+        category %in% c("<5", "5-10", "10-25") ~ -1,
+        TRUE ~ NA_real_
+      ),
       plotting_order = case_when(
-        per >= 0.95 ~ 4,
-        per >= 0.90 ~ 3,
-        per >= 0.75 ~ 2,
-        per >= 0.25 ~ 1,
-        per >= 0.10 ~ 2,
-        per >= 0.05 ~ 3,
-        per >= 0.00 ~ 4,
+        category %in% c("25-75") ~ 1,
+        category %in% c("10-25", "75-90") ~ 2,
+        category %in% c("5-10", "90-95") ~ 3,
+        category %in% c("<5", ">95") ~ 4,
         TRUE ~ NA_real_
       )
     )
@@ -65,7 +53,15 @@ process_gw_for_date <- function(date, gw_conditions,
         plotting_order == 3 ~ scales$mid_vector_height * direction,
         plotting_order == 4 ~ scales$max_vector_height * direction
       ),
-      y_end = y + y_dif
+      y_end = y + y_dif,
+      # Per site scaling multiplier for peaks based on order
+      halo_factor = case_when(
+        plotting_order == 2 ~ scales$min_factor,
+        plotting_order == 3 ~ scales$mid_factor,
+        plotting_order == 4 ~ 1,
+        TRUE ~ NA_real_
+      )
     ) |>
     arrange(plotting_order)
+  
 }

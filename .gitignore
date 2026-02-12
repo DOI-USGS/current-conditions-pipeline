@@ -10,6 +10,8 @@ current-conditions-pipeline.Rproj
 # Gw conditions viz
 gw_ci/1_fetch/in/gw_daily_quantiles.csv
 gw_ci/1_fetch/in/gw_site_info.csv
+gw_ci/1_fetch/out/*
+
 
 # Ignore the contents of the output folder
 gw_ci/3_visualize/out/*

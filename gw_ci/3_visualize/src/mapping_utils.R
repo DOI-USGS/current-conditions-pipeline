@@ -14,146 +14,140 @@
 #' @param out_path File path where the rendered frame will be saved.
 #'
 #' @return A character string giving the path to the saved image file.
+#' Render and save a groundwater condition frame
 plot_gw_frame <- function(gw_sf, date,
                           conus_states,
                           conus_inner_states_sf,
                           conus_outer_states_sf,
                           palette, viz_cfg,
                           scale_cfg, out_path) {
-
+  
   # Ensure the directory exists so ggsave doesn't error
   if(!dir.exists(dirname(out_path))) dir.create(dirname(out_path), recursive = TRUE)
-
+  
+  # Sorting by plotting order and latitude (y) to help with overplotted areas
+  gw_plot_order <- gw_sf |> 
+    arrange(plotting_order, desc(y))
+  
+  # Prepare peak data and generate masking polygons with metadata
+  white_peaks <- gw_plot_order |> 
+    filter(plotting_order %in% 2:4) |> 
+    make_peak_polygon(expand = 0.07) |> 
+    # Match the sorting of main data
+    arrange(plotting_order, desc(y_poly))
+  
   p <- ggplot() +
+    # Map shadows
     ggfx::with_shadow(
+      # Entire states polygons for shadow effect
       geom_sf(
-        # entire states polygons for shadow effect
-        data = conus_states, 
+        data = conus_states,
         fill = viz_cfg$bg_col,
-        color = NA 
+        color = NA
       ),
       colour = viz_cfg$ggfx_col,
       x_offset = 0,
       y_offset = 0,
       sigma = 12
     ) +
-    # internal state borders
+    # Internal state borders
     geom_sf(
       data = conus_inner_states_sf,
-      color = viz_cfg$conus_states_col,
+      color = viz_cfg$conus_states_col, 
       linewidth = 0.2,
       fill = NA
     ) +
-    # minimal external boundary
+    # Minimal external boundary
     geom_sf(
       data = conus_outer_states_sf,
       color = viz_cfg$bg_col, 
       linewidth = 0.05,
       fill = NA
-    ) + 
+    ) +
     # NA sites
     geom_sf(
-      data = dplyr::filter(gw_sf, is.na(per)),
+      data = filter(gw_plot_order, is.na(per_bin)),
       color = viz_cfg$na_sites_col,
-      size = 0.3,
-      stroke = 0
-    ) +
-    # plotting order 1, lines
+      shape = 4,
+      size = 0.4,
+      stroke = 0.2
+    ) + 
+    # Plotting order 1: horizontal lines
     geom_segment(
-      data = dplyr::filter(gw_sf, plotting_order == 1),
+      data = filter(gw_plot_order, plotting_order == 1),
+      aes(
+        x = x_start - 0.04 * (x_end - x_start),
+        xend = x_end + 0.04 * (x_end - x_start),
+        y = y - 0.04 * (y_end - y),
+        yend = y_end + 0.04 * (y_end - y),
+        color = per_bin
+      ),
+      linewidth = 0.125
+    ) +
+    # Layer 1: background masks
+    # Plot all masks first?
+    geom_polygon(
+      data = white_peaks,
+      aes(x = x_poly, y = y_poly,
+          group = monitoring_location_id),
+      fill = viz_cfg$bg_col,
+      color = NA,
+      alpha = 0.7 
+    ) +
+    # Layer 2: gradients
+    geom_link(
+      data = filter(gw_plot_order, plotting_order %in% 2:4),
+      aes(
+        x = x,
+        xend = x,
+        y = y,
+        yend = y_end,
+        color = per_bin,
+        group = monitoring_location_id,
+        halo_factor = halo_factor, 
+        linewidth = after_stat(I((1 - index) * scale_cfg$max_factor * halo_factor)),
+        alpha = after_stat(I((0.2^index - 1) / (0.2 - 1)))
+      )
+    ) +
+    # Layer 3: wireframes
+    geom_segment(
+      data = filter(gw_plot_order, plotting_order %in% 2:4),
       aes(
         x = x_start,
-        xend = x_end,
+        xend = x,
         y = y,
         yend = y_end,
         color = per_bin
       ),
-      linewidth = 0.08
+      linewidth = 0.1
     ) +
-    # plotting order 2, peaks and segments
-    geom_link(
-      data = dplyr::filter(gw_sf, plotting_order == 2),
+    geom_segment(
+      data = filter(gw_plot_order, plotting_order %in% 2:4),
       aes(
-        x = x, xend = x,
-        y = y, yend = y_end,
-        color = per_bin,
-        linewidth = after_stat(I((1 - index) * scale_cfg$max_factor *  scale_cfg$min_factor)),
-        # alpha = after_stat(I(index)), # linear gradient
-        alpha = after_stat(I((0.2^index - 1) / (0.2 - 1))) # non-linear gradient
-      )
+        x = x,
+        xend = x_end,
+        y = y_end,
+        yend = y,
+        color = per_bin
+      ),
+      linewidth = 0.1
     ) +
-    geom_segment(
-      data = dplyr::filter(gw_sf, plotting_order == 2),
-      aes(x = x_start, xend = x, y = y, yend = y_end, color = per_bin),
-      linewidth = 0.08
-    ) +
-    geom_segment(
-      data = dplyr::filter(gw_sf, plotting_order == 2),
-      aes(x = x, xend = x_end, y = y_end, yend = y, color = per_bin),
-      linewidth = 0.08
-    ) +
-    # plotting order 3, peaks and segments
-    geom_link(
-      data = dplyr::filter(gw_sf, plotting_order == 3),
-      aes(
-        x = x, xend = x,
-        y = y, yend = y_end,
-        color = per_bin,
-        linewidth = after_stat(I((1 - index) * scale_cfg$max_factor *  scale_cfg$mid_factor)),
-        # alpha = after_stat(I(index)), # linear gradient
-        alpha = after_stat(I((0.2^index - 1) / (0.2 - 1))) # non-linear gradient
-      )
-    ) +
-    geom_segment(
-      data = dplyr::filter(gw_sf, plotting_order == 3),
-      aes(x = x_start, xend = x, y = y, yend = y_end, color = per_bin),
-      linewidth = 0.08
-    ) +
-    geom_segment(
-      data = dplyr::filter(gw_sf, plotting_order == 3),
-      aes(x = x, xend = x_end, y = y_end, yend = y, color = per_bin),
-      linewidth = 0.08
-    ) +
-    # plotting order 4, peaks and segments
-    geom_link(
-      data = dplyr::filter(gw_sf, plotting_order == 4),
-      aes(
-        x = x, xend = x,
-        y = y, yend = y_end,
-        color = per_bin,
-        linewidth = after_stat(I((1 - index) * scale_cfg$max_factor)),
-        # alpha = after_stat(I(index)), # linear gradient
-        alpha = after_stat(I((0.2^index - 1) / (0.2 - 1))) # non-linear gradient
-      )
-    ) +
-    geom_segment(
-      data = dplyr::filter(gw_sf, plotting_order == 4),
-      aes(x = x_start, xend = x, y = y, yend = y_end, color = per_bin),
-      linewidth = 0.08
-    ) +
-    geom_segment(
-      data = dplyr::filter(gw_sf, plotting_order == 4),
-      aes(x = x, xend = x_end, y = y_end, yend = y, color = per_bin),
-      linewidth = 0.08
-    ) +
-    # scales
+    # Scales and themes
     scale_color_manual(values = palette) +
     scale_x_continuous(expand = c(0.06, 0.06)) +
     scale_y_continuous(expand = c(0.06, 0.06)) +
     theme_void() +
     theme(legend.position = "none") +
-    ggtitle(date)
-
+    labs(title = date)
+  
+  # Export
   ggsave(
     filename = out_path,
     plot = p,
-    width = viz_cfg$width,
-    height = viz_cfg$height,
-    dpi = viz_cfg$dpi,
-    bg = viz_cfg$bg_col,
-    units = viz_cfg$units
+    width = viz_cfg$width, height = viz_cfg$height,
+    dpi = viz_cfg$dpi, bg = viz_cfg$bg_col, units = viz_cfg$units
   )
-
+  
   return(out_path)
 }
 
@@ -165,7 +159,7 @@ plot_gw_frame <- function(gw_sf, date,
 #' @param scale_cfg Scaling config (for linewidth/height)
 #' @param out_path Path to save the PNGs
 plot_gw_leg <- function(leg_row, palette, viz_cfg, scale_cfg, out_path) {
-
+  
   if(!dir.exists(dirname(out_path))) dir.create(dirname(out_path), recursive = TRUE)
   
   # Assign values
@@ -219,9 +213,9 @@ plot_gw_leg <- function(leg_row, palette, viz_cfg, scale_cfg, out_path) {
           x = x_start, xend = x_end,
           y = y, yend = y_end,
           color = per_bin
-          ),
+        ),
         linewidth = norm_line_width
-        )} +
+      )} +
     # Peaks (order 2, 3, 4)
     {if (!is.na(is_na_cat) && order_val > 1) 
       list(
@@ -234,25 +228,25 @@ plot_gw_leg <- function(leg_row, palette, viz_cfg, scale_cfg, out_path) {
             sf = current_sf,
             linewidth = after_stat(I((1 - index) * mf * sf * 1.2)),
             alpha = after_stat(I((0.99^index - 1) / (0.99 - 1)))
-            )
-          ),
+          )
+        ),
         geom_segment(
           aes(
             x = x_start, xend = x,
             y = y, yend = y_end,
             color = per_bin
-            ),
-          linewidth = 0.15
           ),
+          linewidth = 0.15
+        ),
         geom_segment(
           aes(
             x = x, xend = x_end,
             y = y_end, yend = y,
             color = per_bin
-            ),
+          ),
           linewidth = 0.15
-          )
-        )} +
+        )
+      )} +
     scale_color_manual(values = palette, na.value = viz_cfg$na_sites_col) +
     # expanded limits so "below" categories aren't cut off
     coord_cartesian(xlim = c(-scale_cfg$leg_xlim, scale_cfg$leg_xlim), 
@@ -269,8 +263,71 @@ plot_gw_leg <- function(leg_row, palette, viz_cfg, scale_cfg, out_path) {
     units = "px",
     bg = viz_cfg$bg_col
   )
-
+  
   return(out_path)
 }
+
+#' Create triangle polygon coordinates for groundwater peaks
+#' 
+#' Transforms site level peak dimensions into a long-format coordinate table 
+#' suitable for geom_polygon.
+#'
+#' @param df A data frame containing monitoring_location_id, x, y, x_start, x_end, and y_end.
+#' @param expand Numeric factor to scale the triangle size beyond the data points.
+#' 
+#' @return A data frame with three rows per site, containing x_poly and y_poly.
+make_peak_polygon <- function(df, expand = 0.06) {
+  df |>
+    mutate(
+      dx_left  = x - x_start,
+      dx_right = x_end - x,
+      dy = y_end - y
+    ) |>
+    uncount(3) |>   
+    group_by(monitoring_location_id) |>
+    mutate(
+      vertex = row_number(),
+      x_poly = case_when(
+        vertex == 1 ~ x_start - expand * dx_left,
+        vertex == 2 ~ x,
+        vertex == 3 ~ x_end + expand * dx_right
+      ),
+      y_poly = case_when(
+        vertex == 1 ~ y,
+        vertex == 2 ~ y_end + expand * dy,
+        vertex == 3 ~ y
+      )
+    ) |>
+    ungroup()
+}
+
+#' Upload a local file to an S3-backed URL
+#'
+#' Uploads a local file to an S3 bucket using a public-style HTTPS URL.
+#' Requires valid AWS credentials to be available in the environment.
+#'
+#' @param local_file Character. Path to the local file to upload.
+#' @param s3_url Character. HTTPS URL corresponding to the S3 object location.
+#'
+#' @return Character. The input `s3_url`, invisibly.
+upload_to_s3 <- function(bucket, local_file, date) {
+  
+  key <- glue::glue(
+    "visualizations/current_conditions/groundwater/images/gw-{date}.png"
+  )
+  
+  aws.s3::put_object(
+    file = local_file,
+    object = key,
+    bucket = bucket,
+    region = "us-west-2",
+    multipart = TRUE
+  )
+  
+  glue::glue("https://labs.waterdata.usgs.gov/{key}")
+}
+
+
+
 
 

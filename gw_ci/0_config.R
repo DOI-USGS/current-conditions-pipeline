@@ -1,5 +1,9 @@
 p0_targets <- list(
   tar_target(
+    p0_yesterday_date,
+    Sys.Date() - 1
+  ),
+  tar_target(
     p0_conus_proj,
     "ESRI:102004"
     ),
