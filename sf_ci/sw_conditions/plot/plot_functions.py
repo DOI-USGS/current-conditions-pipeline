@@ -169,7 +169,7 @@ def plot_data(
     ax.text(
         ax_pos.x0 + 0.0025,
         ax_pos.y0 + ax_pos.height - 0.005,
-        str(scale_mult) + "x",
+        str(round(scale_mult)) + "x",
         horizontalalignment="left",
         verticalalignment="top",
         transform=fig.transFigure,
