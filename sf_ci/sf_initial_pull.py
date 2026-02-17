@@ -52,6 +52,7 @@ shard_table = sf_all_ts_ids[
         "end_utc",
         "shard_id",
         "parent_time_series_id",
+        "state_name",
         "geometry",
     ]
 ]
