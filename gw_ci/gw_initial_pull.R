@@ -7,7 +7,9 @@ library(tidytable)
 
 args <- commandArgs(trailingOnly = TRUE)
 if (length(args) != 4) {
-  stop("Usage: Rscript gw_initial_pull.R <MIN_YEARS_PER_DAY> <PCODES> <STAT_IDS> <COMP_PERIOD_IDS>")
+  stop(
+    "Usage: Rscript gw_initial_pull.R <MIN_YEARS_PER_DAY> <PCODES> <STAT_IDS> <COMP_PERIOD_IDS>"
+  )
 }
 
 MIN_YEARS_PER_YDAY <- as.integer(args[[1]])
@@ -28,13 +30,13 @@ min_recent_obs <- focal_date - lubridate::days(7)
 # 1. "Naive" data pull, ignorant of data coverage
 gw_all_ts_ids <-
   dataRetrieval::read_waterdata_ts_meta(
-  parameter_code = gw_pcodes, 
-  statistic_id = gw_stat_ids, 
-  computation_period_identifier = gw_comp_period_ids, 
-  begin = paste0("1700-01-01/",max_por_start),
-  # end = paste0(min_recent_obs,"/.."),
-  skipGeometry = TRUE
-) |>
+    parameter_code = gw_pcodes,
+    statistic_id = gw_stat_ids,
+    computation_period_identifier = gw_comp_period_ids,
+    begin = paste0("1700-01-01/", max_por_start),
+    # end = paste0(min_recent_obs,"/.."),
+    skipGeometry = FALSE
+  ) |>
   tidytable::as_tidytable()
 
 n_parallel_ci_jobs <- 5 # NOTE: this should mach the number of shards defined in the gitlab-ci.yml file
@@ -59,11 +61,14 @@ shard_table <-
     begin_utc,
     end_utc,
     shard_id,
-    parent_time_series_id
+    parent_time_series_id,
+    state_name,
+    geometry
   )
 
 dir.create("artifacts", showWarnings = FALSE)
 
-arrow::write_parquet(
-  shard_table, "artifacts/gw_shard_table.parquet"
+sfarrow::st_write_parquet(
+  sf::st_as_sf(shard_table),
+  "artifacts/gw_shard_table.parquet"
 )
