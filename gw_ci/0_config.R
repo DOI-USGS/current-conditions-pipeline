@@ -21,7 +21,11 @@ p0_targets <- list(
   # OCONUS states/territories
   tar_target(
     p0_oconus_states,
-    c("AK","HI","PR","VI","MP","GU","AS")
+    c("Alaska","Hawaii","Puerto Rico","United States Virgin Islands","Commonwealth of the Northern Mariana Islands","Marshall Islands", "Guam", "American Samoa")
+  ),
+  tar_target(
+    p0_oconus_states_abbr,
+    c("AK","HI","PR","VI","MP", "MH", "GU","AS")
   ),
   tar_target(
     # Create a tibble to define fig width and height, conus outline colors,

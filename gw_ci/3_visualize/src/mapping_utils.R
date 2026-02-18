@@ -65,8 +65,9 @@ plot_gw_frame <- function(gw_sf, date,
       fill = NA
     ) +
     # NA sites
-    geom_sf(
+    geom_point(
       data = filter(gw_plot_order, is.na(per_bin)),
+      aes(x = x, y = y),
       color = viz_cfg$na_sites_col,
       shape = 4,
       size = 0.4,

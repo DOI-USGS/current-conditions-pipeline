@@ -1,37 +1,36 @@
 tar_source("2_process/src/process_gw_data.R")
 
 p2_targets <- list(
+  tar_target(
+    p2_state_lookup,
+    tigris::states(cb = TRUE, resolution = "500k") |>
+      sf::st_drop_geometry() |>
+      select(
+        state_name_std = NAME,
+        state_abbr = STUSPS
+      ) |>
+      # Add Marshall Islands since tigris::states() does not have it
+      bind_rows(
+        tibble::tibble(
+          state_name_std = "Marshall Islands",
+          state_abbr = "MH"
+        )
+      )
+  ),
+  # Filter GW data for CONUS
+  tar_target(
+    p2_gw_conus_sf,
+    p1_gw_parquet |> 
+      left_join(p2_state_lookup, by = c("state_name" = "state_name_std")) |>
+      filter(!state_abbr %in% p0_oconus_states_abbr)
+  ),
   # CONUS spatial data
   tar_target(
     p2_conus_states_sf,
     tigris::states(cb = TRUE, resolution = "20m") |>
-      filter(!STUSPS %in% p0_oconus_states) |>
+      filter(!STUSPS %in% p0_oconus_states_abbr) |>
       sf::st_transform(crs = p0_conus_proj) |>
       rmapshaper::ms_simplify(keep = p0_viz_config_df$states_simplify)
-  ),
-  tar_target(
-    p2_conus_union,
-    sf::st_union(p2_conus_states_sf)
-  ),
-  tar_target(
-    p2_gw_conus_sf,
-    {
-      gw_sf <- p1_gw_parquet |>
-        sf::st_transform(sf::st_crs(p2_conus_union))
-      
-      # Spatial filter 
-      gw_conus <- gw_sf[
-        sf::st_intersects(gw_sf, p2_conus_union, sparse = FALSE),
-      ]
-      
-      # Attach state attributes 
-      sf::st_join(
-        gw_conus,
-        p2_conus_states_sf |> dplyr::select(STUSPS, STATEFP),
-        join = sf::st_intersects
-      ) |>
-        janitor::clean_names()
-    }
   ),
   # Extract internal lines
   tar_target(
