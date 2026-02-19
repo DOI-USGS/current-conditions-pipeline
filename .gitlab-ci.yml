@@ -34,7 +34,6 @@ build-image:
     - name: ${DEVOPS_REGISTRY}usgs/docker:latest-dind
       alias: docker
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "push"'
     - changes:
         - docker/Dockerfile
   script:
