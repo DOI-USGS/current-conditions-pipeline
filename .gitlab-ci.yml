@@ -111,7 +111,6 @@ gw_coverage:
 gw_coverage_merge:
   stage: active_sites
   image:
-  image:
     name: $IMAGE
     pull_policy: always
   rules:
