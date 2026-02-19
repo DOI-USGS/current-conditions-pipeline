@@ -8,7 +8,7 @@ stages:
 workflow:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
-    # push runs (manual jobs only)
+    # push runs  (manual jobs only)
     - if: '$CI_PIPELINE_SOURCE == "push"'
     - when: never
 
