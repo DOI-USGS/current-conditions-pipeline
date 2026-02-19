@@ -25,7 +25,7 @@ variables:
   SF_STAT_IDS: "00003"
   SF_COMP_PERIOD_IDS: "Daily"
 
-# ---------- build image ----------
+# ---------- build image  ----------
 build-image:
   stage: build
   image: ${DEVOPS_REGISTRY}usgs/docker:latest
