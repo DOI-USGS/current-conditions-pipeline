@@ -27,7 +27,7 @@ RUN apt-get update && apt-get install -y \
     libharfbuzz-dev \
     libfribidi-dev \
     \
-    # R packages via r2u
+    # R packages via  r2u
     # r-cran-dataretrieval \
     r-cran-dplyr \
     r-cran-tidyr \
