@@ -34,10 +34,12 @@ build-image:
     - name: ${DEVOPS_REGISTRY}usgs/docker:latest-dind
       alias: docker
   rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
     - if: '$CI_PIPELINE_SOURCE == "push"'
-    - if: '$CI_PIPELINE_SOURCE == "push"'
-    - changes:
+      changes:
         - docker/Dockerfile
+    - when: never
   script:
     - echo "${CI_REGISTRY_PASSWORD}" | docker login -u "${CI_REGISTRY_USER}" --password-stdin $CI_REGISTRY
     - docker pull ${CI_REGISTRY_IMAGE}:latest || true
