@@ -1,7 +1,9 @@
 p0_targets <- list(
   tar_target(
     p0_yesterday_date,
-    Sys.Date() - 1
+    Sys.Date() - 1,
+    # ensure target is reran and not skipped for CI
+    cue = tar_cue(mode = "always")
   ),
   tar_target(
     p0_conus_proj,
