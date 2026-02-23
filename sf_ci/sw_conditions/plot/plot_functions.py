@@ -166,10 +166,15 @@ def plot_data(
 
     # scale bar text
     ax_pos = ax.get_position()
+    if scale_mult.is_integer():
+        scale_label = str(round(scale_mult)) + "x"
+    else:
+        scale_label = str(scale_mult) + "x"
+
     ax.text(
         ax_pos.x0 + 0.0025,
         ax_pos.y0 + ax_pos.height - 0.005,
-        str(round(scale_mult)) + "x",
+        scale_label,
         horizontalalignment="left",
         verticalalignment="top",
         transform=fig.transFigure,
