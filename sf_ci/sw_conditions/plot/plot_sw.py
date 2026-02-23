@@ -82,7 +82,7 @@ def plot_current_conditions(
         cleaned_merged.loc[
             cleaned_merged["value"] >= cleaned_merged[100.0], "percentile_bin"
         ] = 7
-        # Anything above the 100.0 percentile is a 0 category
+        # Anything below the 0.0 percentile is a 0 category
         cleaned_merged.loc[
             cleaned_merged["value"] <= cleaned_merged[0.0], "percentile_bin"
         ] = 0
