@@ -99,13 +99,13 @@ def plot_data(
 
     # dummy marker in case there are no NA values
     ax.scatter(
-        -9999,
-        -9999,
+        -99999999,
+        -99999999,
         s=marker_params["NA"]["size"],
         marker=marker_params["NA"]["marker"],
         color=marker_params["NA"]["color"],
         linewidth=marker_params["NA"]["linewidth"],
-        zorder=marker_params["NA"]["zorder"],
+        zorder=-1,
         label="Data unavailable - "
         + str(
             round(
