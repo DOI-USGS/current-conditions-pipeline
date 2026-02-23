@@ -7,7 +7,7 @@ from sw_conditions.plot.plot_functions import coverage_plot, shadow_plot
 
 
 def idx_group(g, bins, include_groups=False):
-    """Sorts data in percentile bins based on given bin extents."""
+    """Sorts data value from a single site on a single date in percentile bins based on given bin extents for each day-of-year."""
 
     edges = g[bins].iloc[0].to_numpy()
     # side='right' then subtract 1 mimics [left, right) bins
