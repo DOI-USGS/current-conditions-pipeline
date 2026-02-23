@@ -316,13 +316,13 @@ def coverage_plot(
 
 
 def plot_shadow(fig, ax, boundary_gdf, proj, scale_mult, state_style, reference_scale, shadow_color):
-    """Sets up solid black geometry on a given axis."""
+    """Sets up solid `shadow_color` geometry on a given axis."""
 
     ax_dims = get_ax_size_inches(ax, fig)
     # project boundary
     boundary_gdf_proj = boundary_gdf.to_crs(proj)
 
-    # plot as solid black
+    # plot as `shadow_color`
     boundary_gdf_proj.plot(
         ax=ax,
         facecolor=shadow_color,
@@ -334,7 +334,7 @@ def plot_shadow(fig, ax, boundary_gdf, proj, scale_mult, state_style, reference_
     center_x = 0.5 * (minx + maxx)
     center_y = 0.5 * (miny + maxy)
 
-    # set up axis limits like the plot with data
+    # set up axis limits like in `plot_data()`
     ax.set_xlim(
         center_x - 0.5 * reference_scale * ax_dims[0] / scale_mult,
         center_x + 0.5 * reference_scale * ax_dims[0] / scale_mult,
