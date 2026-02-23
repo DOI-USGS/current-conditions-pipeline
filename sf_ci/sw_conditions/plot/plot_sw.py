@@ -6,10 +6,10 @@ from shapely import wkt
 from sw_conditions.plot.plot_functions import coverage_plot, shadow_plot
 
 
-def idx_group(g):
+def idx_group(g, bins, include_groups=False):
     """Sorts data in percentile bins based on given bin extents."""
 
-    edges = g[[0.0, 5.0, 10.0, 25.0, 50.0, 75.0, 90.0, 95.0, 100.0]].iloc[0].to_numpy()
+    edges = g[bins].iloc[0].to_numpy()
     # side='right' then subtract 1 mimics [left, right) bins
     idx = np.searchsorted(edges, g["value"].to_numpy(), side="right") - 1
     # Mark out-of-range values (below A or >= D) as -1 (or NaN)
@@ -73,7 +73,7 @@ def plot_current_conditions(
         )
         merged["percentile_bin"] = merged.groupby(
             "monitoring_location_id", group_keys=False
-        ).apply(idx_group, include_groups=False)
+        ).apply(idx_group, bins = list(percentiles_df.columns), include_groups=False)
 
         cleaned_merged = merged.copy()
         # NaN values are NaN percentiles
