@@ -51,6 +51,9 @@ p0_targets <- list(
       mid_vector_width = max_vector_width * mid_factor,
       min_vector_width = max_vector_width * min_factor,
       normal_width = max_vector_width * min_factor,
+      max_peak_width = max_factor,
+      mid_peak_width = max_factor * mid_factor,
+      min_peak_width = max_factor * min_factor,
       leg_scale_mult_factor = 3.5,
       leg_xlim = 80000,
       leg_ylim = 70000
