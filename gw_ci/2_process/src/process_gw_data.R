@@ -67,10 +67,10 @@ process_gw_for_date <- function(date, gw_conditions,
       ),
       y_end = y + y_dif,
       # Per site scaling multiplier for peaks based on order
-      halo_factor = case_when(
-        plotting_order == 2 ~ scales$min_factor,
-        plotting_order == 3 ~ scales$mid_factor,
-        plotting_order == 4 ~ 1,
+      peak_width = case_when(
+        plotting_order == 2 ~ scales$min_peak_width,
+        plotting_order == 3 ~ scales$mid_peak_width,
+        plotting_order == 4 ~ scales$max_peak_width,
         TRUE ~ NA_real_
       )
     ) |>
