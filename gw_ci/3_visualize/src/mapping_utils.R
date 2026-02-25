@@ -76,27 +76,44 @@ plot_gw_frame <- function(gw_sf, date,
     geom_segment(
       data = filter(gw_plot_order, plotting_order == 1),
       aes(
-        x = x_start - 0.04 * (x_end - x_start),
-        xend = x_end + 0.04 * (x_end - x_start),
-        y = y - 0.04 * (y_end - y),
-        yend = y_end + 0.04 * (y_end - y),
+        x = x - scale_cfg$normal_width / 2,
+        xend = x + scale_cfg$normal_width / 2,
+        y = y,
+        yend = y_end,
         color = per_bin
       ),
       linewidth = 0.125
-    ) +
-    # Layer 1: background masks
-    # Plot all masks first?
-    geom_polygon(
-      data = white_peaks,
-      aes(x = x_poly, y = y_poly,
-          group = site_no),
-      fill = viz_cfg$bg_col,
-      color = NA,
-      alpha = 0.7 
-    ) +
-    # Layer 2: gradients
-    geom_link(
-      data = filter(gw_plot_order, plotting_order %in% 2:4),
+    ) 
+  
+  # Identify sites orders 2 through 4
+  sites_order_2_to_4 <- gw_plot_order |>
+    filter(plotting_order %in% 2:4) |>
+    pull(site_no) |>
+    unique()
+  
+  # For each site, plot mask, gradient, and border
+  site_plots <- purrr::map(sites_order_2_to_4, function(site) {
+    site_gw <- filter(gw_plot_order, site_no == site)
+    
+    # Layer 1: mask
+    mask <- geom_link(
+      data = site_gw,
+      aes(
+        x = x,
+        xend = x,
+        y = y,
+        yend = y_end,
+        group = site_no,
+        peak_width = peak_width,
+        linewidth = after_stat(I((1 - index) * scale_cfg$max_factor * peak_width)),
+        alpha = after_stat(I((0.2^index - 1) / (0.2 - 1)))
+      ),
+      color = "white"
+    )
+    
+    # Layer 2: gradient
+    gradient <- geom_link(
+      data = site_gw,
       aes(
         x = x,
         xend = x,
@@ -104,33 +121,44 @@ plot_gw_frame <- function(gw_sf, date,
         yend = y_end,
         color = per_bin,
         group = site_no,
-        linewidth = after_stat(I((1 - index) * scale_cfg$max_factor * halo_factor)),
+        peak_width = peak_width,
+        linewidth = after_stat(I((1 - index) * peak_width)),
         alpha = after_stat(I((0.2^index - 1) / (0.2 - 1)))
       )
-    ) +
-    # Layer 3: borders
-    geom_segment(
-      data = filter(gw_plot_order, plotting_order %in% 2:4),
+    )
+    
+    # Layer 3: border
+    border1 <- geom_segment(
+      data = site_gw,
       aes(
         x = x_start,
         xend = x,
         y = y,
         yend = y_end,
         color = per_bin
-        ),
+      ),
       linewidth = 0.1
-    ) +
-    geom_segment(
-      data = filter(gw_plot_order, plotting_order %in% 2:4),
+    )
+    
+    border2 <- geom_segment(
+      data = site_gw,
       aes(
         x = x,
         xend = x_end,
         y = y_end,
         yend = y,
         color = per_bin
-        ),
+      ),
       linewidth = 0.1
-    ) +
+    )
+    
+    return(c(mask, gradient, border1, border2))
+  })
+  
+  p <- p +
+    site_plots
+  
+  p <- p +
     # Scales and themes
     scale_color_manual(values = palette) +
     scale_x_continuous(expand = c(0.06, 0.06)) +
@@ -148,8 +176,9 @@ plot_gw_frame <- function(gw_sf, date,
   )
   
   return(out_path)
-}
-
+  
+}  
+  
 # Make legend marker with same dimensions for website build
 #' Plot a single legend marker
 #'@param leg_row Single row tibble/sf object for a specific category
