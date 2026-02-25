@@ -104,12 +104,11 @@ plot_gw_frame <- function(gw_sf, date,
         yend = y_end,
         color = per_bin,
         group = site_no,
-        halo_factor = halo_factor, 
         linewidth = after_stat(I((1 - index) * scale_cfg$max_factor * halo_factor)),
         alpha = after_stat(I((0.2^index - 1) / (0.2 - 1)))
       )
     ) +
-    # Layer 3: wireframes
+    # Layer 3: borders
     geom_segment(
       data = filter(gw_plot_order, plotting_order %in% 2:4),
       aes(
@@ -273,28 +272,23 @@ plot_gw_leg <- function(leg_row, palette, viz_cfg, scale_cfg, out_path) {
 #' suitable for geom_polygon.
 #'
 #' @param df A data frame containing site_no, x, y, x_start, x_end, and y_end.
-#' @param expand Numeric factor to scale the triangle size beyond the data points.
+#' @param expand Numeric factor to scale the triangle size beyond its base height and width.
 #' 
 #' @return A data frame with three rows per site, containing x_poly and y_poly.
 make_peak_polygon <- function(df, expand = 0.06) {
   df |>
-    mutate(
-      dx_left  = x - x_start,
-      dx_right = x_end - x,
-      dy = y_end - y
-    ) |>
     uncount(3) |>   
     group_by(site_no) |>
     mutate(
       vertex = row_number(),
       x_poly = case_when(
-        vertex == 1 ~ x_start - expand * dx_left,
+        vertex == 1 ~ x_start - expand * x_dif / 2,
         vertex == 2 ~ x,
-        vertex == 3 ~ x_end + expand * dx_right
+        vertex == 3 ~ x_end + expand * x_dif / 2
       ),
       y_poly = case_when(
         vertex == 1 ~ y,
-        vertex == 2 ~ y_end + expand * dy,
+        vertex == 2 ~ y_end + expand * y_dif / 2,
         vertex == 3 ~ y
       )
     ) |>
