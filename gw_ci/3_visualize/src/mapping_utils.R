@@ -105,7 +105,7 @@ plot_gw_frame <- function(gw_sf, date,
         yend = y_end,
         group = site_no,
         peak_width = peak_width,
-        linewidth = after_stat(I((1 - index) * scale_cfg$max_factor * peak_width)),
+        linewidth = after_stat(I((1 - index) * peak_width)),
         alpha = after_stat(I((0.2^index - 1) / (0.2 - 1)))
       ),
       color = "white"
