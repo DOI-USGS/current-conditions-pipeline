@@ -29,13 +29,6 @@ plot_gw_frame <- function(gw_sf, date,
   gw_plot_order <- gw_sf |> 
     arrange(plotting_order, desc(y))
   
-  # Prepare peak data and generate masking polygons with metadata
-  white_peaks <- gw_plot_order |> 
-    filter(plotting_order %in% 2:4) |> 
-    make_peak_polygon(expand = 0.07) |> 
-    # Match the sorting of main data
-    arrange(plotting_order, desc(y_poly))
-  
   p <- ggplot() +
     # Map shadows
     ggfx::with_shadow(
@@ -76,8 +69,8 @@ plot_gw_frame <- function(gw_sf, date,
     geom_segment(
       data = filter(gw_plot_order, plotting_order == 1),
       aes(
-        x = x - scale_cfg$normal_width / 2,
-        xend = x + scale_cfg$normal_width / 2,
+        x = x_start,
+        xend = x_end,
         y = y,
         yend = y_end,
         color = per_bin
