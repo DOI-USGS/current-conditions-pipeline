@@ -1,0 +1,70 @@
+import os
+import yaml
+from sw_conditions.helper_functions import generate_date_list
+
+# Read in Parameters from YAML
+with open("config/2025_conditions.yaml", "r") as file:
+    params = yaml.safe_load(file)
+
+date_list = generate_date_list(params["date_range"]["start"], params["date_range"]["end"])
+
+# set final intended output
+rule all:
+    input: 
+        "movies/" + params["figure_params"]["prefix"] + ".mp4"
+
+# gather the state census boundaries
+rule gather_census_data:
+    params:
+        resolution = params["census_data"]["resolution"],
+        year = params["census_data"]["year"]
+    output:
+        outfile = "data/us_states.geojson"
+    script:
+        "sw_conditions/fetch/get_conus.py"
+
+# simplify the state census boundaries
+rule simplify_census_data:
+    params:
+        simplify = params["geometry_simplify_percent"]
+    input:
+        infile = "data/us_states.geojson"
+    output:
+        outfile = "data/us_states_simplified.geojson"
+    shell:
+        "mapshaper {input.infile} -simplify {params.simplify}% -o {output.outfile}"
+
+# create sf current conditions plots for the given list of dates
+rule plot_current_conditions:
+    params:
+        date_list = date_list,
+        figure_params = params["figure_params"],
+        marker_params = params["marker_params"],
+        state_params = params["state_params"],
+    input:
+        stats_file = "data/sf_complete_percentiles.parquet",
+        daily_values_file = "data/dv_2025.parquet",
+        simplified_census_file = "data/us_states.geojson"
+    output:
+        ["figures/" + params["figure_params"]["prefix"] + "_" + str(date)+ ".png" for date in date_list]
+    script:
+        "sw_conditions/plot/plot_sw.py"
+
+# create a movie from the list of generated images
+rule animate_current_conditions:
+    params:
+        prefix = "figures/" + params["figure_params"]["prefix"] + "_*.png",
+        framerate = params["movie_params"]["framerate"],
+    input:
+        ["figures/" + params["figure_params"]["prefix"] + "_" + str(date)+".png" for date in date_list]
+    output:
+        outfile = "movies/" + params["figure_params"]["prefix"] + ".mp4"
+    shell:
+        r'''
+        ffmpeg -y \
+          -framerate {params.framerate} \
+          -pattern_type glob -i "{params.prefix}" \
+          -vcodec libx264 -pix_fmt yuv420p {output.outfile}
+        '''
+
+        
