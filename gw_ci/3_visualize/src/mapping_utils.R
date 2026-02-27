@@ -220,14 +220,14 @@ plot_gw_leg <- function(leg_row, palette, viz_cfg, scale_cfg, out_path) {
   norm_line_width <- ifelse(!is_na_cat && order_val == 1, 0.3, 0)
   
   p <- ggplot(leg_df) +
-    # NA sites - X marker
+    # NA sites (X marker)
     {if (is_na_cat) 
       geom_point(
         aes(x = 0, y = 0),
         shape = 4,              
-        color  = viz_cfg$na_sites_col,
-        size   = 2.5,               # overall size
-        stroke = 1.25               # line thickness of the X
+        color = viz_cfg$na_sites_col,
+        size = 2.5,             
+        stroke = 1.25   
       )} +
     # Normal lines (order 1)
     {if (!is.na(is_na_cat) && order_val == 1) 
