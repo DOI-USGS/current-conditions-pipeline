@@ -62,6 +62,7 @@ shard_table <-
     end_utc,
     shard_id,
     parent_time_series_id,
+    state_name,
     geometry
   )
 

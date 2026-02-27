@@ -57,6 +57,7 @@ RUN pip3 install --no-cache-dir \
     # dataretrieval \
     # Install drpy from Elise's dev fork (for now)
     pandas \
+    geopandas \
     pyarrow \
     fastparquet \
     numpy \

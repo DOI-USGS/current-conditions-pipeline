@@ -55,13 +55,14 @@ process_gw_join <- function(gw_conditions, scales) {
       ),
       y_end = y + y_dif,
       # Per site scaling multiplier for peaks based on order
-      halo_factor = case_when(
-        plotting_order == 2 ~ scales$min_factor,
-        plotting_order == 3 ~ scales$mid_factor,
-        plotting_order == 4 ~ 1,
+      peak_width = case_when(
+        plotting_order == 2 ~ scales$min_peak_width,
+        plotting_order == 3 ~ scales$mid_peak_width,
+        plotting_order == 4 ~ scales$max_peak_width,
         TRUE ~ NA_real_
       )
     ) |>
-    arrange(plotting_order)
-  
-}
+    arrange(plotting_order) |> 
+    dplyr::as_tibble() |> # drops tidytable/data.table
+    sf::st_as_sf() # re-registers geometry
+  }

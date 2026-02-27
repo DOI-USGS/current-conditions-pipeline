@@ -29,13 +29,6 @@ plot_gw_frame <- function(gw_sf, date,
   gw_plot_order <- gw_sf |> 
     arrange(plotting_order, desc(y))
   
-  # Prepare peak data and generate masking polygons with metadata
-  white_peaks <- gw_plot_order |> 
-    filter(plotting_order %in% 2:4) |> 
-    make_peak_polygon(expand = 0.07) |> 
-    # Match the sorting of main data
-    arrange(plotting_order, desc(y_poly))
-  
   p <- ggplot() +
     # Map shadows
     ggfx::with_shadow(
@@ -65,9 +58,8 @@ plot_gw_frame <- function(gw_sf, date,
       fill = NA
     ) +
     # NA sites
-    geom_point(
+    geom_sf(
       data = filter(gw_plot_order, is.na(per_bin)),
-      aes(x = x, y = y),
       color = viz_cfg$na_sites_col,
       shape = 4,
       size = 0.4,
@@ -77,27 +69,44 @@ plot_gw_frame <- function(gw_sf, date,
     geom_segment(
       data = filter(gw_plot_order, plotting_order == 1),
       aes(
-        x = x_start - 0.04 * (x_end - x_start),
-        xend = x_end + 0.04 * (x_end - x_start),
-        y = y - 0.04 * (y_end - y),
-        yend = y_end + 0.04 * (y_end - y),
+        x = x_start,
+        xend = x_end,
+        y = y,
+        yend = y_end,
         color = per_bin
       ),
       linewidth = 0.125
-    ) +
-    # Layer 1: background masks
-    # Plot all masks first?
-    geom_polygon(
-      data = white_peaks,
-      aes(x = x_poly, y = y_poly,
-          group = monitoring_location_id),
-      fill = viz_cfg$bg_col,
-      color = NA,
-      alpha = 0.7 
-    ) +
-    # Layer 2: gradients
-    geom_link(
-      data = filter(gw_plot_order, plotting_order %in% 2:4),
+    ) 
+  
+  # Identify sites orders 2 through 4
+  sites_order_2_to_4 <- gw_plot_order |>
+    filter(plotting_order %in% 2:4) |>
+    pull(monitoring_location_id) |>
+    unique()
+  
+  # For each site, plot mask, gradient, and border
+  site_plots <- purrr::map(sites_order_2_to_4, function(site) {
+    site_gw <- filter(gw_plot_order, monitoring_location_id == site)
+    
+    # Layer 1: mask
+    mask <- geom_link(
+      data = site_gw,
+      aes(
+        x = x,
+        xend = x,
+        y = y,
+        yend = y_end,
+        group = monitoring_location_id,
+        peak_width = peak_width,
+        linewidth = after_stat(I((1 - index) * peak_width)),
+        alpha = after_stat(I((0.2^index - 1) / (0.2 - 1)))
+      ),
+      color = "white"
+    )
+    
+    # Layer 2: gradient
+    gradient <- geom_link(
+      data = site_gw,
       aes(
         x = x,
         xend = x,
@@ -105,14 +114,15 @@ plot_gw_frame <- function(gw_sf, date,
         yend = y_end,
         color = per_bin,
         group = monitoring_location_id,
-        halo_factor = halo_factor, 
-        linewidth = after_stat(I((1 - index) * scale_cfg$max_factor * halo_factor)),
+        peak_width = peak_width,
+        linewidth = after_stat(I((1 - index) * peak_width)),
         alpha = after_stat(I((0.2^index - 1) / (0.2 - 1)))
       )
-    ) +
-    # Layer 3: wireframes
-    geom_segment(
-      data = filter(gw_plot_order, plotting_order %in% 2:4),
+    )
+    
+    # Layer 3: border
+    border1 <- geom_segment(
+      data = site_gw,
       aes(
         x = x_start,
         xend = x,
@@ -121,9 +131,10 @@ plot_gw_frame <- function(gw_sf, date,
         color = per_bin
       ),
       linewidth = 0.1
-    ) +
-    geom_segment(
-      data = filter(gw_plot_order, plotting_order %in% 2:4),
+    )
+    
+    border2 <- geom_segment(
+      data = site_gw,
       aes(
         x = x,
         xend = x_end,
@@ -132,7 +143,15 @@ plot_gw_frame <- function(gw_sf, date,
         color = per_bin
       ),
       linewidth = 0.1
-    ) +
+    )
+    
+    return(c(mask, gradient, border1, border2))
+  })
+  
+  p <- p +
+    site_plots
+  
+  p <- p +
     # Scales and themes
     scale_color_manual(values = palette) +
     scale_x_continuous(expand = c(0.06, 0.06)) +
@@ -150,7 +169,8 @@ plot_gw_frame <- function(gw_sf, date,
   )
   
   return(out_path)
-}
+  
+}  
 
 # Make legend marker with same dimensions for website build
 #' Plot a single legend marker
@@ -200,12 +220,14 @@ plot_gw_leg <- function(leg_row, palette, viz_cfg, scale_cfg, out_path) {
   norm_line_width <- ifelse(!is_na_cat && order_val == 1, 0.3, 0)
   
   p <- ggplot(leg_df) +
-    # NA sites
+    # NA sites - X marker
     {if (is_na_cat) 
       geom_point(
         aes(x = 0, y = 0),
-        color = viz_cfg$na_sites_col,
-        size  = na_dot_size
+        shape = 4,              
+        color  = viz_cfg$na_sites_col,
+        size   = 2.5,               # overall size
+        stroke = 1.25               # line thickness of the X
       )} +
     # Normal lines (order 1)
     {if (!is.na(is_na_cat) && order_val == 1) 
@@ -274,28 +296,23 @@ plot_gw_leg <- function(leg_row, palette, viz_cfg, scale_cfg, out_path) {
 #' suitable for geom_polygon.
 #'
 #' @param df A data frame containing monitoring_location_id, x, y, x_start, x_end, and y_end.
-#' @param expand Numeric factor to scale the triangle size beyond the data points.
+#' @param expand Numeric factor to scale the triangle size beyond its base height and width.
 #' 
 #' @return A data frame with three rows per site, containing x_poly and y_poly.
 make_peak_polygon <- function(df, expand = 0.06) {
   df |>
-    mutate(
-      dx_left  = x - x_start,
-      dx_right = x_end - x,
-      dy = y_end - y
-    ) |>
     uncount(3) |>   
     group_by(monitoring_location_id) |>
     mutate(
       vertex = row_number(),
       x_poly = case_when(
-        vertex == 1 ~ x_start - expand * dx_left,
+        vertex == 1 ~ x_start - expand * x_dif / 2,
         vertex == 2 ~ x,
-        vertex == 3 ~ x_end + expand * dx_right
+        vertex == 3 ~ x_end + expand * x_dif / 2
       ),
       y_poly = case_when(
         vertex == 1 ~ y,
-        vertex == 2 ~ y_end + expand * dy,
+        vertex == 2 ~ y_end + expand * y_dif / 2,
         vertex == 3 ~ y
       )
     ) |>
@@ -327,8 +344,4 @@ upload_to_s3 <- function(bucket, local_file, date) {
   
   glue::glue("https://labs.waterdata.usgs.gov/{key}")
 }
-
-
-
-
 
