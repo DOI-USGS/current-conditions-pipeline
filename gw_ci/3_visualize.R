@@ -30,7 +30,7 @@ p3_targets <- list(
         palette = p0_viz_gw_pal,
         viz_cfg = p0_viz_config_df,
         scale_cfg = p0_gw_binned_scales,
-        out_pat = glue::glue("3_visualize/out/legend/leg_{file_id}.png")
+        out_path = glue::glue("3_visualize/out/legend/leg_{file_id}.png")
       )
     },
     pattern = map(p2_legend_data),
