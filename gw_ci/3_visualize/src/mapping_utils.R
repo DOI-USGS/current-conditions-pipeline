@@ -14,53 +14,60 @@
 #' @param out_path File path where the rendered frame will be saved.
 #'
 #' @return A character string giving the path to the saved image file.
+#' Render and save a groundwater condition frame
 plot_gw_frame <- function(gw_sf, date,
                           conus_states,
                           conus_inner_states_sf,
                           conus_outer_states_sf,
                           palette, viz_cfg,
                           scale_cfg, out_path) {
-
+  
   # Ensure the directory exists so ggsave doesn't error
   if(!dir.exists(dirname(out_path))) dir.create(dirname(out_path), recursive = TRUE)
-
+  
+  # Sorting by plotting order and latitude (y) to help with overplotted areas
+  gw_plot_order <- gw_sf |> 
+    arrange(plotting_order, desc(y))
+  
   p <- ggplot() +
+    # Map shadows
     ggfx::with_shadow(
+      # Entire states polygons for shadow effect
       geom_sf(
-        # entire states polygons for shadow effect
-        data = conus_states, 
+        data = conus_states,
         fill = viz_cfg$bg_col,
-        color = NA 
-      ),
+        color = NA
+        ),
       colour = viz_cfg$ggfx_col,
       x_offset = 0,
       y_offset = 0,
       sigma = 12
-    ) +
-    # internal state borders
+      ) +
+    # Internal state borders
     geom_sf(
       data = conus_inner_states_sf,
-      color = viz_cfg$conus_states_col,
+      color = viz_cfg$conus_states_col, 
       linewidth = 0.2,
       fill = NA
-    ) +
-    # minimal external boundary
+      ) +
+    # Minimal external boundary
     geom_sf(
       data = conus_outer_states_sf,
       color = viz_cfg$bg_col, 
       linewidth = 0.05,
       fill = NA
-    ) + 
+      ) +
     # NA sites
     geom_sf(
-      data = dplyr::filter(gw_sf, is.na(per)),
+      data = filter(gw_plot_order, is.na(per)),
       color = viz_cfg$na_sites_col,
-      size = 0.3,
-      stroke = 0
-    ) +
-    # plotting order 1, lines
+      shape = 4,
+      size = 0.4,
+      stroke = 0.2
+    ) + 
+    # Plotting order 1: horizontal lines
     geom_segment(
-      data = dplyr::filter(gw_sf, plotting_order == 1),
+      data = filter(gw_plot_order, plotting_order == 1),
       aes(
         x = x_start,
         xend = x_end,
@@ -68,95 +75,103 @@ plot_gw_frame <- function(gw_sf, date,
         yend = y_end,
         color = per_bin
       ),
-      linewidth = 0.08
-    ) +
-    # plotting order 2, peaks and segments
-    geom_link(
-      data = dplyr::filter(gw_sf, plotting_order == 2),
+      linewidth = 0.125
+    ) 
+  
+  # Identify sites orders 2 through 4
+  sites_order_2_to_4 <- gw_plot_order |>
+    filter(plotting_order %in% 2:4) |>
+    pull(site_no) |>
+    unique()
+  
+  # For each site, plot mask, gradient, and border
+  site_plots <- purrr::map(sites_order_2_to_4, function(site) {
+    site_gw <- filter(gw_plot_order, site_no == site)
+    
+    # Layer 1: mask
+    mask <- geom_link(
+      data = site_gw,
       aes(
-        x = x, xend = x,
-        y = y, yend = y_end,
-        color = per_bin,
-        linewidth = after_stat(I((1 - index) * scale_cfg$max_factor *  scale_cfg$min_factor)),
-        # alpha = after_stat(I(index)), # linear gradient
-        alpha = after_stat(I((0.2^index - 1) / (0.2 - 1))) # non-linear gradient
-      )
-    ) +
-    geom_segment(
-      data = dplyr::filter(gw_sf, plotting_order == 2),
-      aes(x = x_start, xend = x, y = y, yend = y_end, color = per_bin),
-      linewidth = 0.08
-    ) +
-    geom_segment(
-      data = dplyr::filter(gw_sf, plotting_order == 2),
-      aes(x = x, xend = x_end, y = y_end, yend = y, color = per_bin),
-      linewidth = 0.08
-    ) +
-    # plotting order 3, peaks and segments
-    geom_link(
-      data = dplyr::filter(gw_sf, plotting_order == 3),
+        x = x,
+        xend = x,
+        y = y,
+        yend = y_end,
+        group = site_no,
+        peak_width = peak_width,
+        linewidth = after_stat(I((1 - index) * peak_width)),
+        alpha = after_stat(I((0.2^index - 1) / (0.2 - 1)))
+      ),
+      color = "white"
+    )
+    
+    # Layer 2: gradient
+    gradient <- geom_link(
+      data = site_gw,
       aes(
-        x = x, xend = x,
-        y = y, yend = y_end,
+        x = x,
+        xend = x,
+        y = y,
+        yend = y_end,
         color = per_bin,
-        linewidth = after_stat(I((1 - index) * scale_cfg$max_factor *  scale_cfg$mid_factor)),
-        # alpha = after_stat(I(index)), # linear gradient
-        alpha = after_stat(I((0.2^index - 1) / (0.2 - 1))) # non-linear gradient
+        group = site_no,
+        peak_width = peak_width,
+        linewidth = after_stat(I((1 - index) * peak_width)),
+        alpha = after_stat(I((0.2^index - 1) / (0.2 - 1)))
       )
-    ) +
-    geom_segment(
-      data = dplyr::filter(gw_sf, plotting_order == 3),
-      aes(x = x_start, xend = x, y = y, yend = y_end, color = per_bin),
-      linewidth = 0.08
-    ) +
-    geom_segment(
-      data = dplyr::filter(gw_sf, plotting_order == 3),
-      aes(x = x, xend = x_end, y = y_end, yend = y, color = per_bin),
-      linewidth = 0.08
-    ) +
-    # plotting order 4, peaks and segments
-    geom_link(
-      data = dplyr::filter(gw_sf, plotting_order == 4),
+    )
+    
+    # Layer 3: border
+    border1 <- geom_segment(
+      data = site_gw,
       aes(
-        x = x, xend = x,
-        y = y, yend = y_end,
-        color = per_bin,
-        linewidth = after_stat(I((1 - index) * scale_cfg$max_factor)),
-        # alpha = after_stat(I(index)), # linear gradient
-        alpha = after_stat(I((0.2^index - 1) / (0.2 - 1))) # non-linear gradient
-      )
-    ) +
-    geom_segment(
-      data = dplyr::filter(gw_sf, plotting_order == 4),
-      aes(x = x_start, xend = x, y = y, yend = y_end, color = per_bin),
-      linewidth = 0.08
-    ) +
-    geom_segment(
-      data = dplyr::filter(gw_sf, plotting_order == 4),
-      aes(x = x, xend = x_end, y = y_end, yend = y, color = per_bin),
-      linewidth = 0.08
-    ) +
-    # scales
+        x = x_start,
+        xend = x,
+        y = y,
+        yend = y_end,
+        color = per_bin
+      ),
+      linewidth = 0.1
+    )
+    
+    border2 <- geom_segment(
+      data = site_gw,
+      aes(
+        x = x,
+        xend = x_end,
+        y = y_end,
+        yend = y,
+        color = per_bin
+      ),
+      linewidth = 0.1
+    )
+    
+    return(c(mask, gradient, border1, border2))
+  })
+  
+  p <- p +
+    site_plots
+  
+  p <- p +
+    # Scales and themes
     scale_color_manual(values = palette) +
     scale_x_continuous(expand = c(0.06, 0.06)) +
     scale_y_continuous(expand = c(0.06, 0.06)) +
     theme_void() +
     theme(legend.position = "none") +
-    ggtitle(date)
-
+    labs(title = date)
+  
+  # Export
   ggsave(
     filename = out_path,
     plot = p,
-    width = viz_cfg$width,
-    height = viz_cfg$height,
-    dpi = viz_cfg$dpi,
-    bg = viz_cfg$bg_col,
-    units = viz_cfg$units
+    width = viz_cfg$width, height = viz_cfg$height,
+    dpi = viz_cfg$dpi, bg = viz_cfg$bg_col, units = viz_cfg$units
   )
-
+  
   return(out_path)
-}
-
+  
+}  
+  
 # Make legend marker with same dimensions for website build
 #' Plot a single legend marker
 #'@param leg_row Single row tibble/sf object for a specific category
@@ -273,4 +288,31 @@ plot_gw_leg <- function(leg_row, palette, viz_cfg, scale_cfg, out_path) {
   return(out_path)
 }
 
-
+#' Create triangle polygon coordinates for groundwater peaks
+#' 
+#' Transforms site level peak dimensions into a long-format coordinate table 
+#' suitable for geom_polygon.
+#'
+#' @param df A data frame containing site_no, x, y, x_start, x_end, and y_end.
+#' @param expand Numeric factor to scale the triangle size beyond its base height and width.
+#' 
+#' @return A data frame with three rows per site, containing x_poly and y_poly.
+make_peak_polygon <- function(df, expand = 0.06) {
+  df |>
+    uncount(3) |>   
+    group_by(site_no) |>
+    mutate(
+      vertex = row_number(),
+      x_poly = case_when(
+        vertex == 1 ~ x_start - expand * x_dif / 2,
+        vertex == 2 ~ x,
+        vertex == 3 ~ x_end + expand * x_dif / 2
+      ),
+      y_poly = case_when(
+        vertex == 1 ~ y,
+        vertex == 2 ~ y_end + expand * y_dif / 2,
+        vertex == 3 ~ y
+      )
+    ) |>
+    ungroup()
+}

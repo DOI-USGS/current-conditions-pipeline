@@ -65,7 +65,14 @@ process_gw_for_date <- function(date, gw_conditions,
         plotting_order == 3 ~ scales$mid_vector_height * direction,
         plotting_order == 4 ~ scales$max_vector_height * direction
       ),
-      y_end = y + y_dif
+      y_end = y + y_dif,
+      # Per site scaling multiplier for peaks based on order
+      peak_width = case_when(
+        plotting_order == 2 ~ scales$min_peak_width,
+        plotting_order == 3 ~ scales$mid_peak_width,
+        plotting_order == 4 ~ scales$max_peak_width,
+        TRUE ~ NA_real_
+      )
     ) |>
-    arrange(plotting_order)
+    arrange(plotting_order) 
 }
