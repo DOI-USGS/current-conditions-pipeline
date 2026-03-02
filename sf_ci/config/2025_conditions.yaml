@@ -59,8 +59,7 @@ marker_params:
     - 7  # Extremely below
     - 5  # Much below
     - 3  # Below normal
-    - 2  # Low normal
-    - 2  # High normal
+    - 2  # Normal
     - 4  # Above normal
     - 6  # Much above
     - 8  # Extremely above
@@ -68,8 +67,7 @@ marker_params:
     - "#ffffffbf"  # Extremely below
     - "#ffffffbf"  # Much below
     - "#ffffffbf"  # Below normal
-    - "#494949ff"  # Low normal
-    - "#494949ff"  # High normal
+    - "#494949ff"  # Normal
     - "#74acd1ff"  # Above normal
     - "#4575b4ff"  # Much above
     - "#313694ff"  # Extremely above
@@ -77,8 +75,7 @@ marker_params:
     - "#532f05ff"  # Extremely below
     - "#8a5109ff"  # Much below
     - "#be812bff"  # Below normal
-    - "#ffffffff"  # Low normal
-    - "#ffffffff"  # High normal
+    - "#ffffffff"  # Normal
     - "#ffffffff"  # Above normal
     - "#ffffffff"  # Much above
     - "#ffffffff"  # Extremely above
@@ -86,8 +83,7 @@ marker_params:
     - 7  # Extremely below
     - 5  # Much below
     - 3  # Below normal
-    - 1  # Low normal
-    - 1  # High normal
+    - 1  # Normal
     - 4.731  # Above normal - modified to have a radius that is larger by 0.25pt (Area_wet = pi * (R_increase + sqrt(Area_dry / pi)) ^ 2)
     - 7.178  # Much above - modified to have a radius that is larger by 0.25pt
     - 9.541  # Extremely above - modified to have a radius that is larger by 0.25pt
@@ -95,8 +91,7 @@ marker_params:
     - 0.5  # Extremely below
     - 0.5  # Much below
     - 0.5  # Below normal
-    - 0.25  # Low normal
-    - 0.25  # High normal
+    - 0.25  # Normal
     - 0.25  # Above normal
     - 0.25  # Much above
     - 0.25  # Extremely above
@@ -104,8 +99,7 @@ marker_params:
     - "Extremely below"
     - "Much below"
     - "Below normal"
-    - "Low normal"
-    - "High normal"
+    - "Normal"
     - "Above normal"
     - "Much above"
     - "Extremely above"
