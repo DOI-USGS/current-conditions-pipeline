@@ -118,7 +118,7 @@ conditions = [
     sf_joined["average_value"] > sf_joined["p100"],
 ]
 
-labels = ["<0", "0-5", "5–10", "10–25", "25–75", "75–90", "90–95", "95-100", ">100"]
+labels = ["<0", "0-5", "5-10", "10-25", "25-75", "75-90", "90-95", "95-100", ">100"]
 
 sf_joined["category"] = np.select(conditions, labels, default="NA")
 sf_joined = sf_joined[["daily_ts_id", "inst_ts_id", "average_value", "category"]]
