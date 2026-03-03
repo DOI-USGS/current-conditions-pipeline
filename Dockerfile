@@ -24,7 +24,7 @@ COPY pixi.toml pixi.lock ./
 RUN pixi install
 
 # Install CRAN-only packages (not available on conda-forge)
-RUN pixi run Rscript -e "install.packages(c('sfarrow', 'retry'))"
+RUN pixi run Rscript -e "install.packages(c('sfarrow', 'retry'), repos = 'http://cran.us.r-project.org')"
 
 # Install GitHub-only R package (not available on conda-forge)
 RUN pixi run Rscript -e "remotes::install_github('DOI-USGS/dataRetrieval', ref = 'df7edad434e3c804ca30354132e5b4dae6c8f435', upgrade = 'never')"
