@@ -14,6 +14,7 @@ workflow:
 
 default:
   # Activate the pixi environment before each CI job, by-default
+  # Means we don't need to add "pixi run" before every Rscript/Python command
   before_script:
     - eval "$(pixi shell-hook)"
 
