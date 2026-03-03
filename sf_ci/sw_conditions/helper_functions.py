@@ -18,7 +18,7 @@ def generate_date_list(start_date, end_date):
 
     return date_list
 
-def strip_date_list(filepath_list, prefix = "sf_categorizations_", suffix = "-17.parquet"):
+def strip_date_list(filepath_list, prefix = "sf_categorizations_", suffix = ".parquet"):
     """Takes a list of parquet files with dates and makes a list of just the dates"""
 
     date_list = []
