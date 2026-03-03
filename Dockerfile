@@ -20,6 +20,9 @@ WORKDIR /app
 # Copy pixi environment files
 COPY pixi.toml pixi.lock ./
 
+# Avoiding "Skipped running the post-link scripts"
+RUN pixi config set --local run-post-link-scripts insecure
+
 # Install all Python + R deps from lock file
 RUN pixi install
 
@@ -31,6 +34,7 @@ RUN pixi run Rscript -e "remotes::install_github('DOI-USGS/dataRetrieval', ref =
 
 # Sanity checks
 RUN pixi run R -e "library(dataRetrieval); packageVersion('dataRetrieval')"
+RUN pixi run Rscript -e ".libPaths()"
 RUN pixi run python - << 'EOF'
 import dataretrieval
 import dataretrieval.waterdata
