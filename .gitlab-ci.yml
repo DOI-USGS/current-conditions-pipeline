@@ -12,6 +12,11 @@ workflow:
     - if: '$CI_PIPELINE_SOURCE == "push"'
     - when: never
 
+default:
+  # Activate the pixi environment before each CI job, by-default
+  before_script:
+    - eval "$(pixi shell-hook)"
+
 variables:
   IMAGE: $CI_REGISTRY_IMAGE:latest
   # API_USGS_PAT: $API_USGS_PAT
