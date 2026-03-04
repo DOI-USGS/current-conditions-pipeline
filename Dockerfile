@@ -23,14 +23,16 @@ RUN pixi config set --local run-post-link-scripts insecure
 
 # Install all Python + R deps from lock file
 RUN pixi install
+RUN pixi run Rscript -e ".libPaths()"
+
+# Need to use custom R user directory for packages installed outside pixi.toml
+RUN mkdir -p /root/R/library
+ENV R_LIBS_USER=/root/R/library
 
 # Install CRAN-only packages (not available on conda-forge)
-RUN pixi run Rscript -e ".libPaths()"
 RUN pixi run Rscript -e "install.packages(c('sfarrow', 'retry'), repos = 'http://cran.us.r-project.org')"
 
 # Install GitHub-only R package (not available on conda-forge)
-RUN mkdir /usr/local/lib/R/site-library
-RUN chmod -R 777 /usr/local/lib/R/site-library
 RUN pixi run Rscript -e "remotes::install_github('DOI-USGS/dataRetrieval', ref='df7edad434e3c804ca30354132e5b4dae6c8f435', upgrade='never', lib='/usr/local/lib/R/site-library')"
 
 # Sanity checks
