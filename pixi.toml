@@ -13,7 +13,7 @@ pipeline = "snakemake -c1 -s Snakefile"
 snakemake = "*"
 #dataretrieval = ">=1.1.0,<2"
 pandas = ">=2.3.3,<3"
-geopandas = ">=1.1.1,<2"
+geopandas = ">=1.1.2,<2"
 tqdm = ">=4.67.1,<5"
 matplotlib = ">=3.10.8,<4"
 pynhd = ">=0.19.4,<0.20"
@@ -37,8 +37,14 @@ r-sf = ">=1.1_0,<2"
 #r-sfarrow = "*"
 #r-retry = "*"
 r-remotes = ">=2.5.0,<3"   # needed for the GitHub install step in Dockerfile
+awscli = ">=1.44.45,<3"
+pyarrow = ">=23.0.0,<24"
+fastparquet = ">=2025.12.0,<2026"
+numpy = ">=2.4.2,<3"
+boto3 = ">=1.42.55,<2"
+s3fs = ">=2026.2.0,<2027"
 
 [pypi-dependencies]
 # Replaces the -e git+... pip install in the old Dockerfile
-dataretrieval = { git = "https://github.com/DOI-USGS/dataretrieval-python.git", rev = "2c8419ca153af1a1071ccf2ce467e1752ab0834e" }
+dataretrieval = { git = "https://github.com/DOI-USGS/dataretrieval-python.git", rev = "4dc9f6a68eb62cf6eeefa3b6abb75d7566e75fce" }
 pygris = "*"
