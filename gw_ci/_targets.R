@@ -17,7 +17,7 @@ tar_option_set(packages = c('tidyverse',
                             'av',
                             'glue',
                             'arrow',
-                            'aws.s3'
+                            'sfarrow'
                             ))
 
 # Phase target makefiles
