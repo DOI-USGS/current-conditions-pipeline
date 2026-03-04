@@ -87,7 +87,7 @@ def is_retryable_error(exc):
     return False
 
 
-def get_por_stats_with_retry(
+def get_stats_por_with_retry(
     *,
     parent_time_series_id,
     computation_type,
@@ -96,7 +96,7 @@ def get_por_stats_with_retry(
 ):
     for attempt in range(1, max_retries + 1):
         try:
-            res = waterdata.get_por_stats(
+            res = waterdata.get_stats_por(
                 parent_time_series_id=parent_time_series_id,
                 computation_type=computation_type,
             )
@@ -132,7 +132,7 @@ active_ts_ids = set()
 for batch in chunked(ts_ids, STATS_BATCH_SIZE):
     # print(batch)
 
-    raw = get_por_stats_with_retry(
+    raw = get_stats_por_with_retry(
         parent_time_series_id=batch,
         computation_type=["minimum", "maximum", "percentile"],
         max_retries=5,
