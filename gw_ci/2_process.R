@@ -91,14 +91,5 @@ p2_targets <- list(
   #   # pattern = cross(p2_gw_clean_parquets, p0_spatial_entities),
   #   iteration = "list"
   # ),
-  
-  # Add later 
-  # tar_target(
-  #   # Get subset data for legend marker creation
-  #   p2_legend_data,
-  #   p2_gw_clean_sf |> 
-  #     group_by(per_bin) |> 
-  #     slice_head(n = 1) |> 
-  #     ungroup()
-  # )
+
   )
