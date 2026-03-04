@@ -7,7 +7,8 @@
 #' @param output_file output parquet file path
 #'
 #' @return An sf object with derived plotting variables.
-process_and_write_gw <- function(gw_conditions, scales, output_file) {
+process_and_write_gw <- function(gw_conditions, scales,
+                                 output_file) {
   
   message(sprintf(
     "reading in and cleaning %s, saving as %s",
@@ -48,45 +49,11 @@ process_and_write_gw <- function(gw_conditions, scales, output_file) {
         TRUE ~ NA_real_
       )
     )
-  # Extract coordinates
-  coords <- sf::st_coordinates(sf_df)
-  
-  # Geometry
-  gw_processed <- sf_df |>
-    mutate(
-      x = coords[, 1],
-      y = coords[, 2],
-      x_dif = case_when(
-        plotting_order == 1 ~ scales$normal_width,
-        plotting_order == 2 ~ scales$min_vector_width,
-        plotting_order == 3 ~ scales$mid_vector_width,
-        plotting_order == 4 ~ scales$max_vector_width
-      ),
-      x_start = x - x_dif / 2,
-      x_end   = x + x_dif / 2,
-      y_dif = case_when(
-        plotting_order == 1 ~ 0,
-        plotting_order == 2 ~ scales$min_vector_height * direction,
-        plotting_order == 3 ~ scales$mid_vector_height * direction,
-        plotting_order == 4 ~ scales$max_vector_height * direction
-      ),
-      y_end = y + y_dif,
-      # Per site scaling multiplier for peaks based on order
-      peak_width = case_when(
-        plotting_order == 2 ~ scales$min_peak_width,
-        plotting_order == 3 ~ scales$mid_peak_width,
-        plotting_order == 4 ~ scales$max_peak_width,
-        TRUE ~ NA_real_
-      )
-    ) |>
-    arrange(plotting_order) |> 
-    dplyr::as_tibble() |> # drops tidytable/data.table
-    sf::st_as_sf() # re-registers geometry
-  
   # Write parquet
-  # long warning message about intial implementation 
+  # long warning message about initial implementation 
   suppressWarnings(
-    sfarrow::st_write_parquet(gw_processed, output_file)
+    sfarrow::st_write_parquet(sf_df, output_file)
   )  
+  
   return(output_file)
   }

@@ -28,21 +28,37 @@ p3_targets <- list(
   # incomplete - CONUS
   tar_target(
     p3_new_gw_pngs,
-    {
-      message(sprintf("read in %s and plot CONUS map for %s, saving as %s", 
-                      p2_gw_clean_parquets,
-                      p1_date_incomplete[["date"]],
-                      sprintf(p0_local_image_file_template, p1_date_incomplete[["date"]])))
-      # pass p0_local_image_file_template, single date - p1_date_incomplete, data for single date - p2_gw_clean_parquets
-      # spatial data for CONUS
-      # will need to read in data, filter to CONUS, and project to CONUS projection
-      # then plot gw data on top of spatial data for CONUS
-      # return png (construct filename from p0_local_image_file_template, p1_date_incomplete)
-      return(sprintf(p0_local_image_file_template, p1_date_incomplete[["date"]]))
-    },
-    pattern = map(p1_date_incomplete, p2_gw_clean_parquets) #,
-    # format = "file"
+    plot_conus_gw_pngs(
+      gw_parquet_file = p2_gw_clean_parquets,
+      date_row = p1_date_incomplete,
+      conus_states = p2_conus_states_sf,
+      conus_inner_states_sf = p2_conus_inner_states_sf,
+      conus_outer_states_sf = p2_conus_outer_boundary_sf,
+      palette = p0_viz_gw_pal,
+      viz_cfg = p0_viz_config_df,
+      scale_cfg = p0_gw_binned_scales,
+      state_lookup = p2_state_lookup,
+      oconus_abbr = p0_oconus_states_abbr,
+      conus_proj = p0_conus_proj,
+      output_template = p0_local_image_file_template
+    ),
+    pattern = map(p1_date_incomplete, p2_gw_clean_parquets),
+    format = "file"
   ),
+  
+  # Export png of each legend marker with same dimensions for website build
+  tar_target(
+    p3_gw_legend_pngs,
+    plot_gw_leg(
+      gw_parquet_file = p2_gw_clean_parquets[[1]],
+      conus_proj = p0_conus_proj,
+      palette = p0_viz_gw_pal,
+      viz_cfg = p0_viz_config_df,
+      scale_cfg = p0_gw_binned_scales,
+      out_path = "3_visualize/out/legend/leg_%s.png"
+    ),
+    format = "file"
+  ), 
   
   # incomplete tibble for CONUS
   tar_target(
@@ -100,49 +116,4 @@ p3_targets <- list(
   # tibble, date = p1_date_incomplete, mobile_image_file = p3_new_gw_mobile_pngs
   # map over: p3_new_gw_mobile_pngs
 
-  
-  # tar_target(
-  #   # Build gw frames
-  #   p3_gw_frame_png,
-  #   plot_gw_frame(
-  #     gw_sf = p2_gw_clean_sf,
-  #     date = p0_yesterday_date,
-  #     conus_states = p2_conus_states_sf,
-  #     conus_inner_states_sf = p2_conus_inner_states_sf,
-  #     conus_outer_states_sf = p2_conus_outer_boundary_sf,
-  #     palette = p0_viz_gw_pal,
-  #     viz_cfg = p0_viz_config_df,
-  #     scale_cfg = p0_gw_binned_scales,
-  #     out_path = glue::glue("3_visualize/out/gw/gw_{p0_yesterday_date}.png")
-  #     ),
-  #   format = "file"
-  #   ),
-  # # Export png of each legend marker with same dimensions for website build
-  # tar_target(
-  #   p3_gw_legend_pngs,
-  #   {
-  #     # Handle the filenames
-  #     cat_name <- ifelse(is.na(p2_legend_data$per_bin), "na_site", p2_legend_data$per_bin)
-  #     file_id <- janitor::make_clean_names(cat_name)
-  # 
-  #     plot_gw_leg(
-  #       leg_row = p2_legend_data,
-  #       palette = p0_viz_gw_pal,
-  #       viz_cfg = p0_viz_config_df,
-  #       scale_cfg = p0_gw_binned_scales,
-  #       out_path = glue::glue("3_visualize/out/legend/leg_{file_id}.png")
-  #     )
-  #   },
-  #   pattern = map(p2_legend_data),
-  #   format = "file"
-  # )#,
-  # # uplaod image to S3 bucket
-  # tar_target(
-  #   p3_gw_frame_s3,
-  #   # Make note of how to access S3 bucket in ReadME
-  #   upload_to_s3(
-  #     bucket = "water-visualizations-prod-website",
-  #     local_file = p3_gw_frame_png,
-  #     date = p0_yesterday_date)
-  # )
   )

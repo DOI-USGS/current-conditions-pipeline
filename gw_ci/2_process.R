@@ -92,17 +92,7 @@ p2_targets <- list(
   #   iteration = "list"
   # ),
   
-  
-  
-  
-  # # Clean up gw 
-  # tar_target(
-  #   p2_gw_clean_sf,
-  #   process_gw_join(
-  #     gw_conditions = p2_gw_conus_sf,
-  #     scales = p0_gw_binned_scales
-  #   )
-  # ),
+  # Add later 
   # tar_target(
   #   # Get subset data for legend marker creation
   #   p2_legend_data,
