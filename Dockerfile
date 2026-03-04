@@ -21,7 +21,7 @@ COPY pixi.toml pixi.lock ./
 # Avoiding "Skipped running the post-link scripts"
 RUN pixi config set --local run-post-link-scripts insecure
 
-# Install all Python + R deps from lock file
+# Install all Python + R deps from  lock file
 RUN pixi install
 RUN pixi run Rscript -e ".libPaths()"
 
