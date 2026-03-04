@@ -37,6 +37,8 @@ RUN pixi run Rscript -e "remotes::install_github('DOI-USGS/dataRetrieval', ref='
 
 # Sanity checks
 RUN pixi run R -e "library(dataRetrieval); packageVersion('dataRetrieval')"
+RUN pixi run python -c "import dataretrieval; print(dataretrieval.__version__); print(dataretrieval.__file__)"
+RUN pixi run python -c "import dataretrieval.waterdata; print(dir(dataretrieval.waterdata))"
 RUN pixi run python - << 'EOF'
 import dataretrieval
 import dataretrieval.waterdata

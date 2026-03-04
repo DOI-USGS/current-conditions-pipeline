@@ -36,7 +36,7 @@ r-stringr = ">=1.6.0,<2"
 r-sf = ">=1.1_0,<2"
 #r-sfarrow = "*"
 #r-retry = "*"
-r-remotes = ">=2.5.0,<3"   # needed for the GitHub install step below
+r-remotes = ">=2.5.0,<3"   # needed for the GitHub install step in Dockerfile
 
 [pypi-dependencies]
 # Replaces the -e git+... pip install in the old Dockerfile
