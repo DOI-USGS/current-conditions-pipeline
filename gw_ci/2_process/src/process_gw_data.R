@@ -4,10 +4,26 @@
 #'
 #' @param gw_conditions Daily groundwater condition data.
 #' @param scales Visualization scale parameters.
+#' @param output_file output parquet file path
 #'
 #' @return An sf object with derived plotting variables.
-process_gw_join <- function(gw_conditions, scales) {
-  sf_df <- gw_conditions |>
+process_and_write_gw <- function(gw_conditions, scales, output_file) {
+  
+  message(sprintf(
+    "reading in and cleaning %s, saving as %s",
+    gw_conditions,
+    output_file
+  ))
+  
+  # Read parquet
+  gw_raw <- arrow::read_parquet(gw_conditions)
+  
+  gw_sf <- gw_raw |>
+    sf::st_as_sf() |>
+    # set as proj for now for all data until we reproject in 3_viz
+    sf::st_set_crs(sf::st_crs("EPSG:4326"))
+
+  sf_df <- gw_sf |>
     mutate(
       per_bin = case_when(
         category == "<5"  ~ "Extremely below",
@@ -34,8 +50,9 @@ process_gw_join <- function(gw_conditions, scales) {
     )
   # Extract coordinates
   coords <- sf::st_coordinates(sf_df)
+  
   # Geometry
-  sf_df |>
+  gw_processed <- sf_df |>
     mutate(
       x = coords[, 1],
       y = coords[, 2],
@@ -65,4 +82,11 @@ process_gw_join <- function(gw_conditions, scales) {
     arrange(plotting_order) |> 
     dplyr::as_tibble() |> # drops tidytable/data.table
     sf::st_as_sf() # re-registers geometry
+  
+  # Write parquet
+  # long warning message about intial implementation 
+  suppressWarnings(
+    sfarrow::st_write_parquet(gw_processed, output_file)
+  )  
+  return(output_file)
   }

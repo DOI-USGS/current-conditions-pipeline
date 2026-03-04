@@ -8,9 +8,9 @@ current-conditions-pipeline.Rproj
 .DS_Store
 
 # Gw conditions viz
-gw_ci/1_fetch/in/gw_daily_quantiles.csv
-gw_ci/1_fetch/in/gw_site_info.csv
 gw_ci/1_fetch/out/*
+gw_ci/2_process/out/*
+gw_ci/1_fetch/in/*
 
 
 # Ignore the contents of the output folder
