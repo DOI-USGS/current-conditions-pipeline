@@ -114,6 +114,7 @@ conditions = [
     sf_joined["average_value"] <= sf_joined["p75"],
     sf_joined["average_value"] <= sf_joined["p90"],
     sf_joined["average_value"] <= sf_joined["p95"],
+    sf_joined["average_value"] <= sf_joined["p100"],
     sf_joined["average_value"] > sf_joined["p100"],
 ]
 
