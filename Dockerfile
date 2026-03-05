@@ -23,6 +23,9 @@ RUN pixi config set --local run-post-link-scripts insecure
 
 # Install all Python + R deps from  lock file
 RUN pixi install
+RUN pixi run install-mapshaper
+
+# Check R libPaths location
 RUN pixi run Rscript -e ".libPaths()"
 
 # Need to use custom R user directory for packages installed outside pixi.toml
