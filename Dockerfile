@@ -45,7 +45,8 @@ RUN pixi run Rscript -e "
     remotes::install_version('sfarrow', version = '0.4.1', lib='/root/R/library', repos='https://cran.rstudio.com/');
     remotes::install_version('retry', version = '0.1.1', lib='/root/R/library', repos='https://cran.rstudio.com/');
     remotes::install_version('av', version = '0.9.6', lib='/root/R/library', repos='https://cran.rstudio.com/');
-    remotes::install_version('rmapshaper', version = '0.6.0', lib='/root/R/library', repos='https://cran.rstudio.com/')"
+    remotes::install_version('rmapshaper', version = '0.6.0', lib='/root/R/library', repos='https://cran.rstudio.com/');
+    remotes::install_version('targets', version = '1.12.0', lib='/root/R/library', repos='https://cran.rstudio.com/')"
 # install.packages(c('sfarrow', 'retry', 'rmapshaper', 'av'), repos = 'http://cran.us.r-project.org')
 
 # Install GitHub-only R package (not available on conda-forge)
