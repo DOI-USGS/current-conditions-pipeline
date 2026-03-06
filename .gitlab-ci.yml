@@ -211,7 +211,6 @@ gw_render:
 sf_shard_prep:
   stage: active_sites
   image:
-  image:
     name: $IMAGE
     pull_policy: always
   rules:
