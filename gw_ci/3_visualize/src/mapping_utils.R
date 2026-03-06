@@ -4,7 +4,7 @@
 #' renders the groundwater map, and saves the png
 #'
 #' @param gw_parquet_file Path to processed parquet file for one date.
-#' @param date_row One row tibble containing `date`.
+#' @param date Date for which gw data are being plotted.
 #' @param conus_states sf of CONUS states.
 #' @param conus_inner_states_sf sf of inner state boundaries.
 #' @param conus_outer_states_sf sf of outer CONUS boundary.
@@ -17,12 +17,12 @@
 #' @param out_path Filename template containing `%s` for date.
 #'
 #' @return Character string path to saved PNG.
-plot_conus_gw_pngs <- function(gw_parquet_file, date_row, conus_states,
+plot_conus_gw_pngs <- function(gw_parquet_file, date, conus_states,
                                conus_inner_states_sf, conus_outer_states_sf,
                                palette, viz_cfg, scale_cfg, state_lookup,
                                oconus_abbr, conus_proj, output_template) {
   
-  date_val <- as.character(date_row[["date"]])
+  date_val <- as.character(date)
   out_path <- sprintf(output_template, date_val)
   
   message(sprintf(

@@ -30,7 +30,7 @@ p3_targets <- list(
     p3_new_gw_pngs,
     plot_conus_gw_pngs(
       gw_parquet_file = p2_gw_clean_parquets,
-      date_row = p1_date_incomplete,
+      date = p1_date_incomplete[["date"]],
       conus_states = p2_conus_states_sf,
       conus_inner_states_sf = p2_conus_inner_states_sf,
       conus_outer_states_sf = p2_conus_outer_boundary_sf,
