@@ -166,14 +166,41 @@ gw_categorize_daily_vals:
   script:
     - echo "PIPELINE_MODE=${PIPELINE_MODE}"
     - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
-    - pixi run Rscript gw_ci/gw_categorize_daily_vals.R
     - export YESTERDAY=$(date -d "yesterday" +%Y-%m-%d)
-    - test -f artifacts/gw_categorizations_${YESTERDAY}.parquet
-    - pixi run aws s3 cp artifacts/gw_categorizations_${YESTERDAY}.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/
+    - echo YESTERDAY=${YESTERDAY} >> gw.env # make YESTERDAY variable accessible to downstream jobs
+    - pixi run Rscript gw_ci/gw_categorize_daily_vals.R ${YESTERDAY}
+    - test -f gw_ci/1_fetch/in/gw_categorizations_${YESTERDAY}.parquet
+    - pixi run aws s3 cp gw_ci/1_fetch/in/gw_categorizations_${YESTERDAY}.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/
   artifacts:
     paths:
-      - artifacts/gw_categorizations_*.parquet
+      - gw_ci/1_fetch/in/gw_categorizations_*.parquet
+    reports:
+      dotenv: gw.env
   # these tags are needed to checkout a runner that has automatic access to AWS
+  tags:
+    - water
+    - computational_tools
+    - production
+
+gw_render:
+  stage: render
+  image:
+    name: $IMAGE
+    pull_policy: always
+  rules:
+    - if: '$PIPELINE_MODE == "gw_daily"'
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: manual
+    - when: never
+  timeout: 24h
+  needs:
+    - job: gw_categorize_daily_vals
+      artifacts: true
+  script:
+    - echo "PIPELINE_MODE=${PIPELINE_MODE}"
+    - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
+    - pixi run Rscript -e "setwd('gw_ci'); targets::tar_make()"
+    - pixi run aws s3 cp gw_ci/3_visualize/out/ s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/images/ --recursive
   tags:
     - water
     - computational_tools
