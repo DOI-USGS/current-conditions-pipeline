@@ -67,7 +67,7 @@ gw_shard_prep:
     name: $IMAGE
     pull_policy: always
   rules:
-    - if: '$PIPELINE_MODE == "gw_daily"'
+    - if: '$PIPELINE_MODE == "gw_weekly"'
     # manual run from push
     - if: '$CI_PIPELINE_SOURCE == "push"'
       when: manual
@@ -93,7 +93,7 @@ gw_coverage:
     name: $IMAGE
     pull_policy: always
   rules:
-    - if: '$PIPELINE_MODE == "gw_daily"'
+    - if: '$PIPELINE_MODE == "gw_weekly"'
     # manual run from push
     - if: '$CI_PIPELINE_SOURCE == "push"'
       when: manual
@@ -124,7 +124,7 @@ gw_coverage_merge:
     name: $IMAGE
     pull_policy: always
   rules:
-    - if: '$PIPELINE_MODE == "gw_daily"'
+    - if: '$PIPELINE_MODE == "gw_weekly"'
     # manual run from push
     - if: '$CI_PIPELINE_SOURCE == "push"'
       when: manual
@@ -161,14 +161,12 @@ gw_categorize_daily_vals:
       when: manual
     - when: never
   timeout: 24h
-  needs:
-    - job: gw_coverage_merge
-      artifacts: true
   script:
     - echo "PIPELINE_MODE=${PIPELINE_MODE}"
     - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
     - export YESTERDAY=$(date -d "yesterday" +%Y-%m-%d)
     - echo YESTERDAY=${YESTERDAY} >> gw.env # make YESTERDAY variable accessible to downstream jobs
+    - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/gw_coverage.parquet artifacts/gw_coverage.parquet
     - pixi run Rscript gw_ci/gw_categorize_daily_vals.R ${YESTERDAY}
     - test -f gw_ci/1_fetch/in/gw_categorizations_${YESTERDAY}.parquet
     - pixi run aws s3 cp gw_ci/1_fetch/in/gw_categorizations_${YESTERDAY}.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/
