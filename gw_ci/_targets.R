@@ -15,7 +15,9 @@ tar_option_set(packages = c('tidyverse',
                             'ggforce',
                             'ggfx',
                             'av',
-                            'glue'
+                            'glue',
+                            'arrow',
+                            'sfarrow'
                             ))
 
 # Phase target makefiles

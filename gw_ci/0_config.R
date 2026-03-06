@@ -1,8 +1,70 @@
 p0_targets <- list(
+  ##### file parameters #####
+  tar_target(
+    p0_metadata_path,
+    "1_fetch/in/gw_file_metadata.csv"
+    ),
+  tar_target(
+    p0_s3_prod_URL,
+    "https://dfi09q69oy2jm.cloudfront.net/visualizations/"
+  ),
+  tar_target(
+    p0_remote_parquet_file_template,
+    "current_conditions/groundwater/stage/gw_categorizations_%s.parquet"
+  ),
+  tar_target(
+    p0_parquet_file_dir,
+    "1_fetch/out"
+  ),
+  tar_target(
+    p0_local_parquet_file_template,
+    paste(p0_parquet_file_dir, basename(p0_remote_parquet_file_template), sep = "/")
+  ),
+  tar_target(
+    p0_remote_image_file_template,
+    "current_conditions/groundwater/images/gw-%s.png"
+  ),
+  tar_target(
+    p0_image_file_dir,
+    "3_visualize/out/gw"
+  ),
+  tar_target(
+    p0_local_image_file_template,
+    paste(p0_image_file_dir, basename(p0_remote_image_file_template), sep = "/")
+  ),
+  ##### date parameters #####
+  tar_target(
+    p0_yesterday_date,
+    Sys.Date() - 1,
+    # ensure target is reran and not skipped for CI
+    cue = tar_cue(mode = "always")
+  ),
+  tar_target(
+    p0_intervals,
+    # will need to updated once we have 1, 3, 6, and 12 months of data from todays date
+    # c(lubridate::dmonths(1), lubridate::dmonths(3), lubridate::dmonths(6),
+    #   lubridate::years(1))
+    c(3, 5, 7)
+  ),
+  tar_target(
+    p0_interval_start_dates,
+    p0_yesterday_date - p0_intervals
+  ),
+  ##### spatial parameters #####
   tar_target(
     p0_conus_proj,
     "ESRI:102004"
     ),
+  # OCONUS states/territories
+  tar_target(
+    p0_oconus_states,
+    c("Alaska","Hawaii","Puerto Rico","United States Virgin Islands","Commonwealth of the Northern Mariana Islands", "Guam", "American Samoa")
+  ),
+  tar_target(
+    p0_oconus_states_abbr,
+    c("AK","HI","PR","VI","MP", "GU","AS")
+  ),
+  ##### visual parameters #####
   tar_target(
     p0_viz_gw_pal,
     c(
@@ -13,11 +75,6 @@ p0_targets <- list(
       "Below normal" = "#be812b",
       "Much below" = "#8a5109",
       "Extremely below" = "#532f05")
-  ),
-  # OCONUS states/territories
-  tar_target(
-    p0_oconus_states,
-    c("AK","HI","PR","VI","MP","GU","AS")
   ),
   tar_target(
     # Create a tibble to define fig width and height, conus outline colors,
