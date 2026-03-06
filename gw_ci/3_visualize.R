@@ -76,9 +76,15 @@ p3_targets <- list(
   # populate local_image_file for one that already existed
   # WILL NEED TO ACCOUNT FOR MORE FILES - MP4 and static formatted images
   tar_target(
-    p3_date_config_revised,
-    bind_rows(p1_date_complete, p3_new_png_config) |>
-      arrange(date)
+    p3_date_config_revised_csv,
+    {
+      bind_rows(p1_date_complete, p3_new_png_config) |>
+        arrange(date) |>
+        readr::write_csv(p0_metadata_path)
+      
+      p0_metadata_path
+    },
+    format = "file"
   )
   #,
   

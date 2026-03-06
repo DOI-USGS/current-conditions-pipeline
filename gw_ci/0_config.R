@@ -1,6 +1,10 @@
 p0_targets <- list(
   ##### file parameters #####
   tar_target(
+    p0_metadata_path,
+    "1_fetch/in/gw_file_metadata.csv"
+    ),
+  tar_target(
     p0_s3_prod_URL,
     "https://dfi09q69oy2jm.cloudfront.net/visualizations/"
   ),
