@@ -4,6 +4,12 @@ library(sf)
 library(data.table)
 library(tidytable)
 
+args <- commandArgs(trailingOnly = TRUE)
+if (length(args) != 2) {
+  stop("Usage: Rscript gw_categorize_daily_vals.R <DATE>")
+}
+yesterday <- args[[1]]
+
 gw_ts_ids <- arrow::read_parquet("artifacts/gw_coverage.parquet")
 
 gw_preferred <-
@@ -138,8 +144,8 @@ gw_out <-
 arrow::write_parquet(
   gw_out,
   paste0(
-    "artifacts/gw_categorizations_",
-    Sys.Date() - lubridate::days(1),
+    "gw_ci/1_fetch/in/gw_categorizations_",
+    yesterday,
     ".parquet"
   )
 )
