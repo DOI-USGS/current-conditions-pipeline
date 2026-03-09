@@ -32,6 +32,6 @@ sf_ci/figures/*
 !sf_ci/figures/.empty
 sf_ci/movies/*
 !sf_ci/movies/.empty
-sf_ci/sw_conditions/__pycache__
-sf_ci/sw_conditions/fetch/__pycache__
-sf_ci/sw_conditions/plot/__pycache__
+sf_ci/sf_conditions/__pycache__
+sf_ci/sf_conditions/fetch/__pycache__
+sf_ci/sf_conditions/plot/__pycache__

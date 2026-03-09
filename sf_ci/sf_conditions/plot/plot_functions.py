@@ -117,7 +117,7 @@ def plot_data(
     )
 
     # plot non na values
-    for i in range(0, 8):
+    for i in range(0, 7):
         sf_gdf_proj[sf_gdf_proj["percentile_bin"] == float(i)].plot(
             ax=ax,
             marker=marker_params["marker"],
@@ -288,11 +288,6 @@ def coverage_plot(
     # Reverse order
     handles = handles[::-1]
     labels = labels[::-1]
-
-    # Aggregate low and high normal
-    handles.pop(3)
-    labels.pop(3)
-    labels[3] = "Normal"
 
     # set axis in lower left corner of CONUS plot
     conus_ax.legend(
