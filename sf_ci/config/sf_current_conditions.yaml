@@ -1,5 +1,5 @@
 figure_params:
-  prefix: "sw_current_conditions"
+  prefix: "sf_current_conditions"
   dimensions: [8,4]
   facecolor: "#ffffff"
   fontfamily: "sans-serif"

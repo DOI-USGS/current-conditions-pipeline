@@ -2,7 +2,7 @@ from tqdm import tqdm
 import numpy as np
 import pandas as pd
 import geopandas as gpd
-from sw_conditions.plot.plot_functions import coverage_plot, shadow_plot
+from sf_conditions.plot.plot_functions import coverage_plot, shadow_plot
 
 def plot_current_conditions(
     date_list,
@@ -36,6 +36,10 @@ def plot_current_conditions(
             crs="EPSG:4326",
         )
 
+        # convert en-dash to hyphen if they exist
+        dv_gdf_day["category"] = dv_gdf_day["category"].str.replace("\u2013", "-", regex=False)
+
+        # define bin integers for each catergory
         percentile_bins = {
             None: np.nan,
             "NA": np.nan,

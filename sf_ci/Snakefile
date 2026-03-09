@@ -1,13 +1,13 @@
 import os
 import yaml
-from sw_conditions.helper_functions import generate_date_list, strip_date_list
+from sf_conditions.helper_functions import generate_date_list, strip_date_list
 
 # Get parquet file names and strip the dates from them:
 percentiles_files = config["file_list"]
 date_list = strip_date_list(percentiles_files)
 
 # Read in Parameters from YAML
-with open("config/sw_current_conditions.yaml", "r") as file:
+with open("config/sf_current_conditions.yaml", "r") as file:
     params = yaml.safe_load(file)
 
 # set final intended output
@@ -23,7 +23,7 @@ rule gather_census_data:
     output:
         outfile = "data/us_states.geojson"
     script:
-        "sw_conditions/fetch/get_conus.py"
+        "sf_conditions/fetch/get_conus.py"
 
 # simplify the state census boundaries
 rule simplify_census_data:
@@ -49,7 +49,7 @@ rule plot_current_conditions:
     output:
         ["figures/" + params["figure_params"]["prefix"] + "_" + str(date)+ ".png" for date in date_list]
     script:
-        "sw_conditions/plot/plot_sw.py"
+        "sf_conditions/plot/plot_sf.py"
 
 # create a movie from the list of generated images
 rule animate_current_conditions:
