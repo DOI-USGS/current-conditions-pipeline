@@ -1,93 +1,130 @@
 # Current Conditions Pipeline
 
+## Introduction
 
+This repository processes and visualizes near–real-time groundwater and streamflow data from U.S. Geological Survey (USGS) sources.
+It uses a combination of R, Python, and GitLab CI to generate regularly updated map-based visualizations and publish them to AWS S3.
 
-## Getting started
+The pipeline is designed to balance data completeness, update frequency, and API constraints while maximizing the number of sites included in each visualization.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Pipeline cadence
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+The pipeline runs on different schedules depending on data type:
 
-## Add your files
+- Streamflow
+  - The list of active sites is rebuilt weekly (Sundays at 4:00 AM ET).
+  - Visuals are updated multiple times per day.
+- Groundwater
+  - The list of active sites is rebuilt daily.
+  - Visuals are updated daily.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+This difference reflects the relative size and availability of groundwater vs. streamflow datasets.
 
-```
-cd existing_repo
-git remote add origin https://code.usgs.gov/water/computational-tools/current-conditions-pipeline.git
-git branch -M main
-git push -uf origin main
-```
+## High-level workflow
 
-## Integrate with your tools
+The generic workflow implemented in this repository is:
 
-- [ ] [Set up project integrations](https://code.usgs.gov/water/computational-tools/current-conditions-pipeline/-/settings/integrations)
+1. Generate a list of active sites.
+2. For each active site:
+   - Fetch the most recent conditions.
+   - Fetch historical percentiles associated with those conditions.
+   - Categorize recent conditions relative to historical percentiles (e.g., minimum–5th, 5th–10th, 10th–25th, etc.).
+3. Visualize percentile categories on a map.
+4. Save visual outputs in multiple formats to an AWS S3 bucket.
 
-## Collaborate with your team
+### 1. Active site definition
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+Sites are categorized as groundwater or streamflow based on reported parameter codes.
 
-## Test and Deploy
+A site is considered active if it satisfies both of the following conditions.
 
-Use the built-in continuous integration in GitLab.
+#### 1.1 Parameter code eligibility
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+The site must report a daily mean timeseries for at least one eligible parameter code (defined as GW_PCODES and SW_PCODES in the .gitlab-ci.yml file).
+These codes were selected in consultation with subject-matter experts.
 
-***
+**Groundwater parameter codes**: 72019, 62611, 62610, 72150, 72229, 62600, 30210, 62613, 62612, 72231, 72232, 72230, 72227, 72228, 72226, 61055, 62601
 
-# Editing this README
+**Streamflow parameter codes**: 00060 (discharge), 00065 (gage height)
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+All groundwater parameters are monotonic transformations of water level, meaning their order statistics are comparable.
+For streamflow, gage height and discharge are assumed to be monotonic.
 
-## Suggestions for a good README
+#### 1.2 Percentile availability
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+The site must have a "complete" percentile set available through the /statistics API.
 
-## Name
-Choose a self-explaining name for your project.
+**Groundwater**: month-of-year percentiles
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+**Streamflow**: day-of-year percentiles
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+A full percentile set consists of:
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+- minimum
+- 5th, 10th, 25th
+- 50th (median)
+- 75th, 90th, 95th
+- maximum
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+### 2. Fetching recent conditions
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+Recent observations are retrieved using Water Data API endpoints appropriate to the data type:
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+- Streamflow: /continuous data
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+- Groundwater: /daily summaries
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+Additional logic is applied (described below) to ensure the fetched data are both recent and comparable to historical percentiles.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+### 3. Visualization
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+Categorized percentile values are rendered as map-based visualizations.
+Each site is symbolized according to where its recent condition falls relative to its historical distribution.
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+### 4. Output and storage
 
-## License
-For open source projects, say how it is licensed.
+Final map products are exported in multiple formats and written to an AWS S3 bucket for downstream use.
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+## Workflow constraints and design trade-offs
+
+Many pipeline design decisions reflect trade-offs between competing constraints.
+These compromises are not necessarily optimal for every use case, but represent a good-faith balance given current data availability and API limitations.
+
+### API and data constraints
+
+- **Request limits**: Water Data API endpoints (e.g., /daily, /continuous, /time-series-metadata) are limited to 1000 requests per hour when using an API token.
+- **Request size limits**: Requests are constrained by maximum request size (effectively a character limit), requiring long lists of timeseries IDs to be broken into chunks.
+- **Pagination limits**: Responses are paginated at 50,000 rows per page, with each page counting against the hourly request quota.
+- **Data availability and gaps**: Percentile computation requires sufficient historical coverage for every day- or month-of-year. This excludes many recently commissioned sites and sites for which data are collected infrequently.
+
+### Project constraints
+
+- **Update frequency**: Visuals must update at least daily (groundwater) and multiple times per day (streamflow).
+- **Maximizing site coverage**: The goal is to visualize as many sites as possible within the above constraints.
+- **Current conditions**: Approval and aggregation delays between /continuous and /daily data affect how “current” data can be.
+
+### Methodological constraints
+
+- **Avoid wasteful requests**: Sites unlikely to meet visualization criteria are filtered early to minimize unnecessary API usage.
+
+## Key compromises and implementation strategies
+
+- **Active site pre-filtering**
+  Rather than querying all historical and inactive sites, the pipeline pre-filters to sites with long periods of record (20 years for streamflow, 10 years for groundwater) for specific parameter codes (listed above). This reduces the candidate pool to a few thousand sites.
+- **Using `/statistics` as a coverage proxy**
+  Instead of manually computing percentiles and assessing coverage, which would be time- and resource-intensive, a site is included if and only if the required percentiles are available via `/statistics`. This simplifies logic and avoids large volumes of discarded data, at the cost of trusting the `/statistics` service to remain stable and consistent.
+- **Preferred timeseries IDs**
+  Sites often report multiple timeseries (e.g., discharge vs. gage height, daily mean vs. daily max). A single preferred timeseries ID is selected per site using heuristics (longest period of record, most recent observation). Fallback IDs are queried only if the preferred ID lacks data, reducing request volume.
+- **Streamflow 24-hour sliding window**
+  Rather than comparing a single continuous observation to day-of-year percentiles, the pipeline computes the mean of the last 24 hours of continuous observations. This smooths volatility and aligns better with multiple daily updates. This approach differs from the National Water Dashboard but was judged more informative for this use case.
+- **Groundwater statistics and percentile alignment**
+  Both daily mean and daily maximum groundwater summaries are included to avoid regional data gaps. Daily groundwater values are compared to month-of-year percentiles, consistent with existing USGS statistical graphs.
+
+## Performance optimizations
+
+- **CI parallelization**
+  The active site list requires hundreds of /statistics requests. Timeseries IDs are split into shards and processed in parallel GitLab CI jobs, substantially reducing runtime.
+- **Timeseries ID chunking**
+  To balance request size limits and pagination: Requests are packed to approach (but not exceed) the 50,000-row page limit. For example, if requesting a year of `/daily` data, package `floor(50000 / 365) = 136` timeseries IDs per request.
+- **Scheduled pipeline execution**
+  Because the `/statistics` database updates weekly, percentile coverage checks are run weekly. This avoids unnecessary percentile queries while keeping visuals current. The visualization CI jobs are run on a more frequent schedule.

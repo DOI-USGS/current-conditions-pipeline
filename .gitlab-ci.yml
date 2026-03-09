@@ -5,6 +5,19 @@ stages:
   - render
   - pages
 
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    # push runs  (manual jobs only)
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+    - when: never
+
+# default:
+#   # Activate the pixi environment before each CI job, by-default
+#   # Means we don't need to add "pixi run" before every Rscript/Python command
+#   before_script:
+#     - eval "$(pixi shell-hook)"
+
 variables:
   IMAGE: $CI_REGISTRY_IMAGE:latest
   # API_USGS_PAT: $API_USGS_PAT
@@ -18,7 +31,7 @@ variables:
   SF_STAT_IDS: "00003"
   SF_COMP_PERIOD_IDS: "Daily"
 
-# ---------- build image ----------
+# ---------- build image  ----------
 build-image:
   stage: build
   image: ${DEVOPS_REGISTRY}usgs/docker:latest
@@ -27,12 +40,16 @@ build-image:
     - name: ${DEVOPS_REGISTRY}usgs/docker:latest-dind
       alias: docker
   rules:
-    - changes:
-        - docker/Dockerfile
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      changes:
+        - Dockerfile
+    - when: never
   script:
     - echo "${CI_REGISTRY_PASSWORD}" | docker login -u "${CI_REGISTRY_USER}" --password-stdin $CI_REGISTRY
     - docker pull ${CI_REGISTRY_IMAGE}:latest || true
-    - docker build --cache-from ${CI_REGISTRY_IMAGE}:latest -t ${CI_REGISTRY_IMAGE}:latest -t ${CI_REGISTRY_IMAGE}:BUILD_${CI_COMMIT_SHORT_SHA} docker
+    - docker build --cache-from ${CI_REGISTRY_IMAGE}:latest -t ${CI_REGISTRY_IMAGE}:latest -t ${CI_REGISTRY_IMAGE}:BUILD_${CI_COMMIT_SHORT_SHA} .
     # If this is building a git tag, also push the corresponding docker tag
     - if [ -n "${CI_COMMIT_TAG}" ]; then docker tag "${CI_REGISTRY_IMAGE}:BUILD_${CI_COMMIT_SHORT_SHA}" "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}"; fi
     - docker push --all-tags ${CI_REGISTRY_IMAGE}
@@ -46,13 +63,22 @@ build-image:
 gw_shard_prep:
   stage: active_sites
   image:
+  image:
     name: $IMAGE
     pull_policy: always
+  rules:
+    - if: '$PIPELINE_MODE == "gw_weekly"'
+    # manual run from push
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: manual
+    - when: never
   timeout: 24h
   script:
-    - Rscript gw_ci/gw_initial_pull.R ${GW_MIN_YEARS_PER_YDAY} ${GW_PCODES} ${GW_STAT_IDS} ${GW_COMP_PERIOD_IDS}
+    - echo "PIPELINE_MODE=${PIPELINE_MODE}"
+    - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
+    - pixi run Rscript -e ".libPaths()"
+    - pixi run Rscript gw_ci/gw_initial_pull.R ${GW_MIN_YEARS_PER_YDAY} ${GW_PCODES} ${GW_STAT_IDS} ${GW_COMP_PERIOD_IDS}
   artifacts:
-    # expire_in: 7 days
     paths:
       - artifacts/gw_shard_table.parquet
   # these tags are needed to checkout a runner that has automatic access to AWS
@@ -66,6 +92,12 @@ gw_coverage:
   image:
     name: $IMAGE
     pull_policy: always
+  rules:
+    - if: '$PIPELINE_MODE == "gw_weekly"'
+    # manual run from push
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: manual
+    - when: never
   timeout: 24h
   needs:
     - job: gw_shard_prep
@@ -74,7 +106,9 @@ gw_coverage:
     matrix:
       - SHARD_ID: [0, 1, 2, 3, 4] #,5,6,7,8,9]
   script:
-    - Rscript gw_ci/gw_coverage_per_shard.R ${SHARD_ID} ${GW_MIN_YEARS_PER_YDAY} ${REQUIRED_PERCENTILES}
+    - echo "PIPELINE_MODE=${PIPELINE_MODE}"
+    - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
+    - pixi run Rscript gw_ci/gw_coverage_per_shard.R ${SHARD_ID} ${GW_MIN_YEARS_PER_YDAY} ${REQUIRED_PERCENTILES}
   artifacts:
     paths:
       - artifacts/gw_coverage_${SHARD_ID}.parquet
@@ -89,13 +123,21 @@ gw_coverage_merge:
   image:
     name: $IMAGE
     pull_policy: always
+  rules:
+    - if: '$PIPELINE_MODE == "gw_weekly"'
+    # manual run from push
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: manual
+    - when: never
   timeout: 24h
   needs:
     - job: gw_coverage
       artifacts: true
   script:
-    - Rscript gw_ci/gw_coverage_merge.R ${GW_PCODES} ${GW_STAT_IDS}
-    - aws s3 cp artifacts/gw_coverage.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/
+    - echo "PIPELINE_MODE=${PIPELINE_MODE}"
+    - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
+    - pixi run Rscript gw_ci/gw_coverage_merge.R ${GW_PCODES} ${GW_STAT_IDS}
+    - pixi run aws s3 cp artifacts/gw_coverage.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/
   artifacts:
     paths:
       - artifacts/gw_coverage.parquet
@@ -112,19 +154,52 @@ gw_categorize_daily_vals:
   image:
     name: $IMAGE
     pull_policy: always
+  rules:
+    - if: '$PIPELINE_MODE == "gw_daily"'
+    # manual run from push
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: manual
+    - when: never
   timeout: 24h
-  needs:
-    - job: gw_coverage_merge
-      artifacts: true
   script:
-    - Rscript gw_ci/gw_categorize_daily_vals.R
+    - echo "PIPELINE_MODE=${PIPELINE_MODE}"
+    - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
     - export YESTERDAY=$(date -d "yesterday" +%Y-%m-%d)
-    - test -f artifacts/gw_categorizations_${YESTERDAY}.parquet
-    - aws s3 cp artifacts/gw_categorizations_${YESTERDAY}.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/
+    - echo YESTERDAY=${YESTERDAY} >> gw.env # make YESTERDAY variable accessible to downstream jobs
+    - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/gw_coverage.parquet artifacts/gw_coverage.parquet
+    - pixi run Rscript gw_ci/gw_categorize_daily_vals.R ${YESTERDAY}
+    - test -f gw_ci/1_fetch/in/gw_categorizations_${YESTERDAY}.parquet
+    - pixi run aws s3 cp gw_ci/1_fetch/in/gw_categorizations_${YESTERDAY}.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/
   artifacts:
     paths:
-      - artifacts/gw_categorizations_*.parquet
+      - gw_ci/1_fetch/in/gw_categorizations_*.parquet
+    reports:
+      dotenv: gw.env
   # these tags are needed to checkout a runner that has automatic access to AWS
+  tags:
+    - water
+    - computational_tools
+    - production
+
+gw_render:
+  stage: render
+  image:
+    name: $IMAGE
+    pull_policy: always
+  rules:
+    - if: '$PIPELINE_MODE == "gw_daily"'
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: manual
+    - when: never
+  timeout: 24h
+  needs:
+    - job: gw_categorize_daily_vals
+      artifacts: true
+  script:
+    - echo "PIPELINE_MODE=${PIPELINE_MODE}"
+    - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
+    - pixi run Rscript -e "setwd('gw_ci'); targets::tar_make()"
+    - pixi run aws s3 cp gw_ci/3_visualize/out/ s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/images/ --recursive
   tags:
     - water
     - computational_tools
@@ -136,9 +211,17 @@ sf_shard_prep:
   image:
     name: $IMAGE
     pull_policy: always
+  rules:
+    - if: '$PIPELINE_MODE == "sf_weekly"'
+    # manual run from push
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: manual
+    - when: never
   timeout: 24h
   script:
-    - python sf_ci/sf_initial_pull.py ${SF_MIN_YEARS_PER_YDAY} ${SF_PCODES} ${SF_STAT_IDS} ${SF_COMP_PERIOD_IDS}
+    - echo "PIPELINE_MODE=${PIPELINE_MODE}"
+    - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
+    - pixi run python sf_ci/sf_initial_pull.py ${SF_MIN_YEARS_PER_YDAY} ${SF_PCODES} ${SF_STAT_IDS} ${SF_COMP_PERIOD_IDS}
   artifacts:
     paths:
       - artifacts/sf_shard_table.parquet
@@ -153,6 +236,12 @@ sf_coverage:
   image:
     name: $IMAGE
     pull_policy: always
+  rules:
+    - if: '$PIPELINE_MODE == "sf_weekly"'
+    # manual run from push
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: manual
+    - when: never
   parallel:
     matrix:
       - SHARD_ID: [0, 1, 2, 3, 4] #,5,6,7,8,9]
@@ -160,7 +249,9 @@ sf_coverage:
     - job: sf_shard_prep
       artifacts: true
   script:
-    - python sf_ci/sf_coverage_per_shard.py ${SHARD_ID} ${SF_MIN_YEARS_PER_YDAY} ${REQUIRED_PERCENTILES}
+    - echo "PIPELINE_MODE=${PIPELINE_MODE}"
+    - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
+    - pixi run python sf_ci/sf_coverage_per_shard.py ${SHARD_ID} ${SF_MIN_YEARS_PER_YDAY} ${REQUIRED_PERCENTILES}
   artifacts:
     paths:
       - artifacts/sf_coverage_${SHARD_ID}.parquet
@@ -175,12 +266,20 @@ sf_coverage_merge:
   image:
     name: $IMAGE
     pull_policy: always
+  rules:
+    - if: '$PIPELINE_MODE == "sf_weekly"'
+    # manual run from push
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: manual
+    - when: never
   needs:
     - job: sf_coverage
       artifacts: true
   script:
-    - python sf_ci/sf_coverage_merge.py ${SF_PCODES} ${SF_STAT_IDS}
-    - aws s3 cp artifacts/sf_coverage.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/stage/
+    - echo "PIPELINE_MODE=${PIPELINE_MODE}"
+    - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
+    - pixi run python sf_ci/sf_coverage_merge.py ${SF_PCODES} ${SF_STAT_IDS}
+    - pixi run aws s3 cp artifacts/sf_coverage.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/stage/
   artifacts:
     paths:
       - artifacts/sf_coverage.parquet
@@ -196,13 +295,19 @@ sf_categorize_inst_values:
     name: $IMAGE
     pull_policy: always
   timeout: 24h
-  needs:
-    - job: sf_coverage_merge
-      artifacts: true
+  rules:
+    - if: '$PIPELINE_MODE == "sf_inst"'
+    # manual run from push
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: manual
+    - when: never
   script:
+    - echo "PIPELINE_MODE=${PIPELINE_MODE}"
+    - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
+    - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/stage/sf_coverage.parquet artifacts/sf_coverage.parquet
     - export RUNTIME=$(date +%Y-%m-%d-%H)
-    - python sf_ci/sf_categorize_inst_values.py ${RUNTIME}
-    - aws s3 cp artifacts/sf_categorizations_${RUNTIME}.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/stage/
+    - pixi run python sf_ci/sf_categorize_inst_values.py ${RUNTIME}
+    - pixi run aws s3 cp artifacts/sf_categorizations_${RUNTIME}.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/stage/
   artifacts:
     paths:
       - artifacts/sf_categorizations_*.parquet

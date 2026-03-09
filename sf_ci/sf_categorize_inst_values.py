@@ -52,7 +52,7 @@ sf_daily_ts = sf_preferred[sf_preferred["inst_ts_id"].isin(sf_ave["time_series_i
 dfs = []
 today_str = date.today().strftime("%m-%d")
 for batch in chunked(sf_daily_ts, 15):
-    df, _ = wd.get_por_stats(
+    df, _ = wd.get_stats_por(
         parent_time_series_id=batch,
         start_date=today_str,
         end_date=today_str,
