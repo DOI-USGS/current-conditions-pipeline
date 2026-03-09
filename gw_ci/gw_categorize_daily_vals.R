@@ -5,7 +5,7 @@ library(data.table)
 library(tidytable)
 
 args <- commandArgs(trailingOnly = TRUE)
-if (length(args) != 2) {
+if (length(args) != 1) {
   stop("Usage: Rscript gw_categorize_daily_vals.R <DATE>")
 }
 yesterday <- args[[1]]
@@ -14,16 +14,16 @@ gw_ts_ids <- arrow::read_parquet("artifacts/gw_coverage.parquet")
 
 gw_preferred <-
   gw_ts_ids |>
-  filter(preferred & has_coverage) |>
+  tidytable::filter(preferred & has_coverage) |>
   # arbitrary end_utc cut-off, just to limit superfluous api.waterdata requests
-  filter(end_utc >= "2015-01-01")
+  tidytable::filter(end_utc >= "2015-01-01")
 
 geometry_table <-
   gw_preferred |>
-  select(time_series_id, geometry)
+  tidytable::select(time_series_id, geometry)
 
 gw_preferred <- gw_preferred |>
-  select(-geometry)
+  tidytable::select(-geometry)
 
 # Daily API can handle ~200 site IDs per request
 gw_split_daily <-
@@ -45,7 +45,7 @@ gw_yesterday <-
     }
   ) |>
   # unclear why some rows have missing values?
-  filter(!is.na(value))
+  tidytable::filter(!is.na(value))
 
 # Of the sites with an observation yesterday, split them 15 TS ID-chunks
 gw_split_stat <-
@@ -82,10 +82,10 @@ gw_monthly_stat <-
     }
   ) |>
   sf::st_drop_geometry() |>
-  filter(time_of_year_type == "month_of_year") |>
-  select(parent_time_series_id, parameter_code, percentile, value) |>
-  arrange(parent_time_series_id, value) |>
-  mutate(
+  tidytable::filter(time_of_year_type == "month_of_year") |>
+  tidytable::select(parent_time_series_id, parameter_code, percentile, value) |>
+  tidytable::arrange(parent_time_series_id, value) |>
+  tidytable::mutate(
     # flip "water level depth" pcodes to same direction as "elevation"
     value = tidytable::case_when(
       parameter_code %in% c("30210", "72019") ~ -1 * value,
@@ -104,18 +104,18 @@ perc_labels <- c("<5", "5-10", "10-25", "25-75", "75-90", "90-95", ">95")
 
 gw_categorizations <-
   gw_yesterday |>
-  mutate(
+  tidytable::mutate(
     # flip "water level depth" pcodes to same direction as "elevation"
-    value = case_when(
+    value = tidytable::case_when(
       parameter_code %in% c("30210", "72019") ~ -1 * value,
       .default = value
     )
   ) |>
-  left_join(
+  tidytable::left_join(
     gw_monthly_stat,
     by = c("time_series_id" = "parent_time_series_id")
   ) |>
-  mutate(
+  tidytable::mutate(
     category = factor(
       data.table::fcase(
         value < p_5   , "<5"    ,
@@ -129,7 +129,7 @@ gw_categorizations <-
       levels = perc_labels
     )
   ) |>
-  select(
+  tidytable::select(
     time_series_id,
     value,
     category
@@ -137,9 +137,9 @@ gw_categorizations <-
 
 gw_out <-
   gw_preferred |>
-  select(-shard_id) |>
-  left_join(gw_categorizations, by = "time_series_id") |>
-  left_join(geometry_table, by = "time_series_id")
+  tidytable::select(-shard_id) |>
+  tidytable::left_join(gw_categorizations, by = "time_series_id") |>
+  tidytable::left_join(geometry_table, by = "time_series_id")
 
 arrow::write_parquet(
   gw_out,
