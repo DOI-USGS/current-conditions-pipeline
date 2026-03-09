@@ -1,4 +1,5 @@
-tar_source('1_fetch/src/download_utils.R')
+#tar_source('1_fetch/src/download_utils.R')
+tar_source('1_fetch/src/gw_categorize_daily_vals.R')
 
 p1_targets <- list(
   # Download gw file metadata
@@ -24,7 +25,7 @@ p1_targets <- list(
         dplyr::left_join(p1_metadata, by = "date") |>
         dplyr::mutate(
           remote_parquet_file_URL = paste0(p0_s3_prod_URL, parquet_file),
-          remote_image_file_URL = paste0(p0_s3_prod_URL, image_file)#,
+          remote_image_file_URL = paste0(p0_s3_prod_URL, image_file) #,
           # local_parquet_file = ifelse(
           #   file.exists(file.path(p0_parquet_file_dir, basename(parquet_file))),
           #   file.path(p0_parquet_file_dir, basename(parquet_file)),
@@ -48,7 +49,7 @@ p1_targets <- list(
       metadata_row = p1_date_complete,
       url_col = "remote_image_file_URL",
       output_template = p0_local_image_file_template
-      ),
+    ),
     pattern = map(p1_date_complete),
     format = "file"
   ),
@@ -61,10 +62,10 @@ p1_targets <- list(
   # download parquet files for incomplete dates (would be file target)
   tar_target(
     p1_gw_parquets,
-    download_gw_file(
-      metadata_row = p1_date_incomplete,
-      url_col = "remote_parquet_file_URL",
-      output_template = p0_local_parquet_file_template
+    gw_categorize_daily_vals(
+      fetch_date = p1_date_incomplete$date,
+      output_template = p0_local_parquet_file_template,
+      end_utc_cutoff = "2015-01-01"
     ),
     pattern = map(p1_date_incomplete),
     format = "file"
