@@ -28,12 +28,23 @@ p0_targets <- list(
     p0_local_image_type_prefix,
     "local_"
   ),
+  tar_target(
+    p0_logo_path,
+    "3_visualize/in/usgs_logo_black.png"
+  ),
+  # Note: this will updated - Hayley will share
+  tar_target(
+    p0_desktop_leg_path,
+    "3_visualize/in/mock-legend.png"
+  ),
   ##### date parameters #####
   tar_target(
     p0_yesterday_date,
     # # fix date for now, while building out pipeline
-    # as.Date("2026/03/05"),
-    Sys.Date() - 1,
+    as.Date("2026/03/05"),
+    # Sys.Date() - 1,
+    # as_date("2026-03-29") %m-% months(1)
+    # to catch 2/29
     # ensure target is reran and not skipped for CI
     cue = tar_cue(mode = "always")
   ),
@@ -42,7 +53,7 @@ p0_targets <- list(
     # will need to updated once we have 1, 3, 6, and 12 months of data from todays date
     # c(lubridate::dmonths(1), lubridate::dmonths(3), lubridate::dmonths(6),
     #   lubridate::years(1))
-    c(3, 5, 8)
+    c(3, 5, 9)
   ),
   tar_target(
     p0_interval_start_dates,
