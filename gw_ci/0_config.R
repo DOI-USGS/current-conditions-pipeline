@@ -89,21 +89,47 @@ p0_targets <- list(
     p0_area_info_df,
     tibble(
       name = c('CONUS', 'AK', 'HI', 'PR_VI', 'GU_MP', 'AS'),
-      full_name = 
-        c('Conterminous United States', 'Alaska', 'Hawaii', 'Puerto Rico & U.S. Virgin Islands', 
-          list(c('Guam', 'Northern \nMariana Islands')), 'American Samoa'),
-      state_list = c(
-        list('conus' = state.abb[! state.abb %in% c('AK', 'HI')]), 'AK', 'HI', 
-        list(c('PR', 'VI')), list(c('GU','MP')), 'AS'
+      full_name = c(
+        'Conterminous United States',
+        'Alaska',
+        'Hawaii',
+        'Puerto Rico & U.S. Virgin Islands',
+        list(c('Guam', 'Northern \nMariana Islands')),
+        'American Samoa'
       ),
-      proj = c("EPSG:5070", "EPSG:3338", 'ESRI:102007', "EPSG:2866", "EPSG:8693", 
-               "EPSG:2195"),
-      proj_name = c('Albers Equal Area','Alaska Albers Equal Area',
-                    'Hawaii_Albers_Equal_Area_Conic','Puerto Rico and Virgin Is.',
-                    'UTM zone 55N','UTM zone 2S'),
-      proj_datum = c('NAD83','NAD83','NAD83','NAD83(HARN)','NAD83(MA11)',
-                     'NAD83(HARN)'),
-      proj_units = c('meter','meter','meter','meter','meter','meter'),
+      state_list = c(
+        list('conus' = state.abb[!state.abb %in% c('AK', 'HI')]),
+        'AK',
+        'HI',
+        list(c('PR', 'VI')),
+        list(c('GU', 'MP')),
+        'AS'
+      ),
+      proj = c(
+        "EPSG:5070",
+        "EPSG:3338",
+        'ESRI:102007',
+        "EPSG:2866",
+        "EPSG:8693",
+        "EPSG:2195"
+      ),
+      proj_name = c(
+        'Albers Equal Area',
+        'Alaska Albers Equal Area',
+        'Hawaii_Albers_Equal_Area_Conic',
+        'Puerto Rico and Virgin Is.',
+        'UTM zone 55N',
+        'UTM zone 2S'
+      ),
+      proj_datum = c(
+        'NAD83',
+        'NAD83',
+        'NAD83',
+        'NAD83(HARN)',
+        'NAD83(MA11)',
+        'NAD83(HARN)'
+      ),
+      proj_units = c('meter', 'meter', 'meter', 'meter', 'meter', 'meter'),
       simplification_keep_high_simp = c(0.02, 0.011, 0.13, 0.03, 0.15, 0.03),
       simplification_keep_low_simp = c(0.1, 0.015, 0.15, 0.1, 0.2, 0.1),
       scale_factor = c(1, 0.5, 2, 2, 2, 2),
@@ -127,7 +153,8 @@ p0_targets <- list(
       "Normal" = "grey20",
       "Below normal" = "#be812b",
       "Much below" = "#8a5109",
-      "Extremely below" = "#532f05")
+      "Extremely below" = "#532f05"
+    )
   ),
   tar_target(
     # Create a tibble to define fig width and height, conus outline colors,

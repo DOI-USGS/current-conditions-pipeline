@@ -43,11 +43,70 @@ p3_targets <- list(
       image_screen_type = "desktop",
       output_template = file.path(p0_local_image_file_dir, 
                                   basename(p0_remote_image_file_template))
+      image_screen_type = "desktop",
+      output_template = file.path(p0_local_image_file_dir, 
+                                  basename(p0_remote_image_file_template))
     ),
     pattern = map(p1_date_incomplete, p2_gw_clean_parquets),
     format = "file"
   ),
   
+  ###### Mobile ######
+  # Generate appropriate scaling parameters for each area
+  # _NOTE: this is a first stab at adjusting these for different areas. I
+  # suspect we will also need to make some further adjustments for mobile_
+  tar_target(
+    p3_gw_binned_scales,
+    p0_gw_binned_scales |>
+      mutate(
+        max_vector_height = max_vector_height*p2_areas_low_simp_extents_df[["rel_height"]],
+        mid_vector_height = mid_vector_height*p2_areas_low_simp_extents_df[["rel_height"]],
+        min_vector_height = min_vector_height*p2_areas_low_simp_extents_df[["rel_height"]],
+        max_vector_width = max_vector_width*p2_areas_low_simp_extents_df[["rel_width"]],
+        mid_vector_width = max_vector_width * mid_factor,
+        min_vector_width = max_vector_width * min_factor,
+        normal_width = max_vector_width * min_factor
+      ),
+    pattern = map(p2_areas_low_simp_extents_df)
+  ),
+  
+  # Mobile images for all areas
+  tar_target(
+    p3_mobile_gw_pngs,
+    plot_gw_png(
+      gw_parquet_file = p2_gw_clean_parquets,
+      date = p1_date_incomplete[["date"]],
+      area_name = p0_area_info_df[["name"]],
+      area_sf = p2_areas_sf_low_simp_list,
+      area_proj = p0_area_info_df[["proj"]],
+      area_state_list = p0_area_info_df[["state_list"]],
+      palette = p0_viz_gw_pal,
+      viz_cfg = p0_viz_config_df,
+      scale_cfg = p3_gw_binned_scales,
+      state_lookup = p2_state_lookup,
+      image_screen_type = "mobile",
+      output_template = file.path(p0_local_image_file_dir, 
+                                  basename(p0_remote_image_file_template))
+    ),
+    pattern = 
+      cross(map(p1_date_incomplete, p2_gw_clean_parquets), 
+            map(p0_area_info_df, p2_areas_sf_low_simp_list, p3_gw_binned_scales)),
+    format = "file"
+  ),
+  
+  ##### Generate static stand-alone images #####
+  
+  # static formatted images
+  # map over p3_desktop_gw_pngs (and p3_mobile_gw_pngs? see note), 
+  # adding USGS logo and legend, date, etc.
+  # _NOTE: may need to map over separately if generating static images for
+  # all desktop and mobile views. MVP = desktop view only?_
+  # _NOTE: Placeholders for these files will need to be added to p1_metadata_csv,
+  # and these files will also need to be tracked in p3_new_gw_pngs_config
+  # (to ensure upload to s3) and thereby in p3_date_incomplete_updated
+  # (to ensure metadata updated on s3)_
+  
+  ##### Generate legend images #####
   ###### Mobile ######
   # Mobile images for all areas
   tar_target(
