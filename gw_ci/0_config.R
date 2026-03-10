@@ -49,8 +49,10 @@ p0_targets <- list(
   tar_target(
     p0_yesterday_date,
     # # fix date for now, while building out pipeline
-    # as.Date("2026/03/05"),
-    Sys.Date() - 1,
+    as.Date("2026/03/05"),
+    # Sys.Date() - 1,
+    # as_date("2026-03-29") %m-% months(1)
+    # to catch 2/29
     # ensure target is reran and not skipped for CI
     cue = tar_cue(mode = "always")
   ),
