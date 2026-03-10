@@ -5,29 +5,30 @@
 #'
 #' @param gw_parquet_file Path to processed parquet file for one date.
 #' @param date Date for which gw data are being plotted.
-#' @param conus_states sf of CONUS states.
-#' @param conus_inner_states_sf sf of inner state boundaries.
-#' @param conus_outer_states_sf sf of outer CONUS boundary.
+#' @param area_name name of area for which to plot gw data
+#' @param area_sf sf of polygons for `area_name`.
+#' @param area_proj proj to use for `area`
+#' @param area_state_list list of states within `area`
 #' @param palette Named color vector.
 #' @param viz_cfg Visualization config.
 #' @param scale_cfg Scaling config.
 #' @param state_lookup State lookup table.
-#' @param oconus_abbr Character vector of OCONUS state abbreviations.
-#' @param conus_proj crs for CONUS projection.
-#' @param out_path Filename template containing `%s` for date.
+#' @param image_screen_type Type of screen image is intended for, e.g., "desktop"
+#' or "mobile". Used to build output filename, along with `area_name` and `date`
+#' @param output_template Filename template containing `%s` for date.
 #'
 #' @return Character string path to saved PNG.
-plot_conus_gw_pngs <- function(gw_parquet_file, date, conus_states,
-                               conus_inner_states_sf, conus_outer_states_sf,
-                               palette, viz_cfg, scale_cfg, state_lookup,
-                               oconus_abbr, conus_proj, output_template) {
+plot_gw_png <- function(gw_parquet_file, date, area_name, area_sf, area_proj,
+                        area_state_list, palette, viz_cfg, scale_cfg, 
+                        state_lookup, image_screen_type, output_template) {
   
   date_val <- as.character(date)
-  out_path <- sprintf(output_template, date_val)
+  out_path <- sprintf(output_template, image_screen_type, area_name, date_val)
   
   message(sprintf(
-    "read in %s and plot CONUS map for %s, saving as %s",
+    "read in %s and plot %s map for %s, saving as %s",
     gw_parquet_file,
+    area_name,
     date_val,
     out_path
   ))
@@ -37,15 +38,13 @@ plot_conus_gw_pngs <- function(gw_parquet_file, date, conus_states,
   
   # Read and convert to sf, join states, drop oconus
   gw_sf <- arrow::read_parquet(gw_parquet_file) |>
-    st_as_sf() |> 
-    # Must set CRS to then transform from
-    st_set_crs(sf::st_crs("EPSG:4326")) |> 
-    st_transform(conus_proj) |> 
-    left_join(state_lookup, by = c("state_name" = "state_name_std")) |>
-    filter(
-      !state_abbr %in% oconus_abbr,
-      state_abbr != "MH"
-      ) |> 
+    sf::st_as_sf() |> 
+    # Must set CRS to EPSG:4326 first then transform
+    sf::st_set_crs(sf::st_crs("EPSG:4326")) |> 
+    # Transform to crs for area
+    sf::st_transform(area_proj) |> 
+    dplyr::left_join(state_lookup, by = c("state_name" = "state_name_std")) |>
+    dplyr::filter(state_abbr %in% unlist(area_state_list)) |> 
     # add in peaks computing fxn after transformation 
     compute_peak_geometry(scale_cfg)
   
@@ -53,12 +52,23 @@ plot_conus_gw_pngs <- function(gw_parquet_file, date, conus_states,
   gw_plot_order <- gw_sf |> 
     arrange(plotting_order, desc(y))
   
+  # For CONUS, extract additional geometries for plotting
+  if(area_name == "CONUS") {
+    # Extract internal lines
+    conus_inner_states_sf <- rmapshaper::ms_innerlines(area_sf)
+    # Extract outer boundary
+    conus_outer_boundary_sf <- area_sf |> 
+      sf::st_union() |> 
+      sf::st_cast("MULTILINESTRING")
+  }
+  
+  # Build plot
   p <- ggplot() +
-    # Map shadows
+    # Map area_sf with shadows
     ggfx::with_shadow(
       # Entire states polygons for shadow effect
       geom_sf(
-        data = conus_states,
+        data = area_sf,
         fill = viz_cfg$bg_col,
         color = NA
       ),
@@ -66,21 +76,37 @@ plot_conus_gw_pngs <- function(gw_parquet_file, date, conus_states,
       x_offset = 0,
       y_offset = 0,
       sigma = 12
-    ) +
-    # Internal state borders
-    geom_sf(
-      data = conus_inner_states_sf,
-      color = viz_cfg$conus_states_col, 
-      linewidth = 0.2,
-      fill = NA
-    ) +
-    # Minimal external boundary
-    geom_sf(
-      data = conus_outer_states_sf,
-      color = viz_cfg$bg_col, 
-      linewidth = 0.05,
-      fill = NA
-    ) +
+    )
+  
+  if (area_name == "CONUS") {
+    p <- p +
+      # Internal state borders
+      geom_sf(
+        data = conus_inner_states_sf,
+        color = viz_cfg$conus_states_col, 
+        linewidth = 0.2,
+        fill = NA
+      ) +
+      # Minimal external boundary
+      geom_sf(
+        data = conus_outer_boundary_sf,
+        color = viz_cfg$bg_col, 
+        linewidth = 0.05,
+        fill = NA
+      )
+  } else {
+    p <- p +
+      # Minimal external boundary
+      geom_sf(
+        data = area_sf,
+        color = viz_cfg$bg_col, 
+        linewidth = 0.05,
+        fill = NA
+      )
+  }
+  
+  # plot data
+  p <- p +
     # NA sites
     geom_sf(
       data = filter(gw_plot_order, is.na(per_bin)),
@@ -185,16 +211,24 @@ plot_conus_gw_pngs <- function(gw_parquet_file, date, conus_states,
     labs(title = date_val)
   
   # Export
+  if (image_screen_type == "desktop") {
+    export_width <- viz_cfg$width
+    export_height <- viz_cfg$height
+  } else if(image_screen_type == "mobile") {
+    export_width <- viz_cfg$mobile_width
+    export_height <- viz_cfg$mobile_height
+  } else {
+    stop(message("image_screen_type must be either 'desktop' or 'mobile'"))
+  }
   ggsave(
     filename = out_path,
     plot = p,
-    width = viz_cfg$width, height = viz_cfg$height,
+    width = export_width, height = export_height,
     dpi = viz_cfg$dpi, bg = viz_cfg$bg_col, units = viz_cfg$units
   )
   
   return(out_path)
-  
-}  
+}
 
 # Make legend marker with same dimensions for website build
 #' Plot a single legend marker

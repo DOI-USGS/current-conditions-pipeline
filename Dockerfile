@@ -47,6 +47,7 @@ remotes::install_version('retry', version = '0.1.1', lib='/root/R/library', repo
 remotes::install_version('av', version = '0.9.6', lib='/root/R/library', repos='https://cran.rstudio.com/')
 remotes::install_version('rmapshaper', version = '0.6.0', lib='/root/R/library', repos='https://cran.rstudio.com/')
 remotes::install_version('targets', version = '1.12.0', lib='/root/R/library', repos='https://cran.rstudio.com/')
+remotes::install_version('tarchetypes', version = '0.14.0', lib='/root/R/library', repos='https://cran.rstudio.com/')
 EOF
 
 # install.packages(c('sfarrow', 'retry', 'rmapshaper', 'av'), repos = 'http://cran.us.r-project.org')
