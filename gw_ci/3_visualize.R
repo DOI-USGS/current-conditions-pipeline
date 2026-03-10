@@ -1,4 +1,5 @@
 tar_source('3_visualize/src/mapping_utils.R')
+tar_source('3_visualize/src/movie_utils.R')
 
 p3_targets <- list(
   ##### Generate image files for incomplete dates #####
@@ -81,6 +82,24 @@ p3_targets <- list(
   # and these files will also need to be tracked in p3_new_gw_pngs_config
   # (to ensure upload to s3) and thereby in p3_date_incomplete_updated
   # (to ensure metadata updated on s3)_
+  tar_target(
+    p3_static_desktop_gw_pngs,
+    plot_gw_static_png(
+      gw_pngs = p3_desktop_gw_pngs,
+      date = p1_date_incomplete[["date"]],
+      logo_path = p0_logo_path,
+      legend_path = p0_desktop_leg_path,
+      viz_cfg = p0_viz_config_df,
+      image_screen_type = "desktop",
+      area_name = "CONUS",
+      output_template = file.path(
+        p0_local_image_file_dir,
+        basename(p0_remote_image_file_template)
+      )
+    ),
+    pattern = map(p1_date_incomplete, p3_desktop_gw_pngs),
+    format = "file"
+  ),
   
   ##### Generate legend images #####
   # Export png of each legend marker with same dimensions for website build
@@ -111,6 +130,21 @@ p3_targets <- list(
       local_image_file = p3_desktop_gw_pngs
     )
   ),
+  
+  # newly generated png config for static desktop
+  
+  tar_target(
+    p3_static_desktop_gw_pngs_config,
+    tibble(
+      date = p1_date_incomplete[["date"]],
+      local_image_type = paste0(
+        p0_local_image_type_prefix,
+        "desktop_static_",
+        "CONUS_image_file"
+      ),
+      local_image_file = p3_static_desktop_gw_pngs
+    )
+  ),
 
   # newly generated png config for mobile
   tar_target(
@@ -128,7 +162,9 @@ p3_targets <- list(
   # full newly generated png config
   tar_target(
     p3_new_gw_pngs_config,
-    bind_rows(p3_desktop_gw_pngs_config, p3_mobile_gw_pngs_config) |>
+    bind_rows(p3_desktop_gw_pngs_config,
+              p3_mobile_gw_pngs_config,
+              p3_static_desktop_gw_pngs_config) |>
       dplyr::mutate(
         remote_image_type = stringr::str_remove(local_image_type, 
                                                 p0_local_image_type_prefix),
@@ -165,6 +201,55 @@ p3_targets <- list(
   # MVP: filter to local_image_type == local_desktop_CONUS_image_file?
   # combine all of filtered_df[["local_image_file"]] into mp4, adding USGS logo
   # and legend, date, etc.
+  tar_target(
+    p3_gw_desktop_mp4,
+    build_gw_mp4(
+      interval_start_date = p0_interval_start_dates,
+      gw_png_config = p3_gw_pngs_config,
+      viz_cfg = p0_viz_config_df,
+      out_dir = p0_local_image_file_dir
+    ),
+    pattern = map(p0_interval_start_dates),
+    format = "file"
+  ),
+  
+  tar_target(
+    p3_gw_mp4_config,
+    tibble::tibble(
+      date = p0_interval_start_dates,
+      local_image_type = paste0(
+        p0_local_image_type_prefix,
+        "desktop_static_CONUS_mp4_",
+        format(p0_interval_start_dates, "%Y%m%d")
+      ),
+      local_image_file = p3_gw_desktop_mp4
+    ),
+    pattern = map(p0_interval_start_dates)
+  ),
+  
+  tar_target(
+    p3_new_gw_mp4_config,
+    p3_gw_mp4_config |>
+      dplyr::mutate(
+        remote_image_type =
+          stringr::str_remove(local_image_type, p0_local_image_type_prefix),
+        remote_image_file_key =
+          gsub(
+            p0_local_image_file_dir,
+            dirname(p0_remote_image_file_template),
+            local_image_file
+          ),
+        newly_generated = TRUE
+      )
+  ),
+  
+  tar_target(
+    p3_new_gw_files_config,
+    dplyr::bind_rows(
+      p3_new_gw_pngs_config,
+      p3_new_gw_mp4_config
+    )
+  ),
   
   ##### Generate updated metadata file to be pushed to s3 #####
   
@@ -175,18 +260,21 @@ p3_targets <- list(
     p3_date_incomplete_updated,
     p1_date_incomplete |>
       dplyr::select(-complete) |>
-      tidyr::pivot_longer(cols = matches("*_image_file"), 
+      tidyr::pivot_longer(cols = matches("(image_file|mp4)"), 
                    names_to = "remote_image_type",
                    values_to = "remote_image_file_key") |>
       # Drop column `remote_image_key` since by default NA for incomplete dates
       dplyr::select(-c(remote_image_file_key)) |>
       # Join in info on remote files based on locally generated files
-      dplyr::left_join(p3_new_gw_pngs_config |>
+      dplyr::left_join(p3_new_gw_files_config |>
                          select(date, remote_image_type, remote_image_file_key),
-                       by = c("date", "remote_image_type")) |>
+                       by = c("date", "remote_image_type")
+                       ) |> 
       # Pivot back to wide to match original format
       tidyr::pivot_wider(names_from = remote_image_type,
-                         values_from = remote_image_file_key)
+                         values_from = remote_image_file_key,
+                         values_fn = dplyr::first
+      )
   ),
   
   # Final update metadata file
