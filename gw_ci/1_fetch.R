@@ -1,4 +1,4 @@
-#tar_source('1_fetch/src/download_utils.R')
+tar_source('1_fetch/src/download_utils.R')
 tar_source('1_fetch/src/gw_categorize_daily_vals.R')
 
 p1_targets <- list(
@@ -114,12 +114,40 @@ p1_targets <- list(
   # Download parquet files for incomplete dates, in prep for making images
   tar_target(
     p1_gw_parquets,
-    gw_categorize_daily_vals(
-      fetch_date = p1_date_incomplete$date,
-      output_template = p0_local_parquet_file_template,
-      end_utc_cutoff = "2015-01-01"
-    ),
-    pattern = map(p1_date_incomplete),
+    {
+      # if the parquet file already exists on S3, download it.
+      if (!is.na(p1_date_config[["parquet_file"]])) {
+        message(paste0(
+          "Categorization parquet file already exists for ",
+          p1_date_config[["date"]]
+        ))
+
+        download_gw_file(
+          filename = p1_date_config[["parquet_file"]],
+          url_prefix = p0_s3_prod_URL,
+          outfile = file.path(
+            p0_parquet_file_dir,
+            basename(p1_date_config[["parquet_file"]])
+          )
+        )
+        # otherwise, create it
+      } else {
+        message(paste0(
+          "Creating categorization parquet file for ",
+          p1_date_config[["date"]]
+        ))
+
+        gw_categorize_daily_vals(
+          fetch_date = p1_date_config[["date"]],
+          end_utc_cutoff = "2015-01-01",
+          outfile = file.path(
+            p0_parquet_file_dir,
+            paste0("gw_categorizations_", p1_date_config[["date"]], ".parquet")
+          )
+        )
+      }
+    },
+    pattern = map(p1_date_config),
     format = "file"
   )
 )

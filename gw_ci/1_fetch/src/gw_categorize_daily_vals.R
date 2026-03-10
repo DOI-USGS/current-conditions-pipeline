@@ -1,6 +1,6 @@
 gw_categorize_daily_vals <- function(
   fetch_date,
-  output_template,
+  outfile,
   end_utc_cutoff = "2015-01-01"
 ) {
   gw_ts_ids <- arrow::read_parquet("1_fetch/in/gw_coverage.parquet")
@@ -139,9 +139,7 @@ gw_categorize_daily_vals <- function(
     tidytable::left_join(gw_categorizations, by = "time_series_id") |>
     tidytable::left_join(geometry_table, by = "time_series_id")
 
-  out_file <- sprintf(output_template, fetch_date)
+  arrow::write_parquet(gw_out, outfile)
 
-  arrow::write_parquet(gw_out, out_file)
-
-  return(out_file)
+  return(outfile)
 }
