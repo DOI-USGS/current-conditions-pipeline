@@ -765,3 +765,226 @@ plot_gw_static_png <- function(
 
   return(out_path)
 }
+
+#' Build and save a static groundwater PNG for one date
+#'
+#' Reads an existing groundwater PNG, adds static elements (logo, legend),
+#' and saves the formatted static image.
+#'
+#' @param gw_png Path to groundwater PNG for one date.
+#' @param date Date for which the groundwater image was generated.
+#' @param logo_path Path to USGS logo image.
+#' @param legend_path Path to legend image.
+#' @param viz_cfg Visualization configuration.
+#' @param image_screen_type Image type (e.g., "desktop" or "mobile").
+#' @param area_name Name of area being plotted (e.g., "CONUS").
+#' @param output_template Filename template used to build output path.
+#'
+#' @return Character string path to saved PNG.
+plot_gw_static_png <- function(
+  gw_png,
+  date,
+  logo_path,
+  legend_path,
+  viz_cfg,
+  image_screen_type,
+  area_name,
+  output_template
+) {
+  date_val <- as.character(date)
+  out_path <- sprintf(
+    output_template,
+    paste0("static-", image_screen_type),
+    area_name,
+    date_val
+  )
+
+  message(sprintf(
+    "Building static image from %s to %s",
+    gw_png,
+    out_path
+  ))
+
+  if (!dir.exists(dirname(out_path))) {
+    dir.create(dirname(out_path), recursive = TRUE)
+  }
+
+  base_img <- magick::image_read(gw_png)
+
+  usgs_logo <- magick::image_read(logo_path) |>
+    magick::image_colorize(100, "black")
+
+  legend_img <- magick::image_read(legend_path)
+
+  canvas <- grid::rectGrob(
+    x = 0,
+    y = 0,
+    width = viz_cfg$width,
+    height = viz_cfg$height,
+    gp = grid::gpar(fill = viz_cfg$bg_col, alpha = 1, col = viz_cfg$bg_col)
+  )
+
+  p <- ggdraw(ylim = c(0, 1), xlim = c(0, 1)) +
+    # a background
+    draw_grob(
+      canvas,
+      x = 0,
+      y = 1,
+      height = 8,
+      width = 8,
+      hjust = 0,
+      vjust = 1
+    ) +
+    draw_image(base_img, x = 0, y = 0, width = 1, height = 1) +
+    # Mock image legend
+    draw_image(
+      legend_img,
+      x = 0.9,
+      y = 1.04,
+      scale = 0.32,
+      height = 1,
+      hjust = 1,
+      vjust = 1,
+      halign = 1,
+      valign = 1
+    ) +
+    # Add logo
+    draw_image(
+      usgs_logo,
+      x = 0.98,
+      y = 0.024,
+      width = 0.1,
+      hjust = 1,
+      vjust = 0,
+      halign = 0,
+      valign = 0
+    ) +
+    # Add date
+    draw_label(
+      format(date, "%B%e, %Y"),
+      x = 0.01,
+      y = 0.98,
+      hjust = 0,
+      vjust = 1,
+      fontfamily = viz_cfg[["date_font"]],
+      color = viz_cfg[["date_font_color"]],
+      size = viz_cfg[["date_font_size"]]
+    )
+
+  ggsave(
+    filename = out_path,
+    plot = p,
+    width = viz_cfg$width,
+    height = viz_cfg$height,
+    dpi = viz_cfg$dpi,
+    units = viz_cfg$units,
+    bg = viz_cfg$bg_col
+  )
+
+  return(out_path)
+}
+
+#' Build and save a static groundwater PNG for one date
+#'
+#' Reads an existing groundwater PNG, adds static elements (logo, legend),
+#' and saves the formatted static image.
+#'
+#' @param gw_pngs Path to groundwater PNG for one date.
+#' @param date Date for which the groundwater image was generated.
+#' @param logo_path Path to USGS logo image.
+#' @param legend_path Path to legend image.
+#' @param viz_cfg Visualization configuration.
+#' @param image_screen_type Image type (e.g., "desktop" or "mobile").
+#' @param area_name Name of area being plotted (e.g., "CONUS").
+#' @param output_template Filename template used to build output path.
+#'
+#' @return Character string path to saved PNG.
+plot_gw_static_png <- function(
+  gw_pngs,
+  date,
+  logo_path,
+  legend_path,
+  viz_cfg,
+  image_screen_type,
+  area_name,
+  output_template
+) {
+  date_val <- as.character(date)
+  out_path <- sprintf(
+    output_template,
+    paste0("static-", image_screen_type),
+    area_name,
+    date_val
+  )
+
+  message(sprintf(
+    "Building static image from %s to %s",
+    gw_pngs,
+    out_path
+  ))
+
+  if (!dir.exists(dirname(out_path))) {
+    dir.create(dirname(out_path), recursive = TRUE)
+  }
+
+  base_img <- magick::image_read(gw_pngs)
+
+  usgs_logo <- magick::image_read(logo_path) |>
+    magick::image_colorize(100, "black") |>
+    magick::image_scale('250x')
+
+  legend_img <- magick::image_read(legend_path) |>
+    magick::image_scale('750x')
+
+  canvas <- grid::rectGrob(
+    x = 0,
+    y = 0,
+    width = 16,
+    height = 9,
+    gp = grid::gpar(fill = viz_cfg$bg_col, alpha = 1, col = viz_cfg$bg_col)
+  )
+
+  p <- ggdraw(ylim = c(0, 1), xlim = c(0, 1)) +
+    # a background
+    draw_grob(
+      canvas,
+      x = 0,
+      y = 1,
+      height = 8,
+      width = 8,
+      hjust = 0,
+      vjust = 1
+    ) +
+    draw_image(base_img, x = 0, y = 0, width = 1, height = 1) +
+    # Mock image legend
+    draw_image(
+      legend_img,
+      x = 0.94,
+      y = 0.4,
+      width = 0.45,
+      hjust = 1,
+      vjust = 0
+    ) +
+    # Add logo
+    draw_image(
+      usgs_logo,
+      x = 0.025,
+      y = 0.024,
+      width = 0.15,
+      hjust = 0,
+      vjust = 0,
+      halign = 0,
+      valign = 0
+    )
+  ggsave(
+    filename = out_path,
+    plot = p,
+    width = viz_cfg$width,
+    height = viz_cfg$height,
+    dpi = viz_cfg$dpi,
+    units = viz_cfg$units,
+    bg = viz_cfg$bg_col
+  )
+
+  return(out_path)
+}
