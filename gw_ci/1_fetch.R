@@ -2,10 +2,17 @@
 tar_source('1_fetch/src/gw_categorize_daily_vals.R')
 
 p1_targets <- list(
+  ##### spatial data #####
+  tar_target(
+    p1_states_sf,
+    tigris::states(cb = TRUE, resolution = "500k")
+  ),
+
+  ##### GW data #####
   # Download gw file metadata
   tar_target(
     p1_metadata_csv,
-    "1_fetch/in/gw_file_metadata.csv",
+    p0_metadata_path,
     format = "file",
     # ensure target is reran and not skipped for CI
     cue = tar_cue(mode = "always")
@@ -15,7 +22,6 @@ p1_targets <- list(
     readr::read_csv(p1_metadata_csv)
   ),
   # Build out data tibble for all dates
-  # could use directly to generate p3_gw_pngs
   tar_target(
     p1_date_config,
     {
@@ -23,43 +29,89 @@ p1_targets <- list(
         date = seq.Date(min(p0_interval_start_dates), p0_yesterday_date, by = 1)
       ) |>
         dplyr::left_join(p1_metadata, by = "date") |>
+        # Determine completeness by all image files for a given date documented
+        # as existing on s3
         dplyr::mutate(
-          remote_parquet_file_URL = paste0(p0_s3_prod_URL, parquet_file),
-          remote_image_file_URL = paste0(p0_s3_prod_URL, image_file) #,
-          # local_parquet_file = ifelse(
-          #   file.exists(file.path(p0_parquet_file_dir, basename(parquet_file))),
-          #   file.path(p0_parquet_file_dir, basename(parquet_file)),
-          #   NA_character_),
-          # local_image_file = ifelse(
-          #   file.exists(file.path(p0_image_file_dir, basename(image_file))),
-          #   file.path(p0_image_file_dir, basename(image_file)),
-          #   NA_character_),
+          complete = if_all(.cols = matches("*_image_file"), .fns = ~ !is.na(.))
         )
     }
   ),
-  # or, start filtering
+  # Identify dates w/ a complete set of images
   tar_target(
     p1_date_complete,
-    dplyr::filter(p1_date_config, !is.na(p1_date_config[["image_file"]]))
+    dplyr::filter(p1_date_config, complete)
   ),
-  # download image files for complete dates (would be file target)
+  # Download all image files for complete dates
+  tar_target(
+    p1_existing_gw_pngs_config,
+    {
+      if (nrow(p1_date_complete) == 0) {
+        tibble(
+          date = p0_yesterday_date,
+          remote_image_type = NA_character_,
+          remote_image_file_key = NA_character_
+        )
+      } else {
+        p1_date_complete |>
+          dplyr::select(-c(parquet_file, complete)) |>
+          tidyr::pivot_longer(
+            cols = matches("*_image_file"),
+            names_to = "remote_image_type",
+            values_to = "remote_image_file_key"
+          )
+      }
+    }
+  ),
   tar_target(
     p1_existing_gw_pngs,
-    download_gw_file(
-      metadata_row = p1_date_complete,
-      url_col = "remote_image_file_URL",
-      output_template = p0_local_image_file_template
-    ),
-    pattern = map(p1_date_complete),
+    {
+      if (!is.na(p1_existing_gw_pngs_config[["remote_image_file_key"]])) {
+        download_gw_file(
+          filename = p1_existing_gw_pngs_config[["remote_image_file_key"]],
+          url_prefix = p0_s3_prod_URL,
+          outfile = file.path(
+            p0_local_image_file_dir,
+            basename(p1_existing_gw_pngs_config[["remote_image_file_key"]])
+          )
+        )
+      } else {
+        return(p0_local_image_file_dir)
+      }
+    },
+    pattern = map(p1_existing_gw_pngs_config),
     format = "file"
   ),
-  # When scale up, maybe just check if ALL pngs for given date are on s3
-  # if any are missing, regenerate all of them
+  tar_target(
+    p1_downloaded_gw_pngs_config,
+    {
+      if (nrow(p1_date_complete) == 0) {
+        tibble(
+          date = date(0),
+          remote_image_type = character(0),
+          remote_image_file_key = character(0),
+          local_image_type = character(0),
+          local_image_file = character(0),
+          newly_generated = logical(0)
+        )
+      } else {
+        p1_existing_gw_pngs_config |>
+          dplyr::mutate(
+            local_image_type = paste0(
+              p0_local_image_type_prefix,
+              remote_image_type
+            ),
+            local_image_file = p1_existing_gw_pngs,
+            newly_generated = FALSE
+          )
+      }
+    }
+  ),
+  # Identify dates w/ an incomplete set of images
   tar_target(
     p1_date_incomplete,
-    dplyr::filter(p1_date_config, is.na(p1_date_config[["image_file"]]))
+    dplyr::filter(p1_date_config, !complete)
   ),
-  # download parquet files for incomplete dates (would be file target)
+  # Download parquet files for incomplete dates, in prep for making images
   tar_target(
     p1_gw_parquets,
     gw_categorize_daily_vals(

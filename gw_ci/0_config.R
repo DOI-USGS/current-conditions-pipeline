@@ -17,24 +17,22 @@ p0_targets <- list(
     "1_fetch/out"
   ),
   tar_target(
-    p0_local_parquet_file_template,
-    paste(p0_parquet_file_dir, basename(p0_remote_parquet_file_template), sep = "/")
-  ),
-  tar_target(
     p0_remote_image_file_template,
-    "current_conditions/groundwater/images/gw-%s.png"
+    "current_conditions/groundwater/images/gw-%s-%s-%s.png"
   ),
   tar_target(
-    p0_image_file_dir,
+    p0_local_image_file_dir,
     "3_visualize/out/gw"
   ),
   tar_target(
-    p0_local_image_file_template,
-    paste(p0_image_file_dir, basename(p0_remote_image_file_template), sep = "/")
+    p0_local_image_type_prefix,
+    "local_"
   ),
   ##### date parameters #####
   tar_target(
     p0_yesterday_date,
+    # # fix date for now, while building out pipeline
+    # as.Date("2026/03/05"),
     Sys.Date() - 1,
     # ensure target is reran and not skipped for CI
     cue = tar_cue(mode = "always")
@@ -44,7 +42,7 @@ p0_targets <- list(
     # will need to updated once we have 1, 3, 6, and 12 months of data from todays date
     # c(lubridate::dmonths(1), lubridate::dmonths(3), lubridate::dmonths(6),
     #   lubridate::years(1))
-    c(3, 5, 7)
+    c(3, 5, 8)
   ),
   tar_target(
     p0_interval_start_dates,
@@ -52,17 +50,27 @@ p0_targets <- list(
   ),
   ##### spatial parameters #####
   tar_target(
-    p0_conus_proj,
-    "ESRI:102004"
-    ),
-  # OCONUS states/territories
-  tar_target(
-    p0_oconus_states,
-    c("Alaska","Hawaii","Puerto Rico","United States Virgin Islands","Commonwealth of the Northern Mariana Islands", "Guam", "American Samoa")
-  ),
-  tar_target(
-    p0_oconus_states_abbr,
-    c("AK","HI","PR","VI","MP", "GU","AS")
+    p0_area_info_df,
+    tibble(
+      name = c('CONUS', 'AK', 'HI', 'PR_VI', 'GU_MP', 'AS'),
+      full_name = 
+        c('CONUS', 'Alaska', 'Hawaii', 'Puerto Rico and the U.S. Virgin Islands', 
+          'Guam and the Northern Mariana Islands', 'American Samoa'),
+      state_list = c(
+        list('conus' = state.abb[! state.abb %in% c('AK', 'HI')]), 'AK', 'HI', 
+        list(c('PR', 'VI')), list(c('GU','MP')), 'AS'
+      ),
+      proj = c("EPSG:5070", "EPSG:3338", 'ESRI:102007', "EPSG:2866", "EPSG:8693", 
+               "EPSG:2195"),
+      proj_name = c('Albers Equal Area','Alaska Albers Equal Area',
+                    'Hawaii_Albers_Equal_Area_Conic','Puerto Rico and Virgin Is.',
+                    'UTM zone 55N','UTM zone 2S'),
+      proj_datum = c('NAD83','NAD83','NAD83','NAD83(HARN)','NAD83(MA11)',
+                     'NAD83(HARN)'),
+      proj_units = c('meter','meter','meter','meter','meter','meter'),
+      simplification_keep_high_simp = c(0.02, 0.011, 0.13, 0.03, 0.15, 0.03),
+      simplification_keep_low_simp = c(0.1, 0.015, 0.15, 0.1, 0.2, 0.1)
+    )
   ),
   ##### visual parameters #####
   tar_target(
@@ -83,6 +91,8 @@ p0_targets <- list(
     tibble(
       width = 1600,
       height = 1200,
+      mobile_width = 1600,
+      mobile_height = 1600,
       leg_width = 300,
       leg_height = 300,
       units = "px",
