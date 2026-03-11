@@ -30,6 +30,7 @@ sf_ci/data/*
 !sf_ci/data/.empty
 sf_ci/figures/*
 !sf_ci/figures/.empty
+sf_ci/stage/*
 sf_ci/movies/*
 !sf_ci/movies/.empty
 sf_ci/sf_conditions/__pycache__
