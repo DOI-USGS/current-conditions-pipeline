@@ -3,8 +3,7 @@ import urllib.request
 import numpy as np
 import pandas as pd
 import geopandas as gpd
-from sf_conditions.plot.plot_functions import coverage_plot, shadow_plot
-from sf_conditions.fetch.get_s3 import download_file_urllib
+from sf_conditions.plot.plot_functions import shadow_plot
 
 def plot_current_conditions(
     figure_params,

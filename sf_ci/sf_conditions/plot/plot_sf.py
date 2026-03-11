@@ -3,10 +3,9 @@ import urllib.request
 import numpy as np
 import pandas as pd
 import geopandas as gpd
-from sf_conditions.plot.plot_functions import coverage_plot, shadow_plot
-from sf_conditions.fetch.get_s3 import download_file_urllib
+from sf_conditions.plot.plot_functions import generate_figure, shadow_plot
 
-def plot_current_conditions(
+def plot_daily_sf_condition(
     figure_params,
     parquet_file,
     image_file,
@@ -15,16 +14,9 @@ def plot_current_conditions(
     marker_params,
     state_params,
 ):
-    """Set up data and make plots for the given date list."""
+    """Set up data and make plots for the given date."""
 
     us_states_gdf = gpd.read_file(simplified_census_file)
-
-    shadow_plot(
-        figure_params,
-        us_states_gdf,
-        "figures/shadow_" + figure_params["prefix"] + ".png",
-        state_params,
-    )
 
     # Load parquet file
     dv_df_day = pd.read_parquet(parquet_file)
@@ -57,7 +49,7 @@ def plot_current_conditions(
 
     # generate the CONUS + OCONUS plot
     date = image_file[len("figures/sf-"):-len(".png")]
-    coverage_plot(
+    generate_figure(
         date,
         figure_params,
         us_states_gdf,
@@ -77,7 +69,7 @@ if __name__ == "__main__":
     shadow_image_file = snakemake.input["shadow_image_file"]
     image_file = snakemake.output["image_file"]
 
-    plot_current_conditions(
+    plot_daily_sf_condition(
         figure_params,
         parquet_file,
         image_file,
