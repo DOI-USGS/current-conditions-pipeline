@@ -1,3 +1,8 @@
+s3_url_prefix: "https://labs.waterdata.usgs.gov/visualizations/current_conditions/streamflow/"
+interval:
+  - 3d
+  - 5d
+
 figure_params:
   prefix: "sf_current_conditions"
   dimensions: [8,4]
