@@ -7,7 +7,7 @@ interval:
 
 figure_params:
   prefix: "sf_current_conditions"
-  dimensions: [8,4]
+  dimensions: [8, 4]
   facecolor: "#ffffff"
   fontfamily: "sans-serif"
   font: "Source Sans 3"
@@ -63,45 +63,45 @@ state_params:
 marker_params:
   marker: "o"
   zorder:
-    - 7  # Extremely below
-    - 5  # Much below
-    - 3  # Below normal
-    - 2  # Normal
-    - 4  # Above normal
-    - 6  # Much above
-    - 8  # Extremely above
+    - 7 # Extremely below
+    - 5 # Much below
+    - 3 # Below normal
+    - 2 # Normal
+    - 4 # Above normal
+    - 6 # Much above
+    - 8 # Extremely above
   facecolor:
-    - "#ffffffbf"  # Extremely below
-    - "#ffffffbf"  # Much below
-    - "#ffffffbf"  # Below normal
-    - "#494949ff"  # Normal
-    - "#74acd1ff"  # Above normal
-    - "#4575b4ff"  # Much above
-    - "#313694ff"  # Extremely above
+    - "#ffffffbf" # Extremely below
+    - "#ffffffbf" # Much below
+    - "#ffffffbf" # Below normal
+    - "#494949ff" # Normal
+    - "#74acd1ff" # Above normal
+    - "#4575b4ff" # Much above
+    - "#313694ff" # Extremely above
   edgecolor:
-    - "#532f05ff"  # Extremely below
-    - "#8a5109ff"  # Much below
-    - "#be812bff"  # Below normal
-    - "#ffffffff"  # Normal
-    - "#ffffffff"  # Above normal
-    - "#ffffffff"  # Much above
-    - "#ffffffff"  # Extremely above
+    - "#532f05ff" # Extremely below
+    - "#8a5109ff" # Much below
+    - "#be812bff" # Below normal
+    - "#ffffffff" # Normal
+    - "#ffffffff" # Above normal
+    - "#ffffffff" # Much above
+    - "#ffffffff" # Extremely above
   markersize:
-    - 7  # Extremely below
-    - 5  # Much below
-    - 3  # Below normal
-    - 1  # Normal
-    - 4.731  # Above normal - modified to have a radius that is larger by 0.25pt (Area_wet = pi * (R_increase + sqrt(Area_dry / pi)) ^ 2)
-    - 7.178  # Much above - modified to have a radius that is larger by 0.25pt
-    - 9.541  # Extremely above - modified to have a radius that is larger by 0.25pt
+    - 7 # Extremely below
+    - 5 # Much below
+    - 3 # Below normal
+    - 1 # Normal
+    - 4.731 # Above normal - modified to have a radius that is larger by 0.25pt (Area_wet = pi * (R_increase + sqrt(Area_dry / pi)) ^ 2)
+    - 7.178 # Much above - modified to have a radius that is larger by 0.25pt
+    - 9.541 # Extremely above - modified to have a radius that is larger by 0.25pt
   linewidth:
-    - 0.5  # Extremely below
-    - 0.5  # Much below
-    - 0.5  # Below normal
-    - 0.25  # Normal
-    - 0.25  # Above normal
-    - 0.25  # Much above
-    - 0.25  # Extremely above
+    - 0.5 # Extremely below
+    - 0.5 # Much below
+    - 0.5 # Below normal
+    - 0.25 # Normal
+    - 0.25 # Above normal
+    - 0.25 # Much above
+    - 0.25 # Extremely above
   label:
     - "Extremely below"
     - "Much below"
@@ -111,8 +111,8 @@ marker_params:
     - "Much above"
     - "Extremely above"
   NA:
-    marker: 'x'
-    color: '#808080'
+    marker: "x"
+    color: "#808080"
     linewidth: 0.25
     size: 1
     zorder: 1

@@ -5,6 +5,7 @@ import pandas as pd
 import geopandas as gpd
 from sf_conditions.plot.plot_functions import generate_figure, shadow_plot
 
+
 def plot_daily_sf_condition(
     figure_params,
     parquet_file,
@@ -48,7 +49,7 @@ def plot_daily_sf_condition(
     dv_gdf_day["percentile_bin"] = dv_gdf_day["category"].map(percentile_bins)
 
     # generate the CONUS + OCONUS plot
-    date = image_file[len("figures/sf-"):-len(".png")]
+    date = image_file[len("figures/sf-") : -len(".png")]
     generate_figure(
         date,
         figure_params,
@@ -59,6 +60,7 @@ def plot_daily_sf_condition(
         state_params,
         shadow_image_file,
     )
+
 
 if __name__ == "__main__":
     figure_params = snakemake.params["figure_params"]
