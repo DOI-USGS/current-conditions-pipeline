@@ -1,11 +1,13 @@
 
 def ff_line(path: str) -> str:
-    # Escape single quotes for ffmpeg concat list format: 'foo' -> '\''foo'\''
+    """Cleans up path for ffmpeg."""
+    
     escaped = path.replace("'", "'\\''")
     return f"file '../{escaped}'\n"
 
 def generate_frame_list(image_list, framerate, frame_list):
-    # Compute duration from framerate
+    """Generates the list of images and durations for animation."""
+
     dur = 1.0 / float(framerate)
 
     with open(frame_list, "w", encoding="utf-8") as f:
