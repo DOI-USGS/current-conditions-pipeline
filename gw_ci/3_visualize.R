@@ -73,15 +73,7 @@ p3_targets <- list(
   
   ##### Generate static stand-alone images #####
   
-  # static formatted images
-  # map over p3_desktop_gw_pngs (and p3_mobile_gw_pngs? see note), 
-  # adding USGS logo and legend, date, etc.
-  # _NOTE: may need to map over separately if generating static images for
-  # all desktop and mobile views. MVP = desktop view only?_
-  # _NOTE: Placeholders for these files will need to be added to p1_metadata_csv,
-  # and these files will also need to be tracked in p3_new_gw_pngs_config
-  # (to ensure upload to s3) and thereby in p3_date_incomplete_updated
-  # (to ensure metadata updated on s3)_
+  # Static formatted images
   tar_target(
     p3_static_gw_pngs,
     plot_gw_static_png(
@@ -271,7 +263,6 @@ p3_targets <- list(
   ),
   
   # Final update metadata file
-  # WILL NEED TO ACCOUNT FOR MORE FILES - MP4 and static formatted images
   tar_target(
     p3_date_config_updated_csv,
     {
