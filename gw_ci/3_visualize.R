@@ -199,6 +199,7 @@ p3_targets <- list(
     p3_gw_desktop_mp4,
     build_gw_mp4(
       interval_start_date = p0_interval_start_dates,
+      interval_end_date = p0_yesterday_date,
       interval_name = p0_interval_names,
       gw_png_config = p3_gw_pngs_config,
       viz_cfg = p0_viz_config_df,
