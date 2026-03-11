@@ -3,7 +3,8 @@
 #' Filters static desktop CONUS images to those within a given date interval
 #' and encodes them into an mp4 mobie.
 #'
-#' @param interval_start_date Start date for the animation interval.
+#' @param interval_start_date Start date for the MP4 interval.
+#' @param interval_end_date End date for the MP4 interval.
 #' @param interval_name Names of intervals (i.e. `last-month`, `last-3-months`..)
 #' @param gw_png_config Data frame containing PNG metadata.
 #' @param viz_cfg Visualization configuration (contains fps).
@@ -12,6 +13,7 @@
 #'
 #' @return Character string path to saved MP4.
 build_gw_mp4 <- function(interval_start_date,
+                         interval_end_date, 
                          interval_name,
                          gw_png_config,
                          viz_cfg,
@@ -21,7 +23,8 @@ build_gw_mp4 <- function(interval_start_date,
   filtered_df <- gw_png_config |>
     dplyr::filter(
       local_image_type == img_type_name,
-      date >= interval_start_date
+      date >= interval_start_date,
+      date <= interval_end_date
     ) |>
     dplyr::arrange(date)
   
