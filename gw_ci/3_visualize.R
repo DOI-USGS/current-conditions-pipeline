@@ -219,7 +219,7 @@ p3_targets <- list(
       local_image_type = paste0(
         p0_local_image_type_prefix,
         "desktop_static_CONUS_mp4_",
-        p0_interval_names
+        gsub("-", "_", p0_interval_names)
       ),
       local_image_file = p3_gw_desktop_mp4
     ) |>
