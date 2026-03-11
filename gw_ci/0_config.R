@@ -53,7 +53,16 @@ p0_targets <- list(
     # will need to updated once we have 1, 3, 6, and 12 months of data from todays date
     # c(lubridate::dmonths(1), lubridate::dmonths(3), lubridate::dmonths(6),
     #   lubridate::years(1))
-    c(3, 5, 9)
+    c(
+      "last-month" = 3,
+      "last-3-months" = 5,
+      "last-6-months" = 9
+      #, "last-year" = x
+    )
+  ),
+  tar_target(
+    p0_interval_names,
+    names(p0_interval_start_dates)
   ),
   tar_target(
     p0_interval_start_dates,
