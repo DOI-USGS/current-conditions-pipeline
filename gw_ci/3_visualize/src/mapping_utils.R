@@ -443,7 +443,7 @@ compute_peak_geometry <- function(gw_sf, scale_cfg) {
 #' Reads an existing groundwater PNG, adds static elements (logo, legend),
 #' and saves the formatted static image.
 #'
-#' @param gw_pngs Path to groundwater PNG for one date.
+#' @param gw_png Path to groundwater PNG for one date.
 #' @param date Date for which the groundwater image was generated.
 #' @param logo_path Path to USGS logo image.
 #' @param legend_path Path to legend image.
@@ -453,7 +453,7 @@ compute_peak_geometry <- function(gw_sf, scale_cfg) {
 #' @param output_template Filename template used to build output path.
 #'
 #' @return Character string path to saved PNG.
-plot_gw_static_png <- function(gw_pngs, date, logo_path, legend_path,
+plot_gw_static_png <- function(gw_png, date, logo_path, legend_path,
                                viz_cfg, image_screen_type, area_name,
                                output_template) {
   
@@ -463,7 +463,7 @@ plot_gw_static_png <- function(gw_pngs, date, logo_path, legend_path,
   
   message(sprintf(
     "Building static image from %s to %s",
-    gw_pngs,
+    gw_png,
     out_path
   ))
   
@@ -471,7 +471,7 @@ plot_gw_static_png <- function(gw_pngs, date, logo_path, legend_path,
     dir.create(dirname(out_path), recursive = TRUE)
   }
   
-  base_img <- magick::image_read(gw_pngs)
+  base_img <- magick::image_read(gw_png)
   
   usgs_logo <- magick::image_read(logo_path)|>
     magick::image_colorize(100, "black") |>
