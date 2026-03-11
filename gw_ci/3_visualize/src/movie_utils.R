@@ -22,6 +22,7 @@ build_gw_mp4 <- function(
   img_type_name
 ) {
 build_gw_mp4 <- function(interval_start_date,
+                         interval_end_date, 
                          interval_name,
                          gw_png_config,
                          viz_cfg,
