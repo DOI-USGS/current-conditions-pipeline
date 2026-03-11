@@ -5,7 +5,7 @@ import pandas as pd
 import geopandas as gpd
 from sf_conditions.plot.plot_functions import shadow_plot
 
-def plot_current_conditions(
+def plot_shadow_outline(
     figure_params,
     simplified_census_file,
     state_params,
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     simplified_census_file = snakemake.input["simplified_census_file"]
     shadow_image_file = snakemake.output["shadow_image_file"]
 
-    plot_current_conditions(
+    plot_shadow_outline(
         figure_params,
         simplified_census_file,
         state_params,
