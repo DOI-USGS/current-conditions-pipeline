@@ -53,7 +53,7 @@ p1_targets <- list(
         )
       } else {
         p1_date_complete |>
-          dplyr::select(-c(parquet_file, complete)) |>
+          dplyr::select(-c(parquet_file, complete, matches("(mp4)"))) |>
           tidyr::pivot_longer(
             cols = matches("*_image_file"),
             names_to = "remote_image_type",

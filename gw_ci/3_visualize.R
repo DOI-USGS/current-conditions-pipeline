@@ -83,7 +83,7 @@ p3_targets <- list(
   # (to ensure upload to s3) and thereby in p3_date_incomplete_updated
   # (to ensure metadata updated on s3)_
   tar_target(
-    p3_static_desktop_gw_pngs,
+    p3_static_gw_pngs,
     plot_gw_static_png(
       gw_png = p3_desktop_gw_pngs,
       date = p1_date_incomplete[["date"]],
@@ -133,7 +133,7 @@ p3_targets <- list(
   
   # newly generated png config for static desktop
   tar_target(
-    p3_static_desktop_gw_pngs_config,
+    p3_static_gw_pngs_config,
     tibble(
       date = p1_date_incomplete[["date"]],
       local_image_type = paste0(
@@ -141,7 +141,7 @@ p3_targets <- list(
         "desktop_static_",
         "CONUS_image_file"
       ),
-      local_image_file = p3_static_desktop_gw_pngs
+      local_image_file = p3_static_gw_pngs
     )
   ),
 
@@ -163,7 +163,7 @@ p3_targets <- list(
     p3_new_gw_pngs_config,
     bind_rows(p3_desktop_gw_pngs_config,
               p3_mobile_gw_pngs_config,
-              p3_static_desktop_gw_pngs_config) |>
+              p3_static_gw_pngs_config) |>
       dplyr::mutate(
         remote_image_type = stringr::str_remove(local_image_type, 
                                                 p0_local_image_type_prefix),
@@ -213,22 +213,16 @@ p3_targets <- list(
   ),
   
   tar_target(
-    p3_gw_mp4_config,
+    p3_new_gw_mp4_config,
     tibble::tibble(
-      date = p0_interval_start_dates,
+      date = p0_yesterday_date,
       local_image_type = paste0(
         p0_local_image_type_prefix,
         "desktop_static_CONUS_mp4_",
         format(p0_interval_start_dates, "%Y%m%d")
       ),
       local_image_file = p3_gw_desktop_mp4
-    ),
-    pattern = map(p0_interval_start_dates)
-  ),
-  
-  tar_target(
-    p3_new_gw_mp4_config,
-    p3_gw_mp4_config |>
+    ) |>
       dplyr::mutate(
         remote_image_type =
           stringr::str_remove(local_image_type, p0_local_image_type_prefix),
