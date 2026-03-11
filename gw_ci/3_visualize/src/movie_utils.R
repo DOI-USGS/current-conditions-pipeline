@@ -4,19 +4,23 @@
 #' and encodes them into an mp4 mobie.
 #'
 #' @param interval_start_date Start date for the animation interval.
+#' @param interval_name Names of intervals (i.e. `last-month`, `last-3-months`..)
 #' @param gw_png_config Data frame containing PNG metadata.
 #' @param viz_cfg Visualization configuration (contains fps).
-#' @param out_dir Directory where MP4 should be saved.
+#' @param img_type_name Local image type name to filter by.
+#' @param output_template Directory where MP4 should be saved.
 #'
 #' @return Character string path to saved MP4.
 build_gw_mp4 <- function(interval_start_date,
+                         interval_name,
                          gw_png_config,
                          viz_cfg,
-                         out_dir) {
+                         output_template,
+                         img_type_name) {
   
   filtered_df <- gw_png_config |>
     dplyr::filter(
-      local_image_type == "local_desktop_static_CONUS_image_file",
+      local_image_type == img_type_name,
       date >= interval_start_date
     ) |>
     dplyr::arrange(date)
@@ -24,24 +28,20 @@ build_gw_mp4 <- function(interval_start_date,
   frames <- filtered_df$local_image_file
   
   interval_str <- format(interval_start_date, "%Y-%m-%d")
-  
-  out_path <- file.path(
-    out_dir,
-    sprintf("gw-movie-desktop-CONUS-%s.mp4", interval_str)
-  )
-  
+
   message(sprintf(
-    "Building mp4 for interval starting %s with %s frames",
-    interval_str,
+    "Building mp4 for %s with %s frames",
+    interval_name,
     length(frames)
   ))
   
+  
   av::av_encode_video(
     input = frames,
-    output = out_path,
+    output = output_template,
     framerate = viz_cfg$fps,
     vfilter = "scale=trunc(iw/2)*2:trunc(ih/2)*2"
   )
   
-  return(out_path)
+  return(output_template)
 }

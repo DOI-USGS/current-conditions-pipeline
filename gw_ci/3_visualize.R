@@ -195,22 +195,21 @@ p3_targets <- list(
   ),
   
   # mp4 generation for download
-  # map over p0_interval_start_dates and filter p3_gw_pngs_config
-  # TBD: how to handle different areas??? do we want mp4s for every area?
-  # MVP: filter to local_image_type == local_desktop_CONUS_image_file?
-  # combine all of filtered_df[["local_image_file"]] into mp4, adding USGS logo
-  # and legend, date, etc.
   tar_target(
     p3_gw_desktop_mp4,
     build_gw_mp4(
       interval_start_date = p0_interval_start_dates,
+      interval_name = p0_interval_names,
       gw_png_config = p3_gw_pngs_config,
       viz_cfg = p0_viz_config_df,
-      out_dir = p0_local_image_file_dir
-    ),
-    pattern = map(p0_interval_start_dates),
+      img_type_name = "local_desktop_static_CONUS_image_file",
+      output_template = file.path(p0_local_image_file_dir, 
+                                  sprintf("gw-movie-desktop-CONUS-%s.mp4",
+                                          p0_interval_names))
+      ),
+    pattern = map(p0_interval_start_dates, p0_interval_names),
     format = "file"
-  ),
+    ),
   
   tar_target(
     p3_new_gw_mp4_config,
@@ -219,7 +218,7 @@ p3_targets <- list(
       local_image_type = paste0(
         p0_local_image_type_prefix,
         "desktop_static_CONUS_mp4_",
-        format(p0_interval_start_dates, "%Y%m%d")
+        p0_interval_names
       ),
       local_image_file = p3_gw_desktop_mp4
     ) |>

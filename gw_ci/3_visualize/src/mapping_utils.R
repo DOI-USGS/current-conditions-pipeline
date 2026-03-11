@@ -513,7 +513,14 @@ plot_gw_static_png <- function(gw_png, date, logo_path, legend_path,
                y = 0.024,
                width = 0.15,
                hjust = 0, vjust = 0,
-               halign = 0, valign = 0)
+               halign = 0, valign = 0) +
+    # Add date 
+    draw_label(date_val,
+               x = 0.125,
+               y = 0.9,
+               size = 14)
+    
+    
   ggsave(
     filename = out_path,
     plot = p,
