@@ -85,7 +85,7 @@ p3_targets <- list(
   tar_target(
     p3_static_desktop_gw_pngs,
     plot_gw_static_png(
-      gw_pngs = p3_desktop_gw_pngs,
+      gw_png = p3_desktop_gw_pngs,
       date = p1_date_incomplete[["date"]],
       logo_path = p0_logo_path,
       legend_path = p0_desktop_leg_path,
@@ -132,7 +132,6 @@ p3_targets <- list(
   ),
   
   # newly generated png config for static desktop
-  
   tar_target(
     p3_static_desktop_gw_pngs_config,
     tibble(
