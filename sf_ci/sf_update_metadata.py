@@ -10,7 +10,7 @@ BUCKET = "water-visualizations-prod-website"
 METADATA_KEY = "visualizations/current_conditions/streamflow/sf_file_metadata.csv"
 EXPECTED_OUTPUTS = {
     "parquet_file": "sf_ci/data/sf_categorizations_{date}.parquet",
-    "image_file": "sf_ci/figures/sf-{date}.png",
+    "desktop_CONUS_image_file": "sf_ci/figures/sf-{date}.png",
     "movie_3d": "sf_ci/movies/sf-{date}-back-3d.mp4",
     "movie_5d": "sf_ci/movies/sf-{date}-back-5d.mp4",
 }
