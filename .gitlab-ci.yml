@@ -275,7 +275,7 @@ sf_render:
     - echo "PIPELINE_MODE=${PIPELINE_MODE}"
     - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
     - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/data/sf_coverage.parquet sf_ci/data/sf_coverage.parquet
-    - pixi run snakemake --snakefile sf_ci/Snakefile --directory sf_ci --config date=$(date +%F)
+    - pixi run snakemake --snakefile sf_ci/Snakefile --cores all --directory sf_ci --config date=$(date +%F)
     - pixi run aws s3 cp sf_ci/data/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/data/
     - pixi run aws s3 cp sf_ci/figures/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/figures/
     - pixi run aws s3 cp sf_ci/movies/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/movies/
