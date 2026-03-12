@@ -1,0 +1,15 @@
+date,parquet_file,mobile_CONUS_image_file,mobile_AK_image_file,mobile_HI_image_file,mobile_PR_VI_image_file,mobile_GU_MP_image_file,mobile_AS_image_file,desktop_CONUS_image_file
+2026-02-18,data/sf_categorizations_2026-02-18.parquet,NA,NA,NA,NA,NA,NA,NA
+2026-02-19,data/sf_categorizations_2026-02-19.parquet,NA,NA,NA,NA,NA,NA,NA
+2026-02-20,data/sf_categorizations_2026-02-20.parquet,NA,NA,NA,NA,NA,NA,NA
+2026-02-21,data/sf_categorizations_2026-02-21.parquet,NA,NA,NA,NA,NA,NA,NA
+2026-02-22,data/sf_categorizations_2026-02-22.parquet,NA,NA,NA,NA,NA,NA,NA
+2026-02-23,data/sf_categorizations_2026-02-23.parquet,NA,NA,NA,NA,NA,NA,NA
+2026-02-24,data/sf_categorizations_2026-02-24.parquet,NA,NA,NA,NA,NA,NA,NA
+2026-02-25,data/sf_categorizations_2026-02-25.parquet,NA,NA,NA,NA,NA,NA,NA
+2026-02-26,data/sf_categorizations_2026-02-26.parquet,NA,NA,NA,NA,NA,NA,NA
+2026-02-27,NA,NA,NA,NA,NA,NA,NA,NA
+2026-02-28,data/sf_categorizations_2026-02-28.parquet,NA,NA,NA,NA,NA,NA,figures/sf-2026-02-28.png
+2026-03-01,data/sf_categorizations_2026-03-01.parquet,NA,NA,NA,NA,NA,NA,NA
+2026-03-02,data/sf_categorizations_2026-03-02.parquet,NA,NA,NA,NA,NA,NA,NA
+2026-03-03,data/sf_categorizations_2026-03-03.parquet,NA,NA,NA,NA,NA,NA,NA

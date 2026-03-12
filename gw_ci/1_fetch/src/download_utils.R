@@ -1,29 +1,24 @@
 #' Downloads a file (e.g., parquet or png) using a metadata row and
 #' saves it locally using filename template.
 #'
-#' @param metadata_row A one row tibble containing `date` and a url column.
-#' @param url_col Name of the column containing the remote url
-#' @param output_template Filename template containing `%s` for the date.
+#' @param filename filename for file to download
+#' @param url_prefix prefix to add to filename to construct download URL
+#' @param outfile filepath for downloaded file
 #'
 #' @return Character string path to the downloaded file.
-download_gw_file <- function(metadata_row,
-                             url_col,
-                             output_template) {
+download_gw_file <- function(filename,
+                             url_prefix,
+                             outfile) {
   
-  remote_url <- metadata_row[[url_col]]
-  
-  out <- sprintf(
-    output_template,
-    metadata_row[["date"]]
-  )
+  remote_url <- paste0(url_prefix, filename)
   
   message(sprintf(
     "Downloading %s and saving to %s",
     remote_url,
-    out
+    outfile
   ))
+
+  download.file(remote_url, outfile, mode = "wb")
   
-  download.file(remote_url, out, mode = "wb")
-  
-  return(out)
+  return(outfile)
 }
