@@ -274,13 +274,10 @@ sf_categorize_inst_values:
     - echo "PIPELINE_MODE=${PIPELINE_MODE}"
     - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
     - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/data/sf_coverage.parquet sf_ci/data/sf_coverage.parquet
-    - export RUNTIME=$(date +%Y-%m-%d-%H)
-    - pixi run python sf_ci/sf_categorize_inst_values.py
-    - pixi run aws s3 cp artifacts/sf_categorizations_${RUNTIME}.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/data/
-  artifacts:
-    paths:
-      - artifacts/sf_categorizations_*.parquet
-  # these tags are needed to checkout a runner that has automatic access to AWS
+    - pixi run snakemake --cores 1 --config date=$(date +%F)
+    - pixi run aws s3 cp sf_ci/data/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/data/
+    - pixi run aws s3 cp sf_ci/figures/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/figures/
+    - pixi run aws s3 cp sf_ci/movies/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/movies/
   tags:
     - water
     - computational_tools
