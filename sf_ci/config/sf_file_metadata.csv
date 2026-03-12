@@ -8,7 +8,7 @@ date,parquet_file,mobile_CONUS_image_file,mobile_AK_image_file,mobile_HI_image_f
 2026-02-24,data/sf_categorizations_2026-02-24.parquet,NA,NA,NA,NA,NA,NA,NA
 2026-02-25,data/sf_categorizations_2026-02-25.parquet,NA,NA,NA,NA,NA,NA,NA
 2026-02-26,data/sf_categorizations_2026-02-26.parquet,NA,NA,NA,NA,NA,NA,NA
-2026-02-27,data/sf_categorizations_2026-02-27.parquet,NA,NA,NA,NA,NA,NA,NA
+2026-02-27,NA,NA,NA,NA,NA,NA,NA,NA
 2026-02-28,data/sf_categorizations_2026-02-28.parquet,NA,NA,NA,NA,NA,NA,figures/sf-2026-02-28.png
 2026-03-01,data/sf_categorizations_2026-03-01.parquet,NA,NA,NA,NA,NA,NA,NA
 2026-03-02,data/sf_categorizations_2026-03-02.parquet,NA,NA,NA,NA,NA,NA,NA

@@ -18,6 +18,7 @@ def categorize_sf(date_of_interest, coverage_parquet, s3_url_file, parquet_file)
         print ("downloading... " + s3_url_prefix + s3_url_file)
         download_file_urllib(s3_url_prefix + s3_url_file, folder)
     else:
+        print ("generating... " + parquet_file)
         sf_ts_ids = pd.read_parquet(coverage_parquet)
 
         # We want to pull TS IDs that have a full set of percentiles *and* a continuous TS ID
@@ -39,6 +40,7 @@ def categorize_sf(date_of_interest, coverage_parquet, s3_url_file, parquet_file)
                 timemark = "PT24H"
             else:
                 timemark = date_of_interest + "T00:00:00Z/" + date_of_interest + "T23:59:59Z"
+                
             df, _ = wd.get_continuous(time_series_id=batch, time=timemark)
 
             if df is not None and not df.empty:
@@ -151,7 +153,6 @@ if __name__ == "__main__":
     file_prefix = "data/sf_categorizations_"
     file_suffix = ".parquet"
 
-    date_of_interest = parquet_file[len(file_prefix):len(file_suffix)]
-
-
+    date_of_interest = parquet_file[len(file_prefix):-len(file_suffix)]
+  
     categorize_sf(date_of_interest, coverage_parquet, s3_url_file, parquet_file)
