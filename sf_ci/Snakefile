@@ -1,19 +1,23 @@
 import os
 import yaml
-from sf_conditions.helper_functions import generate_date_list, strip_date_list
-
-# Get parquet file names and strip the dates from them:
-percentiles_files = config["file_list"]
-date_list = strip_date_list(percentiles_files)
+import numpy as np
+import pandas as pd
+from sf_conditions.helper_functions import generate_image_list, find_start_date
 
 # Read in Parameters from YAML
 with open("config/sf_current_conditions.yaml", "r") as file:
     params = yaml.safe_load(file)
 
+# Load metadata and generate list of files to make
+metadata = pd.read_csv("config/sf_file_metadata.csv", dtype=str, keep_default_na=False)
+
+# Get the date list
+image_lists, image_download_list, image_make_list, parquet_make_list = generate_image_list(config["date"], params["interval"], metadata)
+
 # set final intended output
 rule all:
-    input: 
-        ["figures/" + params["figure_params"]["prefix"] + "_" + str(date)+ ".png" for date in date_list]
+    input:
+        ["movies/sf-" + config["date"] + "-back-" + str(interval)+ ".mp4" for interval in params["interval"]]
 
 # gather the state census boundaries
 rule gather_census_data:
@@ -36,34 +40,81 @@ rule simplify_census_data:
     shell:
         "mapshaper {input.infile} -simplify {params.simplify}% -o {output.outfile}"
 
-# create sf current conditions plots for the given list of dates
-rule plot_current_conditions:
+for image_download in image_download_list:
+    rule:
+        name:
+            "image_download: " + image_download
+        params:
+            s3_url_prefix = params["s3_url_prefix"],
+            folder = "figures"
+        output:
+            s3_file = image_download
+        script:
+            "sf_conditions/fetch/get_s3.py"
+
+for parquet_download in parquet_make_list:
+    rule:
+        name:
+            "parquet_download: " + parquet_download
+        params:
+            s3_url_prefix = params["s3_url_prefix"],
+            folder = "stage"
+        output:
+            s3_file = parquet_download
+        script:
+            "sf_conditions/fetch/get_s3.py"
+
+rule make_shadow_plot:
     params:
-        date_list = date_list,
         figure_params = params["figure_params"],
-        marker_params = params["marker_params"],
         state_params = params["state_params"],
     input:
-        percentiles_files = percentiles_files,
-        simplified_census_file = "data/us_states.geojson"
+        simplified_census_file = "data/us_states.geojson",
     output:
-        ["figures/" + params["figure_params"]["prefix"] + "_" + str(date)+ ".png" for date in date_list]
+        shadow_image_file = "figures/sf-shadow.png"
     script:
-        "sf_conditions/plot/plot_sf.py"
+        "sf_conditions/plot/plot_shadow.py"
 
-# create a movie from the list of generated images
-rule animate_current_conditions:
+# create sf current conditions plots for the given list of dates
+for i, parquet_file in enumerate(parquet_make_list):
+    rule:
+        name: 
+            "image_make: " + image_make_list[i]
+        params:
+            figure_params = params["figure_params"],
+            marker_params = params["marker_params"],
+            state_params = params["state_params"],
+        input:
+            parquet_file = parquet_file,
+            simplified_census_file = "data/us_states.geojson",
+            shadow_image_file = "figures/sf-shadow.png"
+        output:
+            image_file = image_make_list[i]
+        script:
+            "sf_conditions/plot/plot_sf.py"
+
+# create image list text file with durations for movie
+rule animation_list:
     params:
-        prefix = "figures/" + params["figure_params"]["prefix"] + "_*.png",
         framerate = params["movie_params"]["framerate"],
     input:
-        ["figures/" + params["figure_params"]["prefix"] + "_" + str(date)+".png" for date in date_list]
+        image_list = lambda wc: image_lists[params["interval"].index(wc.interval)] 
     output:
-        outfile = "movies/" + params["figure_params"]["prefix"] + ".mp4"
+        frame_list = "data/sf-" + config["date"] + "-back-{interval}.txt"
+    script:
+        "sf_conditions/plot/generate_frame_list.py"
+        
+# create a movie from the list of generated images
+rule animate_current_conditions:
+    input:
+        image_list = lambda wc: image_lists[params["interval"].index(wc.interval)],
+        frame_list = "data/sf-" + config["date"] + "-back-{interval}.txt"
+    output:
+        outfile = "movies/sf-" + config["date"] + "-back-{interval}.mp4"
     shell:
         r'''
         ffmpeg -y \
-          -framerate {params.framerate} \
-          -pattern_type glob -i "{params.prefix}" \
-          -vcodec libx264 -pix_fmt yuv420p {output.outfile}
+          -safe 0 -f concat -i {input.frame_list} \
+          -vsync vfr -pix_fmt yuv420p -vcodec libx264 \
+          {output.outfile}
         '''

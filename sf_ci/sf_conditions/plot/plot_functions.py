@@ -182,7 +182,7 @@ def plot_data(
     )
 
 
-def coverage_plot(
+def generate_figure(
     date,
     figure_params,
     us_states_gdf,
