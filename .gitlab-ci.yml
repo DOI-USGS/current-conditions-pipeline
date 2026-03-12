@@ -258,7 +258,7 @@ sf_coverage_merge:
     - computational_tools
     - production
 
-sf_categorize_inst_values:
+sf_render:
   stage: categorize_obs
   image:
     name: $IMAGE
@@ -282,6 +282,13 @@ sf_categorize_inst_values:
     - water
     - computational_tools
     - production
+
+sf_update_metadata:
+  stage: categorize_obs
+  when: always
+  needs: sf_render
+  script:
+    - pixi run python sf_ci/sf_update_metadata.py --date $(date +%F)
 
 # pages:
 #   stage: pages
