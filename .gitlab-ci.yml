@@ -285,7 +285,7 @@ sf_render:
     - production
 
 sf_update_metadata:
-  stage: categorize_obs
+  stage: render
   when: always
   needs:
     - job: sf_render
