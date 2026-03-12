@@ -287,6 +287,9 @@ sf_render:
 
 sf_update_metadata:
   stage: update_metadata
+  image:
+    name: $IMAGE
+    pull_policy: always
   when: always
   needs:
     - job: sf_render
