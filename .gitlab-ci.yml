@@ -2,7 +2,7 @@ stages:
   - build
   - active_sites
   - render
-  - pages
+  - update_metadata
 
 workflow:
   rules:
@@ -285,7 +285,7 @@ sf_render:
     - production
 
 sf_update_metadata:
-  stage: render
+  stage: update_metadata
   when: always
   needs:
     - job: sf_render
