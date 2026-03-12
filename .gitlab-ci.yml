@@ -10,7 +10,6 @@ workflow:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
     # push runs  (manual jobs only)
     - if: '$CI_PIPELINE_SOURCE == "push"'
-      when: manual
     - when: never
 
 # default:
@@ -160,6 +159,7 @@ gw_render:
     - if: '$CI_PIPELINE_SOURCE == "push"'
       when: manual
     - when: never
+  needs: []
   timeout: 24h
   script:
     - echo "PIPELINE_MODE=${PIPELINE_MODE}"
@@ -271,6 +271,7 @@ sf_render:
     - if: '$CI_PIPELINE_SOURCE == "push"'
       when: manual
     - when: never
+  needs: []
   script:
     - echo "PIPELINE_MODE=${PIPELINE_MODE}"
     - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
