@@ -76,7 +76,7 @@ def categorize_sf(
             "daily_ts_id"
         ]
         dfs = []
-        today_str = date_of_interest[5:]
+        today_str = str(date_of_interest)[5:]
         for batch in chunked(sf_daily_ts, 15):
             df, _ = wd.get_stats_por(
                 parent_time_series_id=batch,
