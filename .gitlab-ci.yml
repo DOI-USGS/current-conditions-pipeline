@@ -286,7 +286,9 @@ sf_render:
 sf_update_metadata:
   stage: categorize_obs
   when: always
-  needs: sf_render
+  needs:
+    - job: sf_render
+      artifacts: false
   script:
     - pixi run python sf_ci/sf_update_metadata.py --date $(date +%F)
 
