@@ -10,7 +10,7 @@ def download_file_urllib(url, folder_location, filename=None):
     urllib.request.urlretrieve(url, file_path)
 
 def download_list(s3_url_prefix, s3_file, folder):
-    print (s3_url_prefix + s3_file)
+    print ("downloading... " + s3_url_prefix + s3_file)
     download_file_urllib(s3_url_prefix + s3_file, folder)
 
 if __name__ == "__main__":
