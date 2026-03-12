@@ -1,7 +1,6 @@
 stages:
   - build
   - active_sites
-  - categorize_obs
   - render
   - pages
 
@@ -260,7 +259,7 @@ sf_coverage_merge:
     - production
 
 sf_render:
-  stage: categorize_obs
+  stage: render
   image:
     name: $IMAGE
     pull_policy: always
