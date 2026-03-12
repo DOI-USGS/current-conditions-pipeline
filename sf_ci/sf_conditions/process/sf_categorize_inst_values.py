@@ -1,9 +1,11 @@
 from dataretrieval import waterdata as wd
 import pandas as pd
 import numpy as np
-from datetime import date, datetime
+from datetime import date, datetime, time
 from itertools import islice
+from zoneinfo import ZoneInfo
 from sf_conditions.fetch.get_s3 import download_file_urllib
+
 
 def chunked(iterable, size):
     it = iter(iterable)
@@ -13,34 +15,45 @@ def chunked(iterable, size):
             break
         yield chunk
 
-def categorize_sf(date_of_interest, coverage_parquet, s3_url_file, parquet_file):
-    if s3_url_file != 'NA':
-        print ("downloading... " + s3_url_prefix + s3_url_file)
+
+def categorize_sf(
+    date_of_interest, coverage_parquet, s3_url_file, parquet_file, end_utc_cutoff="2015-01-01"
+):
+    if s3_url_file != "NA":
+        print("downloading... " + s3_url_prefix + s3_url_file)
         download_file_urllib(s3_url_prefix + s3_url_file, folder)
     else:
-        print ("generating... " + parquet_file)
+        print("generating... " + parquet_file)
         sf_ts_ids = pd.read_parquet(coverage_parquet)
 
         # We want to pull TS IDs that have a full set of percentiles *and* a continuous TS ID
         sf_preferred = sf_ts_ids[
-            sf_ts_ids["has_coverage"] & sf_ts_ids["preferred"] & sf_ts_ids["parent_time_series_id"].notna()
+            sf_ts_ids["has_coverage"]
+            & sf_ts_ids["preferred"]
+            & sf_ts_ids["parent_time_series_id"].notna()
         ]
 
         # Arbitrary end_utc cutoff to reduce unnecessary continuous requests
-        sf_preferred = sf_preferred[sf_preferred["end_utc"] >= "2015-01-01"]
+        sf_preferred = sf_preferred[sf_preferred["end_utc"] >= end_utc_cutoff]
         sf_preferred = sf_preferred.rename(
             columns={"time_series_id": "daily_ts_id", "parent_time_series_id": "inst_ts_id"}
         )
 
         # Fetch continuous data from last X hours (e.g., X = 24)
+        date_of_interest = date.fromisoformat(date_of_interest)
+        eastern = ZoneInfo("America/New_York")
+        today = datetime.now(tz=eastern).date()
+
+        if date_of_interest != today or os.environ.get("IS_FINAL_RUN") == "true":
+            start_time = datetime.combine(date_of_interest, time.min, tzinfo=eastern)
+            end_time = datetime.combine(date_of_interest, time.max, tzinfo=eastern)
+            timemark = start_time.isoformat() + "/" + end_time.isoformat()
+        else:
+            timemark = "PT24H"
+
         inst_ts_ids = sf_preferred["inst_ts_id"].tolist()
         dfs = []
         for batch in chunked(inst_ts_ids, 100):
-            if date_of_interest == date.today():
-                timemark = "PT24H"
-            else:
-                timemark = date_of_interest + "T00:00:00Z/" + date_of_interest + "T23:59:59Z"
-                
             df, _ = wd.get_continuous(time_series_id=batch, time=timemark)
 
             if df is not None and not df.empty:
@@ -55,7 +68,9 @@ def categorize_sf(date_of_interest, coverage_parquet, s3_url_file, parquet_file)
         )
 
         # For sites with continuous data, pull their percentiles
-        sf_daily_ts = sf_preferred[sf_preferred["inst_ts_id"].isin(sf_ave["time_series_id"])]["daily_ts_id"]
+        sf_daily_ts = sf_preferred[sf_preferred["inst_ts_id"].isin(sf_ave["time_series_id"])][
+            "daily_ts_id"
+        ]
         dfs = []
         today_str = date_of_interest[5:]
         for batch in chunked(sf_daily_ts, 15):
@@ -77,7 +92,9 @@ def categorize_sf(date_of_interest, coverage_parquet, s3_url_file, parquet_file)
 
         # Next, we need to join the average values to the percentile
         sf_stats["value"] = pd.to_numeric(sf_stats["value"])
-        sf_stats["percentile"] = sf_stats["percentile"].astype(int).astype(str).apply(lambda x: f"p{x}")
+        sf_stats["percentile"] = (
+            sf_stats["percentile"].astype(int).astype(str).apply(lambda x: f"p{x}")
+        )
 
         # Spread percentile df to one row per TS ID
         sf_stats_wide = (
@@ -95,7 +112,9 @@ def categorize_sf(date_of_interest, coverage_parquet, s3_url_file, parquet_file)
                 left_on="time_series_id",
                 right_on="inst_ts_id",
                 how="left",
-            ).merge(sf_stats_wide, left_on="daily_ts_id", right_on="parent_time_series_id", how="left")
+            ).merge(
+                sf_stats_wide, left_on="daily_ts_id", right_on="parent_time_series_id", how="left"
+            )
         )[
             [
                 "daily_ts_id",
@@ -142,6 +161,7 @@ def categorize_sf(date_of_interest, coverage_parquet, s3_url_file, parquet_file)
 
         sf_out.to_parquet(path=parquet_file)
 
+
 if __name__ == "__main__":
     s3_url_prefix = snakemake.params["s3_url_prefix"]
     s3_url_file = snakemake.params["s3_url_file"]
@@ -153,6 +173,6 @@ if __name__ == "__main__":
     file_prefix = "data/sf_categorizations_"
     file_suffix = ".parquet"
 
-    date_of_interest = parquet_file[len(file_prefix):-len(file_suffix)]
-  
+    date_of_interest = parquet_file[len(file_prefix) : -len(file_suffix)]
+
     categorize_sf(date_of_interest, coverage_parquet, s3_url_file, parquet_file)

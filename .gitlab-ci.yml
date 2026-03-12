@@ -273,9 +273,9 @@ sf_categorize_inst_values:
   script:
     - echo "PIPELINE_MODE=${PIPELINE_MODE}"
     - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
-    - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/data/sf_coverage.parquet artifacts/sf_coverage.parquet
+    - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/data/sf_coverage.parquet sf_ci/data/sf_coverage.parquet
     - export RUNTIME=$(date +%Y-%m-%d-%H)
-    - pixi run python sf_ci/sf_categorize_inst_values.py ${RUNTIME}
+    - pixi run python sf_ci/sf_categorize_inst_values.py
     - pixi run aws s3 cp artifacts/sf_categorizations_${RUNTIME}.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/data/
   artifacts:
     paths:
