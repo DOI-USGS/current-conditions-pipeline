@@ -1,4 +1,5 @@
 from dataretrieval import waterdata as wd
+import os
 import pandas as pd
 import numpy as np
 from datetime import date, datetime, time, timedelta
