@@ -38,19 +38,24 @@ s3 = boto3.client("s3")
 # Read or initialize metadata
 try:
     obj = s3.get_object(Bucket=BUCKET, Key=METADATA_KEY)
-    meta = pd.read_csv(obj["Body"])
+    meta = pd.read_csv(obj["Body"], dtype=str, keep_default_na=False)
 except s3.exceptions.NoSuchKey:
     meta = pd.DataFrame(columns=["date"] + list(EXPECTED_OUTPUTS.keys()))
 
+# ensure date column is in YYYY-MM-DD format
+meta["date"] = pd.to_datetime(meta["date"], format="mixed").dt.strftime("%Y-%m-%d")
+
 # Dates to update: any with gaps, plus date_of_interest
-incomplete = meta[meta.drop(columns="date").isin(["NA", "", numpy.NA]).any(axis=1)]["date"].tolist()
+incomplete = meta[meta.drop(columns="date").isin(["NA", "", numpy.NA, None]).any(axis=1)][
+    "date"
+].tolist()
 dates_to_check = set(incomplete) | {str(date_of_interest)}
 
 for d in dates_to_check:
     row = {"date": d}
     for col, key_template in EXPECTED_OUTPUTS.items():
         key = key_template.format(date=d)
-        row[col] = key if key_exists(s3, BUCKET, key) and key != "" else ""
+        row[col] = key if key_exists(s3, BUCKET, key) else ""
     meta = meta[meta["date"] != d]
     meta = pd.concat([meta, pd.DataFrame([row])], ignore_index=True)
 
