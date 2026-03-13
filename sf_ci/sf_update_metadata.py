@@ -2,6 +2,7 @@ import os
 import argparse
 import boto3
 import pandas as pd
+import numpy
 from io import StringIO
 from datetime import date, timedelta
 
@@ -42,14 +43,14 @@ except s3.exceptions.NoSuchKey:
     meta = pd.DataFrame(columns=["date"] + list(EXPECTED_OUTPUTS.keys()))
 
 # Dates to update: any with gaps, plus date_of_interest
-incomplete = meta[meta.drop(columns="date").isin(["NA", ""]).any(axis=1)]["date"].tolist()
+incomplete = meta[meta.drop(columns="date").isin(["NA", "", numpy.NA]).any(axis=1)]["date"].tolist()
 dates_to_check = set(incomplete) | {str(date_of_interest)}
 
 for d in dates_to_check:
     row = {"date": d}
     for col, key_template in EXPECTED_OUTPUTS.items():
         key = key_template.format(date=d)
-        row[col] = key if key_exists(s3, BUCKET, key) and key != "" else "NA"
+        row[col] = key if key_exists(s3, BUCKET, key) and key != "" else ""
     meta = meta[meta["date"] != d]
     meta = pd.concat([meta, pd.DataFrame([row])], ignore_index=True)
 
