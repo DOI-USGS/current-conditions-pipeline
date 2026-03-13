@@ -291,6 +291,9 @@ sf_update_metadata:
     name: $IMAGE
     pull_policy: always
   when: always
+  needs:
+    - job: sf_render
+      artifacts: false
   script:
     - pixi run python sf_ci/sf_update_metadata.py --date $(date +%F)
   tags:
