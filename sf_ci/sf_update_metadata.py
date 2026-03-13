@@ -46,7 +46,7 @@ except s3.exceptions.NoSuchKey:
 meta["date"] = pd.to_datetime(meta["date"], format="mixed").dt.strftime("%Y-%m-%d")
 
 # Dates to update: any with gaps, plus date_of_interest
-incomplete = meta[meta.drop(columns="date").isin(["NA", "", numpy.NA, None]).any(axis=1)][
+incomplete = meta[meta.drop(columns="date").isin(["NA", "", numpy.nan, None]).any(axis=1)][
     "date"
 ].tolist()
 dates_to_check = set(incomplete) | {str(date_of_interest)}
