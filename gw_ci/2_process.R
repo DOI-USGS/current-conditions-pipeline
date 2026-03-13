@@ -14,6 +14,13 @@ p2_targets <- list(
     pattern = map(p0_area_info_df),
     iteration = "list"
   ),
+  # WGS 84 projection to use when making locator map(s)
+  tar_target(
+    p2_areas_sf_high_simp_wgs84_list,
+    p2_areas_sf_high_simp_list |> 
+      purrr::map(sf::st_transform, crs = "EPSG:4326"),
+    iteration = "list"
+  ),
   # prep info for CONUS + OCONUS layout
   tar_target(
     p2_areas_high_simp_max_x_extent,
@@ -29,7 +36,8 @@ p2_targets <- list(
                                    area_sf = p2_areas_sf_high_simp_list, 
                                    max_x_extent = p2_areas_high_simp_max_x_extent, 
                                    max_y_extent = p2_areas_high_simp_max_y_extent),
-    pattern = map(p0_area_info_df, p2_areas_sf_high_simp_list)
+    pattern = map(p0_area_info_df, p2_areas_sf_high_simp_list),
+    iteration = "list"
   ),
   # lower degree of simplification for mobile
   tar_target(
@@ -57,7 +65,8 @@ p2_targets <- list(
                                    area_sf = p2_areas_sf_low_simp_list, 
                                    max_x_extent = p2_areas_low_simp_max_x_extent, 
                                    max_y_extent = p2_areas_low_simp_max_y_extent),
-    pattern = map(p0_area_info_df, p2_areas_sf_low_simp_list)
+    pattern = map(p0_area_info_df, p2_areas_sf_low_simp_list),
+    iteration = "list"
   ),
   # state lookup table
   tar_target(
