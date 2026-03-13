@@ -20,7 +20,7 @@ def chunked(iterable, size):
 def categorize_sf(
     date_of_interest, coverage_parquet, s3_url_file, parquet_file, end_utc_cutoff="2015-01-01"
 ):
-    if s3_url_file != "NA":
+    if s3_url_file != "":
         print("downloading... " + s3_url_prefix + s3_url_file)
         download_file_urllib(s3_url_prefix + s3_url_file, folder)
     else:
