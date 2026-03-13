@@ -277,9 +277,9 @@ sf_render:
     - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/data/sf_coverage.parquet sf_ci/data/sf_coverage.parquet
     - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/sf_file_metadata.csv sf_ci/config/sf_file_metadata.csv
     - pixi run snakemake --snakefile sf_ci/Snakefile --cores all --directory sf_ci --config date=$(date +%F)
-    - pixi run aws s3 cp sf_ci/data/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/data/
-    - pixi run aws s3 cp sf_ci/figures/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/figures/
-    - pixi run aws s3 cp sf_ci/movies/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/movies/
+    - pixi run aws s3 cp sf_ci/data/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/data/ --recursive
+    - pixi run aws s3 cp sf_ci/figures/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/figures/ --recursive
+    - pixi run aws s3 cp sf_ci/movies/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/movies/ --recursive
   tags:
     - water
     - computational_tools
