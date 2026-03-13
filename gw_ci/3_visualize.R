@@ -1,25 +1,45 @@
 tar_source('3_visualize/src/mapping_utils.R')
+tar_source('3_visualize/src/locator_map.R')
+tar_source('3_visualize/src/landscape_condensed.R')
 tar_source('3_visualize/src/movie_utils.R')
 
 p3_targets <- list(
   ##### Generate image files for incomplete dates #####
   
   ###### Desktop ######
-  # Desktop CONUS
+  # Desktop CONUS + OCONUS
+  tar_target(
+    p3_desktop_locator_map_png,
+    generate_extent_locator_map(
+      area_name = "CONUS_OCONUS",
+      # Full map scene
+      in_map = dplyr::bind_rows(p2_areas_sf_high_simp_wgs84_list),
+      # Countries of interest to map
+      add_sf = p2_areas_sf_high_simp_wgs84_list,
+      shift_longitude = TRUE,
+      graticules = 30,
+      add_sf_ext = TRUE,
+      buffer_m_add_sf = 130000,
+      viz_cfg = p0_viz_config_df,
+      output_template = file.path(p0_local_image_file_dir,
+                                  p0_locator_map_template)
+    ),
+    format = "file"
+  ),
   tar_target(
     p3_desktop_gw_pngs,
     plot_gw_png(
       gw_parquet_file = p2_gw_clean_parquets,
       date = p1_date_incomplete[["date"]],
-      area_name = "CONUS",
-      # TEMPORARY BAD PRACTICE
-      area_sf = p2_areas_sf_high_simp_list[[which(p0_area_info_df[["name"]] == "CONUS")]],
-      area_proj = p0_area_info_df[["proj"]][[which(p0_area_info_df[["name"]] == "CONUS")]],
-      area_state_list = p0_area_info_df[["state_list"]][[which(p0_area_info_df[["name"]] == "CONUS")]],
+      area_name = "CONUS_OCONUS",
+      area_info_df = p0_area_info_df,
+      area_sf = p2_areas_sf_high_simp_list,
+      extent_info = p2_areas_high_simp_extents_df,
       palette = p0_viz_gw_pal,
       viz_cfg = p0_viz_config_df,
       scale_cfg = p0_gw_binned_scales,
       state_lookup = p2_state_lookup,
+      locator_map_png = p3_desktop_locator_map_png,
       image_screen_type = "desktop",
       output_template = file.path(p0_local_image_file_dir, 
                                   basename(p0_remote_image_file_template))
@@ -29,24 +49,6 @@ p3_targets <- list(
   ),
   
   ###### Mobile ######
-  # Generate appropriate scaling parameters for each area
-  # _NOTE: this is a first stab at adjusting these for different areas. I
-  # suspect we will also need to make some further adjustments for mobile_
-  tar_target(
-    p3_gw_binned_scales,
-    p0_gw_binned_scales |>
-      mutate(
-        max_vector_height = max_vector_height*p2_areas_low_simp_extents_df[["rel_height"]],
-        mid_vector_height = mid_vector_height*p2_areas_low_simp_extents_df[["rel_height"]],
-        min_vector_height = min_vector_height*p2_areas_low_simp_extents_df[["rel_height"]],
-        max_vector_width = max_vector_width*p2_areas_low_simp_extents_df[["rel_width"]],
-        mid_vector_width = max_vector_width * mid_factor,
-        min_vector_width = max_vector_width * min_factor,
-        normal_width = max_vector_width * min_factor
-      ),
-    pattern = map(p2_areas_low_simp_extents_df)
-  ),
-  
   # Mobile images for all areas
   tar_target(
     p3_mobile_gw_pngs,
@@ -54,12 +56,12 @@ p3_targets <- list(
       gw_parquet_file = p2_gw_clean_parquets,
       date = p1_date_incomplete[["date"]],
       area_name = p0_area_info_df[["name"]],
+      area_info_df = p0_area_info_df,
       area_sf = p2_areas_sf_low_simp_list,
-      area_proj = p0_area_info_df[["proj"]],
-      area_state_list = p0_area_info_df[["state_list"]],
+      extent_info = p2_areas_low_simp_extents_df,
       palette = p0_viz_gw_pal,
       viz_cfg = p0_viz_config_df,
-      scale_cfg = p3_gw_binned_scales,
+      scale_cfg = p0_gw_binned_scales,
       state_lookup = p2_state_lookup,
       image_screen_type = "mobile",
       output_template = file.path(p0_local_image_file_dir, 
@@ -67,7 +69,7 @@ p3_targets <- list(
     ),
     pattern = 
       cross(map(p1_date_incomplete, p2_gw_clean_parquets), 
-            map(p0_area_info_df, p2_areas_sf_low_simp_list, p3_gw_binned_scales)),
+            map(p0_area_info_df, p2_areas_sf_low_simp_list, p2_areas_low_simp_extents_df)),
     format = "file"
   ),
   
@@ -83,7 +85,7 @@ p3_targets <- list(
       legend_path = p0_desktop_leg_path,
       viz_cfg = p0_viz_config_df,
       image_screen_type = "desktop",
-      area_name = "CONUS",
+      area_name = "CONUS_OCONUS",
       output_template = file.path(
         p0_local_image_file_dir,
         basename(p0_remote_image_file_template)
