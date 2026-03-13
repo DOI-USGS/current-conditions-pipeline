@@ -17,7 +17,19 @@ image_lists, image_download_list, image_make_list, parquet_list, parquet_downloa
 # set final intended output
 rule all:
     input:
-        ["movies/sf-" + config["date"] + "-back-" + str(interval)+ ".mp4" for interval in params["interval"]]
+        #["movies/sf-" + config["date"] + "-back-" + str(interval)+ ".mp4" for interval in params["interval"]]
+        "data/conus_simplified_desktop.geojson",
+        "data/ak_simplified_desktop.geojson",
+        "data/hi_simplified_desktop.geojson",
+        "data/prvi_simplified_desktop.geojson",
+        "data/gump_simplified_desktop.geojson",
+        "data/as_simplified_desktop.geojson",
+        "data/conus_simplified_mobile.geojson",
+        "data/ak_simplified_mobile.geojson",
+        "data/hi_simplified_mobile.geojson",
+        "data/prvi_simplified_mobile.geojson",
+        "data/gump_simplified_mobile.geojson",
+        "data/as_simplified_mobile.geojson"
 
 # gather the state census boundaries
 rule gather_census_data:
@@ -25,20 +37,54 @@ rule gather_census_data:
         resolution = params["census_data"]["resolution"],
         year = params["census_data"]["year"]
     output:
-        outfile = "data/us_states.geojson"
+        conus_geojson = "data/conus.geojson",
+        ak_geojson = "data/ak.geojson",
+        hi_geojson = "data/hi.geojson",
+        prvi_geojson = "data/prvi.geojson",
+        gump_geojson = "data/gump.geojson",
+        as_geojson = "data/as.geojson",
     script:
-        "sf_conditions/fetch/get_conus.py"
+        "sf_conditions/fetch/get_boundaries.py"
 
-# simplify the state census boundaries
-rule simplify_census_data:
-    params:
-        simplify = params["geometry_simplify_percent"]
-    input:
-        infile = "data/us_states.geojson"
-    output:
-        outfile = "data/us_states_simplified.geojson"
-    shell:
-        "mapshaper {input.infile} -simplify {params.simplify}% -o {output.outfile}"
+# simplify the different census boundaries
+simplify_list = [params["geometry_simplify_percent"]["conus"],
+                 params["geometry_simplify_percent"]["ak"],
+                 params["geometry_simplify_percent"]["hi"],
+                 params["geometry_simplify_percent"]["prvi"],
+                 params["geometry_simplify_percent"]["gump"],
+                 params["geometry_simplify_percent"]["as"]]
+
+geojson_list = ["data/conus.geojson",
+                "data/ak.geojson",
+                "data/hi.geojson",
+                "data/prvi.geojson",
+                "data/gump.geojson",
+                "data/as.geojson"]
+
+for i, geojson in enumerate(geojson_list):
+    rule:
+        name:
+            "simplify_census_data_desktop: " + geojson
+        params:
+            simplify = simplify_list[i]["desktop"]
+        input:
+            infile = geojson
+        output:
+            outfile = geojson[:-8] + "_simplified_desktop.geojson"
+        shell:
+            "mapshaper {input.infile} -simplify {params.simplify}% -o {output.outfile}"
+
+    rule:
+        name:
+            "simplify_census_data_mobile: " + geojson
+        params:
+            simplify = simplify_list[i]["mobile"]
+        input:
+            infile = geojson
+        output:
+            outfile = geojson[:-8] + "_simplified_mobile.geojson"
+        shell:
+            "mapshaper {input.infile} -simplify {params.simplify}% -o {output.outfile}"
 
 # download images that are available for longest interval
 for image_download in image_download_list:
