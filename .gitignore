@@ -25,7 +25,9 @@ gw_ci/_targets/
 # Gw conditions viz
 sf_ci/api_key.txt
 sf_ci/.pixi
+sf_ci/.env
 sf_ci/.snakemake
+sf_ci/config/sf_file_metadata.csv
 sf_ci/data/*
 !sf_ci/data/.empty
 sf_ci/figures/*

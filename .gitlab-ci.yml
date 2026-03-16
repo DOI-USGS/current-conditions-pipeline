@@ -1,9 +1,8 @@
 stages:
   - build
   - active_sites
-  - categorize_obs
   - render
-  - pages
+  - update_metadata
 
 workflow:
   rules:
@@ -147,39 +146,7 @@ gw_coverage_merge:
     - computational_tools
     - production
 
-# ---------- categorize daily values ----------
-
-gw_categorize_daily_vals:
-  stage: categorize_obs
-  image:
-    name: $IMAGE
-    pull_policy: always
-  rules:
-    - if: '$PIPELINE_MODE == "gw_daily"'
-    # manual run from push
-    - if: '$CI_PIPELINE_SOURCE == "push"'
-      when: manual
-    - when: never
-  timeout: 24h
-  script:
-    - echo "PIPELINE_MODE=${PIPELINE_MODE}"
-    - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
-    - export YESTERDAY=$(date -d "yesterday" +%Y-%m-%d)
-    - echo YESTERDAY=${YESTERDAY} >> gw.env # make YESTERDAY variable accessible to downstream jobs
-    - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/gw_coverage.parquet artifacts/gw_coverage.parquet
-    - pixi run Rscript gw_ci/gw_categorize_daily_vals.R ${YESTERDAY}
-    - test -f gw_ci/1_fetch/in/gw_categorizations_${YESTERDAY}.parquet
-    - pixi run aws s3 cp gw_ci/1_fetch/in/gw_categorizations_${YESTERDAY}.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/
-  artifacts:
-    paths:
-      - gw_ci/1_fetch/in/gw_categorizations_*.parquet
-    reports:
-      dotenv: gw.env
-  # these tags are needed to checkout a runner that has automatic access to AWS
-  tags:
-    - water
-    - computational_tools
-    - production
+# ---------- categorize + visualize pipeline ----------
 
 gw_render:
   stage: render
@@ -191,14 +158,16 @@ gw_render:
     - if: '$CI_PIPELINE_SOURCE == "push"'
       when: manual
     - when: never
+  needs: []
   timeout: 24h
-  needs:
-    - job: gw_categorize_daily_vals
-      artifacts: true
   script:
     - echo "PIPELINE_MODE=${PIPELINE_MODE}"
     - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
+    - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/gw_coverage.parquet gw_ci/1_fetch/in/gw_coverage.parquet
     - pixi run Rscript -e "setwd('gw_ci'); targets::tar_make()"
+    # Daily categorizations parquet files
+    - pixi run aws s3 cp gw_ci/1_fetch/out/ s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/
+    # Visualizations
     - pixi run aws s3 cp gw_ci/3_visualize/out/ s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/images/ --recursive
   tags:
     - water
@@ -279,7 +248,7 @@ sf_coverage_merge:
     - echo "PIPELINE_MODE=${PIPELINE_MODE}"
     - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
     - pixi run python sf_ci/sf_coverage_merge.py ${SF_PCODES} ${SF_STAT_IDS}
-    - pixi run aws s3 cp artifacts/sf_coverage.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/stage/
+    - pixi run aws s3 cp artifacts/sf_coverage.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/data/
   artifacts:
     paths:
       - artifacts/sf_coverage.parquet
@@ -289,8 +258,8 @@ sf_coverage_merge:
     - computational_tools
     - production
 
-sf_categorize_inst_values:
-  stage: categorize_obs
+sf_render:
+  stage: render
   image:
     name: $IMAGE
     pull_policy: always
@@ -301,22 +270,36 @@ sf_categorize_inst_values:
     - if: '$CI_PIPELINE_SOURCE == "push"'
       when: manual
     - when: never
+  needs: []
   script:
     - echo "PIPELINE_MODE=${PIPELINE_MODE}"
     - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
-    - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/stage/sf_coverage.parquet artifacts/sf_coverage.parquet
-    - export RUNTIME=$(date +%Y-%m-%d-%H)
-    - pixi run python sf_ci/sf_categorize_inst_values.py ${RUNTIME}
-    - pixi run aws s3 cp artifacts/sf_categorizations_${RUNTIME}.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/stage/
-  artifacts:
-    paths:
-      - artifacts/sf_categorizations_*.parquet
-  # these tags are needed to checkout a runner that has automatic access to AWS
+    - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/data/sf_coverage.parquet sf_ci/data/sf_coverage.parquet
+    - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/sf_file_metadata.csv sf_ci/config/sf_file_metadata.csv
+    - pixi run snakemake --snakefile sf_ci/Snakefile --cores all --directory sf_ci --config date=$(date +%F)
+    - pixi run aws s3 cp sf_ci/data/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/data/ --recursive
+    - pixi run aws s3 cp sf_ci/figures/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/figures/ --recursive
+    - pixi run aws s3 cp sf_ci/movies/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/movies/ --recursive
   tags:
     - water
     - computational_tools
     - production
 
+sf_update_metadata:
+  stage: update_metadata
+  image:
+    name: $IMAGE
+    pull_policy: always
+  when: always
+  needs:
+    - job: sf_render
+      artifacts: false
+  script:
+    - pixi run python sf_ci/sf_update_metadata.py --date $(date +%F)
+  tags:
+    - water
+    - computational_tools
+    - production
 # pages:
 #   stage: pages
 #   script:

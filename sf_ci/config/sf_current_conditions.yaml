@@ -1,7 +1,9 @@
 s3_url_prefix: "https://labs.waterdata.usgs.gov/visualizations/current_conditions/streamflow/"
+coverage_file: "data/sf_coverage.parquet"
+image_prefix: "figures/sf-"
+parquet_prefix: "data/sf_categorizations_"
 interval:
-  - 3d
-  - 5d
+  - 1d
 
 figure_params:
   prefix: "sf_current_conditions"

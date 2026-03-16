@@ -12,7 +12,7 @@ with open("config/sf_current_conditions.yaml", "r") as file:
 metadata = pd.read_csv("config/sf_file_metadata.csv", dtype=str, keep_default_na=False)
 
 # Get the date list
-image_lists, image_download_list, image_make_list, parquet_make_list = generate_image_list(config["date"], params["interval"], metadata)
+image_lists, image_download_list, image_make_list, parquet_list, parquet_download_list = generate_image_list(config["date"], params["interval"], params["image_prefix"], params["parquet_prefix"], metadata)
 
 # set final intended output
 rule all:
@@ -40,6 +40,7 @@ rule simplify_census_data:
     shell:
         "mapshaper {input.infile} -simplify {params.simplify}% -o {output.outfile}"
 
+# download images that are available for longest interval
 for image_download in image_download_list:
     rule:
         name:
@@ -52,18 +53,33 @@ for image_download in image_download_list:
         script:
             "sf_conditions/fetch/get_s3.py"
 
-for parquet_download in parquet_make_list:
+# download streamflow data coverage data
+rule download_coverage:
+    params:
+        s3_url_prefix = params["s3_url_prefix"],
+        folder = "data"
+    output:
+        s3_file = params["coverage_file"]
+    script:
+        "sf_conditions/fetch/get_s3.py"
+
+# download or generate categorization parquet files
+for i, parquet_file in enumerate(parquet_list):
     rule:
         name:
-            "parquet_download: " + parquet_download
+            "parquet_download_generate: " + parquet_file
         params:
             s3_url_prefix = params["s3_url_prefix"],
-            folder = "stage"
+            s3_url_file = parquet_download_list[i],
+            folder = "data"
+        input:
+            coverage_parquet = params["coverage_file"]
         output:
-            s3_file = parquet_download
+            parquet_file = parquet_file
         script:
-            "sf_conditions/fetch/get_s3.py"
+            "sf_conditions/process/sf_categorize_inst_values.py"
 
+# create shadow outline plot 
 rule make_shadow_plot:
     params:
         figure_params = params["figure_params"],
@@ -76,7 +92,7 @@ rule make_shadow_plot:
         "sf_conditions/plot/plot_shadow.py"
 
 # create sf current conditions plots for the given list of dates
-for i, parquet_file in enumerate(parquet_make_list):
+for i, parquet_file in enumerate(parquet_list):
     rule:
         name: 
             "image_make: " + image_make_list[i]
