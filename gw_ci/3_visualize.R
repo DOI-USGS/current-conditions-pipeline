@@ -11,7 +11,7 @@ p3_targets <- list(
   tar_target(
     p3_desktop_locator_map_png,
     generate_extent_locator_map(
-      area_name = "CONUS_OCONUS",
+      area_name = p0_desktop_area_name,
       # Full map scene
       in_map = dplyr::bind_rows(p2_areas_sf_high_simp_wgs84_list),
       # Countries of interest to map
@@ -31,7 +31,7 @@ p3_targets <- list(
     plot_gw_png(
       gw_parquet_file = p2_gw_clean_parquets,
       date = p1_date_incomplete[["date"]],
-      area_name = "CONUS_OCONUS",
+      area_name = p0_desktop_area_name,
       area_info_df = p0_area_info_df,
       area_sf = p2_areas_sf_high_simp_list,
       extent_info = p2_areas_high_simp_extents_df,
@@ -85,7 +85,7 @@ p3_targets <- list(
       legend_path = p0_desktop_leg_path,
       viz_cfg = p0_viz_config_df,
       image_screen_type = "desktop",
-      area_name = "CONUS_OCONUS",
+      area_name = p0_desktop_area_name,
       output_template = file.path(
         p0_local_image_file_dir,
         basename(p0_remote_image_file_template)
@@ -120,7 +120,8 @@ p3_targets <- list(
       date = p1_date_incomplete[["date"]],
       local_image_type = paste0(p0_local_image_type_prefix, 
                                 "desktop_", 
-                                "CONUS_image_file"),
+                                p0_desktop_area_name,
+                                "_image_file"),
       local_image_file = p3_desktop_gw_pngs
     )
   ),
@@ -133,7 +134,8 @@ p3_targets <- list(
       local_image_type = paste0(
         p0_local_image_type_prefix,
         "desktop_static_",
-        "CONUS_image_file"
+        p0_desktop_area_name,
+        "_image_file"
       ),
       local_image_file = p3_static_gw_pngs
     )
@@ -197,9 +199,13 @@ p3_targets <- list(
       interval_name = p0_interval_names,
       gw_png_config = p3_gw_pngs_config,
       viz_cfg = p0_viz_config_df,
-      img_type_name = "local_desktop_static_CONUS_image_file",
+      img_type_name = paste0(
+        "local_desktop_static_",
+        p0_desktop_area_name,
+        "_image_file"),
       output_template = file.path(p0_local_image_file_dir, 
-                                  sprintf("gw-movie-desktop-CONUS-%s.mp4",
+                                  sprintf("gw-movie-desktop-%s-%s.mp4",
+                                          p0_desktop_area_name,
                                           p0_interval_names))
       ),
     pattern = map(p0_interval_start_dates, p0_interval_names),
@@ -212,7 +218,9 @@ p3_targets <- list(
       date = p0_yesterday_date,
       local_image_type = paste0(
         p0_local_image_type_prefix,
-        "desktop_static_CONUS_mp4_",
+        "desktop_static_",
+        p0_desktop_area_name,
+        "_mp4_",
         gsub("-", "_", p0_interval_names)
       ),
       local_image_file = p3_gw_desktop_mp4
@@ -264,7 +272,7 @@ p3_targets <- list(
       )
   ),
   
-  # Final update metadata file
+  # Final updated image metadata file
   tar_target(
     p3_date_config_updated_csv,
     {
@@ -278,5 +286,20 @@ p3_targets <- list(
       return(outfile)
     },
     format = "file"
+  ),
+  
+  # Dates metadata json
+  tar_target(
+    p3_date_json,
+    {
+      outfile <- p0_date_json_path
+      named_interval_dates <- set_names(p0_interval_dates, p0_interval_names)
+      jsonlite::write_json(named_interval_dates, 
+                           outfile, 
+                           pretty = TRUE, 
+                           auto_unbox = TRUE)
+      return(outfile)
+    },
+    format = "file" 
   )
 )

@@ -509,8 +509,7 @@ plot_gw_leg <- function(gw_parquet_file, conus_proj, palette, viz_cfg,
       width = viz_cfg$leg_width,
       height = viz_cfg$leg_height,
       dpi = viz_cfg$dpi,
-      units = "px",
-      bg = viz_cfg$bg_col
+      units = "px"
       )
   })
   }
