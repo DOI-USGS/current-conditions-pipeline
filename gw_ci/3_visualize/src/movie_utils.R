@@ -12,15 +12,14 @@
 #' @param output_template Directory where MP4 should be saved.
 #'
 #' @return Character string path to saved MP4.
-build_gw_mp4 <- function(
-  interval_start_date,
-  interval_end_date,
-  interval_name,
-  gw_png_config,
-  viz_cfg,
-  output_template,
-  img_type_name
-) {
+build_gw_mp4 <- function(interval_start_date,
+                         interval_end_date, 
+                         interval_name,
+                         gw_png_config,
+                         viz_cfg,
+                         output_template,
+                         img_type_name) {
+  
   filtered_df <- gw_png_config |>
     dplyr::filter(
       local_image_type == img_type_name,
@@ -28,9 +27,9 @@ build_gw_mp4 <- function(
       date <= interval_end_date
     ) |>
     dplyr::arrange(date)
-
+  
   frames <- filtered_df$local_image_file
-
+  
   interval_str <- format(interval_start_date, "%Y-%m-%d")
 
   message(sprintf(
@@ -38,13 +37,14 @@ build_gw_mp4 <- function(
     interval_name,
     length(frames)
   ))
-
+  
+  
   av::av_encode_video(
     input = frames,
     output = output_template,
     framerate = viz_cfg$fps,
     vfilter = "scale=trunc(iw/2)*2:trunc(ih/2)*2"
   )
-
+  
   return(output_template)
 }

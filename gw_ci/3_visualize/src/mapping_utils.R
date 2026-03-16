@@ -18,46 +18,35 @@
 #' or "mobile". Used to adjust some plotting parameters
 #'
 #' @return Final gpplot.
-plot_gw <- function(
-  gw_parquet_file,
-  date_val,
-  incl_date,
-  area_name,
-  area_proj,
-  area_state_list,
-  area_sf,
-  palette,
-  viz_cfg,
-  scale_cfg,
-  state_lookup,
-  image_screen_type
-) {
+plot_gw <- function(gw_parquet_file, date_val, incl_date, area_name, area_proj, 
+                    area_state_list, area_sf, palette, viz_cfg, scale_cfg, 
+                    state_lookup, image_screen_type) {
   # Read and convert to sf, join area, drop sites not in area
   gw_sf <- arrow::read_parquet(gw_parquet_file) |>
-    sf::st_as_sf() |>
+    sf::st_as_sf() |> 
     # Must set CRS to EPSG:4326 first then transform
-    sf::st_set_crs(sf::st_crs("EPSG:4326")) |>
+    sf::st_set_crs(sf::st_crs("EPSG:4326")) |> 
     # Transform to crs for area
-    sf::st_transform(area_proj) |>
+    sf::st_transform(area_proj) |> 
     dplyr::left_join(state_lookup, by = c("state_name" = "state_name_std")) |>
-    dplyr::filter(state_abbr %in% unlist(area_state_list)) |>
-    # add in peaks computing fxn after transformation
+    dplyr::filter(state_abbr %in% unlist(area_state_list)) |> 
+    # add in peaks computing fxn after transformation 
     compute_peak_geometry(scale_cfg)
-
+  
   # Sorting by plotting order and latitude (y) to help with overplotted areas
-  gw_plot_order <- gw_sf |>
+  gw_plot_order <- gw_sf |> 
     arrange(plotting_order, desc(y))
-
+  
   # For CONUS, extract additional geometries for plotting
-  if (area_name == "CONUS") {
+  if(area_name == "CONUS") {
     # Extract internal lines
     conus_inner_states_sf <- rmapshaper::ms_innerlines(area_sf)
     # Extract outer boundary
-    conus_outer_boundary_sf <- area_sf |>
-      sf::st_union() |>
+    conus_outer_boundary_sf <- area_sf |> 
+      sf::st_union() |> 
       sf::st_cast("MULTILINESTRING")
   }
-
+  
   # Build plot
   p <- ggplot() +
     # Map area_sf with shadows
@@ -73,13 +62,13 @@ plot_gw <- function(
       y_offset = 0,
       sigma = viz_cfg$ggfx_sigma
     )
-
+  
   if (area_name == "CONUS") {
     p <- p +
       # Internal state borders
       geom_sf(
         data = conus_inner_states_sf,
-        color = viz_cfg$inner_states_col,
+        color = viz_cfg$inner_states_col, 
         linewidth = viz_cfg$inner_states_stroke,
         fill = NA
       ) +
@@ -100,13 +89,11 @@ plot_gw <- function(
         fill = NA
       )
   }
-
+  
   # plot data
-  na_sites_size <- ifelse(
-    image_screen_type == "mobile",
-    viz_cfg$na_sites_size_mobile,
-    viz_cfg$na_sites_size_desktop
-  )
+  na_sites_size <- ifelse(image_screen_type == "mobile",
+                          viz_cfg$na_sites_size_mobile,
+                          viz_cfg$na_sites_size_desktop)
   p <- p +
     # NA sites
     geom_sf(
@@ -127,18 +114,18 @@ plot_gw <- function(
         color = per_bin
       ),
       linewidth = viz_cfg$normal_sites_stroke
-    )
-
+    ) 
+  
   # Identify sites orders 2 through 4
   sites_order_2_to_4 <- gw_plot_order |>
     filter(plotting_order %in% 2:4) |>
     pull(monitoring_location_id) |>
     unique()
-
+  
   # For each site, plot mask, gradient, and border
   site_plots <- purrr::map(sites_order_2_to_4, function(site) {
     site_gw <- filter(gw_plot_order, monitoring_location_id == site)
-
+    
     # Layer 1: mask
     mask <- geom_link(
       data = site_gw,
@@ -154,7 +141,7 @@ plot_gw <- function(
       ),
       color = "white"
     )
-
+    
     # Layer 2: gradient
     gradient <- geom_link(
       data = site_gw,
@@ -170,7 +157,7 @@ plot_gw <- function(
         alpha = after_stat(I((0.2^index - 1) / (0.2 - 1)))
       )
     )
-
+    
     # Layer 3: border
     border1 <- geom_segment(
       data = site_gw,
@@ -183,7 +170,7 @@ plot_gw <- function(
       ),
       linewidth = 0.1
     )
-
+    
     border2 <- geom_segment(
       data = site_gw,
       aes(
@@ -195,24 +182,24 @@ plot_gw <- function(
       ),
       linewidth = 0.1
     )
-
+    
     return(c(mask, gradient, border1, border2))
   })
-
+  
   p <- p +
     site_plots
-
+  
   p <- p +
     # Scales and themes
     scale_color_manual(values = palette) +
     theme_void() +
     theme(legend.position = "none")
-
+  
   if (incl_date) {
     p <- p +
       labs(title = date_val)
   }
-
+  
   return(p)
 }
 
@@ -224,7 +211,7 @@ plot_gw <- function(
 #' @param gw_parquet_file Path to processed parquet file for one date.
 #' @param date Date for which gw data are being plotted.
 #' @param area_name Name of area.
-#' @param area_info_df dataframe with information about the area for which to
+#' @param area_info_df dataframe with information about the area for which to 
 #' plot gw data, including the name of area, the projection to use for the area,
 #' and the list of states within the area
 #' @param area_sf sf of polygons for the area, or list of sf object for areas
@@ -240,24 +227,14 @@ plot_gw <- function(
 #' @param output_template Filename template containing `%s` for date.
 #'
 #' @return Character string path to saved PNG.
-plot_gw_png <- function(
-  gw_parquet_file,
-  date,
-  area_name,
-  area_info_df,
-  area_sf,
-  extent_info,
-  palette,
-  viz_cfg,
-  scale_cfg,
-  state_lookup,
-  locator_map_png = NULL,
-  image_screen_type,
-  output_template
-) {
+plot_gw_png <- function(gw_parquet_file, date, area_name, area_info_df, area_sf, 
+                        extent_info, palette, viz_cfg, scale_cfg, 
+                        state_lookup, locator_map_png = NULL, 
+                        image_screen_type, output_template) {
+  
   date_val <- as.character(date)
   out_path <- sprintf(output_template, image_screen_type, area_name, date_val)
-
+  
   message(sprintf(
     "read in %s and plot %s map for %s, saving as %s",
     gw_parquet_file,
@@ -265,76 +242,65 @@ plot_gw_png <- function(
     date_val,
     out_path
   ))
-
+  
   # Ensure the directory exists so ggsave doesn't error
-  if (!dir.exists(dirname(out_path))) {
-    dir.create(dirname(out_path), recursive = TRUE)
-  }
-
+  if(!dir.exists(dirname(out_path))) dir.create(dirname(out_path), recursive = TRUE)
+  
   # Build plot
   if (area_name == "CONUS_OCONUS") {
     # generate plots for each area
     area_gw_plots <- purrr::pmap(
-      list(
-        area_info_df[["name"]],
-        area_info_df[["proj"]],
-        area_info_df[["state_list"]],
-        area_info_df[["scale_factor"]],
-        extent_info,
-        area_sf
-      ),
-      function(
-        area_name,
-        area_proj,
-        area_state_list,
-        area_scale_factor,
-        extent_info,
-        area_poly_sf
-      ) {
+      list(area_info_df[["name"]], 
+           area_info_df[["proj"]], 
+           area_info_df[["state_list"]],
+           area_info_df[["scale_factor"]],
+           extent_info,
+           area_sf),
+      function(area_name, area_proj, area_state_list, area_scale_factor,
+               extent_info, area_poly_sf) {
         # Generate appropriate scaling parameters for each area
         # _NOTE: this is a first stab at adjusting these for different areas. I
         # suspect we will also need to make some further adjustments_
         adj_scale_cfg <- scale_cfg |>
           mutate(
-            max_vector_height = max_vector_height / area_scale_factor,
-            mid_vector_height = mid_vector_height / area_scale_factor,
-            min_vector_height = min_vector_height / area_scale_factor,
-            max_vector_width = max_vector_width / area_scale_factor,
+            max_vector_height = 
+              max_vector_height/area_scale_factor,
+            mid_vector_height = 
+              mid_vector_height/area_scale_factor,
+            min_vector_height = 
+              min_vector_height/area_scale_factor,
+            max_vector_width = 
+              max_vector_width/area_scale_factor,
             mid_vector_width = max_vector_width * mid_factor,
             min_vector_width = max_vector_width * min_factor,
             normal_width = max_vector_width * min_factor
           )
-        p <- plot_gw(
-          gw_parquet_file = gw_parquet_file,
-          date_val = date_val,
-          incl_date = FALSE,
-          area_name = area_name,
-          area_proj = area_proj,
-          area_state_list = area_state_list,
-          area_sf = area_poly_sf,
-          palette = palette,
-          viz_cfg = viz_cfg,
-          scale_cfg = adj_scale_cfg,
-          state_lookup = state_lookup,
-          image_screen_type = image_screen_type
-        ) +
+        p <- plot_gw(gw_parquet_file = gw_parquet_file, 
+                     date_val = date_val, 
+                     incl_date = FALSE,
+                     area_name = area_name,
+                     area_proj = area_proj,
+                     area_state_list = area_state_list,
+                     area_sf = area_poly_sf, 
+                     palette = palette, 
+                     viz_cfg = viz_cfg,
+                     scale_cfg = adj_scale_cfg, 
+                     state_lookup = state_lookup,
+                     image_screen_type = image_screen_type) +
           # make sure there is no expansion of extents
           scale_x_continuous(expand = c(0.00, 0.00)) +
           scale_y_continuous(expand = c(0.00, 0.00))
-      }
-    ) |>
+      }) |>
       set_names(area_info_df[["name"]])
-
+    
     # arrange plots
     extent_info <- set_names(extent_info, area_info_df[["name"]])
-    gw_plot <- generate_landscape_condensed(
-      area_info_df = area_info_df,
-      areas_extents = extent_info,
-      areas_plots = area_gw_plots,
-      locator_map_png = locator_map_png,
-      viz_config = viz_cfg
-    )
-
+    gw_plot <- generate_landscape_condensed(area_info_df = area_info_df,
+                                            areas_extents = extent_info,
+                                            areas_plots = area_gw_plots,
+                                            locator_map_png = locator_map_png,
+                                            viz_config = viz_cfg)
+    
     # for now, for testing, include date on final image
     incl_date <- TRUE
     if (incl_date) {
@@ -350,20 +316,21 @@ plot_gw_png <- function(
           size = viz_cfg[["annotation_font_size"]]
         )
     }
+    
   } else {
     # for now, for testing, include date on final image
     incl_date <- TRUE
-
+    
     # Generate appropriate scaling parameters for each area
     # _NOTE: this is a first stab at adjusting these for different areas. I
     # suspect we will also need to make some further adjustments for mobile_
     if (image_screen_type == "mobile") {
       scale_cfg <- scale_cfg |>
         mutate(
-          max_vector_height = max_vector_height * extent_info[["rel_height"]],
-          mid_vector_height = mid_vector_height * extent_info[["rel_height"]],
-          min_vector_height = min_vector_height * extent_info[["rel_height"]],
-          max_vector_width = max_vector_width * extent_info[["rel_width"]],
+          max_vector_height = max_vector_height*extent_info[["rel_height"]],
+          mid_vector_height = mid_vector_height*extent_info[["rel_height"]],
+          min_vector_height = min_vector_height*extent_info[["rel_height"]],
+          max_vector_width = max_vector_width*extent_info[["rel_width"]],
           mid_vector_width = max_vector_width * mid_factor,
           min_vector_width = max_vector_width * min_factor,
           normal_width = max_vector_width * min_factor,
@@ -372,30 +339,28 @@ plot_gw_png <- function(
           min_peak_width = max_factor_mobile * min_factor
         )
     }
-    gw_plot <- plot_gw(
-      gw_parquet_file = gw_parquet_file,
-      date_val = date_val,
-      incl_date = incl_date,
-      area_name = area_name,
-      area_proj = area_info_df[["proj"]],
-      area_state_list = area_info_df[["state_list"]],
-      area_sf = area_sf,
-      palette = palette,
-      viz_cfg = viz_cfg,
-      scale_cfg = scale_cfg,
-      state_lookup = state_lookup,
-      image_screen_type = image_screen_type
-    ) +
+    gw_plot <- plot_gw(gw_parquet_file = gw_parquet_file, 
+                       date_val = date_val, 
+                       incl_date = incl_date,
+                       area_name = area_name,
+                       area_proj = area_info_df[["proj"]],
+                       area_state_list = area_info_df[["state_list"]],
+                       area_sf = area_sf, 
+                       palette = palette, 
+                       viz_cfg = viz_cfg,
+                       scale_cfg = scale_cfg, 
+                       state_lookup = state_lookup,
+                       image_screen_type = image_screen_type) +
       # make space for ggfx shadow
       scale_x_continuous(expand = c(0.05, 0.05)) +
       scale_y_continuous(expand = c(0.05, 0.05))
   }
-
+  
   # Export
   if (image_screen_type == "desktop") {
     export_width <- viz_cfg$width
     export_height <- viz_cfg$height
-  } else if (image_screen_type == "mobile") {
+  } else if(image_screen_type == "mobile") {
     export_width <- viz_cfg$mobile_width
     export_height <- viz_cfg$mobile_height
   } else {
@@ -404,13 +369,10 @@ plot_gw_png <- function(
   ggsave(
     filename = out_path,
     plot = gw_plot,
-    width = export_width,
-    height = export_height,
-    dpi = viz_cfg$dpi,
-    bg = viz_cfg$bg_col,
-    units = viz_cfg$units
+    width = export_width, height = export_height,
+    dpi = viz_cfg$dpi, bg = viz_cfg$bg_col, units = viz_cfg$units
   )
-
+  
   return(out_path)
 }
 
@@ -421,46 +383,37 @@ plot_gw_png <- function(
 #' @param viz_cfg Visual config (for dimensions/colors)
 #' @param scale_cfg Scaling config (for linewidth/height)
 #' @param out_path Path to save the PNGs
-plot_gw_leg <- function(
-  gw_parquet_file,
-  conus_proj,
-  palette,
-  viz_cfg,
-  scale_cfg,
-  out_path
-) {
+plot_gw_leg <- function(gw_parquet_file, conus_proj, palette, viz_cfg,
+                        scale_cfg, out_path) {
+  
   # Ensure directory exists
-  if (!dir.exists(dirname(out_path))) {
-    dir.create(dirname(out_path), recursive = TRUE)
-  }
-
+  if(!dir.exists(dirname(out_path))) dir.create(dirname(out_path), recursive = TRUE)
+  
   # Read + project
   gw_sf <- arrow::read_parquet(gw_parquet_file) |>
     st_as_sf() |>
     st_set_crs(4326) |>
     st_transform(conus_proj) |>
     compute_peak_geometry(scale_cfg)
-
+  
   # One row per category
   legend_rows <- gw_sf |>
     group_by(per_bin) |>
     slice_head(n = 1) |>
-    ungroup()
-
+    ungroup() 
+  
   # Build each legend PNG
   purrr::map_chr(seq_len(nrow(legend_rows)), function(i) {
     leg_row <- legend_rows[i, ]
     # Assign values
-    cat_name <- ifelse(is.na(leg_row$per_bin), "na_site", leg_row$per_bin)
-    file_id <- janitor::make_clean_names(cat_name)
+    cat_name <- ifelse(is.na(leg_row$per_bin),
+                       "na_site",
+                       leg_row$per_bin)
+    file_id  <- janitor::make_clean_names(cat_name)
     file_path <- sprintf(out_path, file_id)
     is_na_cat <- is.na(leg_row$per_bin)
-    order_val <- ifelse(
-      is.na(leg_row$plotting_order),
-      0,
-      leg_row$plotting_order
-    )
-
+    order_val <- ifelse(is.na(leg_row$plotting_order), 0, leg_row$plotting_order)
+    
     # Recenter the geometry based on the row's coordinates
     # But force 0s for NA site for marker
     if (is_na_cat) {
@@ -478,97 +431,78 @@ plot_gw_leg <- function(
           y = 0
         )
     }
-
+    
     # Logic for peak fill width
     current_sf <- case_when(
       leg_df$plotting_order == 4 ~ scale_cfg$leg_scale_mult_factor,
-      leg_df$plotting_order == 3 ~ scale_cfg$mid_factor *
-        scale_cfg$leg_scale_mult_factor,
-      leg_df$plotting_order == 2 ~ scale_cfg$min_factor *
-        scale_cfg$leg_scale_mult_factor,
+      leg_df$plotting_order == 3 ~ scale_cfg$mid_factor * scale_cfg$leg_scale_mult_factor,
+      leg_df$plotting_order == 2 ~ scale_cfg$min_factor * scale_cfg$leg_scale_mult_factor,
       TRUE ~ 0
     )
-
+    
     p <- ggplot(leg_df) +
       # NA sites (X marker)
-      {
-        if (is_na_cat) {
-          geom_point(
-            aes(x = 0, y = 0),
-            shape = 4,
-            color = viz_cfg$na_sites_col,
-            size = 2.5,
-            stroke = 1.25
-          )
-        }
-      } +
+      {if (is_na_cat)
+        geom_point(
+          aes(x = 0, y = 0),
+          shape = 4,
+          color = viz_cfg$na_sites_col,
+          size = 2.5,
+          stroke = 1.25
+        )} +
       # Normal lines (order 1)
-      {
-        if (!is_na_cat && order_val == 1) {
-          geom_segment(
-            aes(
-              x = x_start,
-              xend = x_end,
-              y = y,
-              yend = y_end,
-              color = per_bin
-            ),
-            linewidth = 0.3
-          )
-        }
-      } +
+      {if (!is_na_cat && order_val == 1)
+        geom_segment(
+          aes(
+            x = x_start, xend = x_end,
+            y = y, yend = y_end,
+            color = per_bin
+          ),
+          linewidth = 0.3
+        )} +
       # Peaks (order 2, 3, 4)
-      {
-        if (!is_na_cat && order_val > 1) {
-          list(
-            geom_link(
-              aes(
-                x = x,
-                xend = x,
-                y = y,
-                yend = y_end,
-                color = per_bin,
-                mf = scale_cfg$max_factor,
-                sf = current_sf,
-                linewidth = after_stat(I((1 - index) * mf * sf * 1.2)),
-                alpha = after_stat(I((0.99^index - 1) / (0.99 - 1)))
+      {if (!is_na_cat && order_val > 1)
+        list(
+          geom_link(
+            aes(
+              x = x, xend = x,
+              y = y, yend = y_end,
+              color = per_bin,
+              mf = scale_cfg$max_factor,
+              sf = current_sf,
+              linewidth = after_stat(I((1 - index) * mf * sf*1.2)),
+              alpha = after_stat(I((0.99^index - 1) / (0.99 - 1)))
               )
             ),
-            geom_segment(
-              aes(
-                x = x_start,
-                xend = x,
-                y = y,
-                yend = y_end,
-                color = per_bin
+          geom_segment(
+            aes(
+              x = x_start, xend = x,
+              y = y, yend = y_end,
+              color = per_bin
               ),
-              linewidth = 0.15
+            linewidth = 0.15
             ),
-            geom_segment(
-              aes(
-                x = x,
-                xend = x_end,
-                y = y_end,
-                yend = y,
-                color = per_bin
+          geom_segment(
+            aes(
+              x = x, xend = x_end,
+              y = y_end, yend = y,
+              color = per_bin
               ),
-              linewidth = 0.15
+            linewidth = 0.15
             )
-          )
-        }
-      } +
+          )} +
       scale_color_manual(
         values = palette,
         na.value = viz_cfg$na_sites_col
-      ) +
+        ) +
       # expanded limits so "below" categories aren't cut off
       coord_cartesian(
         xlim = c(-scale_cfg$leg_xlim, scale_cfg$leg_xlim),
         ylim = c(-scale_cfg$leg_ylim, scale_cfg$leg_ylim)
-      ) +
+        ) +
       theme_void() +
       theme(legend.position = "none")
-
+    
     ggsave(
       filename = file_path,
       plot = p,
@@ -576,22 +510,22 @@ plot_gw_leg <- function(
       height = viz_cfg$leg_height,
       dpi = viz_cfg$dpi,
       units = "px"
-    )
+      )
   })
-}
+  }
 
 #' Create triangle polygon coordinates for groundwater peaks
-#'
-#' Transforms site level peak dimensions into a long-format coordinate table
+#' 
+#' Transforms site level peak dimensions into a long-format coordinate table 
 #' suitable for geom_polygon.
 #'
 #' @param df A data frame containing monitoring_location_id, x, y, x_start, x_end, and y_end.
 #' @param expand Numeric factor to scale the triangle size beyond its base height and width.
-#'
+#' 
 #' @return A data frame with three rows per site, containing x_poly and y_poly.
 make_peak_polygon <- function(df, expand = 0.06) {
   df |>
-    uncount(3) |>
+    uncount(3) |>   
     group_by(monitoring_location_id) |>
     mutate(
       vertex = row_number(),
@@ -610,15 +544,16 @@ make_peak_polygon <- function(df, expand = 0.06) {
 }
 
 #' Compute peak geometry for projected groundwater data
-#'
+#' 
 #' @param gw_sf An sf object containing groundwater data with
 #'   `plotting_order` and `direction` columns.
 #' @param scale_cfg Scaling config.
 #' @return An sf object with additional plotting geometry columns
 compute_peak_geometry <- function(gw_sf, scale_cfg) {
+  
   # Extract projected coordinates
   coords <- sf::st_coordinates(gw_sf)
-
+  
   gw_sf |>
     dplyr::mutate(
       x = coords[, 1],
@@ -663,96 +598,79 @@ compute_peak_geometry <- function(gw_sf, scale_cfg) {
 #' @param output_template Filename template used to build output path.
 #'
 #' @return Character string path to saved PNG.
-plot_gw_static_png <- function(
-  gw_png,
-  date,
-  logo_path,
-  legend_path,
-  viz_cfg,
-  image_screen_type,
-  area_name,
-  output_template
-) {
+plot_gw_static_png <- function(gw_png, date, logo_path, legend_path,
+                               viz_cfg, image_screen_type, area_name,
+                               output_template) {
+  
   date_val <- as.character(date)
-  out_path <- sprintf(
-    output_template,
-    paste0("static-", image_screen_type),
-    area_name,
-    date_val
-  )
-
+  out_path <- sprintf(output_template, paste0("static-", image_screen_type),
+    area_name, date_val)
+  
   message(sprintf(
     "Building static image from %s to %s",
     gw_png,
     out_path
   ))
-
-  if (!dir.exists(dirname(out_path))) {
+  
+  if(!dir.exists(dirname(out_path))) {
     dir.create(dirname(out_path), recursive = TRUE)
   }
-
+  
   base_img <- magick::image_read(gw_png)
-
-  usgs_logo <- magick::image_read(logo_path) |>
+  
+  usgs_logo <- magick::image_read(logo_path)|>
     magick::image_colorize(100, "black")
-
+  
   legend_img <- magick::image_read(legend_path)
-
+  
   canvas <- grid::rectGrob(
-    x = 0,
-    y = 0,
-    width = viz_cfg$width,
-    height = viz_cfg$height,
-    gp = grid::gpar(fill = viz_cfg$bg_col, alpha = 1, col = viz_cfg$bg_col)
-  )
-
-  p <- ggdraw(ylim = c(0, 1), xlim = c(0, 1)) +
-    # a background
-    draw_grob(
-      canvas,
-      x = 0,
-      y = 1,
-      height = 8,
-      width = 8,
-      hjust = 0,
-      vjust = 1
-    ) +
-    draw_image(base_img, x = 0, y = 0, width = 1, height = 1) +
-    # Mock image legend
-    draw_image(
-      legend_img,
-      x = 0.9,
-      y = 1.04,
-      scale = 0.32,
-      height = 1,
-      hjust = 1,
-      vjust = 1,
-      halign = 1,
-      valign = 1
-    ) +
-    # Add logo
-    draw_image(
-      usgs_logo,
-      x = 0.98,
-      y = 0.024,
-      width = 0.1,
-      hjust = 1,
-      vjust = 0,
-      halign = 0,
-      valign = 0
-    ) +
-    # Add date
-    draw_label(
-      format(date, "%B%e, %Y"),
-      x = 0.01,
-      y = 0.98,
-      hjust = 0,
-      vjust = 1,
-      fontfamily = viz_cfg[["date_font"]],
-      color = viz_cfg[["date_font_color"]],
-      size = viz_cfg[["date_font_size"]]
+    x = 0, y = 0,
+    width = viz_cfg$width, height = viz_cfg$height,
+    gp = grid::gpar(fill = viz_cfg$bg_col,
+                    alpha = 1, col = viz_cfg$bg_col
     )
-
+  )
+  
+  p <- ggdraw(ylim = c(0,1),
+              xlim = c(0,1)) +
+    # a background
+    draw_grob(canvas,
+              x = 0, y = 1,
+              height = 8, width = 8,
+              hjust = 0, vjust = 1) + 
+    draw_image(base_img,
+               x = 0,
+               y = 0,
+               width = 1,
+               height = 1) +
+    # Mock image legend
+    draw_image(legend_img,
+               x = 0.9,
+               y = 1.04,
+               scale = 0.32,
+               height = 1,
+               hjust = 1,
+               vjust = 1,
+               halign = 1, 
+               valign = 1) +
+    # Add logo
+    draw_image(usgs_logo,
+               x = 0.98,
+               y = 0.024,
+               width = 0.1,
+               hjust = 1, vjust = 0,
+               halign = 0, valign = 0) +
+    # Add date 
+    draw_label(format(date, "%B%e, %Y"),
+               x = 0.01,
+               y = 0.98,
+               hjust = 0,
+               vjust = 1,
+               fontfamily = viz_cfg[["date_font"]],
+               color = viz_cfg[["date_font_color"]],
+               size = viz_cfg[["date_font_size"]])
+    
+    
   ggsave(
     filename = out_path,
     plot = p,
@@ -762,6 +680,6 @@ plot_gw_static_png <- function(
     units = viz_cfg$units,
     bg = viz_cfg$bg_col
   )
-
+  
   return(out_path)
 }
