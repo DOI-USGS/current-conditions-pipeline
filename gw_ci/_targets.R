@@ -18,8 +18,8 @@ tar_option_set(packages = c('tidyverse',
                             'glue',
                             'arrow',
                             'sfarrow',
-                            's2'
-                            ))
+                            's2',
+                            'jsonlite'))
 
 # Phase target makefiles
 source("0_config.R")

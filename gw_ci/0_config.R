@@ -3,7 +3,11 @@ p0_targets <- list(
   tar_target(
     p0_metadata_path,
     "1_fetch/in/gw_file_metadata.csv"
-    ),
+  ),
+  tar_target(
+    p0_date_json_path,
+    "3_visualize/out/gw_dates.json"
+  ),
   tar_target(
     p0_s3_prod_URL,
     "https://dfi09q69oy2jm.cloudfront.net/visualizations/"
@@ -45,10 +49,8 @@ p0_targets <- list(
   tar_target(
     p0_yesterday_date,
     # # fix date for now, while building out pipeline
-    as.Date("2026/03/05"),
-    # Sys.Date() - 1,
-    # as_date("2026-03-29") %m-% months(1)
-    # to catch 2/29
+    # as.Date("2026/03/05"),
+    Sys.Date() - 1,
     # ensure target is reran and not skipped for CI
     cue = tar_cue(mode = "always")
   ),
@@ -58,21 +60,31 @@ p0_targets <- list(
     # c(lubridate::dmonths(1), lubridate::dmonths(3), lubridate::dmonths(6),
     #   lubridate::years(1))
     c(
-      "last-month" = 3,
-      "last-3-months" = 5,
-      "last-6-months" = 9
-      #, "last-year" = x
+      "last-month" = weeks(1),
+      "last-3-months" = weeks(2),
+      "last-6-months" = months(1),
+      "last-year" = months(2)
     )
   ),
   tar_target(
     p0_interval_names,
-    names(p0_interval_start_dates)
+    names(p0_intervals)
   ),
   tar_target(
     p0_interval_start_dates,
-    p0_yesterday_date - p0_intervals
+    p0_yesterday_date %m-% p0_intervals
+  ),
+  tar_target(
+    p0_interval_dates,
+    seq.Date(p0_interval_start_dates, p0_yesterday_date, by = 1),
+    pattern = map(p0_interval_start_dates),
+    iteration = "list"
   ),
   ##### spatial parameters #####
+  tar_target(
+    p0_desktop_area_name,
+    "CONUS_OCONUS"
+  ),
   tar_target(
     p0_area_info_df,
     tibble(
