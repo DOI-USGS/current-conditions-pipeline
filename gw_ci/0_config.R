@@ -25,6 +25,10 @@ p0_targets <- list(
     "current_conditions/groundwater/images/gw-%s-%s-%s.png"
   ),
   tar_target(
+    p0_remote_video_file_template,
+    "current_conditions/groundwater/videos/gw-%s-%s-%s.png"
+  ),
+  tar_target(
     p0_local_image_file_dir,
     "3_visualize/out/gw"
   ),
@@ -49,8 +53,8 @@ p0_targets <- list(
   tar_target(
     p0_yesterday_date,
     # # fix date for now, while building out pipeline
-    # as.Date("2026/03/05"),
-    Sys.Date() - 1,
+    as.Date("2026/03/05"),
+    # Sys.Date() - 1,
     # ensure target is reran and not skipped for CI
     cue = tar_cue(mode = "always")
   ),
@@ -60,10 +64,10 @@ p0_targets <- list(
     # c(lubridate::dmonths(1), lubridate::dmonths(3), lubridate::dmonths(6),
     #   lubridate::years(1))
     c(
-      "last-month" = weeks(1),
-      "last-3-months" = weeks(2),
-      "last-6-months" = months(1),
-      "last-year" = months(2)
+      "last-month" = weeks(0),
+      "last-3-months" = weeks(0),
+      "last-6-months" = months(0),
+      "last-year" = months(0)
     )
   ),
   tar_target(
