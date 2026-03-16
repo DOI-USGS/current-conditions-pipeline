@@ -17,6 +17,7 @@ figure_params:
   scale_params:
     linewidth: 0.5
     color: "#363636"
+    scale_length: 0.025
   datelabel:
     fontsize: 10.5
     xloc: 0.99
@@ -33,7 +34,7 @@ date_range:
   end: "2025-12-31"
 
 census_data:
-  resolution: "20m"
+  resolution: "5m"
   year: 2024
 
 geometry_simplify_percent:
@@ -61,21 +62,31 @@ state_params:
     linewidth: 0.5
     edgecolor: "#949494"
     facecolor: "#ffffff"
+    outerlinewidth: 0.25
+    outeredgecolor: "#949494"
   conus:
     ax_loc: [0.31, 0.01, 0.68, 0.98]
     proj: "EPSG:5070"
     multi: 1.0
   alaska:
-    ax_loc: [0.01, 0.51, 0.28, 0.48]
+    ax_loc: [0.01, 0.64, 0.28, 0.35]
     proj: "EPSG:3338"
     multi: 0.5
   hawaii:
-    ax_loc: [0.01, 0.21, 0.28, 0.28]
+    ax_loc: [0.11, 0.35, 0.18, 0.28]
     proj: "EPSG:2784"
     multi: 2.0
-  puertorico:
-    ax_loc: [0.01, 0.01, 0.28, 0.18]
+  puertoricoandvirginislands:
+    ax_loc: [0.11, 0.16, 0.18, 0.15]
     proj: "EPSG:2866"
+    multi: 2.0
+  marianaislands:
+    ax_loc: [0.01, 0.01, 0.10, 0.63]
+    proj: "EPSG:8692"
+    multi: 2.0
+  americansomoa:
+    ax_loc: [0.11, 0.01, 0.18, 0.15]
+    proj: "EPSG:6636"
     multi: 2.0
 
 marker_params:

@@ -17,19 +17,7 @@ image_lists, image_download_list, image_make_list, parquet_list, parquet_downloa
 # set final intended output
 rule all:
     input:
-        #["movies/sf-" + config["date"] + "-back-" + str(interval)+ ".mp4" for interval in params["interval"]]
-        "data/conus_simplified_desktop.geojson",
-        "data/ak_simplified_desktop.geojson",
-        "data/hi_simplified_desktop.geojson",
-        "data/prvi_simplified_desktop.geojson",
-        "data/gump_simplified_desktop.geojson",
-        "data/as_simplified_desktop.geojson",
-        "data/conus_simplified_mobile.geojson",
-        "data/ak_simplified_mobile.geojson",
-        "data/hi_simplified_mobile.geojson",
-        "data/prvi_simplified_mobile.geojson",
-        "data/gump_simplified_mobile.geojson",
-        "data/as_simplified_mobile.geojson"
+        ["movies/sf-" + config["date"] + "-back-" + str(interval)+ ".mp4" for interval in params["interval"]]
 
 # gather the state census boundaries
 rule gather_census_data:
@@ -131,7 +119,12 @@ rule make_shadow_plot:
         figure_params = params["figure_params"],
         state_params = params["state_params"],
     input:
-        simplified_census_file = "data/us_states.geojson",
+        conus_geojson = "data/conus.geojson",
+        ak_geojson = "data/ak.geojson",
+        hi_geojson = "data/hi.geojson",
+        prvi_geojson = "data/prvi.geojson",
+        gump_geojson = "data/gump.geojson",
+        as_geojson = "data/as.geojson"
     output:
         shadow_image_file = "figures/sf-shadow.png"
     script:
@@ -148,7 +141,12 @@ for i, parquet_file in enumerate(parquet_list):
             state_params = params["state_params"],
         input:
             parquet_file = parquet_file,
-            simplified_census_file = "data/us_states.geojson",
+            conus_geojson = "data/conus.geojson",
+            ak_geojson = "data/ak.geojson",
+            hi_geojson = "data/hi.geojson",
+            prvi_geojson = "data/prvi.geojson",
+            gump_geojson = "data/gump.geojson",
+            as_geojson = "data/as.geojson",
             shadow_image_file = "figures/sf-shadow.png"
         output:
             image_file = image_make_list[i]

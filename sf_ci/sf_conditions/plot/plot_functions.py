@@ -44,9 +44,9 @@ def setup_boundary(ax, boundary_gdf_proj, state_style):
         inner_state_lines = gpd.GeoSeries([inner_lines], crs=boundary_gdf_proj.crs)
     outer_boundary.plot(
         ax=ax,
-        edgecolor="none",
+        edgecolor=state_style["outeredgecolor"],
         facecolor=state_style["facecolor"],
-        linewidth=state_style["linewidth"],
+        linewidth=state_style["outerlinewidth"],
         zorder=1,
     )
     # If there are no inner statelines (alaska for example, don't plot inner lines)
@@ -106,14 +106,6 @@ def plot_data(
         color=marker_params["NA"]["color"],
         linewidth=marker_params["NA"]["linewidth"],
         zorder=-1,
-        label="Data unavailable - "
-        + str(
-            round(
-                sf_gdf_proj["percentile_bin"].isna().sum() / len(sf_gdf_proj) * 100.0,
-                1,
-            )
-        )
-        + "%",
     )
 
     # plot non na values
@@ -126,7 +118,6 @@ def plot_data(
             linewidth=marker_params["linewidth"][i],
             markersize=marker_params["markersize"][i],
             zorder=marker_params["zorder"][i],
-            label=marker_params["label"][i],
         )
 
     # set up the x and y limits of the axis
@@ -143,7 +134,7 @@ def plot_data(
     ax.set_axis_off()
 
     # scale bar
-    scale_line_size = reference_length * 0.05
+    scale_line_size = reference_length * scale_params["scale_length"]
     ax.plot(
         [
             center_x - 0.5 * reference_scale * ax_dims[0] / scale_mult,
@@ -185,7 +176,12 @@ def plot_data(
 def generate_figure(
     date,
     figure_params,
-    us_states_gdf,
+    conus_gdf,
+    ak_gdf,
+    hi_gdf,
+    prvi_gdf,
+    gump_gdf,
+    as_gdf,
     gdf_sf,
     plotname,
     marker_params,
@@ -198,8 +194,7 @@ def generate_figure(
     mpl_setup(figure_params)
 
     # Reference scale to CONUS
-    conus = us_states_gdf[~us_states_gdf["STUSPS"].isin(["HI", "AK", "PR"])]
-    minx, miny, maxx, maxy = conus.to_crs(state_params["conus"]["proj"]).total_bounds
+    minx, miny, maxx, maxy = conus_gdf.to_crs(state_params["conus"]["proj"]).total_bounds
     reference_length = maxx - minx
 
     # Set up figure
@@ -216,7 +211,9 @@ def generate_figure(
     conus_ax = fig.add_axes(state_params["conus"]["ax_loc"])
     ak_ax = fig.add_axes(state_params["alaska"]["ax_loc"])
     hi_ax = fig.add_axes(state_params["hawaii"]["ax_loc"])
-    pr_ax = fig.add_axes(state_params["puertorico"]["ax_loc"])
+    prvi_ax = fig.add_axes(state_params["puertoricoandvirginislands"]["ax_loc"])
+    gump_ax = fig.add_axes(state_params["marianaislands"]["ax_loc"])
+    as_ax = fig.add_axes(state_params["americansomoa"]["ax_loc"])
 
     # Get dimensions
     conus_ax_dims = get_ax_size_inches(conus_ax, fig)
@@ -227,7 +224,7 @@ def generate_figure(
         fig,
         conus_ax,
         gdf_sf,
-        conus,
+        conus_gdf,
         state_params["conus"]["proj"],
         state_params["conus"]["multi"],
         state_params["style"],
@@ -242,7 +239,7 @@ def generate_figure(
         fig,
         ak_ax,
         gdf_sf,
-        us_states_gdf[us_states_gdf["STUSPS"].isin(["AK"])],
+        ak_gdf,
         state_params["alaska"]["proj"],
         state_params["alaska"]["multi"],
         state_params["style"],
@@ -257,7 +254,7 @@ def generate_figure(
         fig,
         hi_ax,
         gdf_sf,
-        us_states_gdf[us_states_gdf["STUSPS"].isin(["HI"])],
+        hi_gdf,
         state_params["hawaii"]["proj"],
         state_params["hawaii"]["multi"],
         state_params["style"],
@@ -267,14 +264,14 @@ def generate_figure(
         reference_length,
     )
 
-    # plot on puerto rico
+    # plot on puerto rico and virgin islands
     plot_data(
         fig,
-        pr_ax,
+        prvi_ax,
         gdf_sf,
-        us_states_gdf[us_states_gdf["STUSPS"].isin(["PR"])],
-        state_params["puertorico"]["proj"],
-        state_params["puertorico"]["multi"],
+        prvi_gdf,
+        state_params["puertoricoandvirginislands"]["proj"],
+        state_params["puertoricoandvirginislands"]["multi"],
         state_params["style"],
         marker_params,
         figure_params["scale_params"],
@@ -282,20 +279,34 @@ def generate_figure(
         reference_length,
     )
 
-    # Get legend info
-    handles, labels = conus_ax.get_legend_handles_labels()
+    # plot on northern mariana islands
+    plot_data(
+        fig,
+        gump_ax,
+        gdf_sf,
+        gump_gdf,
+        state_params["marianaislands"]["proj"],
+        state_params["marianaislands"]["multi"],
+        state_params["style"],
+        marker_params,
+        figure_params["scale_params"],
+        reference_scale,
+        reference_length,
+    )
 
-    # Reverse order
-    handles = handles[::-1]
-    labels = labels[::-1]
-
-    # set axis in lower left corner of CONUS plot
-    conus_ax.legend(
-        handles,
-        labels,
-        loc="lower left",
-        bbox_to_anchor=(-0.025, -0.025),
-        frameon=False,
+    # plot on american somoa
+    plot_data(
+        fig,
+        as_ax,
+        gdf_sf,
+        as_gdf,
+        state_params["americansomoa"]["proj"],
+        state_params["americansomoa"]["multi"],
+        state_params["style"],
+        marker_params,
+        figure_params["scale_params"],
+        reference_scale,
+        reference_length,
     )
 
     # add date label
@@ -350,15 +361,19 @@ def plot_shadow(fig, ax, boundary_gdf, proj, scale_mult, state_style, reference_
 
 def shadow_plot(
     figure_params,
-    us_states_gdf,
+    conus_gdf,
+    ak_gdf,
+    hi_gdf,
+    prvi_gdf,
+    gump_gdf,
+    as_gdf,
     plotname,
     state_params,
 ):
     """Sets up the figures with multiple axes for CONUS and OCONUS for the shadow effect."""
 
     # Reference scale to CONUS
-    conus = us_states_gdf[~us_states_gdf["STUSPS"].isin(["HI", "AK", "PR"])]
-    minx, miny, maxx, maxy = conus.to_crs(state_params["conus"]["proj"]).total_bounds
+    minx, miny, maxx, maxy = conus_gdf.to_crs(state_params["conus"]["proj"]).total_bounds
     reference_length = maxx - minx
 
     # Set up figure
@@ -368,7 +383,9 @@ def shadow_plot(
     conus_ax = fig.add_axes(state_params["conus"]["ax_loc"])
     ak_ax = fig.add_axes(state_params["alaska"]["ax_loc"])
     hi_ax = fig.add_axes(state_params["hawaii"]["ax_loc"])
-    pr_ax = fig.add_axes(state_params["puertorico"]["ax_loc"])
+    prvi_ax = fig.add_axes(state_params["puertoricoandvirginislands"]["ax_loc"])
+    gump_ax = fig.add_axes(state_params["marianaislands"]["ax_loc"])
+    as_ax = fig.add_axes(state_params["americansomoa"]["ax_loc"])
 
     # Get dimensions
     conus_ax_dims = get_ax_size_inches(conus_ax, fig)
@@ -378,7 +395,7 @@ def shadow_plot(
     plot_shadow(
         fig,
         conus_ax,
-        conus,
+        conus_gdf,
         state_params["conus"]["proj"],
         state_params["conus"]["multi"],
         state_params["style"],
@@ -390,7 +407,7 @@ def shadow_plot(
     plot_shadow(
         fig,
         ak_ax,
-        us_states_gdf[us_states_gdf["STUSPS"].isin(["AK"])],
+        ak_gdf,
         state_params["alaska"]["proj"],
         state_params["alaska"]["multi"],
         state_params["style"],
@@ -402,7 +419,7 @@ def shadow_plot(
     plot_shadow(
         fig,
         hi_ax,
-        us_states_gdf[us_states_gdf["STUSPS"].isin(["HI"])],
+        hi_gdf,
         state_params["hawaii"]["proj"],
         state_params["hawaii"]["multi"],
         state_params["style"],
@@ -410,13 +427,37 @@ def shadow_plot(
         figure_params["shadow"]["color"]
     )
 
-    # plot on puerto rico
+    # plot on puerto rico and virgin islands
     plot_shadow(
         fig,
-        pr_ax,
-        us_states_gdf[us_states_gdf["STUSPS"].isin(["PR"])],
-        state_params["puertorico"]["proj"],
-        state_params["puertorico"]["multi"],
+        prvi_ax,
+        prvi_gdf,
+        state_params["puertoricoandvirginislands"]["proj"],
+        state_params["puertoricoandvirginislands"]["multi"],
+        state_params["style"],
+        reference_scale,
+        figure_params["shadow"]["color"]
+    )
+
+    # plot on northern mariana islands
+    plot_shadow(
+        fig,
+        gump_ax,
+        gump_gdf,
+        state_params["marianaislands"]["proj"],
+        state_params["marianaislands"]["multi"],
+        state_params["style"],
+        reference_scale,
+        figure_params["shadow"]["color"]
+    )
+
+    # plot on american somoa
+    plot_shadow(
+        fig,
+        as_ax,
+        as_gdf,
+        state_params["americansomoa"]["proj"],
+        state_params["americansomoa"]["multi"],
         state_params["style"],
         reference_scale,
         figure_params["shadow"]["color"]

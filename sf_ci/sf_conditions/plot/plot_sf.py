@@ -9,14 +9,24 @@ def plot_daily_sf_condition(
     figure_params,
     parquet_file,
     image_file,
-    simplified_census_file,
+    conus_geojson,
+    ak_geojson,
+    hi_geojson,
+    prvi_geojson,
+    gump_geojson,
+    as_geojson,
     shadow_image_file,
     marker_params,
     state_params,
 ):
     """Set up data and make plots for the given date."""
 
-    us_states_gdf = gpd.read_file(simplified_census_file)
+    conus_gdf = gpd.read_file(conus_geojson)
+    ak_gdf = gpd.read_file(ak_geojson)
+    hi_gdf = gpd.read_file(hi_geojson)
+    prvi_gdf = gpd.read_file(prvi_geojson)
+    gump_gdf = gpd.read_file(gump_geojson)
+    as_gdf = gpd.read_file(as_geojson)
 
     # Load parquet file
     dv_df_day = pd.read_parquet(parquet_file)
@@ -52,7 +62,12 @@ def plot_daily_sf_condition(
     generate_figure(
         date,
         figure_params,
-        us_states_gdf,
+        conus_gdf,
+        ak_gdf,
+        hi_gdf,
+        prvi_gdf,
+        gump_gdf,
+        as_gdf,
         dv_gdf_day,
         image_file,
         marker_params,
@@ -65,7 +80,12 @@ if __name__ == "__main__":
     marker_params = snakemake.params["marker_params"]
     state_params = snakemake.params["state_params"]
     parquet_file = snakemake.input["parquet_file"]
-    simplified_census_file = snakemake.input["simplified_census_file"]
+    conus_geojson = snakemake.input["conus_geojson"]
+    ak_geojson = snakemake.input["ak_geojson"]
+    hi_geojson = snakemake.input["hi_geojson"]
+    prvi_geojson = snakemake.input["prvi_geojson"]
+    gump_geojson = snakemake.input["gump_geojson"]
+    as_geojson = snakemake.input["as_geojson"]
     shadow_image_file = snakemake.input["shadow_image_file"]
     image_file = snakemake.output["image_file"]
 
@@ -73,7 +93,12 @@ if __name__ == "__main__":
         figure_params,
         parquet_file,
         image_file,
-        simplified_census_file,
+        conus_geojson,
+        ak_geojson,
+        hi_geojson,
+        prvi_geojson,
+        gump_geojson,
+        as_geojson,
         shadow_image_file,
         marker_params,
         state_params,

@@ -1,4 +1,6 @@
 from pygris import states
+from pygris import counties
+import geopandas as gpd
 
 def get_boundaries(
         resolution,
@@ -10,7 +12,7 @@ def get_boundaries(
         gump_geojson,
         as_geojson,
 ):
-    us = states(cb=False, resolution=resolution, year=year)
+    us = states(cb=True, resolution=resolution, year=year)
 
     exclude_for_conus = {"AK", "HI", "PR", "VI", "GU", "MP", "AS"}
     conus_gpd = us[~us["STUSPS"].isin(exclude_for_conus)]
@@ -18,7 +20,12 @@ def get_boundaries(
     hi_gpd = us[us["STUSPS"] == "HI"]
     prvi_gpd = us[us["STUSPS"].isin(["PR", "VI"])]
     gump_gpd = us[us["STUSPS"].isin(["GU", "MP"])]
-    as_gpd = us[us["STUSPS"] == "AS"]
+    # as_gpd = us[us["STUSPS"] == "AS"]
+
+    # exclude swains island and rose island
+    as_cnty = counties(state="AS",cb=True, resolution=resolution, year=year)
+    as_no_swains = as_cnty[~as_cnty["NAME"].isin(["Swains Island", "Rose Island"])]
+    as_gpd = gpd.GeoDataFrame({"geometry": [as_no_swains.unary_union]}, crs=us.crs)
 
     conus_gpd.to_file(conus_geojson)
     ak_gpd.to_file(ak_geojson)
