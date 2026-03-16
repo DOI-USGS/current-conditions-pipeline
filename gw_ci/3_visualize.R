@@ -231,7 +231,7 @@ p3_targets <- list(
         remote_image_file_key =
           gsub(
             p0_local_image_file_dir,
-            dirname(p0_remote_image_file_template),
+            dirname(p0_remote_video_file_template),
             local_image_file
           ),
         newly_generated = TRUE

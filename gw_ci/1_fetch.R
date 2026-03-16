@@ -98,7 +98,6 @@ p1_targets <- list(
           )
       }
     }
-
   ),
   # Identify dates w/ an incomplete set of images
   tar_target(
