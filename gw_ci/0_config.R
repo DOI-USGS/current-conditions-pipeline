@@ -64,15 +64,10 @@ p0_targets <- list(
     # c(lubridate::dmonths(1), lubridate::dmonths(3), lubridate::dmonths(6),
     #   lubridate::years(1))
     c(
-      # For testing
-      "last-month" = weeks(0),
-      "last-3-months" = weeks(0),
-      "last-6-months" = months(0),
-      "last-year" = months(0)
-      # "last-month" = weeks(1),
-      # "last-3-months" = weeks(2),
-      # "last-6-months" = months(1),
-      # "last-year" = months(2)
+      "last-month" = weeks(1),
+      "last-3-months" = weeks(2),
+      "last-6-months" = months(1),
+      "last-year" = months(2)
     )
   ),
   tar_target(
