@@ -270,36 +270,5 @@ p3_targets <- list(
                          values_from = remote_image_file_key,
                          values_fn = dplyr::first
       )
-  ),
-  
-  # Final updated image metadata file
-  tar_target(
-    p3_date_config_updated_csv,
-    {
-      outfile <- file.path("3_visualize/out", basename(p1_metadata_csv))
-      dplyr::bind_rows(
-        dplyr::select(p1_date_complete, -complete), 
-        p3_date_incomplete_updated
-      ) |>
-        dplyr::arrange(date) |>
-        readr::write_csv(outfile)
-      return(outfile)
-    },
-    format = "file"
-  ),
-  
-  # Dates metadata json
-  tar_target(
-    p3_date_json,
-    {
-      outfile <- p0_date_json_path
-      named_interval_dates <- set_names(p0_interval_dates, p0_interval_names)
-      jsonlite::write_json(named_interval_dates, 
-                           outfile, 
-                           pretty = TRUE, 
-                           auto_unbox = TRUE)
-      return(outfile)
-    },
-    format = "file" 
   )
 )
