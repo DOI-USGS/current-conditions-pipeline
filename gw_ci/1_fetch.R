@@ -149,5 +149,17 @@ p1_targets <- list(
     },
     pattern = map(p1_date_config),
     format = "file"
+  ),
+  # construct list of parquets for missing image files
+  tar_target(
+    p1_gw_parquets_incomplete,
+    {
+      p1_gw_parquets[
+        stringr::str_detect(
+          p1_gw_parquets,
+          paste0(p1_date_incomplete[["date"]], collapse = "|")
+        )
+      ]
+    }
   )
 )
