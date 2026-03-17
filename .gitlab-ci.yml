@@ -252,6 +252,7 @@ sf_coverage_merge:
     - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
     - pixi run python sf_ci/sf_coverage_merge.py ${SF_PCODES} ${SF_STAT_IDS}
     - pixi run aws s3 cp artifacts/sf_coverage.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/data/
+    - pixi run aws s3 cp artifacts/sf_percentiles.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/
   artifacts:
     paths:
       - artifacts/sf_coverage.parquet

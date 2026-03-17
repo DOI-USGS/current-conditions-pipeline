@@ -128,6 +128,7 @@ def chunked(seq, size):
 
 
 active_ts_ids = set()
+perc_list = []
 
 for batch in chunked(ts_ids, STATS_BATCH_SIZE):
     # print(batch)
@@ -147,12 +148,16 @@ for batch in chunked(ts_ids, STATS_BATCH_SIZE):
     tidy = clean_percentiles(raw)
     tidy = tidy.loc[tidy["time_of_year"] != "02-29"]
 
+    perc_list.append(tidy)
+
     for ts_id, g in tidy.groupby("parent_time_series_id"):
         doy_ok = g.groupby("time_of_year")["percentile"].apply(
             lambda x: required_percentiles.issubset(set(x))
         )
         if doy_ok.all():
             active_ts_ids.add(ts_id)
+
+doy_percentiles = pd.concat(perc_list)
 
 # Merge coverage back onto shard table
 shard_result = shard_table.loc[shard_table["shard_id"] == shard_id,].copy()
@@ -161,3 +166,5 @@ shard_result["has_coverage"] = shard_result["time_series_id"].isin(active_ts_ids
 # Write full shard with coverage flag
 Path("artifacts").mkdir(exist_ok=True)
 shard_result.to_parquet(f"artifacts/sf_coverage_{shard_id}.parquet", index=False)
+# save percentiles out.
+doy_percentiles.to_parquet(f"artifacts/sf_percentiles_{shard_id}.parquet", index=False)
