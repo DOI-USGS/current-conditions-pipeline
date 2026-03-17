@@ -49,3 +49,15 @@ active["preferred"] = ~active.duplicated(subset=["monitoring_location_id"], keep
 active = active.drop(columns=["stat_rank", "pcode_rank"])
 
 active.to_parquet("artifacts/sf_coverage.parquet")
+
+# Save doy percentiles as a single data set
+perc_files = list(Path("artifacts").glob("sf_percentiles_*.parquet"))
+if len(perc_files) == 0:
+    sys.exit("No coverage shard artifacts found")
+
+
+doy_percentiles = pd.concat([pd.read_parquet(f) for f in perc_files], ignore_index=True)
+doy_percentiles.drop(columns = "geometry")
+doy_percentiles = active.drop_duplicates(subset=[c for c in doy_percentiles.columns])
+
+doy_percentiles.to_parquet("artifacts/sf_percentiles.parquet")
