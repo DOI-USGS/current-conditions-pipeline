@@ -164,11 +164,14 @@ gw_render:
     - echo "PIPELINE_MODE=${PIPELINE_MODE}"
     - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
     - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/gw_coverage.parquet gw_ci/1_fetch/in/gw_coverage.parquet
+    - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/metadata/gw_file_metadata.csv gw_ci/1_fetch/in/gw_file_metadata.csv
     - pixi run Rscript -e "setwd('gw_ci'); targets::tar_make()"
     # Daily categorizations parquet files
     - pixi run aws s3 cp gw_ci/1_fetch/out/ s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/
     # Visualizations
     - pixi run aws s3 cp gw_ci/3_visualize/out/ s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/images/ --recursive
+    # Metadata files
+    - pixi run aws s3 cp gw_ci/4_update/out/ s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/metadata/ --recursive
   tags:
     - water
     - computational_tools

@@ -1,4 +1,5 @@
 tar_source('1_fetch/src/download_utils.R')
+tar_source('1_fetch/src/gw_categorize_daily_vals.R')
 
 p1_targets <- list(
   ##### spatial data #####
@@ -6,7 +7,7 @@ p1_targets <- list(
     p1_states_sf,
     tigris::states(cb = TRUE, resolution = "500k")
   ),
-  
+
   ##### GW data #####
   # Download gw file metadata
   tar_target(
@@ -30,8 +31,9 @@ p1_targets <- list(
         dplyr::left_join(p1_metadata, by = "date") |>
         # Determine completeness by all image files for a given date documented
         # as existing on s3
-        dplyr::mutate(complete = if_all(.cols = matches("*_image_file"), 
-                                        .fns = ~!is.na(.)))
+        dplyr::mutate(
+          complete = if_all(.cols = matches("*_image_file"), .fns = ~ !is.na(.))
+        )
     }
   ),
   # Identify dates w/ a complete set of images
@@ -52,9 +54,11 @@ p1_targets <- list(
       } else {
         p1_date_complete |>
           dplyr::select(-c(parquet_file, complete, matches("(mp4)"))) |>
-          tidyr::pivot_longer(cols = matches("*_image_file"), 
-                              names_to = "remote_image_type",
-                              values_to = "remote_image_file_key")
+          tidyr::pivot_longer(
+            cols = matches("*_image_file"),
+            names_to = "remote_image_type",
+            values_to = "remote_image_file_key"
+          )
       }
     }
   ),
@@ -66,7 +70,7 @@ p1_targets <- list(
           filename = p1_existing_gw_pngs_config[["remote_image_file_key"]],
           url_prefix = p0_s3_prod_URL,
           outfile = file.path(
-            p0_local_image_file_dir, 
+            p0_local_image_file_dir,
             basename(p1_existing_gw_pngs_config[["remote_image_file_key"]])
           )
         )
@@ -92,7 +96,10 @@ p1_targets <- list(
       } else {
         p1_existing_gw_pngs_config |>
           dplyr::mutate(
-            local_image_type = paste0(p0_local_image_type_prefix, remote_image_type),
+            local_image_type = paste0(
+              p0_local_image_type_prefix,
+              remote_image_type
+            ),
             local_image_file = p1_existing_gw_pngs,
             newly_generated = FALSE
           )
@@ -107,13 +114,40 @@ p1_targets <- list(
   # Download parquet files for incomplete dates, in prep for making images
   tar_target(
     p1_gw_parquets,
-    download_gw_file(
-      filename = p1_date_incomplete[["parquet_file"]],
-      url_prefix = p0_s3_prod_URL,
-      outfile = file.path(p0_parquet_file_dir, 
-                          basename(p1_date_incomplete[["parquet_file"]]))
-    ),
-    pattern = map(p1_date_incomplete),
+    {
+      # if the parquet file already exists on S3, download it.
+      if (!is.na(p1_date_config[["parquet_file"]])) {
+        message(paste0(
+          "Categorization parquet file already exists for ",
+          p1_date_config[["date"]]
+        ))
+
+        download_gw_file(
+          filename = p1_date_config[["parquet_file"]],
+          url_prefix = p0_s3_prod_URL,
+          outfile = file.path(
+            p0_parquet_file_dir,
+            basename(p1_date_config[["parquet_file"]])
+          )
+        )
+        # otherwise, create it
+      } else {
+        message(paste0(
+          "Creating categorization parquet file for ",
+          p1_date_config[["date"]]
+        ))
+
+        gw_categorize_daily_vals(
+          fetch_date = p1_date_config[["date"]],
+          end_utc_cutoff = "2015-01-01",
+          outfile = file.path(
+            p0_parquet_file_dir,
+            paste0("gw_categorizations_", p1_date_config[["date"]], ".parquet")
+          )
+        )
+      }
+    },
+    pattern = map(p1_date_config),
     format = "file"
   )
 )

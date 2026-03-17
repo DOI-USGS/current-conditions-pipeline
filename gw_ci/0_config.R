@@ -6,7 +6,7 @@ p0_targets <- list(
   ),
   tar_target(
     p0_date_json_path,
-    "3_visualize/out/gw_dates.json"
+    "4_update/out/gw_dates.json"
   ),
   tar_target(
     p0_s3_prod_URL,
