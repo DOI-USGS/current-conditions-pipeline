@@ -16,11 +16,15 @@
 #' @param state_lookup State lookup table.
 #' @param image_screen_type Type of screen image is intended for, e.g., "desktop"
 #' or "mobile". Used to adjust some plotting parameters
+#' @param draw_base Logical; if TRUE, draw base map layers (states, borders, glow).
+#' @param draw_symbols Logical; if TRUE, draw groundwater symbols (lines, peaks, NA sites).
 #'
 #' @return Final gpplot.
 plot_gw <- function(gw_parquet_file, date_val, incl_date, area_name, area_proj, 
                     area_state_list, area_sf, palette, viz_cfg, scale_cfg, 
-                    state_lookup, image_screen_type) {
+                    state_lookup, image_screen_type, draw_base = TRUE,
+                    draw_symbols = TRUE) {
+  
   # Read and convert to sf, join area, drop sites not in area
   gw_sf <- arrow::read_parquet(gw_parquet_file) |>
     sf::st_as_sf() |> 
@@ -46,76 +50,86 @@ plot_gw <- function(gw_parquet_file, date_val, incl_date, area_name, area_proj,
       sf::st_union() |> 
       sf::st_cast("MULTILINESTRING")
   }
+
+  p <- ggplot()
   
-  # Build plot
-  p <- ggplot() +
-    # Map area_sf with shadows
-    ggfx::with_shadow(
-      # Entire states polygons for shadow effect
-      geom_sf(
-        data = area_sf,
-        fill = viz_cfg$bg_col,
-        color = NA
-      ),
-      colour = viz_cfg$ggfx_col,
-      x_offset = 0,
-      y_offset = 0,
-      sigma = viz_cfg$ggfx_sigma
-    )
-  
-  if (area_name == "CONUS") {
+  if (draw_base) {
     p <- p +
-      # Internal state borders
-      geom_sf(
-        data = conus_inner_states_sf,
-        color = viz_cfg$inner_states_col, 
-        linewidth = viz_cfg$inner_states_stroke,
-        fill = NA
-      ) +
-      # Minimal external boundary
-      geom_sf(
-        data = conus_outer_boundary_sf,
-        color = viz_cfg$outer_states_col,
-        linewidth = viz_cfg$outer_states_stroke,
-        fill = NA
-      )
-  } else {
-    p <- p +
-      # Minimal external boundary
-      geom_sf(
-        data = area_sf,
-        color = viz_cfg$outer_states_col,
-        linewidth = viz_cfg$outer_states_stroke,
-        fill = NA
+      ggfx::with_shadow(
+        geom_sf(
+          data = area_sf,
+          fill = viz_cfg$bg_col,
+          color = NA
+        ),
+        colour = viz_cfg$ggfx_col,
+        x_offset = 0,
+        y_offset = 0,
+        sigma = viz_cfg$ggfx_sigma
       )
   }
   
-  # plot data
-  na_sites_size <- ifelse(image_screen_type == "mobile",
-                          viz_cfg$na_sites_size_mobile,
-                          viz_cfg$na_sites_size_desktop)
-  p <- p +
-    # NA sites
-    geom_sf(
-      data = filter(gw_plot_order, is.na(per_bin)),
-      color = viz_cfg$na_sites_col,
-      shape = 4,
-      size = na_sites_size,
-      stroke = viz_cfg$na_sites_stroke
-    ) +
-    # Plotting order 1: horizontal lines
-    geom_segment(
-      data = filter(gw_plot_order, plotting_order == 1),
-      aes(
-        x = x_start,
-        xend = x_end,
-        y = y,
-        yend = y_end,
-        color = per_bin
-      ),
-      linewidth = viz_cfg$normal_sites_stroke
-    ) 
+  if (draw_base) {
+    
+    if (area_name == "CONUS") {
+      p <- p +
+        geom_sf(
+          data = conus_inner_states_sf,
+          color = viz_cfg$inner_states_col, 
+          linewidth = viz_cfg$inner_states_stroke,
+          fill = NA
+        ) +
+        geom_sf(
+          data = conus_outer_boundary_sf,
+          color = viz_cfg$outer_states_col,
+          linewidth = viz_cfg$outer_states_stroke,
+          fill = NA
+        )
+    } else {
+      p <- p +
+        geom_sf(
+          data = area_sf,
+          color = viz_cfg$outer_states_col,
+          linewidth = viz_cfg$outer_states_stroke,
+          fill = NA
+        )
+    }
+    
+  }
   
+  if (draw_symbols) {
+    # plot data
+    na_sites_size <- ifelse(image_screen_type == "mobile",
+                            viz_cfg$na_sites_size_mobile,
+                            viz_cfg$na_sites_size_desktop)
+    
+    p <- p +
+      geom_sf(
+        # NA sites
+        
+        data = filter(gw_plot_order, is.na(per_bin)),
+        color = viz_cfg$na_sites_col,
+        shape = 4,
+        size = na_sites_size,
+        stroke = viz_cfg$na_sites_stroke
+      ) +
+      geom_segment(
+        # Plotting order 1: horizontal lines
+        
+        data = filter(gw_plot_order, plotting_order == 1),
+        aes(
+          x = x_start,
+          xend = x_end,
+          y = y,
+          yend = y_end,
+          color = per_bin
+        ),
+        linewidth = viz_cfg$normal_sites_stroke
+      )
+    
+  }
+  
+  if (draw_symbols) {
+    
   # Identify sites orders 2 through 4
   sites_order_2_to_4 <- gw_plot_order |>
     filter(plotting_order %in% 2:4) |>
@@ -188,7 +202,9 @@ plot_gw <- function(gw_parquet_file, date_val, incl_date, area_name, area_proj,
   
   p <- p +
     site_plots
+  }
   
+
   p <- p +
     # Scales and themes
     scale_color_manual(values = palette) +
@@ -225,20 +241,45 @@ plot_gw <- function(gw_parquet_file, date_val, incl_date, area_name, area_proj,
 #' @param image_screen_type Type of screen image is intended for, e.g., "desktop"
 #' or "mobile". Used to build output filename, along with `area_name` and `date`
 #' @param output_template Filename template containing `%s` for date.
-#'
+#' @param layer_mode Character; one of "full", "foreground", or "background".
+#'   Controls which map layers are rendered.
+#' @param output_format Character; output file format ("png" or "webp").
+#' @param transparent_bg Logical; if TRUE, export with transparent background.
 #' @return Character string path to saved PNG.
 plot_gw_png <- function(gw_parquet_file, date, area_name, area_info_df, area_sf, 
                         extent_info, palette, viz_cfg, scale_cfg, 
                         state_lookup, locator_map_png = NULL, 
-                        image_screen_type, output_template) {
+                        image_screen_type, output_template,
+                        layer_mode, output_format, transparent_bg) {
   
   date_val <- as.character(date)
-  out_path <- sprintf(output_template, image_screen_type, area_name, date_val)
+  if (grepl("%", output_template)) {
+    out_path <- sprintf(output_template, image_screen_type, area_name, date_val)
+  } else {
+    out_path <- output_template
+  }
+  
+  # normalize once
+  layer_mode <- tolower(trimws(layer_mode))
+  
+  # validate early
+  valid_layer_modes <- c("full", "foreground", "background")
+  if (!layer_mode %in% valid_layer_modes) {
+    stop(sprintf("layer_mode must be one of: %s", paste(valid_layer_modes, collapse = ", ")))
+  }
+  
+  # derive behavior from layer_mode
+  draw_base <- layer_mode %in% c("full", "background")
+  draw_symbols <- layer_mode %in% c("full", "foreground")
+  draw_labels <- layer_mode %in% c("full", "background")
+  draw_scale_markers <- layer_mode %in% c("full", "background")
+  is_foreground <- layer_mode == "foreground"
   
   message(sprintf(
-    "read in %s and plot %s map for %s, saving as %s",
+    "read in %s, plot %s (%s layer) for %s, and save as %s",
     gw_parquet_file,
     area_name,
+    layer_mode,
     date_val,
     out_path
   ))
@@ -286,7 +327,9 @@ plot_gw_png <- function(gw_parquet_file, date, area_name, area_info_df, area_sf,
                      viz_cfg = viz_cfg,
                      scale_cfg = adj_scale_cfg, 
                      state_lookup = state_lookup,
-                     image_screen_type = image_screen_type) +
+                     image_screen_type = image_screen_type,
+                     draw_base = draw_base,
+                     draw_symbols = draw_symbols) +
           # make sure there is no expansion of extents
           scale_x_continuous(expand = c(0.00, 0.00)) +
           scale_y_continuous(expand = c(0.00, 0.00))
@@ -295,14 +338,18 @@ plot_gw_png <- function(gw_parquet_file, date, area_name, area_info_df, area_sf,
     
     # arrange plots
     extent_info <- set_names(extent_info, area_info_df[["name"]])
-    gw_plot <- generate_landscape_condensed(area_info_df = area_info_df,
-                                            areas_extents = extent_info,
-                                            areas_plots = area_gw_plots,
-                                            locator_map_png = locator_map_png,
-                                            viz_config = viz_cfg)
+    gw_plot <- generate_landscape_condensed(
+      area_info_df = area_info_df,
+      areas_extents = extent_info,
+      areas_plots = area_gw_plots,
+      viz_config = viz_cfg,
+      locator_map_png = if (is_foreground) NULL else locator_map_png,
+      draw_labels = draw_labels,
+      draw_scale_markers = draw_scale_markers
+    )
     
     # for now, for testing, include date on final image
-    incl_date <- TRUE
+    incl_date <- layer_mode %in% c("full", "foreground")
     if (incl_date) {
       gw_plot <- gw_plot +
         draw_label(
@@ -319,7 +366,7 @@ plot_gw_png <- function(gw_parquet_file, date, area_name, area_info_df, area_sf,
     
   } else {
     # for now, for testing, include date on final image
-    incl_date <- TRUE
+    incl_date <- layer_mode %in% c("full", "foreground")
     
     # Generate appropriate scaling parameters for each area
     # _NOTE: this is a first stab at adjusting these for different areas. I
@@ -350,11 +397,14 @@ plot_gw_png <- function(gw_parquet_file, date, area_name, area_info_df, area_sf,
                        viz_cfg = viz_cfg,
                        scale_cfg = scale_cfg, 
                        state_lookup = state_lookup,
-                       image_screen_type = image_screen_type) +
+                       image_screen_type = image_screen_type,
+                       draw_base = draw_base,
+                       draw_symbols = draw_symbols) +
       # make space for ggfx shadow
       scale_x_continuous(expand = c(0.05, 0.05)) +
       scale_y_continuous(expand = c(0.05, 0.05))
   }
+  
   
   # Export
   if (image_screen_type == "desktop") {
@@ -366,12 +416,47 @@ plot_gw_png <- function(gw_parquet_file, date, area_name, area_info_df, area_sf,
   } else {
     stop(message("image_screen_type must be either 'desktop' or 'mobile'"))
   }
-  ggsave(
-    filename = out_path,
-    plot = gw_plot,
-    width = export_width, height = export_height,
-    dpi = viz_cfg$dpi, bg = viz_cfg$bg_col, units = viz_cfg$units
-  )
+  
+  bg_col <- if (transparent_bg) "transparent" else viz_cfg$bg_col
+  
+  if (output_format == "png") {
+    ggsave(
+      filename = out_path,
+      plot = gw_plot,
+      bg = bg_col,
+      width = export_width,
+      height = export_height,
+      dpi = viz_cfg$dpi,
+      units = viz_cfg$units
+    )
+  }
+  
+  if (output_format == "webp") {
+    tmp_png <- tempfile(fileext = ".png")
+    
+    # save transparent png
+    ggsave(
+      filename = tmp_png,
+      plot = gw_plot,
+      bg =  bg_col,
+      width = export_width,
+      height = export_height,
+      dpi = viz_cfg$dpi,
+      units = viz_cfg$units
+    )
+    
+    # convert to WebP
+    img <- magick::image_read(tmp_png)
+    
+    magick::image_write(
+      img,
+      path = out_path,
+      format = "webp",
+      compression = 'WebP'
+      )
+    
+    unlink(tmp_png)
+  }
   
   return(out_path)
 }

@@ -41,10 +41,68 @@ p3_targets <- list(
       state_lookup = p2_state_lookup,
       locator_map_png = p3_desktop_locator_map_png,
       image_screen_type = "desktop",
+      layer_mode = "full",
+      output_format = "png", 
+      transparent_bg = FALSE,
       output_template = file.path(p0_local_image_file_dir, 
                                   basename(p0_remote_image_file_template))
     ),
     pattern = map(p1_date_incomplete, p2_gw_clean_parquets),
+    format = "file"
+  ),
+  
+  # Optimized webp for website rendering
+  tar_target(
+    p3_desktop_gw_webps,
+    plot_gw_png(
+      gw_parquet_file = p2_gw_clean_parquets,
+      date = p1_date_incomplete[["date"]],
+      area_name = p0_desktop_area_name,
+      area_info_df = p0_area_info_df,
+      area_sf = p2_areas_sf_high_simp_list,
+      extent_info = p2_areas_high_simp_extents_df,
+      palette = p0_viz_gw_pal,
+      viz_cfg = p0_viz_config_df,
+      scale_cfg = p0_gw_binned_scales,
+      state_lookup = p2_state_lookup,
+      locator_map_png = NULL,
+      image_screen_type = "desktop",
+      layer_mode = "foreground",
+      output_format = "webp",
+      transparent_bg = TRUE,
+      output_template = file.path(
+        p0_local_image_file_dir,
+        gsub("\\.png$", ".webp", basename(p0_remote_image_file_template))
+      )
+    ),
+    pattern = map(p1_date_incomplete, p2_gw_clean_parquets),
+    format = "file"
+  ),
+  
+  # Desktop background image for website rending
+  tar_target(
+    p3_desktop_bkgd_webp,
+    plot_gw_png(
+      gw_parquet_file = p2_gw_clean_parquets[[1]],
+      date = p1_date_incomplete[["date"]][[1]],
+      area_name = p0_desktop_area_name,
+      area_info_df = p0_area_info_df,
+      area_sf = p2_areas_sf_high_simp_list,
+      extent_info = p2_areas_high_simp_extents_df,
+      palette = p0_viz_gw_pal,
+      viz_cfg = p0_viz_config_df,
+      scale_cfg = p0_gw_binned_scales,
+      state_lookup = p2_state_lookup,
+      locator_map_png = p3_desktop_locator_map_png,
+      image_screen_type = "desktop",
+      layer_mode = "background",
+      output_format = "webp",
+      transparent_bg = FALSE,
+      output_template = file.path(
+        p0_local_image_file_dir,
+        sprintf("gw-%s-%s-background.webp", "desktop", p0_desktop_area_name)
+        )
+      ),
     format = "file"
   ),
   
@@ -64,12 +122,75 @@ p3_targets <- list(
       scale_cfg = p0_gw_binned_scales,
       state_lookup = p2_state_lookup,
       image_screen_type = "mobile",
+      layer_mode = "full",
+      output_format = "png",
+      transparent_bg = FALSE,
       output_template = file.path(p0_local_image_file_dir, 
                                   basename(p0_remote_image_file_template))
     ),
     pattern = 
       cross(map(p1_date_incomplete, p2_gw_clean_parquets), 
             map(p0_area_info_df, p2_areas_sf_low_simp_list, p2_areas_low_simp_extents_df)),
+    format = "file"
+  ),
+  
+  # Optimized webp for website rending
+  tar_target(
+    p3_mobile_gw_webps,
+    plot_gw_png(
+      gw_parquet_file = p2_gw_clean_parquets,
+      date = p1_date_incomplete[["date"]],
+      area_name = p0_area_info_df[["name"]],
+      area_info_df = p0_area_info_df,
+      area_sf = p2_areas_sf_low_simp_list,
+      extent_info = p2_areas_low_simp_extents_df,
+      palette = p0_viz_gw_pal,
+      viz_cfg = p0_viz_config_df,
+      scale_cfg = p0_gw_binned_scales,
+      state_lookup = p2_state_lookup,
+      image_screen_type = "mobile",
+      layer_mode = "foreground",
+      output_format = "webp",
+      transparent_bg = TRUE,
+      output_template = file.path(
+        p0_local_image_file_dir,
+        gsub("\\.png$", ".webp", basename(p0_remote_image_file_template))
+      )
+    ),
+    pattern = cross(
+      map(p1_date_incomplete, p2_gw_clean_parquets),
+      map(p0_area_info_df, p2_areas_sf_low_simp_list, p2_areas_low_simp_extents_df)
+    ),
+    format = "file"
+  ),
+  
+  # Mobile background image for website rending
+  tar_target(
+    p3_mobile_bkgd_webps,
+    plot_gw_png(
+      gw_parquet_file = p2_gw_clean_parquets[[1]],
+      date = p1_date_incomplete[["date"]][[1]],
+      area_name = p0_area_info_df[["name"]],
+      area_info_df = p0_area_info_df,
+      area_sf = p2_areas_sf_low_simp_list,
+      extent_info = p2_areas_low_simp_extents_df,
+      palette = p0_viz_gw_pal,
+      viz_cfg = p0_viz_config_df,
+      scale_cfg = p0_gw_binned_scales,
+      state_lookup = p2_state_lookup,
+      locator_map_png = NULL,  # 👈 no locator for mobile
+      image_screen_type = "mobile",
+      layer_mode = "background",
+      output_format = "webp",
+      transparent_bg = FALSE,
+      output_template = file.path(
+        p0_local_image_file_dir,
+        sprintf("gw-%s-%s-background.webp", "mobile", p0_area_info_df[["name"]])
+      )
+    ),
+    pattern = cross(
+      map(p0_area_info_df, p2_areas_sf_low_simp_list, p2_areas_low_simp_extents_df)
+    ),
     format = "file"
   ),
   
@@ -126,6 +247,21 @@ p3_targets <- list(
     )
   ),
   
+  # Desktop webp config
+  tar_target(
+    p3_desktop_gw_webps_config,
+    tibble(
+      date = p1_date_incomplete[["date"]],
+      local_image_type = paste0(
+        p0_local_image_type_prefix,
+        "desktop_",
+        p0_desktop_area_name,
+        "_webp"
+      ),
+      local_image_file = p3_desktop_gw_webps
+    )
+  ),
+  
   # newly generated png config for static desktop
   tar_target(
     p3_static_gw_pngs_config,
@@ -154,12 +290,33 @@ p3_targets <- list(
     pattern = map(cross(p1_date_incomplete, p0_area_info_df), p3_mobile_gw_pngs)
   ),
   
+  # Mobile webp config
+  tar_target(
+    p3_mobile_gw_webps_config,
+    tibble(
+      date = p1_date_incomplete[["date"]],
+      local_image_type = paste0(
+        p0_local_image_type_prefix,
+        "mobile_",
+        p0_area_info_df[["name"]],
+        "_webp"
+      ),
+      local_image_file = p3_mobile_gw_webps
+    ),
+    pattern = map(
+      cross(p1_date_incomplete, p0_area_info_df),
+      p3_mobile_gw_webps
+    )
+  ),
+  
   # full newly generated png config
   tar_target(
-    p3_new_gw_pngs_config,
+    p3_new_gw_images_config,
     bind_rows(p3_desktop_gw_pngs_config,
               p3_mobile_gw_pngs_config,
-              p3_static_gw_pngs_config) |>
+              p3_static_gw_pngs_config,
+              p3_desktop_gw_webps_config,
+              p3_mobile_gw_webps_config) |>
       dplyr::mutate(
         remote_image_type = stringr::str_remove(local_image_type, 
                                                 p0_local_image_type_prefix),
@@ -172,10 +329,10 @@ p3_targets <- list(
   
   # csv with local files to be pushed to s3, with `remote_file_key`
   tar_target(
-    p3_new_gw_pngs_config_csv,
+    p3_new_gw_images_config_csv,
     {
       outfile <- file.path("3_visualize/out", "local_pngs_for_upload.csv")
-      readr::write_csv(p3_new_gw_pngs_config, outfile)
+      readr::write_csv(p3_new_gw_images_config, outfile)
       return(outfile)
     },
     format = "file"
@@ -186,7 +343,7 @@ p3_targets <- list(
   # full png config
   tar_target(
     p3_gw_pngs_config,
-    dplyr::bind_rows(p1_downloaded_gw_pngs_config, p3_new_gw_pngs_config) |>
+    dplyr::bind_rows(p1_downloaded_gw_pngs_config, p3_new_gw_images_config) |>
       dplyr::arrange(date)
   ),
   
@@ -241,7 +398,7 @@ p3_targets <- list(
   tar_target(
     p3_new_gw_files_config,
     dplyr::bind_rows(
-      p3_new_gw_pngs_config,
+      p3_new_gw_images_config,
       p3_new_gw_mp4_config
     )
   ),
@@ -255,7 +412,7 @@ p3_targets <- list(
     p3_date_incomplete_updated,
     p1_date_incomplete |>
       dplyr::select(-complete) |>
-      tidyr::pivot_longer(cols = matches("(image_file|mp4)"), 
+      tidyr::pivot_longer(cols = matches("(image_file|mp4|webp)"), 
                    names_to = "remote_image_type",
                    values_to = "remote_image_file_key") |>
       # Drop column `remote_image_key` since by default NA for incomplete dates
