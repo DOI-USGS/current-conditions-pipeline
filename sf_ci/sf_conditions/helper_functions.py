@@ -180,6 +180,7 @@ def find_start_date(end_date, interval):
 
 def video_label(interval):
     num, unit = re.match(r"(\d+)([A-Za-z]+)", interval).groups()
+    num = int(num)
     if unit == "d":
         if num == 1:
             return "last-day"
