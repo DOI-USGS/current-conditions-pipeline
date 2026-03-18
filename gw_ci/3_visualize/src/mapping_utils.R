@@ -361,29 +361,43 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
     incl_date <- layer_mode %in% c("full", "foreground")
     if (incl_date) {
       gw_plot <- gw_plot +
-        draw_label(
-          date_val,
-          x = 0.99,
-          y = 0.99,
-          hjust = 1,
-          vjust = 1,
-          fontfamily = viz_cfg[["annotation_font"]],
-          color = viz_cfg[["annotation_font_color"]],
-          size = viz_cfg[["annotation_font_size"]]
-        )
-    }  else {
-      # If not adding date, add placeholder to ensure map placement on plot is the same
+        draw_label(date_val,
+                   x = 0.99,
+                   y = 0.99,
+                   hjust = 1,
+                   vjust = 1,
+                   fontfamily = viz_cfg[["annotation_font"]],
+                   color = viz_cfg[["annotation_font_color"]],
+                   size = viz_cfg[["annotation_font_size"]]
+        ) + 
+        draw_label(" ",
+                   x = 0.01,
+                   y = 0.98,
+                   hjust = 0,
+                   vjust = 1,
+                   fontfamily = viz_cfg[["date_font"]],
+                   color = viz_cfg[["date_font_color"]],
+                   size = viz_cfg[["date_font_size"]]
+                   )
+    } else {
       gw_plot <- gw_plot +
-        draw_label(
-          " ",
-          x = 0.99,
-          y = 0.99,
-          hjust = 1,
-          vjust = 1,
-          fontfamily = viz_cfg[["annotation_font"]],
-          color = viz_cfg[["annotation_font_color"]],
-          size = viz_cfg[["annotation_font_size"]]
-        )
+        draw_label(" ",
+                   x = 0.99,
+                   y = 0.99,
+                   hjust = 1,
+                   vjust = 1,
+                   fontfamily = viz_cfg[["annotation_font"]],
+                   color = viz_cfg[["annotation_font_color"]],
+                   size = viz_cfg[["annotation_font_size"]]
+        ) +
+        draw_label(" ",
+                   x = 0.01,
+                   y = 0.98,
+                   hjust = 0,
+                   vjust = 1,
+                   fontfamily = viz_cfg[["date_font"]],
+                   color = viz_cfg[["date_font_color"]],
+                   size = viz_cfg[["date_font_size"]])
     }
     
   } else {
@@ -501,13 +515,12 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
       path = out_path,
       format = "webp",
       compression = 'WebP'
-      )
+    )
     
     unlink(tmp_png)
-  }
-  
+    }
   return(out_path)
-}
+  }
 
 # Make legend marker with same dimensions for website build
 #' Plot a single legend marker
