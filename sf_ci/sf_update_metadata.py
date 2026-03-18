@@ -8,7 +8,7 @@ from datetime import date, timedelta
 
 # --- Config ---
 BUCKET = "water-visualizations-prod-website"
-METADATA_KEY = "visualizations/current_conditions/streamflow/sf_file_metadata.csv"
+METADATA_KEY = "visualizations/current_conditions/streamflow/metadata/sf_file_metadata.csv"
 EXPECTED_OUTPUTS = {
     "parquet_file": "sf_ci/data/sf_categorizations_{date}.parquet",
     "desktop_CONUS_image_file": "sf_ci/images/sf-{date}.png",
