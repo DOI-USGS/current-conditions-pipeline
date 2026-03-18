@@ -293,10 +293,16 @@ sf_update_metadata:
   image:
     name: $IMAGE
     pull_policy: always
-  when: always
+  rules:
+    - if: '$PIPELINE_MODE == "sf_inst"'
+    - if: '$PIPELINE_MODE == "sf_metadata"'   # standalone, no sf_render
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: manual
+    - when: never
   needs:
     - job: sf_render
       artifacts: false
+      optional: true
   script:
     - pixi run python sf_ci/sf_update_metadata.py --date $(date +%F)
   tags:
