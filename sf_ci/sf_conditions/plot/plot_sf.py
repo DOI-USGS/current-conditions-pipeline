@@ -48,7 +48,7 @@ def plot_daily_sf_condition(
     dv_gdf_day["percentile_bin"] = dv_gdf_day["category"].map(percentile_bins)
 
     # generate the CONUS + OCONUS plot
-    date = image_file[len("figures/sf-"):-len(".png")]
+    date = image_file[len("images/sf-"):-len(".png")]
     generate_figure(
         date,
         figure_params,

@@ -12,6 +12,8 @@ gw_ci/1_fetch/out/*
 gw_ci/2_process/out/*
 gw_ci/1_fetch/in/*
 
+artifacts/*
+!artifacts/.empty
 
 # Ignore the contents of the output folder
 gw_ci/3_visualize/out/*
@@ -30,11 +32,11 @@ sf_ci/.snakemake
 sf_ci/config/sf_file_metadata.csv
 sf_ci/data/*
 !sf_ci/data/.empty
-sf_ci/figures/*
-!sf_ci/figures/.empty
+sf_ci/images/*
+!sf_ci/images/.empty
 sf_ci/stage/*
-sf_ci/movies/*
-!sf_ci/movies/.empty
+sf_ci/videos/*
+!sf_ci/videos/.empty
 sf_ci/sf_conditions/__pycache__
 sf_ci/sf_conditions/fetch/__pycache__
 sf_ci/sf_conditions/plot/__pycache__
