@@ -23,6 +23,7 @@ video_frame_lists,
 video_names,
 parquets_to_download_or_generate,
 parquets_to_download,
+date_dict
 ) = generate_image_list(
     date_of_interest, params["image_prefix"], params["video_prefix"], params["parquet_prefix"], params["layouts"], params["video_intervals"], metadata
 )
@@ -31,7 +32,17 @@ parquets_to_download,
 rule all:
     input:
         images_to_generate,
-        video_names
+        video_names,
+        "sf_dates.json"
+
+# make date json
+rule make_date_json:
+    params:
+        date_dict = date_dict
+    output:
+        output = "sf_dates.json"
+    script:
+        "sf_conditions/process/make_json.py"
 
 ########################################
 #############GEOMETRY  DATA#############
@@ -172,7 +183,9 @@ for i, parquet_file in enumerate(parquets_for_image_generation[:]):
 ########################################
 for i, video_name in enumerate(video_names):
     # create image list text file with durations for movie
-    rule animation_list:
+    rule:
+        name:
+            "animation list:" + video_name
         params:
             framerate = params["movie_params"]["framerate"],
         input:
@@ -183,7 +196,9 @@ for i, video_name in enumerate(video_names):
             "sf_conditions/plot/generate_frame_list.py"
             
     # create a movie from the list of generated images
-    rule animate_current_conditions:
+    rule:
+        name:
+            "animate:" + video_name
         input:
             image_list = video_frame_lists[i][:],
             frame_list = "temp/" + video_name[7:-4] + ".txt"

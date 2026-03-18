@@ -5,6 +5,10 @@ video_prefix: "videos/sf-"
 parquet_prefix: "data/sf_categorizations_"
 video_intervals:
  - 5d
+ - 1m
+ - 3m
+ - 6m
+ - 1y
 
 layouts:
   conus:
