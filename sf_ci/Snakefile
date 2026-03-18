@@ -17,7 +17,7 @@ image_lists, image_download_list, image_make_list, parquet_list, parquet_downloa
 # set final intended output
 rule all:
     input:
-        ["movies/sf-" + config["date"] + "-back-" + str(interval)+ ".mp4" for interval in params["interval"]]
+        ["videos/sf-" + config["date"] + "-back-" + str(interval)+ ".mp4" for interval in params["interval"]]
 
 # gather the state census boundaries
 rule gather_census_data:
@@ -47,7 +47,7 @@ for image_download in image_download_list:
             "image_download: " + image_download
         params:
             s3_url_prefix = params["s3_url_prefix"],
-            folder = "figures"
+            folder = "images"
         output:
             s3_file = image_download
         script:
@@ -87,7 +87,7 @@ rule make_shadow_plot:
     input:
         simplified_census_file = "data/us_states.geojson",
     output:
-        shadow_image_file = "figures/sf-shadow.png"
+        shadow_image_file = "images/sf-shadow.png"
     script:
         "sf_conditions/plot/plot_shadow.py"
 
@@ -103,7 +103,7 @@ for i, parquet_file in enumerate(parquet_list):
         input:
             parquet_file = parquet_file,
             simplified_census_file = "data/us_states.geojson",
-            shadow_image_file = "figures/sf-shadow.png"
+            shadow_image_file = "images/sf-shadow.png"
         output:
             image_file = image_make_list[i]
         script:
@@ -126,7 +126,7 @@ rule animate_current_conditions:
         image_list = lambda wc: image_lists[params["interval"].index(wc.interval)],
         frame_list = "data/sf-" + config["date"] + "-back-{interval}.txt"
     output:
-        outfile = "movies/sf-" + config["date"] + "-back-{interval}.mp4"
+        outfile = "videos/sf-" + config["date"] + "-back-{interval}.mp4"
     shell:
         r'''
         ffmpeg -y \
