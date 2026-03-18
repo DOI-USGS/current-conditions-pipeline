@@ -19,7 +19,7 @@
 #' @param draw_base Logical; if TRUE, draw base map layers (states, borders, glow).
 #' @param draw_symbols Logical; if TRUE, draw groundwater symbols (lines, peaks, NA sites).
 #'
-#' @return Final gpplot.
+#' @return Final ggplot.
 plot_gw <- function(gw_parquet_file, date_val, incl_date, area_name, area_proj, 
                     area_state_list, area_sf, palette, viz_cfg, scale_cfg, 
                     state_lookup, image_screen_type, draw_base = TRUE,
@@ -198,22 +198,22 @@ plot_gw <- function(gw_parquet_file, date_val, incl_date, area_name, area_proj,
     })
     
     p <- p +
-      site_plots
-    
+      site_plots +
+      scale_color_manual(values = palette)
+
     }
     
     p <- p +
-      # Scales and themes
-      scale_color_manual(values = palette) +
+      # themes
       theme_void() +
       theme(legend.position = "none")
     
     if (incl_date) {
       p <- p +
         labs(title = date_val)
-  }
-  
-  return(p)
+      }
+    
+    return(p)
 }
 
 #' Build and save a groundwater png for one date for a given area
