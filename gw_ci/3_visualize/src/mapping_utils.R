@@ -245,7 +245,7 @@ plot_gw <- function(gw_parquet_file, date_val, incl_date, area_name, area_proj,
 #'   Controls which map layers are rendered.
 #' @param output_format Character; output file format ("png" or "webp").
 #' @param transparent_bg Logical; if TRUE, export with transparent background.
-#' @return Character string path to saved PNG.
+#' @return Character string path to saved PNG or webp.
 plot_gw_png <- function(gw_parquet_file, date, area_name, area_info_df, area_sf, 
                         extent_info, palette, viz_cfg, scale_cfg, 
                         state_lookup, locator_map_png = NULL, 
@@ -348,6 +348,7 @@ plot_gw_png <- function(gw_parquet_file, date, area_name, area_info_df, area_sf,
       draw_scale_markers = draw_scale_markers
     )
     
+    # DELETE LATER
     # for now, for testing, include date on final image
     incl_date <- layer_mode %in% c("full", "foreground")
     if (incl_date) {
@@ -362,9 +363,23 @@ plot_gw_png <- function(gw_parquet_file, date, area_name, area_info_df, area_sf,
           color = viz_cfg[["annotation_font_color"]],
           size = viz_cfg[["annotation_font_size"]]
         )
+    }  else {
+      # If not adding date, add placeholder to ensure map placement on plot is the same
+      gw_plot <- gw_plot +
+        draw_label(
+          " ",
+          x = 0.99,
+          y = 0.99,
+          hjust = 1,
+          vjust = 1,
+          fontfamily = viz_cfg[["annotation_font"]],
+          color = viz_cfg[["annotation_font_color"]],
+          size = viz_cfg[["annotation_font_size"]]
+        )
     }
     
   } else {
+    # DELETE LATER
     # for now, for testing, include date on final image
     incl_date <- layer_mode %in% c("full", "foreground")
     
@@ -403,6 +418,12 @@ plot_gw_png <- function(gw_parquet_file, date, area_name, area_info_df, area_sf,
       # make space for ggfx shadow
       scale_x_continuous(expand = c(0.05, 0.05)) +
       scale_y_continuous(expand = c(0.05, 0.05))
+    # DELETE LATER
+    # if not including date add placeholder title to ensure map placement on plot is the same
+    if (!incl_date) {
+      gw_plot <- gw_plot +
+        labs(title = " ")
+    }
   }
   
   
