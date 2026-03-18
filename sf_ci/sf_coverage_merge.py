@@ -50,14 +50,20 @@ active = active.drop(columns=["stat_rank", "pcode_rank"])
 
 active.to_parquet("artifacts/sf_coverage.parquet")
 
-# Save doy percentiles as a single data set
-perc_files = list(Path("artifacts").glob("sf_percentiles_*.parquet"))
+# Combine MM-DD percentiles as a single data set across shard IDs
+from collections import defaultdict
+
+perc_files = list(Path("artifacts").glob("sf_percentiles_*_*.parquet"))
 if len(perc_files) == 0:
-    sys.exit("No coverage shard artifacts found")
+    sys.exit("No percentile shard artifacts found")
 
+perc_by_mmdd = defaultdict(list)
+for f in perc_files:
+    mm_dd = f.stem.rsplit("_", 1)[-1]  # "sf_percentiles_3_04-28" -> "04-28"
+    perc_by_mmdd[mm_dd].append(f)
 
-doy_percentiles = pd.concat([pd.read_parquet(f) for f in perc_files], ignore_index=True)
-doy_percentiles.drop(columns = "geometry")
-doy_percentiles = active.drop_duplicates(subset=[c for c in doy_percentiles.columns])
-
-doy_percentiles.to_parquet("artifacts/sf_percentiles.parquet")
+Path("artifacts/sf_percentiles").mkdir(exist_ok=True)
+for mm_dd, files in perc_by_mmdd.items():
+    merged = pd.concat([pd.read_parquet(f) for f in files], ignore_index=True)
+    merged = merged.drop_duplicates()
+    merged.to_parquet(f"artifacts/sf_percentiles/sf_percentiles_{mm_dd}.parquet", index=False)
