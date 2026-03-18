@@ -254,7 +254,7 @@ plot_gw <- function(gw_parquet_file, date_val, incl_date, area_name, area_proj,
 #' @param output_format Character; output file format ("png" or "webp").
 #' @param transparent_bg Logical; if TRUE, export with transparent background.
 #' @return Character string path to saved PNG or webp.
-plot_gw_png <- function(gw_parquet_file, date, area_name, area_info_df, area_sf, 
+plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_sf, 
                         extent_info, palette, viz_cfg, scale_cfg, 
                         state_lookup, locator_map_png = NULL, 
                         image_screen_type, output_template,

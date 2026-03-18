@@ -28,7 +28,7 @@ p3_targets <- list(
   ),
   tar_target(
     p3_desktop_gw_pngs,
-    plot_gw_png(
+    plot_gw_image(
       gw_parquet_file = p2_gw_clean_parquets,
       date = p1_date_incomplete[["date"]],
       area_name = p0_desktop_area_name,
@@ -54,7 +54,7 @@ p3_targets <- list(
   # Optimized webp for website rendering
   tar_target(
     p3_desktop_gw_webps,
-    plot_gw_png(
+    plot_gw_image(
       gw_parquet_file = p2_gw_clean_parquets,
       date = p1_date_incomplete[["date"]],
       area_name = p0_desktop_area_name,
@@ -82,7 +82,7 @@ p3_targets <- list(
   # Desktop background image for website rending
   tar_target(
     p3_desktop_bkgd_webp,
-    plot_gw_png(
+    plot_gw_image(
       gw_parquet_file = p2_gw_clean_parquets[[1]],
       date = p1_date_incomplete[["date"]][[1]],
       area_name = p0_desktop_area_name,
@@ -110,7 +110,7 @@ p3_targets <- list(
   # Mobile images for all areas
   tar_target(
     p3_mobile_gw_pngs,
-    plot_gw_png(
+    plot_gw_image(
       gw_parquet_file = p2_gw_clean_parquets,
       date = p1_date_incomplete[["date"]],
       area_name = p0_area_info_df[["name"]],
@@ -137,7 +137,7 @@ p3_targets <- list(
   # Optimized webp for website rending
   tar_target(
     p3_mobile_gw_webps,
-    plot_gw_png(
+    plot_gw_image(
       gw_parquet_file = p2_gw_clean_parquets,
       date = p1_date_incomplete[["date"]],
       area_name = p0_area_info_df[["name"]],
@@ -167,7 +167,7 @@ p3_targets <- list(
   # Mobile background image for website rending
   tar_target(
     p3_mobile_bkgd_webps,
-    plot_gw_png(
+    plot_gw_image(
       gw_parquet_file = p2_gw_clean_parquets[[1]],
       date = p1_date_incomplete[["date"]][[1]],
       area_name = p0_area_info_df[["name"]],
