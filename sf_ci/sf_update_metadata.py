@@ -58,7 +58,7 @@ for d in dates_to_check:
     row = {"date": d}
     for col, key_template in EXPECTED_OUTPUTS.items():
         key = key_template.format(date=d)
-        print(f"[{col}] s3://{BUCKET}/{key} → {'FOUND' if exists else 'MISSING'}", flush=True)
+        # print(f"[{col}] s3://{BUCKET}/{key} → {'FOUND' if exists else 'MISSING'}", flush=True)
         row[col] = key if key_exists(s3, BUCKET, key) else ""
     meta = meta[meta["date"] != d]
     meta = pd.concat([meta, pd.DataFrame([row])], ignore_index=True)
