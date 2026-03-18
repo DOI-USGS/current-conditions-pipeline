@@ -251,8 +251,8 @@ sf_coverage_merge:
     - echo "PIPELINE_MODE=${PIPELINE_MODE}"
     - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
     - pixi run python sf_ci/sf_coverage_merge.py ${SF_PCODES} ${SF_STAT_IDS}
-    - pixi run aws s3 cp artifacts/sf_coverage.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/data/
-    - pixi run aws s3 cp artifacts/sf_percentiles.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/
+    - pixi run aws s3 cp artifacts/sf_coverage.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/metadata/sf_coverage.parquet
+    - pixi run aws s3 cp artifacts/sf_percentiles/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/metadata/sf_percentiles/ --recursive
   artifacts:
     paths:
       - artifacts/sf_coverage.parquet
@@ -278,8 +278,8 @@ sf_render:
   script:
     - echo "PIPELINE_MODE=${PIPELINE_MODE}"
     - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
-    - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/data/sf_coverage.parquet sf_ci/data/sf_coverage.parquet
-    - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/sf_file_metadata.csv sf_ci/config/sf_file_metadata.csv
+    - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/metadata/sf_coverage.parquet sf_ci/config/sf_coverage.parquet
+    - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/metadata/sf_file_metadata.csv sf_ci/config/sf_file_metadata.csv
     - pixi run snakemake --snakefile sf_ci/Snakefile --cores all --directory sf_ci --config date=$(date +%F)
     - pixi run aws s3 cp sf_ci/data/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/data/ --recursive
     - pixi run aws s3 cp sf_ci/images/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/images/ --recursive
