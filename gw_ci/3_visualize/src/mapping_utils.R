@@ -130,90 +130,90 @@ plot_gw <- function(gw_parquet_file, date_val, incl_date, area_name, area_proj,
   
   if (draw_symbols) {
     
-  # Identify sites orders 2 through 4
-  sites_order_2_to_4 <- gw_plot_order |>
-    filter(plotting_order %in% 2:4) |>
-    pull(monitoring_location_id) |>
-    unique()
-  
-  # For each site, plot mask, gradient, and border
-  site_plots <- purrr::map(sites_order_2_to_4, function(site) {
-    site_gw <- filter(gw_plot_order, monitoring_location_id == site)
+    # Identify sites orders 2 through 4
+    sites_order_2_to_4 <- gw_plot_order |>
+      filter(plotting_order %in% 2:4) |>
+      pull(monitoring_location_id) |>
+      unique()
     
-    # Layer 1: mask
-    mask <- geom_link(
-      data = site_gw,
-      aes(
-        x = x,
-        xend = x,
-        y = y,
-        yend = y_end,
-        group = monitoring_location_id,
-        peak_width = peak_width,
-        linewidth = after_stat(I((1 - index) * peak_width)),
-        alpha = after_stat(I((0.2^index - 1) / (0.2 - 1)))
-      ),
-      color = "white"
-    )
-    
-    # Layer 2: gradient
-    gradient <- geom_link(
-      data = site_gw,
-      aes(
-        x = x,
-        xend = x,
-        y = y,
-        yend = y_end,
-        color = per_bin,
-        group = monitoring_location_id,
-        peak_width = peak_width,
-        linewidth = after_stat(I((1 - index) * peak_width)),
-        alpha = after_stat(I((0.2^index - 1) / (0.2 - 1)))
+    # For each site, plot mask, gradient, and border
+    site_plots <- purrr::map(sites_order_2_to_4, function(site) {
+      site_gw <- filter(gw_plot_order, monitoring_location_id == site)
+      
+      # Layer 1: mask
+      mask <- geom_link(
+        data = site_gw,
+        aes(
+          x = x,
+          xend = x,
+          y = y,
+          yend = y_end,
+          group = monitoring_location_id,
+          peak_width = peak_width,
+          linewidth = after_stat(I((1 - index) * peak_width)),
+          alpha = after_stat(I((0.2^index - 1) / (0.2 - 1)))
+        ),
+        color = "white"
       )
-    )
+      
+      # Layer 2: gradient
+      gradient <- geom_link(
+        data = site_gw,
+        aes(
+          x = x,
+          xend = x,
+          y = y,
+          yend = y_end,
+          color = per_bin,
+          group = monitoring_location_id,
+          peak_width = peak_width,
+          linewidth = after_stat(I((1 - index) * peak_width)),
+          alpha = after_stat(I((0.2^index - 1) / (0.2 - 1)))
+        )
+      )
+      
+      # Layer 3: border
+      border1 <- geom_segment(
+        data = site_gw,
+        aes(
+          x = x_start,
+          xend = x,
+          y = y,
+          yend = y_end,
+          color = per_bin
+        ),
+        linewidth = 0.1
+      )
+      
+      border2 <- geom_segment(
+        data = site_gw,
+        aes(
+          x = x,
+          xend = x_end,
+          y = y_end,
+          yend = y,
+          color = per_bin
+        ),
+        linewidth = 0.1
+      )
+      
+      return(c(mask, gradient, border1, border2))
+    })
     
-    # Layer 3: border
-    border1 <- geom_segment(
-      data = site_gw,
-      aes(
-        x = x_start,
-        xend = x,
-        y = y,
-        yend = y_end,
-        color = per_bin
-      ),
-      linewidth = 0.1
-    )
-    
-    border2 <- geom_segment(
-      data = site_gw,
-      aes(
-        x = x,
-        xend = x_end,
-        y = y_end,
-        yend = y,
-        color = per_bin
-      ),
-      linewidth = 0.1
-    )
-    
-    return(c(mask, gradient, border1, border2))
-  })
-  
-  p <- p +
-    site_plots
-  }
-  
-
-  p <- p +
-    # Scales and themes
-    scale_color_manual(values = palette) +
-    theme_void() +
-    theme(legend.position = "none")
-  
-  if (incl_date) {
     p <- p +
-      labs(title = date_val)
+      site_plots
+    
+    }
+    
+    p <- p +
+      # Scales and themes
+      scale_color_manual(values = palette) +
+      theme_void() +
+      theme(legend.position = "none")
+    
+    if (incl_date) {
+      p <- p +
+        labs(title = date_val)
   }
   
   return(p)
