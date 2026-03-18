@@ -74,9 +74,6 @@ plot_gw <- function(gw_parquet_file, date_val, incl_date, area_name, area_proj,
         y_offset = 0,
         sigma = viz_cfg$ggfx_sigma
       )
-  }
-  
-  if (draw_base) {
     
     if (area_name == "CONUS") {
       p <- p +
@@ -101,7 +98,6 @@ plot_gw <- function(gw_parquet_file, date_val, incl_date, area_name, area_proj,
           fill = NA
         )
     }
-    
   }
   
   if (draw_symbols) {
@@ -113,7 +109,6 @@ plot_gw <- function(gw_parquet_file, date_val, incl_date, area_name, area_proj,
     p <- p +
       geom_sf(
         # NA sites
-        
         data = filter(gw_plot_order, is.na(per_bin)),
         color = viz_cfg$na_sites_col,
         shape = 4,
@@ -122,7 +117,6 @@ plot_gw <- function(gw_parquet_file, date_val, incl_date, area_name, area_proj,
       ) +
       geom_segment(
         # Plotting order 1: horizontal lines
-        
         data = filter(gw_plot_order, plotting_order == 1),
         aes(
           x = x_start,
@@ -133,12 +127,7 @@ plot_gw <- function(gw_parquet_file, date_val, incl_date, area_name, area_proj,
         ),
         linewidth = viz_cfg$normal_sites_stroke
       )
-    
-  }
   
-  if (draw_symbols) {
-    
-    # Identify sites orders 2 through 4
     sites_order_2_to_4 <- gw_plot_order |>
       filter(plotting_order %in% 2:4) |>
       pull(monitoring_location_id) |>
