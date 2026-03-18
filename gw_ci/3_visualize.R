@@ -178,7 +178,7 @@ p3_targets <- list(
       viz_cfg = p0_viz_config_df,
       scale_cfg = p0_gw_binned_scales,
       state_lookup = p2_state_lookup,
-      locator_map_png = NULL,  # 👈 no locator for mobile
+      locator_map_png = NULL, 
       image_screen_type = "mobile",
       layer_mode = "background",
       output_format = "webp",
