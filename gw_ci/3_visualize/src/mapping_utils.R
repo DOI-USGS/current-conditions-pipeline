@@ -422,10 +422,30 @@ plot_gw_png <- function(gw_parquet_file, date, area_name, area_info_df, area_sf,
                        state_lookup = state_lookup,
                        image_screen_type = image_screen_type,
                        draw_base = draw_base,
-                       draw_symbols = draw_symbols) +
-      # make space for ggfx shadow
+                       draw_symbols = draw_symbols)
+    
+    # Make sure the plot extent is consistent, even if not drawing base map layers
+    # Identify the center coordinates of the area that is plotted
+    center_x <- 0.5 * (extent_info$x_min + extent_info$x_max)
+    center_y <- 0.5 * (extent_info$y_min + extent_info$y_max)
+    # Adjust the limits of the figure based on the area's x and y extent
+    gw_plot <- gw_plot +
+      ggplot2::coord_sf(
+        xlim = c(
+          center_x - 0.5 * extent_info$x_extent,
+          center_x + 0.5 * extent_info$x_extent 
+        ),
+        ylim = c(
+          center_y - 0.5 * extent_info$y_extent,
+          center_y + 0.5 * extent_info$y_extent 
+        )
+      )
+    
+    # make space for ggfx shadow
+    gw_plot <- gw_plot +
       scale_x_continuous(expand = c(0.05, 0.05)) +
       scale_y_continuous(expand = c(0.05, 0.05))
+    
     # DELETE LATER
     # if not including date add placeholder title to ensure map placement on plot is the same
     if (!incl_date) {
@@ -433,7 +453,6 @@ plot_gw_png <- function(gw_parquet_file, date, area_name, area_info_df, area_sf,
         labs(title = " ")
     }
   }
-  
   
   # Export
   if (image_screen_type == "desktop") {
