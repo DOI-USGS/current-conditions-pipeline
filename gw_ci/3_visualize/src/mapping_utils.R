@@ -723,7 +723,8 @@ compute_peak_geometry <- function(gw_sf, scale_cfg) {
 #' Reads an existing groundwater PNG, adds static elements (logo, legend),
 #' and saves the formatted static image.
 #'
-#' @param gw_png Path to groundwater PNG for one date.
+#' @param gw_bkgd_img Path for backgroup webp image. 
+#' @param gw_frgd_img Path for foreground webp image.
 #' @param date Date for which the groundwater image was generated.
 #' @param logo_path Path to USGS logo image.
 #' @param legend_path Path to legend image.
@@ -733,7 +734,7 @@ compute_peak_geometry <- function(gw_sf, scale_cfg) {
 #' @param output_template Filename template used to build output path.
 #'
 #' @return Character string path to saved PNG.
-plot_gw_static_png <- function(gw_png, date, logo_path, legend_path,
+plot_gw_static_png <- function(gw_bkgd_img, gw_frgd_img, date, logo_path, legend_path,
                                viz_cfg, image_screen_type, area_name,
                                output_template) {
   
@@ -742,8 +743,9 @@ plot_gw_static_png <- function(gw_png, date, logo_path, legend_path,
     area_name, date_val)
   
   message(sprintf(
-    "Building static image from %s to %s",
-    gw_png,
+    "Building static image from %s & %s to make %s",
+    gw_bkgd_img,
+    gw_frgd_img,
     out_path
   ))
   
@@ -751,7 +753,9 @@ plot_gw_static_png <- function(gw_png, date, logo_path, legend_path,
     dir.create(dirname(out_path), recursive = TRUE)
   }
   
-  base_img <- magick::image_read(gw_png)
+  # read in webp images
+  bkgd_img <- magick::image_read(gw_bkgd_img)
+  frgd_img <- magick::image_read(gw_frgd_img)
   
   usgs_logo <- magick::image_read(logo_path)|>
     magick::image_colorize(100, "black")
@@ -773,7 +777,14 @@ plot_gw_static_png <- function(gw_png, date, logo_path, legend_path,
               x = 0, y = 1,
               height = 8, width = 8,
               hjust = 0, vjust = 1) + 
-    draw_image(base_img,
+    # background image
+    draw_image(bkgd_img,
+               x = 0,
+               y = 0,
+               width = 1,
+               height = 1) +
+    # foreground image
+    draw_image(frgd_img,
                x = 0,
                y = 0,
                width = 1,
@@ -804,7 +815,6 @@ plot_gw_static_png <- function(gw_png, date, logo_path, legend_path,
                fontfamily = viz_cfg[["date_font"]],
                color = viz_cfg[["date_font_color"]],
                size = viz_cfg[["date_font_size"]])
-    
     
   ggsave(
     filename = out_path,

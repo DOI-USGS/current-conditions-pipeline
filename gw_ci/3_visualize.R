@@ -26,30 +26,6 @@ p3_targets <- list(
     ),
     format = "file"
   ),
-  tar_target(
-    p3_desktop_gw_pngs,
-    plot_gw_image(
-      gw_parquet_file = p2_gw_clean_parquets,
-      date = p1_date_incomplete[["date"]],
-      area_name = p0_desktop_area_name,
-      area_info_df = p0_area_info_df,
-      area_sf = p2_areas_sf_high_simp_list,
-      extent_info = p2_areas_high_simp_extents_df,
-      palette = p0_viz_gw_pal,
-      viz_cfg = p0_viz_config_df,
-      scale_cfg = p0_gw_binned_scales,
-      state_lookup = p2_state_lookup,
-      locator_map_png = p3_desktop_locator_map_png,
-      image_screen_type = "desktop",
-      layer_mode = "full",
-      output_format = "png", 
-      transparent_bg = FALSE,
-      output_template = file.path(p0_local_image_file_dir, 
-                                  basename(p0_remote_image_file_template))
-    ),
-    pattern = map(p1_date_incomplete, p2_gw_clean_parquets),
-    format = "file"
-  ),
   
   # Optimized webp for website rendering
   tar_target(
@@ -108,32 +84,6 @@ p3_targets <- list(
   
   ###### Mobile ######
   # Mobile images for all areas
-  tar_target(
-    p3_mobile_gw_pngs,
-    plot_gw_image(
-      gw_parquet_file = p2_gw_clean_parquets,
-      date = p1_date_incomplete[["date"]],
-      area_name = p0_area_info_df[["name"]],
-      area_info_df = p0_area_info_df,
-      area_sf = p2_areas_sf_low_simp_list,
-      extent_info = p2_areas_low_simp_extents_df,
-      palette = p0_viz_gw_pal,
-      viz_cfg = p0_viz_config_df,
-      scale_cfg = p0_gw_binned_scales,
-      state_lookup = p2_state_lookup,
-      image_screen_type = "mobile",
-      layer_mode = "full",
-      output_format = "png",
-      transparent_bg = FALSE,
-      output_template = file.path(p0_local_image_file_dir, 
-                                  basename(p0_remote_image_file_template))
-    ),
-    pattern = 
-      cross(map(p1_date_incomplete, p2_gw_clean_parquets), 
-            map(p0_area_info_df, p2_areas_sf_low_simp_list, p2_areas_low_simp_extents_df)),
-    format = "file"
-  ),
-  
   # Optimized webp for website rending
   tar_target(
     p3_mobile_gw_webps,
@@ -200,7 +150,8 @@ p3_targets <- list(
   tar_target(
     p3_static_gw_pngs,
     plot_gw_static_png(
-      gw_png = p3_desktop_gw_pngs,
+      gw_bkgd_img = p3_desktop_bkgd_webp,
+      gw_frgd_img = p3_desktop_gw_webps,  
       date = p1_date_incomplete[["date"]],
       logo_path = p0_logo_path,
       legend_path = p0_desktop_leg_path,
@@ -212,7 +163,7 @@ p3_targets <- list(
         basename(p0_remote_image_file_template)
       )
     ),
-    pattern = map(p1_date_incomplete, p3_desktop_gw_pngs),
+    pattern = map(p1_date_incomplete, p3_desktop_gw_webps),
     format = "file"
   ),
   
@@ -233,19 +184,6 @@ p3_targets <- list(
   ),
   
   ##### Recompile metadata for newly generated images ####
-  
-  # newly generated png config for desktop
-  tar_target(
-    p3_desktop_gw_pngs_config,
-    tibble(
-      date = p1_date_incomplete[["date"]],
-      local_image_type = paste0(p0_local_image_type_prefix, 
-                                "desktop_", 
-                                p0_desktop_area_name,
-                                "_image_file"),
-      local_image_file = p3_desktop_gw_pngs
-    )
-  ),
   
   # Desktop webp config
   tar_target(
@@ -277,19 +215,6 @@ p3_targets <- list(
     )
   ),
 
-  # newly generated png config for mobile
-  tar_target(
-    p3_mobile_gw_pngs_config,
-    tibble(
-      date = p1_date_incomplete[["date"]],
-      local_image_type = paste0(p0_local_image_type_prefix, 
-                                "mobile_", 
-                                p0_area_info_df[["name"]], "_image_file"),
-      local_image_file = p3_mobile_gw_pngs
-    ),
-    pattern = map(cross(p1_date_incomplete, p0_area_info_df), p3_mobile_gw_pngs)
-  ),
-  
   # Mobile webp config
   tar_target(
     p3_mobile_gw_webps_config,
@@ -312,11 +237,9 @@ p3_targets <- list(
   # full newly generated png config
   tar_target(
     p3_new_gw_images_config,
-    bind_rows(p3_desktop_gw_pngs_config,
-              p3_mobile_gw_pngs_config,
-              p3_static_gw_pngs_config,
-              p3_desktop_gw_webps_config,
-              p3_mobile_gw_webps_config) |>
+    bind_rows(p3_desktop_gw_webps_config,
+              p3_mobile_gw_webps_config,
+              p3_static_gw_pngs_config) |>
       dplyr::mutate(
         remote_image_type = stringr::str_remove(local_image_type, 
                                                 p0_local_image_type_prefix),
