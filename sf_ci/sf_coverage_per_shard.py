@@ -6,6 +6,8 @@ from pathlib import Path
 import pandas as pd
 from requests.exceptions import JSONDecodeError
 from dataretrieval import waterdata
+import pyarrow as pa
+import pyarrow.parquet as pq
 
 shard_id = int(sys.argv[1])
 min_years_per_yday = int(sys.argv[2])
@@ -40,6 +42,7 @@ def clean_percentiles(df: pd.DataFrame) -> pd.DataFrame:
     df.loc[fill_mask, "percentile"] = df.loc[fill_mask, "computation"].map(percentile_map)
 
     df["percentile"] = df["percentile"].astype("Int64")
+    df["value"] = pd.to_numeric(df["value"], errors="coerce")
 
     # --- 3. Drop duplicate percentile rows (median commonly duplicated) ---
     df = df.drop_duplicates(subset=["parent_time_series_id", "time_of_year", "percentile"])
@@ -128,10 +131,10 @@ def chunked(seq, size):
 
 
 active_ts_ids = set()
-perc_list = []
+writers = {}  # mm_dd -> ParquetWriter
 
 for batch in chunked(ts_ids, STATS_BATCH_SIZE):
-    # print(batch)
+    #print(batch)
 
     raw = get_stats_por_with_retry(
         parent_time_series_id=batch,
@@ -156,6 +159,17 @@ for batch in chunked(ts_ids, STATS_BATCH_SIZE):
         )
         if doy_ok.all():
             active_ts_ids.add(ts_id)
+
+        # --- Incremental write, one file per MM-DD ---
+    for mm_dd, group in tidy.groupby("time_of_year"):
+        table = pa.Table.from_pandas(group.drop(columns = "geometry", errors = "ignore"), preserve_index=False)
+        if mm_dd not in writers:
+            out_path = f"artifacts/sf_percentiles_{shard_id}_{mm_dd}.parquet"
+            writers[mm_dd] = pq.ParquetWriter(out_path, table.schema)
+        writers[mm_dd].write_table(table)
+
+for writer in writers.values():
+    writer.close()
 
 doy_percentiles = pd.concat(perc_list)
 
