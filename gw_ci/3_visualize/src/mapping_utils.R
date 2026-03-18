@@ -33,16 +33,24 @@ plot_gw <- function(gw_parquet_file, date_val, incl_date, area_name, area_proj,
     # Transform to crs for area
     sf::st_transform(area_proj) |> 
     dplyr::left_join(state_lookup, by = c("state_name" = "state_name_std")) |>
-    dplyr::filter(state_abbr %in% unlist(area_state_list)) |> 
+    dplyr::filter(state_abbr %in% unlist(area_state_list)) 
+  
+  if (draw_symbols) {
     # add in peaks computing fxn after transformation 
-    compute_peak_geometry(scale_cfg)
+    gw_sf <- compute_peak_geometry(gw_sf, scale_cfg)
+  }  
   
   # Sorting by plotting order and latitude (y) to help with overplotted areas
-  gw_plot_order <- gw_sf |> 
-    arrange(plotting_order, desc(y))
+  if (draw_symbols) {
+    gw_plot_order <- gw_sf |>
+      arrange(plotting_order, desc(y))
+  } else {
+    gw_plot_order <- gw_sf |>
+      arrange(plotting_order)
+  }
   
   # For CONUS, extract additional geometries for plotting
-  if(area_name == "CONUS") {
+  if (draw_base && area_name == "CONUS") {
     # Extract internal lines
     conus_inner_states_sf <- rmapshaper::ms_innerlines(area_sf)
     # Extract outer boundary
