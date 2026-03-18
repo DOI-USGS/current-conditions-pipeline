@@ -5,15 +5,16 @@ import pandas as pd
 import numpy
 from io import StringIO
 from datetime import date, timedelta
+from botocore.exceptions import ClientError
 
 # --- Config ---
 BUCKET = "water-visualizations-prod-website"
 METADATA_KEY = "visualizations/current_conditions/streamflow/metadata/sf_file_metadata.csv"
 EXPECTED_OUTPUTS = {
-    "parquet_file": "sf_ci/data/sf_categorizations_{date}.parquet",
-    "desktop_CONUS_image_file": "sf_ci/images/sf-{date}.png",
-    "movie_3d": "sf_ci/videos/sf-{date}-back-3d.mp4",
-    "movie_5d": "sf_ci/videos/sf-{date}-back-5d.mp4",
+    "parquet_file": "visualizations/current_conditions/streamflow/sf_categorizations_{date}.parquet",
+    "desktop_CONUS_image_file": "visualizations/current_conditions/streamflow/images/sf-{date}.png",
+    "movie_3d": "visualizations/current_conditions/streamflow/videos/sf-{date}-back-3d.mp4",
+    "movie_5d": "visualizations/current_conditions/streamflow/videos/sf-{date}-back-5d.mp4",
 }
 
 parser = argparse.ArgumentParser()
@@ -29,9 +30,10 @@ def key_exists(s3_client, bucket, key):
     try:
         s3_client.head_object(Bucket=bucket, Key=key)
         return True
-    except s3_client.exceptions.ClientError:
-        return False
-
+    except ClientError as e:
+        if e.response["Error"]["Code"] in ("404", "NoSuchKey"):
+            return False
+        raise  # re-raise unexpected errors (auth, etc.)
 
 s3 = boto3.client("s3")
 
@@ -39,6 +41,7 @@ s3 = boto3.client("s3")
 try:
     obj = s3.get_object(Bucket=BUCKET, Key=METADATA_KEY)
     meta = pd.read_csv(obj["Body"], dtype=str, keep_default_na=False)
+    meta = meta.loc[:, ~meta.columns.str.startswith("Unnamed")]
 except s3.exceptions.NoSuchKey:
     meta = pd.DataFrame(columns=["date"] + list(EXPECTED_OUTPUTS.keys()))
 
@@ -55,6 +58,7 @@ for d in dates_to_check:
     row = {"date": d}
     for col, key_template in EXPECTED_OUTPUTS.items():
         key = key_template.format(date=d)
+        print(f"[{col}] s3://{BUCKET}/{key} → {'FOUND' if exists else 'MISSING'}", flush=True)
         row[col] = key if key_exists(s3, BUCKET, key) else ""
     meta = meta[meta["date"] != d]
     meta = pd.concat([meta, pd.DataFrame([row])], ignore_index=True)
