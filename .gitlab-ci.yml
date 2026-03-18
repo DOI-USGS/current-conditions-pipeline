@@ -9,6 +9,7 @@ workflow:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
     # push runs  (manual jobs only)
     - if: '$CI_PIPELINE_SOURCE == "push"'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
     - when: never
 
 # default:
