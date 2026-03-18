@@ -20,12 +20,11 @@ def get_boundaries(
     hi_gpd = us[us["STUSPS"] == "HI"]
     prvi_gpd = us[us["STUSPS"].isin(["PR", "VI"])]
     gump_gpd = us[us["STUSPS"].isin(["GU", "MP"])]
-    # as_gpd = us[us["STUSPS"] == "AS"]
 
     # exclude swains island and rose island
     as_cnty = counties(state="AS",cb=True, resolution=resolution, year=year)
     as_no_swains = as_cnty[~as_cnty["NAME"].isin(["Swains Island", "Rose Island"])]
-    as_gpd = gpd.GeoDataFrame({"geometry": [as_no_swains.unary_union]}, crs=us.crs)
+    as_gpd = gpd.GeoDataFrame({"geometry": [as_no_swains.union_all()]}, crs=us.crs)
 
     conus_gpd.to_file(conus_geojson)
     ak_gpd.to_file(ak_geojson)

@@ -1,13 +1,126 @@
 s3_url_prefix: "https://labs.waterdata.usgs.gov/visualizations/current_conditions/streamflow/"
 coverage_file: "data/sf_coverage.parquet"
-image_prefix: "figures/sf-"
+image_prefix: "images/sf-"
+video_prefix: "videos/sf-"
 parquet_prefix: "data/sf_categorizations_"
-interval:
-  - 1d
+video_intervals:
+ - 5d
+
+layouts:
+  conus:
+    figure_dimensions: [4,4]
+    geojson:
+      - "data/conus.geojson"
+    metadata_column: "mobile_CONUS_image_file"
+    prefix: "mobile-CONUS-"
+    video: False
+    ax_loc:  
+      - [0.05,0.05,0.9,0.9]
+    multi:  
+      - 1.0
+    proj:  
+      - "EPSG:5070"
+  ak:
+    figure_dimensions: [4,4]
+    geojson:
+      - "data/ak.geojson"
+    metadata_column: "mobile_AK_image_file"
+    prefix: "mobile-AK-"
+    video: False
+    ax_loc:  
+      - [0.05,0.05,0.9,0.9]
+    multi:  
+      - 1.0
+    proj:  
+      - "EPSG:3338"
+  hi:
+    figure_dimensions: [4,4]
+    geojson:
+      - "data/hi.geojson"
+    metadata_column: "mobile_HI_image_file"
+    prefix: "mobile-HI-"
+    video: False
+    ax_loc:  
+      - [0.05,0.05,0.9,0.9]
+    multi:  
+      - 1.0
+    proj:  
+      - "EPSG:2784"
+  prvi:
+    figure_dimensions: [4,4]
+    geojson:
+      - "data/prvi.geojson"
+    metadata_column: "mobile_PR_VI_image_file"
+    prefix: "mobile-PR_VI-"
+    video: False
+    ax_loc:  
+      - [0.05,0.05,0.9,0.9]
+    multi:  
+      - 1.0
+    proj:  
+      - "EPSG:2866"
+  gump:
+    figure_dimensions: [4,4]
+    geojson:
+      - "data/gump.geojson"
+    metadata_column: "mobile_GU_MP_image_file"
+    prefix: "mobile-GU_MP-"
+    video: False
+    ax_loc:
+      - [0.05,0.05,0.9,0.9]
+    multi: 
+      - 1.0
+    proj: 
+      - "EPSG:8692"
+  as:
+    figure_dimensions: [6,6]
+    geojson:
+      - "data/as.geojson"
+    metadata_column: "mobile_AS_image_file"
+    prefix: "mobile-AS-"
+    video: False
+    ax_loc:  
+      - [0.05,0.05,0.9,0.9]
+    multi:  
+      - 1.0
+    proj:  
+      - "EPSG:6636"
+  desktop:
+    figure_dimensions: [8,4]
+    geojson:
+      - "data/conus.geojson"
+      - "data/ak.geojson"
+      - "data/hi.geojson"
+      - "data/prvi.geojson"
+      - "data/gump.geojson"
+      - "data/as.geojson"
+    metadata_column: "desktop_CONUS_image_file"
+    prefix: "desktop-CONUS_OCONUS-"
+    video: True
+    ax_loc: 
+      - [0.31, 0.01, 0.68, 0.98]
+      - [0.01, 0.64, 0.28, 0.35]
+      - [0.11, 0.35, 0.18, 0.28]
+      - [0.11, 0.16, 0.18, 0.15]
+      - [0.01, 0.01, 0.10, 0.62]
+      - [0.11, 0.01, 0.18, 0.15]
+    multi:
+      - 1.0
+      - 0.5
+      - 2.0
+      - 2.0
+      - 2.0
+      - 2.0
+    proj:
+      - "EPSG:5070"
+      - "EPSG:3338"
+      - "EPSG:2784"
+      - "EPSG:2866"
+      - "EPSG:8692"
+      - "EPSG:6636"
 
 figure_params:
   prefix: "sf_current_conditions"
-  dimensions: [8,4]
   facecolor: "#ffffff"
   fontfamily: "sans-serif"
   font: "Source Sans 3"
@@ -37,25 +150,31 @@ census_data:
   resolution: "5m"
   year: 2024
 
-geometry_simplify_percent:
+geometries:
   conus:
-    desktop: 20
-    mobile: 20
+    geojson: "data/conus.geojson"
+    desktop: 5
+    mobile: 5
   ak:
-    desktop: 20
-    mobile: 20
+    geojson: "data/ak.geojson"
+    desktop: 10
+    mobile: 10
   hi:
-    desktop: 20
-    mobile: 20
+    geojson: "data/hi.geojson"
+    desktop: 0
+    mobile: 0
   prvi:
-    desktop: 20
-    mobile: 20
+    geojson: "data/prvi.geojson"
+    desktop: 0
+    mobile: 0
   gump:
-    desktop: 20
-    mobile: 20
+    geojson: "data/gump.geojson"
+    desktop: 0
+    mobile: 0
   as:
-    desktop: 20
-    mobile: 20
+    geojson: "data/as.geojson"
+    desktop: 0
+    mobile: 0
 
 state_params:
   style:
@@ -64,30 +183,6 @@ state_params:
     facecolor: "#ffffff"
     outerlinewidth: 0.25
     outeredgecolor: "#949494"
-  conus:
-    ax_loc: [0.31, 0.01, 0.68, 0.98]
-    proj: "EPSG:5070"
-    multi: 1.0
-  alaska:
-    ax_loc: [0.01, 0.64, 0.28, 0.35]
-    proj: "EPSG:3338"
-    multi: 0.5
-  hawaii:
-    ax_loc: [0.11, 0.35, 0.18, 0.28]
-    proj: "EPSG:2784"
-    multi: 2.0
-  puertoricoandvirginislands:
-    ax_loc: [0.11, 0.16, 0.18, 0.15]
-    proj: "EPSG:2866"
-    multi: 2.0
-  marianaislands:
-    ax_loc: [0.01, 0.01, 0.10, 0.63]
-    proj: "EPSG:8692"
-    multi: 2.0
-  americansomoa:
-    ax_loc: [0.11, 0.01, 0.18, 0.15]
-    proj: "EPSG:6636"
-    multi: 2.0
 
 marker_params:
   marker: "o"
