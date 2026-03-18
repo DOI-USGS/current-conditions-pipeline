@@ -2,7 +2,7 @@ FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Minimal system deps that  conda/pixi can't provide
+# Minimal system deps  that  conda/pixi can't provide
 RUN apt-get update && apt-get install -y \
     git \
     curl \
