@@ -254,13 +254,19 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
 
   # normalize once
   layer_mode <- tolower(trimws(layer_mode))
-
+  output_format <- tolower(trimws(output_format))
+  
   # validate early
   valid_layer_modes <- c("full", "foreground", "background")
   if (!layer_mode %in% valid_layer_modes) {
     stop(sprintf("layer_mode must be one of: %s", paste(valid_layer_modes, collapse = ", ")))
   }
-
+  
+  if (output_format != "webp") {
+    stop("plot_gw_image() encourages 'webp' creation - webp's are then stacked 
+         to create png in plot_gw_static_png().")
+  }
+  
   # derive behavior from layer_mode
   draw_base <- layer_mode %in% c("full", "background")
   draw_symbols <- layer_mode %in% c("full", "foreground")
