@@ -57,7 +57,7 @@ for image_download in image_download_list:
 rule download_coverage:
     params:
         s3_url_prefix = params["s3_url_prefix"],
-        folder = "data"
+        folder = "metadata"
     output:
         s3_file = params["coverage_file"]
     script:
