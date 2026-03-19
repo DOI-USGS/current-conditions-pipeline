@@ -53,7 +53,7 @@ def plot_daily_sf_condition(
     # set defaults for matplotlib
     mpl_setup(figure_params)
 
-    # Reference scale to CONUS
+    # Set reference scale
     reference_gdf = gpd.read_file(layout_params["geojson"][0])
     minx, miny, maxx, maxy = reference_gdf.to_crs(layout_params["proj"][0]).total_bounds
     reference_length = max(maxx - minx, maxy - miny)

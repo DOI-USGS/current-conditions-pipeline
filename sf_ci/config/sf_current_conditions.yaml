@@ -130,7 +130,7 @@ layouts:
       - "data/prvi.geojson"
       - "data/gump.geojson"
       - "data/as.geojson"
-    metadata_column: "desktop_CONUS_image_file"
+    metadata_column: "desktop_CONUS_OCONUS_image_file"
     prefix: "desktop-CONUS_OCONUS-"
     locator_map: True
     locator_map_loc: [0.30, 0.05, 0.12, 0.24]
@@ -155,7 +155,7 @@ layouts:
       - "ESRI:102007"
       - "EPSG:2866"
       - "EPSG:8693"
-      - "EPSG:2195"
+      - "EPSG:6636"
     scale_bar:
       - "upperleft"
       - "lowerright"
