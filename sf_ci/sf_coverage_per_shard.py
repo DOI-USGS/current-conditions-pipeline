@@ -133,14 +133,33 @@ def chunked(seq, size):
 active_ts_ids = set()
 writers = {}  # mm_dd -> ParquetWriter
 
-for batch in chunked(ts_ids, STATS_BATCH_SIZE):
-    #print(batch)
+batches = chunked(ts_ids, STATS_BATCH_SIZE)
 
-    raw = get_stats_por_with_retry(
-        parent_time_series_id=batch,
-        computation_type=["minimum", "maximum", "percentile"],
-        max_retries=5,
-    )
+MAX_CONSECUTIVE_FAILURES = 3
+LONG_PAUSE_SECONDS = 60
+
+consecutive_failures = 0
+
+for batch in batches:#[batch_start + 1:]:
+    print(batch)
+
+    try:
+        raw = get_stats_por_with_retry(
+            parent_time_series_id=batch,
+            computation_type=["minimum", "maximum", "percentile"],
+            max_retries=5,
+        )
+        consecutive_failures = 0  # reset on success
+
+    except Exception as e:
+        consecutive_failures += 1
+        print(f"Batch failed ({consecutive_failures} consecutive): {e}")
+
+        if consecutive_failures >= MAX_CONSECUTIVE_FAILURES:
+            print(f"Too many consecutive failures — pausing {LONG_PAUSE_SECONDS}s")
+            time.sleep(LONG_PAUSE_SECONDS)
+            consecutive_failures = 0  # reset after pause; give the API a fresh chance
+        continue  # skip processing this batch and move on
 
     time.sleep(0.5)
 
@@ -150,8 +169,6 @@ for batch in chunked(ts_ids, STATS_BATCH_SIZE):
     raw = raw.loc[raw["time_of_year_type"] == "day_of_year"]
     tidy = clean_percentiles(raw)
     tidy = tidy.loc[tidy["time_of_year"] != "02-29"]
-
-    perc_list.append(tidy)
 
     for ts_id, g in tidy.groupby("parent_time_series_id"):
         doy_ok = g.groupby("time_of_year")["percentile"].apply(
@@ -171,8 +188,6 @@ for batch in chunked(ts_ids, STATS_BATCH_SIZE):
 for writer in writers.values():
     writer.close()
 
-doy_percentiles = pd.concat(perc_list)
-
 # Merge coverage back onto shard table
 shard_result = shard_table.loc[shard_table["shard_id"] == shard_id,].copy()
 shard_result["has_coverage"] = shard_result["time_series_id"].isin(active_ts_ids)
@@ -180,5 +195,3 @@ shard_result["has_coverage"] = shard_result["time_series_id"].isin(active_ts_ids
 # Write full shard with coverage flag
 Path("artifacts").mkdir(exist_ok=True)
 shard_result.to_parquet(f"artifacts/sf_coverage_{shard_id}.parquet", index=False)
-# save percentiles out.
-doy_percentiles.to_parquet(f"artifacts/sf_percentiles_{shard_id}.parquet", index=False)
