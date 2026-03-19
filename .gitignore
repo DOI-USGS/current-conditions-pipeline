@@ -17,7 +17,7 @@ gw_ci/1_fetch/in/*
 gw_ci/3_visualize/out/*
 
 # But don't ignore the .empty file
-!gw_ci/3_visualize/out/.empty
+!gw_ci/3_visualize/out/\\.empty
 
 # Ignore the targets metadata folder
 gw_ci/_targets/
