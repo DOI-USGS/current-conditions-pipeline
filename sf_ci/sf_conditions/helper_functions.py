@@ -83,8 +83,6 @@ def generate_image_list(
     # Get lists for movie frames
     video_frame_lists = []
     video_names = []
-    # define date dictionary for a json
-    date_dict = {}
     for layout in layout_params.values():
         if layout["video"] == True:
             for interval in intervals:
@@ -99,8 +97,6 @@ def generate_image_list(
                     date_list.append(current.strftime("%Y-%m-%d"))
                     current += timedelta(days=1)
 
-                date_dict[video_label(interval)] = date_list
-
                 image_list = [
                     image_prefix + layout["prefix"] + str(date) + ".png"
                     for date in date_list
@@ -109,6 +105,23 @@ def generate_image_list(
                 video_names += [
                     video_prefix + layout["prefix"] + video_label(interval) + ".mp4"
                 ]
+
+    # define date dictionary for a json
+    date_dict = {}
+    for interval in intervals:
+        for interval in intervals:
+            end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
+            start_date = find_start_date(end_date, interval)
+            delta = end_date - start_date
+
+            # Generate list of dates
+            date_list = []
+            current = start_date
+            while current <= end_date:
+                date_list.append(current.strftime("%Y-%m-%d"))
+                current += timedelta(days=1)
+
+            date_dict[video_label(interval)] = date_list
 
     # Get a list of images that need to be downloaded
     images_to_download = (
