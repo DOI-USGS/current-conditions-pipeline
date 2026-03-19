@@ -20,6 +20,10 @@ layouts:
       - 1.0
     proj:  
       - "EPSG:5070"
+    scale_bar:
+      - False
+    scale_text:
+      - False
   ak:
     figure_dimensions: [4,4]
     geojson:
@@ -33,6 +37,10 @@ layouts:
       - 1.0
     proj:  
       - "EPSG:3338"
+    scale_bar:
+      - False
+    scale_text:
+      - False
   hi:
     figure_dimensions: [4,4]
     geojson:
@@ -45,7 +53,11 @@ layouts:
     multi:  
       - 1.0
     proj:  
-      - "EPSG:2784"
+      - "ESRI:102007"
+    scale_bar:
+      - False
+    scale_text:
+      - False
   prvi:
     figure_dimensions: [4,4]
     geojson:
@@ -59,6 +71,10 @@ layouts:
       - 1.0
     proj:  
       - "EPSG:2866"
+    scale_bar:
+      - False
+    scale_text:
+      - False
   gump:
     figure_dimensions: [4,4]
     geojson:
@@ -71,7 +87,11 @@ layouts:
     multi: 
       - 1.0
     proj: 
-      - "EPSG:8692"
+      - "EPSG:8693"
+    scale_bar:
+      - False
+    scale_text:
+      - False
   as:
     figure_dimensions: [6,6]
     geojson:
@@ -84,7 +104,11 @@ layouts:
     multi:  
       - 1.0
     proj:  
-      - "EPSG:6636"
+      - "EPSG:2195"
+    scale_bar:
+      - False
+    scale_text:
+      - False
   desktop:
     figure_dimensions: [8,4]
     geojson:
@@ -98,12 +122,12 @@ layouts:
     prefix: "desktop-CONUS_OCONUS-"
     video: True
     ax_loc: 
-      - [0.31, 0.01, 0.68, 0.98]
-      - [0.01, 0.64, 0.28, 0.35]
-      - [0.11, 0.35, 0.18, 0.28]
-      - [0.11, 0.16, 0.18, 0.15]
-      - [0.01, 0.01, 0.10, 0.62]
-      - [0.11, 0.01, 0.18, 0.15]
+      - [0.30, 0.01, 0.69, 0.98]
+      - [0.005, 0.63, 0.28, 0.36]
+      - [0.11, 0.30, 0.185, 0.33]
+      - [0.11, 0.12, 0.185, 0.17]
+      - [0.005, 0.0, 0.1, 0.63]
+      - [0.11, 0.0, 0.185, 0.12]
     multi:
       - 1.0
       - 0.5
@@ -114,10 +138,24 @@ layouts:
     proj:
       - "EPSG:5070"
       - "EPSG:3338"
-      - "EPSG:2784"
+      - "ESRI:102007"
       - "EPSG:2866"
-      - "EPSG:8692"
-      - "EPSG:6636"
+      - "EPSG:8693"
+      - "EPSG:2195"
+    scale_bar:
+      - "upperleft"
+      - "lowerright"
+      - "upperleft"
+      - "upperleft"
+      - "upperleft"
+      - "upperleft"
+    scale_text:
+      - "Conterminous United States"
+      - "Alaska"
+      - "Hawaii"
+      - "Puerto Rico & U.S. Virgin Islands"
+      - "Northern\nMariana Islands"
+      - "American Samoa"
 
 figure_params:
   prefix: "sf_current_conditions"
@@ -128,7 +166,7 @@ figure_params:
   fontcolor: "#363636"
   fontsize: 7
   scale_params:
-    linewidth: 0.5
+    linewidth: 0.25
     color: "#363636"
     scale_length: 0.025
   datelabel:

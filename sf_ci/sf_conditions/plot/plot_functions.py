@@ -67,7 +67,8 @@ def plot_data(
     scale_params,
     reference_scale,
     reference_length,
-    scale_bar_needed,
+    scale_bar_type,
+    scale_text,
 ):
     """Plots surface water data on the specified axis."""
 
@@ -128,44 +129,85 @@ def plot_data(
     # remove box around axis
     ax.set_axis_off()
 
-    if scale_bar_needed:
-        # scale bar
+    if scale_bar_type != False:
+
         scale_line_size = reference_length * scale_params["scale_length"]
-        ax.plot(
-            [
+        ax_pos = ax.get_position()
+
+        if scale_bar_type == "upperleft":
+            # scale bar location
+            scale_bar_x = [
                 center_x - 0.5 * reference_scale * ax_dims[0] / scale_mult,
                 center_x - 0.5 * reference_scale * ax_dims[0] / scale_mult,
                 center_x
                 - 0.5 * reference_scale * ax_dims[0] / scale_mult
                 + scale_line_size,
-            ],
-            [
+            ]
+            scale_bar_y = [
                 center_y
                 + 0.5 * reference_scale * ax_dims[1] / scale_mult
                 - scale_line_size,
                 center_y + 0.5 * reference_scale * ax_dims[1] / scale_mult,
                 center_y + 0.5 * reference_scale * ax_dims[1] / scale_mult,
-            ],
+            ]
+
+            # scale bar text
+            if scale_mult.is_integer():
+                scale_label = str(round(scale_mult)) + "x " + scale_text
+            else:
+                scale_label = str(scale_mult) + "x " + scale_text
+
+            scale_text_x = ax_pos.x0 + 0.0025
+            scale_text_y = ax_pos.y0 + ax_pos.height - 0.005
+            scale_text_ha = "left"
+            scale_text_va = "top"
+        elif scale_bar_type == "lowerright":
+            # scale bar location
+            scale_bar_x = [
+                center_x + 0.5 * reference_scale * ax_dims[0] / scale_mult,
+                center_x + 0.5 * reference_scale * ax_dims[0] / scale_mult,
+                center_x
+                + 0.5 * reference_scale * ax_dims[0] / scale_mult
+                - scale_line_size,
+            ]
+            scale_bar_y = [
+                center_y
+                - 0.5 * reference_scale * ax_dims[1] / scale_mult
+                + scale_line_size,
+                center_y - 0.5 * reference_scale * ax_dims[1] / scale_mult,
+                center_y - 0.5 * reference_scale * ax_dims[1] / scale_mult,
+            ]
+
+            # scale bar text
+            if scale_mult.is_integer():
+                scale_label = scale_text + " " + str(round(scale_mult)) + "x"
+            else:
+                scale_label = scale_text + " " + str(scale_mult) + "x"
+
+            scale_text_x = ax_pos.x0 + ax_pos.width - 0.0025
+            scale_text_y = ax_pos.y0 + 0.005
+            scale_text_ha = "right"
+            scale_text_va = "bottom"
+        else:
+            print("Wrong scale bar type")
+
+        ax.plot(
+            scale_bar_x,
+            scale_bar_y,
             color=scale_params["color"],
             linewidth=scale_params["linewidth"],
             clip_on=False,
         )
 
-        # scale bar text
-        ax_pos = ax.get_position()
-        if scale_mult.is_integer():
-            scale_label = str(round(scale_mult)) + "x"
-        else:
-            scale_label = str(scale_mult) + "x"
-
         ax.text(
-            ax_pos.x0 + 0.0025,
-            ax_pos.y0 + ax_pos.height - 0.005,
+            scale_text_x,
+            scale_text_y,
             scale_label,
-            horizontalalignment="left",
-            verticalalignment="top",
+            horizontalalignment=scale_text_ha,
+            verticalalignment=scale_text_va,
             transform=fig.transFigure,
             bbox=dict(boxstyle="round,pad=0.5", fc="none", alpha=0.0),
+            style="italic",
         )
 
 
@@ -179,7 +221,7 @@ def make_legend_images(
     fig = plt.figure(1, figsize=(0.05, 0.05))
 
     # add axes
-    ax = fig.add_axes([0,0,1,1])
+    ax = fig.add_axes([0, 0, 1, 1])
 
     # remove box around axis
     ax.set_axis_off()
@@ -208,8 +250,20 @@ def make_legend_images(
             marker=marker_params["marker"],
             color=marker_params["facecolor"][i],
             edgecolor=marker_params["edgecolor"][i],
-            linewidth=marker_params["linewidth"][i]
-            )
-        fig.savefig("images/_legend/" + marker_params["label"][i].replace(" ", "-") + "-marker.svg", dpi=dpi, transparent=True)
-        fig.savefig("images/_legend/" + marker_params["label"][i].replace(" ", "-") + "-marker.png", dpi=dpi, transparent=True)
+            linewidth=marker_params["linewidth"][i],
+        )
+        fig.savefig(
+            "images/_legend/"
+            + marker_params["label"][i].replace(" ", "-")
+            + "-marker.svg",
+            dpi=dpi,
+            transparent=True,
+        )
+        fig.savefig(
+            "images/_legend/"
+            + marker_params["label"][i].replace(" ", "-")
+            + "-marker.png",
+            dpi=dpi,
+            transparent=True,
+        )
         ax.cla()

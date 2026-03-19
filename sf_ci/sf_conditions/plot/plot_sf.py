@@ -67,12 +67,6 @@ def plot_daily_sf_condition(
     ax_shadow.imshow(img_shadow_blur, cmap="gray", vmin=0.0, vmax=1.0)
     ax_shadow.set_axis_off()
 
-    # decide if scale bar is needed
-    if len(layout_params["geojson"]) == 1:
-        scale_bar_needed = False
-    else:
-        scale_bar_needed = True
-
     for i, geojson in enumerate(layout_params["geojson"]):
         ax = fig.add_axes(layout_params["ax_loc"][i])
         gdf = gpd.read_file(geojson)
@@ -98,7 +92,8 @@ def plot_daily_sf_condition(
             figure_params["scale_params"],
             reference_scale,
             reference_length,
-            scale_bar_needed,
+            layout_params["scale_bar"][i],
+            layout_params["scale_text"][i],
         )
 
     # add date label
