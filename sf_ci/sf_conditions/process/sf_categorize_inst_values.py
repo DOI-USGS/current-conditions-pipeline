@@ -81,9 +81,10 @@ def categorize_sf(
         perc_file = f"https://dfi09q69oy2jm.cloudfront.net/visualizations/current_conditions/streamflow/metadata/sf_percentiles/sf_percentiles_{today_str}.parquet"
 
         sf_stats = pd.read_parquet(perc_file)
-        
+
         # Next, we need to join the average values to the percentile
         sf_stats["value"] = pd.to_numeric(sf_stats["value"])
+        sf_stats = sf_stats[~pd.isna(sf_stats["value"])]
         sf_stats["percentile"] = (
             sf_stats["percentile"].astype(int).astype(str).apply(lambda x: f"p{x}")
         )
