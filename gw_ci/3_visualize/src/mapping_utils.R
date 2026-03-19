@@ -201,7 +201,7 @@ plot_gw <- function(gw_parquet_file, date_val, incl_date, area_name, area_proj,
       site_plots +
       scale_color_manual(values = palette)
 
-    }
+  }
     
     p <- p +
       # themes
@@ -216,7 +216,7 @@ plot_gw <- function(gw_parquet_file, date_val, incl_date, area_name, area_proj,
     return(p)
 }
 
-#' Build and save a groundwater png for one date for a given area
+#' Build and save a groundwater image for one date for a given area
 #'
 #' Reads processed parquet data, filters to area, reprojects spatial data,
 #' renders the groundwater map, and saves the png
@@ -358,16 +358,7 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
                    fontfamily = viz_cfg[["annotation_font"]],
                    color = viz_cfg[["annotation_font_color"]],
                    size = viz_cfg[["annotation_font_size"]]
-        ) + 
-        draw_label(" ",
-                   x = 0.01,
-                   y = 0.98,
-                   hjust = 0,
-                   vjust = 1,
-                   fontfamily = viz_cfg[["date_font"]],
-                   color = viz_cfg[["date_font_color"]],
-                   size = viz_cfg[["date_font_size"]]
-                   )
+        )
     } else {
       gw_plot <- gw_plot +
         draw_label(" ",
@@ -378,15 +369,7 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
                    fontfamily = viz_cfg[["annotation_font"]],
                    color = viz_cfg[["annotation_font_color"]],
                    size = viz_cfg[["annotation_font_size"]]
-        ) +
-        draw_label(" ",
-                   x = 0.01,
-                   y = 0.98,
-                   hjust = 0,
-                   vjust = 1,
-                   fontfamily = viz_cfg[["date_font"]],
-                   color = viz_cfg[["date_font_color"]],
-                   size = viz_cfg[["date_font_size"]])
+        )
     }
     
   } else {
@@ -720,7 +703,7 @@ compute_peak_geometry <- function(gw_sf, scale_cfg) {
 
 #' Build and save a static groundwater PNG for one date
 #'
-#' Reads an existing groundwater PNG, adds static elements (logo, legend),
+#' Reads existing background and foreground images, adds static elements (logo, legend),
 #' and saves the formatted static image.
 #'
 #' @param gw_bkgd_img Path for backgroup webp image. 
