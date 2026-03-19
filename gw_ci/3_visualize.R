@@ -200,6 +200,22 @@ p3_targets <- list(
     )
   ),
   
+  # Desktop background webp config
+  tar_target(
+    p3_desktop_bkgd_webp_config,
+    tibble::tibble(
+      # not date specific
+      date = NA,  
+      local_image_type = paste0(
+        p0_local_image_type_prefix,
+        "desktop_",
+        p0_desktop_area_name,
+        "_background_webp"
+      ),
+      local_image_file = p3_desktop_bkgd_webp
+    )
+  ),
+  
   # newly generated png config for static desktop
   tar_target(
     p3_static_gw_pngs_config,
@@ -234,12 +250,31 @@ p3_targets <- list(
     )
   ),
   
+  # Mobile background webp config
+  tar_target(
+    p3_mobile_bkgd_webps_config,
+    tibble::tibble(
+      # not date specific
+      date = NA,
+      local_image_type = paste0(
+        p0_local_image_type_prefix,
+        "mobile_",
+        p0_area_info_df[["name"]],
+        "_background_webp"
+      ),
+      local_image_file = p3_mobile_bkgd_webps
+    ),
+    pattern = map(p0_area_info_df, p3_mobile_bkgd_webps)
+  ),
+  
   # full newly generated png config
   tar_target(
     p3_new_gw_images_config,
     bind_rows(p3_desktop_gw_webps_config,
               p3_mobile_gw_webps_config,
-              p3_static_gw_pngs_config) |>
+              p3_static_gw_pngs_config,
+              p3_desktop_bkgd_webp_config,
+              p3_mobile_bkgd_webps_config) |>
       dplyr::mutate(
         remote_image_type = stringr::str_remove(local_image_type, 
                                                 p0_local_image_type_prefix),
