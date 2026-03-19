@@ -29,7 +29,20 @@ def generate_image_list(
     intervals,
     metadata,
 ):
-    """Generates the list of images and parquets to download / generate."""
+    """Generates the list of images and parquets to download / generate.
+
+    It makes the following lists:
+        images_to_download - list of images for downloading off of s3
+        images_to_generate - list of images that cannot be downloaded and need to be generated 
+        parquets_for_image_generation - list that is the same length as images_to_generate that contains the source data in a parquet file
+        layout_for_image_generation - list of the layout code used for the plot
+        video_frame_lists - list of all frames for a particular video
+        video_names - list of the video file name
+        parquets_to_download_or_generate - list of parquet files needed to download or generate, consist on file names only
+        parquets_to_download - list of parquet files to download, blanks "" need to be generated
+        date_dict
+    
+    """
 
     # find largest interval
     max_delta = timedelta(0)
