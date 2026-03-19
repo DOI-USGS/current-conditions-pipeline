@@ -31,17 +31,46 @@ def generate_image_list(
 ):
     """Generates the list of images and parquets to download / generate.
 
-    It makes the following lists:
-        images_to_download - list of images for downloading off of s3
-        images_to_generate - list of images that cannot be downloaded and need to be generated 
-        parquets_for_image_generation - list that is the same length as images_to_generate that contains the source data in a parquet file
-        layout_for_image_generation - list of the layout code used for the plot
-        video_frame_lists - list of all frames for a particular video
-        video_names - list of the video file name
-        parquets_to_download_or_generate - list of parquet files needed to download or generate, consist on file names only
-        parquets_to_download - list of parquet files to download, blanks "" need to be generated
-        date_dict
-    
+    Parameters
+    ----------
+    end_date_str: string
+        parameters defining the figure style
+    image_prefix: string
+        folder location and prefix for image files on s3 and local resources
+    video_prefix: string
+        folder location and prefix for video files on s3 and local resources
+    parquet_prefix: string
+        folder location and prefix for parquet files on s3 and local resources
+    layout_params: dictionary
+        parameters defining the layout style
+    intervals: list
+       list of the intervals need to be generated
+    metadata: dataframe
+       dataframe that tells use which files exist on s3
+ 
+    Returns
+    -------
+    Assuming X days of data and Y layouts, we need X * Y images.
+
+    images_to_download: list of strings
+        list of images for downloading off of s3, # of images of the X * Y images that exist on s3 already
+    images_to_generate: list of strings
+        list of images that cannot be downloaded and need to be generated, # of images of the X * Y images that exist on s3 already
+    parquets_for_image_generation: list of strings
+        list that is the same length as images_to_generate that contains the source data in a parquet file
+    layout_for_image_generation: list of strings
+        list of the layout code used for the plot, same length as images_to_generate
+    video_frame_lists: list of strings
+        list of all frames for a particular video
+    video_names: list of strings
+        list of the video file name
+    parquets_to_download_or_generate: list of strings
+        list of parquet files needed to download or generate, consist on file names only, the maximum length is the number of parquet files over X days
+    parquets_to_download: list of strings
+        list of parquet files to download, blanks "" need to be generated, same length as parquets_to_download_or_generate
+    date_dict: dictionary
+        dictionary holding a list of dates for each interval
+
     """
 
     # find largest interval

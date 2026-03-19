@@ -69,7 +69,42 @@ def plot_data(
     scale_bar_type,
     scale_text,
 ):
-    """Plots surface water data on the specified axis."""
+    """Plots stream flow current conditions data on the specified axis
+
+    Parameters
+    ----------
+    fig: matplotlib figure
+        figure of the plot
+    ax: matplotlib axis
+        axis in the figure that we are plotting data on
+    sf_gdf: geodataframe
+        streamflow current conditions data
+    boundary_gdf: geodataframe
+        boundary geometry
+    proj: string
+        projection crs
+    scale_mult: float
+        scale multiplier
+    state_style: dictionary
+        parameters defining the geometry style
+    marker_params: dictionary
+        parameters defining the marker style
+    scale_params: dictionary
+        parameters defining the scale bar style
+    reference_scale: float
+        reference scale that is in meters (map dimensions) per inch (canvas dimensions)
+    reference_length: float
+        total width or height (whichever is larger) of the geometries extent
+    scale_bar_type: float
+        type of scale bar, none, top left corner, or bottom right corner
+    scale_text: string
+        text to add to the scale bar
+            
+    Returns
+    -------
+        Axis with plotted geometry and streamflow current conditions
+
+    """
 
     # get axis dimensions
     ax_dims = get_ax_size_inches(ax, fig)
@@ -215,7 +250,20 @@ def make_legend_images(
     marker_params,
     dpi,
 ):
-    """Makes isolated images of markers."""
+    """Makes an isolated images of the marker
+
+    Parameters
+    ----------
+    marker_params: dictionary
+        dictionary of parameters for a marker style
+    dpi: integer
+        resolution, dots per inch
+   
+    Returns
+    -------
+        Saved images of isolated markers
+
+    """
 
     # make small figure
     fig = plt.figure(1, figsize=(0.05, 0.05))
@@ -270,10 +318,12 @@ def make_legend_images(
 
 
 def draw_line(p1,p2):
+    "Draws a straight interpolated line with 100 points"
     points = 100
     return np.linspace(p1[0],p2[0],points), np.linspace(p1[1],p2[1],points)
       
 def draw_box(west,east,south,north):
+    "Draws a box with interpolated lines"
     x1,y1 = draw_line([west,south],[east,south])
     x2,y2 = draw_line([east,south],[east,north])
     x3,y3 = draw_line([east,north],[west,north])

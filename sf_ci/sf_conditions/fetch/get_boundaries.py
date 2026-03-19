@@ -12,6 +12,33 @@ def get_boundaries(
         gump_geojson,
         as_geojson,
 ):
+    """Gets boundary geometry from Census data
+
+    Parameters
+    ----------
+    resolution: string
+        resolution of the census daa
+    year: integer
+        year of the census data
+    conus_geojson: string
+        filepath and name of .geojson file for conus
+    ak_geojson: string
+        filepath and name of .geojson file for alaska
+    hi_geojson: string
+        filepath and name of .geojson file for hawaii
+    prvi_geojson: string
+        filepath and name of .geojson file for puerto rico and the virgin islands
+    gump_geojson: string
+        filepath and name of .geojson file for the mariana islands
+    as_geojson: string
+        filepath and name of .geojson file for american somoa 
+
+    Returns
+    -------
+        Saved geometries as .geojson files
+
+    """
+
     us = states(cb=True, resolution=resolution, year=year)
 
     exclude_for_conus = {"AK", "HI", "PR", "VI", "GU", "MP", "AS"}

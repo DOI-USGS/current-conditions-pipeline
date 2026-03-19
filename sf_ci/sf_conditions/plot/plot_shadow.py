@@ -3,7 +3,32 @@ import matplotlib.pyplot as plt
 from sf_conditions.plot.plot_functions import get_ax_size_inches
 
 def plot_shadow(fig, ax, boundary_gdf, proj, scale_mult, state_style, reference_scale, shadow_color):
-    """Sets up solid `shadow_color` geometry on a given axis."""
+    """Makes an image of the outlines of the map geometries for generated a shadow effect
+
+    Parameters
+    ----------
+    fig: matplotlib figure
+        figure of the plot
+    ax: matplotlib axis
+        axis in the figure that we are plotting data on
+    boundary_gdf: geodataframe
+        boundary geometry
+    proj: string
+        projection crs
+    scale_mult: float
+        scale multiplier
+    state_style: dictionary
+        parameters defining the geometry style
+    reference_scale: float
+        reference scale that is in meters (map dimensions) per inch (canvas dimensions)
+    shadow_color: string
+        hex code color for the shadow
+            
+    Returns
+    -------
+        Axis with geometry extent in the shadow color
+
+    """
 
     ax_dims = get_ax_size_inches(ax, fig)
     # project boundary
@@ -40,8 +65,24 @@ def shadow_plot(
     state_params,
     shadow_image_file
 ):
-    
-    """Sets up the figures with multiple axes for CONUS and OCONUS for the shadow effect."""
+    """Makes a image of the shadow outline
+
+    Parameters
+    ----------
+    figure_params: dictionary
+        parameters defining the figure style
+    layout_params: dictionary
+        parameters defining the layout style
+    state_params: dictionary
+        parameters defining the geometry style
+    shadow_image_file: string
+        filepath for the shadow outline image
+            
+    Returns
+    -------
+        Makes an image of the current conditions data (image_file)
+
+    """
     
     # Reference scale to CONUS
     reference_gdf = gpd.read_file(layout_params["geojson"][0])

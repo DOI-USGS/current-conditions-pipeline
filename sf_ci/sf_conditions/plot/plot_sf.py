@@ -15,7 +15,30 @@ def plot_daily_sf_condition(
     state_params,
     shadow_image_file
 ):
-    """Set up data and make plots for the given date."""
+    """Makes a image of stream flow current conditions
+
+    Parameters
+    ----------
+    parquet_file: string
+        filepath for the parquet file holding the stream flow current conditions data
+    figure_params: dictionary
+        parameters defining the figure style
+    layout_params: dictionary
+        parameters defining the layout style
+    image_file: string
+        filepath for the output image file 
+    marker_params: dictionary
+        parameters defining the marker style
+    state_params: dictionary
+        parameters defining the geometry style
+    shadow_image_file: string
+        filepath for the shadow outline image
+            
+    Returns
+    -------
+        Makes an image of the current conditions data (image_file)
+
+    """
 
     # Load parquet file
     dv_df_day = pd.read_parquet(parquet_file)
