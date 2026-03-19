@@ -220,6 +220,7 @@ def generate_image_list(
 
 
 def find_start_date(end_date, interval):
+    """Uses interval to get start date"""
     num, unit = re.match(r"(\d+)([A-Za-z]+)", interval).groups()
     if unit == "d":
         return end_date - relativedelta(days=int(num))
@@ -234,6 +235,7 @@ def find_start_date(end_date, interval):
 
 
 def video_label(interval):
+    """Converts interval code into a readable string"""
     num, unit = re.match(r"(\d+)([A-Za-z]+)", interval).groups()
     num = int(num)
     if unit == "d":
