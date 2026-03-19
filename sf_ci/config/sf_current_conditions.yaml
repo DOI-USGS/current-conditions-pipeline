@@ -116,7 +116,7 @@ layouts:
     multi:  
       - 1.0
     proj:  
-      - "EPSG:2195"
+      - "EPSG:6636"
     scale_bar:
       - False
     scale_text:
