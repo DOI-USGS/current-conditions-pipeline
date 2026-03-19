@@ -77,23 +77,11 @@ def categorize_sf(
         ]
         dfs = []
         today_str = str(date_of_interest)[5:]
-        for batch in chunked(sf_daily_ts, 15):
-            df, _ = wd.get_stats_por(
-                parent_time_series_id=batch,
-                start_date=today_str,
-                end_date=today_str,
-                expand_percentiles=True,
-                # Function throws an error if computation_type = 'percentile' only?
-                computation_type=["minimum", "maximum", "percentile"],
-            )
-            if df is not None and not df.empty:
-                dfs.append(df)
 
-        sf_stats = pd.concat(dfs, ignore_index=True)
-        sf_stats = sf_stats[sf_stats["time_of_year_type"] == "day_of_year"]
-        sf_stats.loc[sf_stats["computation"] == "minimum", "percentile"] = 0
-        sf_stats.loc[sf_stats["computation"] == "maximum", "percentile"] = 100
+        perc_file = f"https://dfi09q69oy2jm.cloudfront.net/visualizations/current_conditions/streamflow/metadata/sf_percentiles/sf_percentiles_{today_str}.parquet"
 
+        sf_stats = pd.read_parquet(perc_file)
+        
         # Next, we need to join the average values to the percentile
         sf_stats["value"] = pd.to_numeric(sf_stats["value"])
         sf_stats["percentile"] = (
