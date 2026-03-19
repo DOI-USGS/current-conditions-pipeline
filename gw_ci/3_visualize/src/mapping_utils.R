@@ -263,8 +263,8 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
   }
   
   if (output_format != "webp") {
-    stop("plot_gw_image() encourages 'webp' creation - webp's are then stacked 
-         to create png in plot_gw_static_png().")
+    stop("While png creation is possible, plot_gw_image() encourages webp 
+         output. Pngs are generated downstream via plot_gw_static_png() ")
   }
   
   # derive behavior from layer_mode
