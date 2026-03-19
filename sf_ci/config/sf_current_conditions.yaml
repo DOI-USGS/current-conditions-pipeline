@@ -13,6 +13,8 @@ layouts:
       - "data/conus.geojson"
     metadata_column: "mobile_CONUS_image_file"
     prefix: "mobile-CONUS-"
+    locator_map: False
+    locator_map_loc: False
     video: False
     ax_loc:  
       - [0.05,0.05,0.9,0.9]
@@ -30,6 +32,8 @@ layouts:
       - "data/ak.geojson"
     metadata_column: "mobile_AK_image_file"
     prefix: "mobile-AK-"
+    locator_map: False
+    locator_map_loc: False
     video: False
     ax_loc:  
       - [0.05,0.05,0.9,0.9]
@@ -47,6 +51,8 @@ layouts:
       - "data/hi.geojson"
     metadata_column: "mobile_HI_image_file"
     prefix: "mobile-HI-"
+    locator_map: False
+    locator_map_loc: False
     video: False
     ax_loc:  
       - [0.05,0.05,0.9,0.9]
@@ -64,6 +70,8 @@ layouts:
       - "data/prvi.geojson"
     metadata_column: "mobile_PR_VI_image_file"
     prefix: "mobile-PR_VI-"
+    locator_map: False
+    locator_map_loc: False
     video: False
     ax_loc:  
       - [0.05,0.05,0.9,0.9]
@@ -81,6 +89,8 @@ layouts:
       - "data/gump.geojson"
     metadata_column: "mobile_GU_MP_image_file"
     prefix: "mobile-GU_MP-"
+    locator_map: False
+    locator_map_loc: False
     video: False
     ax_loc:
       - [0.05,0.05,0.9,0.9]
@@ -98,6 +108,8 @@ layouts:
       - "data/as.geojson"
     metadata_column: "mobile_AS_image_file"
     prefix: "mobile-AS-"
+    locator_map: False
+    locator_map_loc: False
     video: False
     ax_loc:  
       - [0.05,0.05,0.9,0.9]
@@ -120,6 +132,8 @@ layouts:
       - "data/as.geojson"
     metadata_column: "desktop_CONUS_image_file"
     prefix: "desktop-CONUS_OCONUS-"
+    locator_map: True
+    locator_map_loc: [0.30, 0.05, 0.12, 0.24]
     video: True
     ax_loc: 
       - [0.30, 0.01, 0.69, 0.98]

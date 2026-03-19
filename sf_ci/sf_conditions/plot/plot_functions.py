@@ -1,8 +1,7 @@
+import numpy as np
 import geopandas as gpd
-from scipy.ndimage import gaussian_filter
 from matplotlib import rcParams
 import matplotlib.pyplot as plt
-
 
 def mpl_setup(figure_params):
     """Sets the default values for matplotlib."""
@@ -103,7 +102,7 @@ def plot_data(
         linewidth=marker_params["NA"]["linewidth"],
         zorder=-1,
     )
-
+    
     # plot non na values
     for i in range(0, 7):
         sf_gdf_proj[sf_gdf_proj["percentile_bin"] == float(i)].plot(
@@ -211,6 +210,7 @@ def plot_data(
         )
 
 
+
 def make_legend_images(
     marker_params,
     dpi,
@@ -267,3 +267,15 @@ def make_legend_images(
             transparent=True,
         )
         ax.cla()
+
+
+def draw_line(p1,p2):
+    points = 100
+    return np.linspace(p1[0],p2[0],points), np.linspace(p1[1],p2[1],points)
+      
+def draw_box(west,east,south,north):
+    x1,y1 = draw_line([west,south],[east,south])
+    x2,y2 = draw_line([east,south],[east,north])
+    x3,y3 = draw_line([east,north],[west,north])
+    x4,y4 = draw_line([west,north],[west,south])
+    return np.concatenate((x1,x2,x3,x4)),np.concatenate((y1,y2,y3,y4))

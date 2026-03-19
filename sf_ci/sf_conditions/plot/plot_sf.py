@@ -3,7 +3,8 @@ import pandas as pd
 import geopandas as gpd
 from scipy.ndimage import gaussian_filter
 import matplotlib.pyplot as plt
-from sf_conditions.plot.plot_functions import plot_data, get_ax_size_inches, mpl_setup, setup_boundary
+from mpl_toolkits.basemap import Basemap
+from sf_conditions.plot.plot_functions import plot_data, get_ax_size_inches, mpl_setup, draw_box
     
 def plot_daily_sf_condition(
     parquet_file,
@@ -95,6 +96,53 @@ def plot_daily_sf_condition(
             layout_params["scale_bar"][i],
             layout_params["scale_text"][i],
         )
+    
+    # make locator map
+    if layout_params["locator_map"] == True:
+        ax_globe = fig.add_axes(layout_params["locator_map_loc"])
+        ax_globe.set_zorder(ax.get_zorder() + 1)
+
+        min_lon, max_lon = 0.0, -180.0 
+        min_lat, max_lat = 90.0, 0.0
+        for geojson in layout_params["geojson"]:
+            gdf = gpd.read_file(geojson)
+            w_lon, e_lon = gdf.total_bounds[0], gdf.total_bounds[2]
+            s_lat, n_lat = gdf.total_bounds[1], gdf.total_bounds[3]
+
+            # for US, we'll make sure everything is a negative latitute, across the antimeridian
+            if w_lon > 0.0:
+                w_lon -= 360.0
+            if e_lon > 0.0:
+                e_lon -= 360.0
+            
+            if w_lon < min_lon:
+                min_lon = w_lon
+            if e_lon > max_lon:
+                max_lon = e_lon
+            
+            if s_lat < min_lat:
+                min_lat = s_lat
+            if n_lat > max_lat:
+                max_lat = n_lat
+            
+        map = Basemap(projection='ortho',lat_0=0.5*(min_lat + max_lat),lon_0=0.5*(min_lon + max_lon),resolution='l')
+        # draw coastlines, country boundaries, fill continents.
+        map.drawcoastlines(linewidth=0.0)
+        map.drawcountries(linewidth=0.0)
+        map.fillcontinents(color=(0.75,0.75,0.75),lake_color='w',alpha=0.75)
+        # draw the edge of the map projection region (the projection limb)
+        # draw lat/lon grid lines every 30 degrees.
+        map.drawmeridians(np.arange(0,390,30),linewidth=0.15)
+        map.drawparallels(np.arange(-90,120,30),linewidth=0.15)
+        circle = map.drawmapboundary(fill_color='w')
+        circle.set_clip_on(False)
+
+        # To fix
+        # for geojson in layout_params["geojson"]:
+        #     x_box, y_box = draw_box(gdf.total_bounds[0], gdf.total_bounds[2], gdf.total_bounds[1], gdf.total_bounds[3])
+        #     x,y=map(x_box,y_box)
+        #     map.plot(x, y, color='k', linewidth=1.0) 
+
 
     # add date label
     fig.text(
