@@ -40,3 +40,5 @@ sf_ci/videos/*
 sf_ci/sf_conditions/__pycache__
 sf_ci/sf_conditions/fetch/__pycache__
 sf_ci/sf_conditions/plot/__pycache__
+sf_ci/metadata/*
+!sf_ci/metadata/.empty

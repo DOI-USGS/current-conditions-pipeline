@@ -9,7 +9,7 @@ with open("config/sf_current_conditions.yaml", "r") as file:
     params = yaml.safe_load(file)
 
 # Load metadata and generate list of files to make
-metadata = pd.read_csv("config/sf_file_metadata.csv", dtype=str, keep_default_na=False)
+metadata = pd.read_csv("metadata/sf_file_metadata.csv", dtype=str, keep_default_na=False)
 
 # Get the date list
 image_lists, image_download_list, image_make_list, parquet_list, parquet_download_list = generate_image_list(config["date"], params["interval"], params["image_prefix"], params["parquet_prefix"], metadata)
