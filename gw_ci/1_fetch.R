@@ -109,7 +109,7 @@ p1_targets <- list(
   # Identify dates w/ an incomplete set of images
   tar_target(
     p1_date_incomplete,
-    p1_date_config
+    dplyr::filter(p1_date_config, !complete)
   ),
   # Download parquet files for incomplete dates, in prep for making images
   tar_target(
