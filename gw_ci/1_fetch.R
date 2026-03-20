@@ -109,7 +109,7 @@ p1_targets <- list(
   # Identify dates w/ an incomplete set of images
   tar_target(
     p1_date_incomplete,
-    dplyr::filter(p1_date_config, !complete)
+    p1_date_config
   ),
   # Download parquet files for incomplete dates, in prep for making images
   tar_target(
@@ -138,6 +138,7 @@ p1_targets <- list(
         ))
 
         gw_categorize_daily_vals(
+          parquet_path = p0_parquet_path,
           fetch_date = p1_date_config[["date"]],
           end_utc_cutoff = "2015-01-01",
           outfile = file.path(

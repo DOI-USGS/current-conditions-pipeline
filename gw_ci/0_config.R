@@ -1,6 +1,11 @@
 p0_targets <- list(
   ##### file parameters #####
   tar_target(
+    p0_parquet_path,
+    "1_fetch/in/gw_coverage.parquet",
+    format = "file"
+  ),
+  tar_target(
     p0_metadata_path,
     "1_fetch/in/gw_file_metadata.csv"
   ),
