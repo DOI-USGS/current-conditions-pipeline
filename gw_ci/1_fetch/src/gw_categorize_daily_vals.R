@@ -1,9 +1,10 @@
 gw_categorize_daily_vals <- function(
+  parquet_path,
   fetch_date,
   outfile,
   end_utc_cutoff = "2015-01-01"
 ) {
-  gw_ts_ids <- arrow::read_parquet("1_fetch/in/gw_coverage.parquet")
+  gw_ts_ids <- arrow::read_parquet(parquet_path)
 
   gw_preferred <-
     gw_ts_ids |>
