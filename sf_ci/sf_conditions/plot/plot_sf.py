@@ -4,7 +4,7 @@ import geopandas as gpd
 from scipy.ndimage import gaussian_filter
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
-from sf_conditions.plot.plot_functions import plot_data, get_ax_size_inches, mpl_setup, draw_box
+from sf_conditions.plot.plot_functions import plot_data, get_ax_size_inches, mpl_setup, draw_gdf_on_basemap, force_grid_linestyle
     
 def plot_daily_sf_condition(
     parquet_file,
@@ -79,7 +79,7 @@ def plot_daily_sf_condition(
     # Set reference scale
     reference_gdf = gpd.read_file(layout_params["geojson"][0])
     minx, miny, maxx, maxy = reference_gdf.to_crs(layout_params["proj"][0]).total_bounds
-    reference_length = max(maxx - minx, maxy - miny)
+    reference_length = max(maxx - minx, maxy - miny) * figure_params["axis_buffer"]
 
     # Set up figure
     fig = plt.figure(1, figsize=(layout_params["figure_dimensions"]))
@@ -90,6 +90,11 @@ def plot_daily_sf_condition(
     ax_shadow = fig.add_axes([0, 0, 1, 1])
     ax_shadow.imshow(img_shadow_blur, cmap="gray", vmin=0.0, vmax=1.0)
     ax_shadow.set_axis_off()
+
+    # Make a list of the layout's extents
+    if layout_params["locator_map"] == True:
+        gdf_list = []
+        gdf_extent_list = []
 
     for i, geojson in enumerate(layout_params["geojson"]):
         ax = fig.add_axes(layout_params["ax_loc"][i])
@@ -104,7 +109,7 @@ def plot_daily_sf_condition(
                 reference_scale = reference_length / ax_dims[1]
 
         # plot
-        plot_data(
+        gdf_extent = plot_data(
             fig,
             ax,
             dv_gdf_day,
@@ -119,7 +124,11 @@ def plot_daily_sf_condition(
             layout_params["scale_bar"][i],
             layout_params["scale_text"][i],
         )
-    
+
+        if layout_params["locator_map"] == True:
+            gdf_list += [gdf.to_crs("EPSG:4326")]
+            gdf_extent_list += [gdf_extent]
+
     # make locator map
     if layout_params["locator_map"] == True:
         ax_globe = fig.add_axes(layout_params["locator_map_loc"])
@@ -127,10 +136,9 @@ def plot_daily_sf_condition(
 
         min_lon, max_lon = 0.0, -180.0 
         min_lat, max_lat = 90.0, 0.0
-        for geojson in layout_params["geojson"]:
-            gdf = gpd.read_file(geojson)
-            w_lon, e_lon = gdf.total_bounds[0], gdf.total_bounds[2]
-            s_lat, n_lat = gdf.total_bounds[1], gdf.total_bounds[3]
+        for gdf_extent in gdf_extent_list:
+            w_lon, e_lon = gdf_extent.total_bounds[0], gdf_extent.total_bounds[2]
+            s_lat, n_lat = gdf_extent.total_bounds[1], gdf_extent.total_bounds[3]
 
             # for US, we'll make sure everything is a negative latitute, across the antimeridian
             if w_lon > 0.0:
@@ -147,24 +155,28 @@ def plot_daily_sf_condition(
                 min_lat = s_lat
             if n_lat > max_lat:
                 max_lat = n_lat
-            
-        map = Basemap(projection='ortho',lat_0=0.5*(min_lat + max_lat),lon_0=0.5*(min_lon + max_lon),resolution='l')
-        # draw coastlines, country boundaries, fill continents.
-        map.drawcoastlines(linewidth=0.0)
-        map.drawcountries(linewidth=0.0)
-        map.fillcontinents(color=(0.75,0.75,0.75),lake_color='w',alpha=0.75)
-        # draw the edge of the map projection region (the projection limb)
-        # draw lat/lon grid lines every 30 degrees.
-        map.drawmeridians(np.arange(0,390,30),linewidth=0.15)
-        map.drawparallels(np.arange(-90,120,30),linewidth=0.15)
-        circle = map.drawmapboundary(fill_color='w')
-        circle.set_clip_on(False)
 
-        # To fix
-        # for geojson in layout_params["geojson"]:
-        #     x_box, y_box = draw_box(gdf.total_bounds[0], gdf.total_bounds[2], gdf.total_bounds[1], gdf.total_bounds[3])
-        #     x,y=map(x_box,y_box)
-        #     map.plot(x, y, color='k', linewidth=1.0) 
+        # initialize basemap    
+        map = Basemap(projection='ortho',lat_0=0.5*(min_lat + max_lat),lon_0=0.5*(min_lon + max_lon),resolution='l')
+        # draw circle around globe
+        circ = map.drawmapboundary(color='#7F7F7F', linewidth=0.2)
+        circ.set_clip_on(False)
+        # add countries
+        map.fillcontinents(color=(0.75,0.75,0.75),lake_color='#FAFAFA')
+        map.drawcountries(linewidth=0.15, color='#B3B3B3')
+        # add latitudes and longitudes
+        meridians = map.drawmeridians(np.arange(0, 360, 30), linewidth=0.1, color='#A6A6A6')
+        parallels = map.drawparallels(np.arange(-90, 90, 30), linewidth=0.1, color='#A6A6A6')
+        # set linestyle to solid
+        force_grid_linestyle(meridians, linestyle='-', dashes=[])
+        force_grid_linestyle(parallels, linestyle='-', dashes=[])
+
+        # draw bounding boxes
+        for gdf_extent in gdf_extent_list:
+            draw_gdf_on_basemap(gdf_extent,ax_globe,map,'none','k',0.2)
+        # draw geometry
+        for gdf in gdf_list:
+            draw_gdf_on_basemap(gdf,ax_globe,map,'#333333','#333333',0.1)
 
 
     # add date label

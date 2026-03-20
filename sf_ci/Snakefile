@@ -103,7 +103,7 @@ for image_file in images_to_download:
 rule download_coverage:
     params:
         s3_url_prefix = params["s3_url_prefix"],
-        folder = "data"
+        folder = "metadata"
     output:
         s3_file = params["coverage_file"]
     script:

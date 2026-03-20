@@ -2,6 +2,9 @@ import numpy as np
 import geopandas as gpd
 from matplotlib import rcParams
 import matplotlib.pyplot as plt
+from shapely.geometry import Polygon
+from matplotlib.patches import Polygon as mplPolygon
+from matplotlib.collections import PatchCollection
 
 def mpl_setup(figure_params):
     """Sets the default values for matplotlib."""
@@ -99,10 +102,14 @@ def plot_data(
         type of scale bar, none, top left corner, or bottom right corner
     scale_text: string
         text to add to the scale bar
-            
+
     Returns
     -------
+    extent_gdf: geodataframe
+        geodataframe of the extent in NAD83
+    not explicitly returned:
         Axis with plotted geometry and streamflow current conditions
+
 
     """
 
@@ -137,7 +144,7 @@ def plot_data(
         linewidth=marker_params["NA"]["linewidth"],
         zorder=-1,
     )
-    
+
     # plot non na values
     for i in range(0, 7):
         sf_gdf_proj[sf_gdf_proj["percentile_bin"] == float(i)].plot(
@@ -243,8 +250,13 @@ def plot_data(
             bbox=dict(boxstyle="round,pad=0.5", fc="none", alpha=0.0),
             style="italic",
         )
-
-
+    return make_extent_gdf(
+        center_x - 0.5 * reference_scale * ax_dims[0] / scale_mult,
+        center_x + 0.5 * reference_scale * ax_dims[0] / scale_mult,
+        center_y - 0.5 * reference_scale * ax_dims[1] / scale_mult,
+        center_y + 0.5 * reference_scale * ax_dims[1] / scale_mult,
+        proj,
+    )
 
 def make_legend_images(
     marker_params,
@@ -258,7 +270,7 @@ def make_legend_images(
         dictionary of parameters for a marker style
     dpi: integer
         resolution, dots per inch
-   
+
     Returns
     -------
         Saved images of isolated markers
@@ -317,15 +329,93 @@ def make_legend_images(
         ax.cla()
 
 
-def draw_line(p1,p2):
-    "Draws a straight interpolated line with 100 points"
-    points = 100
-    return np.linspace(p1[0],p2[0],points), np.linspace(p1[1],p2[1],points)
-      
-def draw_box(west,east,south,north):
-    "Draws a box with interpolated lines"
-    x1,y1 = draw_line([west,south],[east,south])
-    x2,y2 = draw_line([east,south],[east,north])
-    x3,y3 = draw_line([east,north],[west,north])
-    x4,y4 = draw_line([west,north],[west,south])
-    return np.concatenate((x1,x2,x3,x4)),np.concatenate((y1,y2,y3,y4))
+def make_extent_gdf(west, east, north, south, crs, int_pnts = 100):
+    "Create extent geodataframe in geographic coordinates"
+
+    lon_list = []
+    lat_list = []
+
+    lon_pnts = [west,west,east,east,west]
+    lat_pnts = [north, south, south, north, north]
+
+    for i in range(0,len(lon_pnts)-1):
+        for j in range(0,int_pnts):
+            lon_list += [np.linspace(lon_pnts[i],lon_pnts[i+1],int_pnts)[j]]
+            lat_list += [np.linspace(lat_pnts[i],lat_pnts[i+1],int_pnts)[j]]
+
+    # create geometry from extent
+    domain_geom = Polygon(
+        zip(
+            lon_list,
+            lat_list,
+        )
+    )
+
+    # Create a geopandas dataframe from the polygon and set the CRS to WGS84
+    domain_polygon = gpd.GeoDataFrame(index=[0], crs=crs, geometry=[domain_geom])
+
+    # return in geographic coordinates EPSG:4326, WGS 84
+    return domain_polygon.to_crs("EPSG:4326")
+
+
+def draw_gdf_on_basemap(gdf,ax,map,facecolor,edgecolor,linewidth):
+    patches = []
+
+    polys = gdf[gdf.geometry.geom_type.isin(["Polygon", "MultiPolygon"])]
+
+    for geom in polys.geometry:
+        if geom.geom_type == "Polygon":
+            # Exterior ring
+            xs, ys = geom.exterior.xy
+            mx, my = map(xs, ys)
+            patches.append(mplPolygon(np.column_stack([mx, my]), closed=True))
+            # Interior rings (holes)
+            for interior in geom.interiors:
+                xs, ys = interior.xy
+                mx, my = map(xs, ys)
+                patches.append(mplPolygon(np.column_stack([mx, my]), closed=True))
+        else:
+            # MultiPolygon
+            for part in geom.geoms:
+                xs, ys = part.exterior.xy
+                mx, my = map(xs, ys)
+                patches.append(mplPolygon(np.column_stack([mx, my]), closed=True))
+                for interior in part.interiors:
+                    xs, ys = interior.xy
+                    mx, my = map(xs, ys)
+                    patches.append(mplPolygon(np.column_stack([mx, my]), closed=True))
+
+    # Add as a collection
+    pc = PatchCollection(
+        patches,
+        facecolor=facecolor,
+        edgecolor=edgecolor,
+        linewidths=linewidth,
+        zorder = 10
+    )
+
+    ax.add_collection(pc)
+
+def force_grid_linestyle(grid_dict, linestyle='-', dashes=None):
+    """
+    Basemap drawmeridians/drawparallels return a dict:
+      - {value: [Line2D, ...]} or
+      - {value: ( [Line2D, ...], [Text, ...] )} when labels are on.
+    This function sets the linestyle/dashes on every Line2D/LineCollection in there.
+    """
+    for _, entry in grid_dict.items():
+        # entry can be a list of lines, or a tuple: (lines_list, labels_list)
+        if isinstance(entry, tuple):
+            lines = entry[0]
+        elif isinstance(entry, list):
+            lines = entry
+        else:
+            lines = [entry]  # Just in case of odd return types
+
+        for line in lines:
+            # Line2D and LineCollection both support set_linestyle
+            if hasattr(line, 'set_linestyle'):
+                line.set_linestyle(linestyle)
+            # Some objects support set_dashes; empty list forces solid
+            if dashes is not None and hasattr(line, 'set_dashes'):
+                line.set_dashes(dashes)
