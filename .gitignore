@@ -7,6 +7,9 @@ current-conditions-pipeline.Rproj
 .vscode
 .DS_Store
 
+# Ignore the contents of the update folder
+gw_ci/4_update/out/*
+
 # Gw conditions viz
 gw_ci/1_fetch/out/*
 gw_ci/2_process/out/*

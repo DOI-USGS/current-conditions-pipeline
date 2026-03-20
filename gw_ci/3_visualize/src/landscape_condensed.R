@@ -72,13 +72,18 @@ adjust_plot_lims <- function(raw_plot, fig_dims, extent_info, reference_scale,
 #' @param viz_config Visualization config. Contains information on the
 #' width and height of the final plot, in pixels, visual parameters like line
 #' color and width, and the width of the ggfx shadow effect
+#' @param draw_labels Logical; if TRUE, draw area labels (e.g., "Conterminous United States")
+#' @param draw_scale_markers Logical; if TRUE, draw scale marker corner lines for each area
+#'
 #'
 #' @return A final formatted plot with CONUS and OCONUS areas laid out as well
 #' as a locator map
 #' 
 generate_landscape_condensed <- function(area_info_df, areas_extents, 
-                                         areas_plots, locator_map_png, 
-                                         viz_config) {
+                                         areas_plots, viz_config,
+                                         locator_map_png = NULL,
+                                         draw_labels = TRUE,
+                                         draw_scale_markers = TRUE ) {
   # extract key variables  
   placement_params <- area_info_df[["placement_params"]] |>
     set_names(area_info_df[["name"]])
@@ -119,7 +124,7 @@ generate_landscape_condensed <- function(area_info_df, areas_extents,
   canvas <- grid::rectGrob(
     x = 0, y = 0, 
     width = viz_config[["width"]], height = viz_config[["height"]],
-    gp = grid::gpar(fill = viz_config[["bg_col"]], alpha = 1, col = viz_config[["bg_col"]])
+    gp = grid::gpar(fill = NA, col = NA)
   )
   
   # set up scaling parameters and visual parameters for scale markers
@@ -265,27 +270,37 @@ generate_landscape_condensed <- function(area_info_df, areas_extents,
     })
   
   # add plots, scale markers, and labels to figure
-  plot <- plot + 
-    drawn_plots +
-    drawn_scale_markers +
-    drawn_labels +
-    drawn_extra_labels
+  plot <- plot + drawn_plots
+  
+  if (draw_scale_markers) {
+    plot <- plot + drawn_scale_markers
+  }
+  
+  if (draw_labels) {
+    plot <- plot + drawn_labels + drawn_extra_labels
+  }
   
   # add locator map
-  locator_map <- magick::image_read(locator_map_png)
-  locator_map_x <- 0.02
-  locator_map_y <- locator_map_x/plot_width_cowplot_scalar
-  locator_map_width <- 0.12
-  locator_map_height <- locator_map_width/plot_width_cowplot_scalar
-  plot <- plot +
-    draw_image(
-      locator_map,
-      x = placement_params[["CONUS"]][["x"]] + locator_map_x,
-      y = locator_map_y,
-      width = locator_map_width,
-      height = locator_map_height,
-      hjust = 0,
-      vjust = 0)
-
+  if (!is.null(locator_map_png)) {
+    locator_img <- magick::image_read(locator_map_png)
+    
+    locator_map_x <- 0.02
+    locator_map_y <- locator_map_x / plot_width_cowplot_scalar
+    locator_map_width <- 0.12
+    locator_map_height <- locator_map_width / plot_width_cowplot_scalar
+    
+    plot <- plot +
+      draw_image(
+        locator_img,
+        x = placement_params[["CONUS"]][["x"]] + locator_map_x,
+        y = locator_map_y,
+        width = locator_map_width,
+        height = locator_map_height,
+        hjust = 0,
+        vjust = 0
+      )
+  }
+  
   return(plot)
+  
 }
