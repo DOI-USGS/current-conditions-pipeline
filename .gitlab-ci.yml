@@ -136,7 +136,7 @@ gw_coverage_merge:
     - echo "PIPELINE_MODE=${PIPELINE_MODE}"
     - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
     - pixi run Rscript gw_ci/gw_coverage_merge.R ${GW_PCODES} ${GW_STAT_IDS}
-    - pixi run aws s3 cp artifacts/gw_coverage.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/
+    - pixi run aws s3 cp artifacts/gw_coverage.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/metadata/gw_coverage.parquet
   artifacts:
     paths:
       - artifacts/gw_coverage.parquet
