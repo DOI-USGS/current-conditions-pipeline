@@ -16,7 +16,7 @@ p0_targets <- list(
     # Note this path will change to 
     #  "current_conditions/groundwater/metadata/gw_coverage.parquet"
     p0_parquet_coverage_path,
-    "current_conditions/groundwater/stage/gw_coverage.parquet"
+    "current_conditions/groundwater/metadata/gw_coverage.parquet"
     ),
   tar_target(
     p0_remote_parquet_file_template,
