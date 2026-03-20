@@ -16,11 +16,8 @@ p0_targets <- list(
     # Note this path will change to 
     #  "current_conditions/groundwater/metadata/gw_coverage.parquet"
     p0_parquet_coverage_path,
-    paste0(
-      p0_s3_prod_URL,
-      "current_conditions/groundwater/stage/gw_coverage.parquet"
-    )
-  ),
+    "current_conditions/groundwater/stage/gw_coverage.parquet"
+    ),
   tar_target(
     p0_remote_parquet_file_template,
     "current_conditions/groundwater/stage/gw_categorizations_%s.parquet"

@@ -7,7 +7,6 @@ p1_targets <- list(
     p1_states_sf,
     tigris::states(cb = TRUE, resolution = "500k")
   ),
-
   ##### GW data #####
   # Download gw file metadata
   tar_target(
@@ -17,6 +16,16 @@ p1_targets <- list(
     # ensure target is reran and not skipped for CI
     cue = tar_cue(mode = "always")
   ),
+  tar_target(
+    p1_gw_coverage_parquet,
+    download_gw_file(
+      filename = p0_parquet_coverage_path,
+      url_prefix = p0_s3_prod_URL,
+      outfile = file.path(
+        p0_parquet_file_dir,
+        basename(p0_parquet_coverage_path))
+      )
+  ), 
   tar_target(
     p1_metadata,
     readr::read_csv(p1_metadata_csv)
@@ -138,7 +147,7 @@ p1_targets <- list(
         ))
 
         gw_categorize_daily_vals(
-          parquet_path = p0_parquet_coverage_path,
+          parquet_path = p1_gw_coverage_parquet,
           fetch_date = p1_date_config[["date"]],
           end_utc_cutoff = "2015-01-01",
           outfile = file.path(
