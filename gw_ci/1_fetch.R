@@ -138,7 +138,7 @@ p1_targets <- list(
         ))
 
         gw_categorize_daily_vals(
-          parquet_path = p0_parquet_path,
+          parquet_path = p0_parquet_coverage_path,
           fetch_date = p1_date_config[["date"]],
           end_utc_cutoff = "2015-01-01",
           outfile = file.path(
