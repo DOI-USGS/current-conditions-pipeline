@@ -66,4 +66,6 @@ Path("artifacts/sf_percentiles").mkdir(exist_ok=True)
 for mm_dd, files in perc_by_mmdd.items():
     merged = pd.concat([pd.read_parquet(f) for f in files], ignore_index=True)
     merged = merged.drop_duplicates()
+    # discard rows not in the sf_coverage.parquet data set:
+    merged = merged[merged['parent_time_series_id'].isin(active['time_series_id'])]
     merged.to_parquet(f"artifacts/sf_percentiles/sf_percentiles_{mm_dd}.parquet", index=False)
