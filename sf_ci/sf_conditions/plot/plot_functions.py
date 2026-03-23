@@ -352,6 +352,20 @@ def make_extent_gdf(gdf, buffer = 1, int_pnts = 10):
                 x, y = poly.exterior.xy
                 lons.extend(x)
                 lats.extend(y)
+
+        elif geom.geom_type == "GeometryCollection":
+            for g in geom.geoms:
+                if g.geom_type == "Polygon":
+                    x, y = g.exterior.xy
+                    lons.extend(x)
+                    lats.extend(y)
+                elif g.geom_type == "MultiPolygon":
+                    for poly in g.geoms:
+                        x, y = poly.exterior.xy
+                        lons.extend(x)
+                        lats.extend(y)
+
+
         else:
             raise ValueError("Expected Polygon or MultiPolygon geometries.")
 

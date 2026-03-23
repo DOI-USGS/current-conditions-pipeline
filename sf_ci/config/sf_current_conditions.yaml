@@ -10,7 +10,7 @@ layouts:
   conus:
     figure_dimensions: [4,4]
     geojson:
-      - "data/conus.geojson"
+      - "data/conus_simplified_mobile.geojson"
     metadata_column: "mobile_CONUS_image_file"
     prefix: "mobile-CONUS-"
     locator_map: False
@@ -29,7 +29,7 @@ layouts:
   ak:
     figure_dimensions: [4,4]
     geojson:
-      - "data/ak.geojson"
+      - "data/ak_simplified_mobile.geojson"
     metadata_column: "mobile_AK_image_file"
     prefix: "mobile-AK-"
     locator_map: False
@@ -48,7 +48,7 @@ layouts:
   hi:
     figure_dimensions: [4,4]
     geojson:
-      - "data/hi.geojson"
+      - "data/hi_simplified_mobile.geojson"
     metadata_column: "mobile_HI_image_file"
     prefix: "mobile-HI-"
     locator_map: False
@@ -67,7 +67,7 @@ layouts:
   prvi:
     figure_dimensions: [4,4]
     geojson:
-      - "data/prvi.geojson"
+      - "data/prvi_simplified_mobile.geojson"
     metadata_column: "mobile_PR_VI_image_file"
     prefix: "mobile-PR_VI-"
     locator_map: False
@@ -86,7 +86,7 @@ layouts:
   gump:
     figure_dimensions: [4,4]
     geojson:
-      - "data/gump.geojson"
+      - "data/gump_simplified_mobile.geojson"
     metadata_column: "mobile_GU_MP_image_file"
     prefix: "mobile-GU_MP-"
     locator_map: False
@@ -105,7 +105,7 @@ layouts:
   as:
     figure_dimensions: [6,6]
     geojson:
-      - "data/as.geojson"
+      - "data/as_simplified_mobile.geojson"
     metadata_column: "mobile_AS_image_file"
     prefix: "mobile-AS-"
     locator_map: False
@@ -124,12 +124,12 @@ layouts:
   desktop:
     figure_dimensions: [8,4]
     geojson:
-      - "data/conus.geojson"
-      - "data/ak.geojson"
-      - "data/hi.geojson"
-      - "data/prvi.geojson"
-      - "data/gump.geojson"
-      - "data/as.geojson"
+      - "data/conus_simplified_desktop.geojson"
+      - "data/ak_simplified_desktop.geojson"
+      - "data/hi_simplified_desktop.geojson"
+      - "data/prvi_simplified_desktop.geojson"
+      - "data/gump_simplified_desktop.geojson"
+      - "data/as_simplified_desktop.geojson"
     metadata_column: "desktop_CONUS_OCONUS_image_file"
     prefix: "desktop-CONUS_OCONUS-"
     locator_map: True
@@ -206,24 +206,24 @@ geometries:
     mobile: 5
   ak:
     geojson: "data/ak.geojson"
-    desktop: 10
-    mobile: 10
+    desktop: 20
+    mobile: 20
   hi:
     geojson: "data/hi.geojson"
-    desktop: 0
-    mobile: 0
+    desktop: 50
+    mobile: 50
   prvi:
     geojson: "data/prvi.geojson"
-    desktop: 0
-    mobile: 0
+    desktop: 100
+    mobile: 100
   gump:
     geojson: "data/gump.geojson"
-    desktop: 0
-    mobile: 0
+    desktop: 80
+    mobile: 80
   as:
     geojson: "data/as.geojson"
-    desktop: 0
-    mobile: 0
+    desktop: 100
+    mobile: 100
 
 state_params:
   style:
