@@ -19,8 +19,8 @@ EXPECTED_OUTPUTS = {
     "mobile_GU_MP_image_file": "visualizations/current_conditions/streamflow/images/sf-mobile-GU_MP-{date}.png",
     "mobile_AS_image_file": "visualizations/current_conditions/streamflow/images/sf-mobile-AS-{date}.png",
     "desktop_CONUS_OCONUS_image_file": "visualizations/current_conditions/streamflow/images/sf-desktop-CONUS_OCONUS-{date}.png",
-    "movie_3d": "visualizations/current_conditions/streamflow/videos/sf-{date}-back-3d.mp4",
-    "movie_5d": "visualizations/current_conditions/streamflow/videos/sf-{date}-back-5d.mp4",
+    "movie_3d": "visualizations/current_conditions/streamflow/videos/sf-movie-{date}-back-3d.mp4",
+    "movie_5d": "visualizations/current_conditions/streamflow/videos/sf-movie-{date}-back-5d.mp4",
 }
 
 parser = argparse.ArgumentParser()

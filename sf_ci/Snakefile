@@ -9,7 +9,7 @@ with open("config/sf_current_conditions.yaml", "r") as file:
     params = yaml.safe_load(file)
 
 # Load metadata and generate list of files to make
-metadata = pd.read_csv("metadata/sf_file_metadata.csv", dtype=str, keep_default_na=False)
+metadata = pd.read_csv(params["s3_url_prefix"] + "metadata/sf_file_metadata.csv", dtype=str, keep_default_na=False)
 
 # Set default date if nothing is specified
 date_of_interest = config.get("date", "2026-03-03")
@@ -33,14 +33,14 @@ rule all:
     input:
         images_to_generate,
         video_names,
-        "sf_dates.json"
+        params["dates_file"]
 
 # make date json
 rule make_date_json:
     params:
         date_dict = date_dict
     output:
-        output = "sf_dates.json"
+        output = params["dates_file"]
     script:
         "sf_conditions/process/make_json.py"
 
