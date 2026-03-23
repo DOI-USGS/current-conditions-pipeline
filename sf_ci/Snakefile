@@ -9,15 +9,44 @@ with open("config/sf_current_conditions.yaml", "r") as file:
     params = yaml.safe_load(file)
 
 # Load metadata and generate list of files to make
-metadata = pd.read_csv("metadata/sf_file_metadata.csv", dtype=str, keep_default_na=False)
+metadata = pd.read_csv(params["s3_url_prefix"] + "metadata/sf_file_metadata.csv", dtype=str, keep_default_na=False)
 
-# Get the date list
-image_lists, image_download_list, image_make_list, parquet_list, parquet_download_list = generate_image_list(config["date"], params["interval"], params["image_prefix"], params["parquet_prefix"], metadata)
+# Set default date if nothing is specified
+date_of_interest = config.get("date", "2026-03-03")
+
+# Get the image and parquet lists for pipeline
+(images_to_download,
+images_to_generate,
+parquets_for_image_generation,
+layout_for_image_generation,
+video_frame_lists,
+video_names,
+parquets_to_download_or_generate,
+parquets_to_download,
+date_dict
+) = generate_image_list(
+    date_of_interest, params["image_prefix"], params["video_prefix"], params["parquet_prefix"], params["layouts"], params["video_intervals"], metadata
+)
 
 # set final intended output
 rule all:
     input:
-        ["videos/sf-" + config["date"] + "-back-" + str(interval)+ ".mp4" for interval in params["interval"]]
+        images_to_generate,
+        video_names,
+        params["dates_file"]
+
+# make date json
+rule make_date_json:
+    params:
+        date_dict = date_dict
+    output:
+        output = params["dates_file"]
+    script:
+        "sf_conditions/process/make_json.py"
+
+########################################
+#############GEOMETRY  DATA#############
+########################################
 
 # gather the state census boundaries
 rule gather_census_data:
@@ -25,31 +54,48 @@ rule gather_census_data:
         resolution = params["census_data"]["resolution"],
         year = params["census_data"]["year"]
     output:
-        outfile = "data/us_states.geojson"
+        conus_geojson = "data/conus.geojson",
+        ak_geojson = "data/ak.geojson",
+        hi_geojson = "data/hi.geojson",
+        prvi_geojson = "data/prvi.geojson",
+        gump_geojson = "data/gump.geojson",
+        as_geojson = "data/as.geojson",
     script:
-        "sf_conditions/fetch/get_conus.py"
+        "sf_conditions/fetch/get_boundaries.py"
 
-# simplify the state census boundaries
-rule simplify_census_data:
-    params:
-        simplify = params["geometry_simplify_percent"]
-    input:
-        infile = "data/us_states.geojson"
-    output:
-        outfile = "data/us_states_simplified.geojson"
-    shell:
-        "mapshaper {input.infile} -simplify {params.simplify}% -o {output.outfile}"
-
-# download images that are available for longest interval
-for image_download in image_download_list:
+# simplify the different census boundaries
+for geometry in params["geometries"].keys():
     rule:
         name:
-            "image_download: " + image_download
+            "simplify_census_data_desktop: " + geometry
+        params:
+            desktop_simplify = params["geometries"][geometry]["desktop"],
+            mobile_simplify = params["geometries"][geometry]["mobile"]
+        input:
+            infile = params["geometries"][geometry]["geojson"]
+        output:
+            desktop_outfile = params["geometries"][geometry]["geojson"][:-8] + "_simplified_desktop.geojson",
+            mobile_outfile = params["geometries"][geometry]["geojson"][:-8] + "_simplified_mobile.geojson"
+        shell:
+            r'''
+            mapshaper {input.infile} -simplify {params.desktop_simplify}% -o {output.desktop_outfile}
+            mapshaper {input.infile} -simplify {params.mobile_simplify}% -o {output.mobile_outfile}
+            '''
+
+########################################
+#############DATA  DOWNLOAD#############
+########################################
+
+# download images that are available for longest interval
+for image_file in images_to_download:
+    rule:
+        name:
+            "image_download: " + image_file
         params:
             s3_url_prefix = params["s3_url_prefix"],
             folder = "images"
         output:
-            s3_file = image_download
+            s3_file = image_file
         script:
             "sf_conditions/fetch/get_s3.py"
 
@@ -64,13 +110,13 @@ rule download_coverage:
         "sf_conditions/fetch/get_s3.py"
 
 # download or generate categorization parquet files
-for i, parquet_file in enumerate(parquet_list):
+for i, parquet_file in enumerate(parquets_to_download_or_generate):
     rule:
         name:
             "parquet_download_generate: " + parquet_file
         params:
             s3_url_prefix = params["s3_url_prefix"],
-            s3_url_file = parquet_download_list[i],
+            s3_url_file = parquets_to_download[i],
             folder = "data"
         input:
             coverage_parquet = params["coverage_file"]
@@ -79,58 +125,89 @@ for i, parquet_file in enumerate(parquet_list):
         script:
             "sf_conditions/process/sf_categorize_inst_values.py"
 
-# create shadow outline plot 
-rule make_shadow_plot:
-    params:
-        figure_params = params["figure_params"],
-        state_params = params["state_params"],
-    input:
-        simplified_census_file = "data/us_states.geojson",
-    output:
-        shadow_image_file = "images/sf-shadow.png"
-    script:
-        "sf_conditions/plot/plot_shadow.py"
 
-# create sf current conditions plots for the given list of dates
-for i, parquet_file in enumerate(parquet_list):
+########################################
+############IMAGE GENERATION############
+########################################
+
+# Create isolated images of markers for legend
+rule make_legend_elements:
+    params:
+        marker_params = params["marker_params"],
+        dpi = 4000
+    output:
+        "images/_legend/No-data-marker.png",
+        ["images/_legend/" + label.replace(" ", "-") + "-marker.png" for label in params["marker_params"]["label"]],
+        "images/_legend/No-data-marker.svg",
+        ["images/_legend/" + label.replace(" ", "-") + "-marker.svg" for label in params["marker_params"]["label"]]
+    script:
+            "sf_conditions/plot/plot_legend_elements.py"
+
+# Create shadow background for each layout
+for i, layout in enumerate(params["layouts"].keys()):
+    rule:
+        name:
+            "make_shadow_plot_mobile" + layout
+        params:
+            figure_params = params["figure_params"],
+            state_params = params["state_params"],
+            layout_params = params["layouts"][layout]
+        input:
+            reference_geojson = params["layouts"][layout]["geojson"]
+        output:
+            shadow_image_file = "images/shadow-" + params["layouts"][layout]["prefix"][:-1] + ".png"
+        script:
+            "sf_conditions/plot/plot_shadow.py"
+
+# Create sf current conditions plots for the given list of dates and layouts
+for i, parquet_file in enumerate(parquets_for_image_generation[:]):
     rule:
         name: 
-            "image_make: " + image_make_list[i]
+            "image_make: " + images_to_generate[i]
         params:
             figure_params = params["figure_params"],
             marker_params = params["marker_params"],
             state_params = params["state_params"],
+            layout_params = params["layouts"][layout_for_image_generation[i]]
         input:
             parquet_file = parquet_file,
-            simplified_census_file = "data/us_states.geojson",
-            shadow_image_file = "images/sf-shadow.png"
+            reference_geojson = params["layouts"][layout_for_image_generation[i]]["geojson"],
+            shadow_image_file = "images/shadow-" + params["layouts"][layout_for_image_generation[i]]["prefix"][:-1] + ".png"
         output:
-            image_file = image_make_list[i]
+            image_file = images_to_generate[i]
         script:
             "sf_conditions/plot/plot_sf.py"
 
-# create image list text file with durations for movie
-rule animation_list:
-    params:
-        framerate = params["movie_params"]["framerate"],
-    input:
-        image_list = lambda wc: image_lists[params["interval"].index(wc.interval)] 
-    output:
-        frame_list = "data/sf-" + config["date"] + "-back-{interval}.txt"
-    script:
-        "sf_conditions/plot/generate_frame_list.py"
-        
-# create a movie from the list of generated images
-rule animate_current_conditions:
-    input:
-        image_list = lambda wc: image_lists[params["interval"].index(wc.interval)],
-        frame_list = "data/sf-" + config["date"] + "-back-{interval}.txt"
-    output:
-        outfile = "videos/sf-" + config["date"] + "-back-{interval}.mp4"
-    shell:
-        r'''
-        ffmpeg -y \
-          -safe 0 -f concat -i {input.frame_list} \
-          -vsync vfr -pix_fmt yuv420p -vcodec libx264 \
-          {output.outfile}
-        '''
+########################################
+############VIDEO GENERATION############
+########################################
+for i, video_name in enumerate(video_names):
+    # create image list text file with durations for movie
+    rule:
+        name:
+            "animation list:" + video_name
+        params:
+            framerate = params["movie_params"]["framerate"],
+        input:
+            image_list = video_frame_lists[i][:] 
+        output:
+            frame_list = "temp/" + video_name[7:-4] + ".txt"
+        script:
+            "sf_conditions/plot/generate_frame_list.py"
+            
+    # create a movie from the list of generated images
+    rule:
+        name:
+            "animate:" + video_name
+        input:
+            image_list = video_frame_lists[i][:],
+            frame_list = "temp/" + video_name[7:-4] + ".txt"
+        output:
+            outfile = video_name
+        shell:
+            r'''
+            ffmpeg -y \
+            -safe 0 -f concat -i {input.frame_list} \
+            -vsync vfr -pix_fmt yuv420p -vcodec libx264 \
+            {output.outfile}
+            '''

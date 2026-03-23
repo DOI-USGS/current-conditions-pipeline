@@ -4,7 +4,7 @@ p4_targets <-
     tar_target(
       p4_date_config_updated_csv,
       {
-        outfile <- file.path("4_update_meta/out", basename(p1_metadata_csv))
+        outfile <- file.path("4_update/out", basename(p1_metadata_csv))
         dplyr::bind_rows(
           dplyr::select(p1_date_complete, -complete),
           p3_date_incomplete_updated

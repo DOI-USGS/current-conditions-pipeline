@@ -55,6 +55,7 @@ r-ggfx = ">=1.0.3,<2"
 r-glue = ">=1.8.0,<2"
 r-zoo = ">=1.8_15,<2"
 botocore = ">=1.42.55,<2"
+basemap = ">=2.0.0,<3"
 
 [pypi-dependencies]
 # Replaces the -e git+... pip install in the old Dockerfile

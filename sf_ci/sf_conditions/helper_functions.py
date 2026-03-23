@@ -1,21 +1,80 @@
-import os
 import re
+import pandas as pd
+from itertools import chain
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 
+def blanks_mask(df: pd.DataFrame, cols):
+    """
+    Returns a boolean DataFrame (same shape as df[cols]) where True means 'blank':
+    - NaN/NaT
+    - empty or whitespace-only strings
+    """
+    sub = df[cols].copy()
+
+    # Mark whitespace-only strings as NA, leave other values unchanged
+    sub = sub.replace(r"^\s*$", pd.NA, regex=True)
+
+    # Now NA (including those we just introduced) are blanks
+    return sub.isna()
+
+
 def generate_image_list(
     end_date_str,
-    intervals,
     image_prefix,
+    video_prefix,
     parquet_prefix,
+    layout_params,
+    intervals,
     metadata,
-    column="desktop_CONUS_image_file",
 ):
-    """Generates the list of images."""
+    """Generates the list of images and parquets to download / generate.
 
+    Parameters
+    ----------
+    end_date_str: string
+        parameters defining the figure style
+    image_prefix: string
+        folder location and prefix for image files on s3 and local resources
+    video_prefix: string
+        folder location and prefix for video files on s3 and local resources
+    parquet_prefix: string
+        folder location and prefix for parquet files on s3 and local resources
+    layout_params: dictionary
+        parameters defining the layout style
+    intervals: list
+       list of the intervals need to be generated
+    metadata: dataframe
+       dataframe that tells use which files exist on s3
+ 
+    Returns
+    -------
+    Assuming X days of data and Y layouts, we need X * Y images.
+
+    images_to_download: list of strings
+        list of images for downloading off of s3, # of images of the X * Y images that exist on s3 already
+    images_to_generate: list of strings
+        list of images that cannot be downloaded and need to be generated, # of images of the X * Y images that exist on s3 already
+    parquets_for_image_generation: list of strings
+        list that is the same length as images_to_generate that contains the source data in a parquet file
+    layout_for_image_generation: list of strings
+        list of the layout code used for the plot, same length as images_to_generate
+    video_frame_lists: list of strings
+        list of all frames for a particular video
+    video_names: list of strings
+        list of the video file name
+    parquets_to_download_or_generate: list of strings
+        list of parquet files needed to download or generate, consist on file names only, the maximum length is the number of parquet files over X days
+    parquets_to_download: list of strings
+        list of parquet files to download, blanks "" need to be generated, same length as parquets_to_download_or_generate
+    date_dict: dictionary
+        dictionary holding a list of dates for each interval
+
+    """
+
+    # find largest interval
     max_delta = timedelta(0)
-    image_lists = []
     for interval in intervals:
         # `end_date_str` based on `date` argument to Snakemake
         # Use snakemake --cores all --config date="YYYY-MM-DD"
@@ -23,60 +82,145 @@ def generate_image_list(
         start_date = find_start_date(end_date, interval)
         delta = end_date - start_date
 
-        # Generate list of dates
-        date_list = []
-        current = start_date
-        while current <= end_date:
-            date_list.append(current.strftime("%Y-%m-%d"))
-            current += timedelta(days=1)
-
-        image_list = [image_prefix + str(date) + ".png" for date in date_list]
-        image_lists += [image_list]
-        temp_parquet_list = [parquet_prefix + str(date) + ".parquet" for date in date_list]
-
-        # image_list is contains all image filepaths for a specified interval's animation
-        # image_lists is a list of image_lists for each interval
-
-        # this list is from the maxiumum interval
         if delta > max_delta:
             max_delta = delta
+            max_interval = interval
+            full_date_list = []
+            current = start_date
+            while current <= end_date:
+                full_date_list.append(current.strftime("%Y-%m-%d"))
+                current += timedelta(days=1)
 
-            # s3_image_list is a list of all the image urls from the metadata file, "" will be listed if the image does not exist
-            # parquet_list is a list of the categorized data used to make each day's images
-            s3_image_list = [
-                metadata.loc[metadata["date"] == d, column].values[0]
+    # determine which parquets need downloading
+    # Filter to only the dates you care about
+    filtered_metadata = metadata[metadata["date"].isin(full_date_list)]
+
+    # Build the per-row mask: True if the row has at least one blank among the image_file columns
+    rows_that_need_image_generation = blanks_mask(
+        filtered_metadata,
+        [layout["metadata_column"] for layout in layout_params.values()],
+    ).any(axis=1)
+
+    # Select the dates for those rows *as a pandas Series*, then convert to a Python list
+    dates_that_need_image_generation = filtered_metadata.loc[
+        rows_that_need_image_generation, "date"
+    ].tolist()
+
+    # Get a list of parquet files that are going to be used to make images
+    parquets_to_download_or_generate = [
+        parquet_prefix + str(date) + ".parquet"
+        for date in dates_that_need_image_generation
+    ]
+
+    # Get a list of parquet files urls that are going to be downloaded, "" means it needs to be generated
+    parquets_to_download = [
+        (
+            metadata.loc[metadata["date"] == d, "parquet_file"].values[0]
+            if d in metadata["date"].values
+            else ""
+        )
+        for d in dates_that_need_image_generation
+    ]
+
+    # Get lists for movie frames
+    video_frame_lists = []
+    video_names = []
+    for layout in layout_params.values():
+        if layout["video"] == True:
+            for interval in intervals:
+                end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
+                start_date = find_start_date(end_date, interval)
+                delta = end_date - start_date
+
+                # Generate list of dates
+                date_list = []
+                current = start_date
+                while current <= end_date:
+                    date_list.append(current.strftime("%Y-%m-%d"))
+                    current += timedelta(days=1)
+
+                image_list = [
+                    image_prefix + layout["prefix"] + str(date) + ".png"
+                    for date in date_list
+                ]
+                video_frame_lists += [image_list]
+                video_names += [
+                    video_prefix + layout["prefix"] + video_label(interval) + ".mp4"
+                ]
+
+    # define date dictionary for a json
+    date_dict = {}
+    for interval in intervals:
+        for interval in intervals:
+            end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
+            start_date = find_start_date(end_date, interval)
+            delta = end_date - start_date
+
+            # Generate list of dates
+            date_list = []
+            current = start_date
+            while current <= end_date:
+                date_list.append(current.strftime("%Y-%m-%d"))
+                current += timedelta(days=1)
+
+            date_dict[video_label(interval)] = date_list
+
+    # Get a list of images that need to be downloaded
+    images_to_download = (
+        metadata[[layout["metadata_column"] for layout in layout_params.values()]]
+            .replace(r"^\s*$", pd.NA, regex=True)  # convert "" / "   " → NA
+            .stack()
+            .dropna()
+            .tolist()
+        )
+
+    # Get corresponding lists that are the same length as the parquets_for_image_generation list
+    images_to_generate = []
+    parquets_for_image_generation = []
+    layout_for_image_generation = []
+    for layout in layout_params.keys():
+        layout_param = layout_params[layout]
+        # Get full list of images needed
+        image_list = [
+            image_prefix + layout_param["prefix"] + str(date) + ".png"
+            for date in full_date_list
+        ]
+        # Get corresponding parquet files
+        parquet_list = [
+            parquet_prefix + str(date) + ".parquet"
+            for date in date_list
+        ]
+        # Get list of images that are on s3
+        s3_image_list = [
+            (
+                metadata.loc[metadata["date"] == d, layout_param["metadata_column"]].values[0]
                 if d in metadata["date"].values
                 else ""
-                for d in date_list
-            ]
-            s3_parquet_list = [
-                metadata.loc[metadata["date"] == d, "parquet_file"].values[0]
-                if d in metadata["date"].values
-                else ""
-                for d in date_list
-            ]
+            )
+            for d in date_list
+        ]
+        # list images that aren't on s3
+        for j, s3_image in enumerate(s3_image_list):
+            if s3_image == "":
+                images_to_generate += [image_list[j]]
+                parquets_for_image_generation += [parquet_list[j]]
+                layout_for_image_generation += [layout] 
 
-            # image_download_list contains all images to be downloaded from s3 in the largest interval. They have already been made.
-            # image_make_list contains all images to be generated by this pipeline.
-            # parquet_list contains all the data needed to make the images in image_make_list
-            # parquet_download_list contains all the data urls needed to make the images in image_make_list, "" (blank) means it needs to be generated
-            image_download_list = []
-            image_make_list = []
-            parquet_list = []
-            parquet_download_list = []
-            # parquet_make_list = []
-            for j, s3_image in enumerate(s3_image_list):
-                if s3_image == "":
-                    image_make_list += [image_list[j]]
-                    parquet_download_list += [s3_parquet_list[j]]
-                    parquet_list += [temp_parquet_list[j]]
-                else:
-                    image_download_list += [image_list[j]]
-
-    return image_lists, image_download_list, image_make_list, parquet_list, parquet_download_list
+    return (
+        images_to_download,
+        images_to_generate,
+        parquets_for_image_generation,
+        layout_for_image_generation,
+        video_frame_lists,
+        video_names,
+        parquets_to_download_or_generate,
+        parquets_to_download,
+        date_dict
+    )
 
 
 def find_start_date(end_date, interval):
+    """Uses interval to get start date"""
     num, unit = re.match(r"(\d+)([A-Za-z]+)", interval).groups()
     if unit == "d":
         return end_date - relativedelta(days=int(num))
@@ -86,5 +230,33 @@ def find_start_date(end_date, interval):
         return end_date - relativedelta(months=int(num))
     elif unit == "y":
         return end_date - relativedelta(years=int(num))
+    else:
+        raise ValueError(f"Invalid interval format")
+
+
+def video_label(interval):
+    """Converts interval code into a readable string"""
+    num, unit = re.match(r"(\d+)([A-Za-z]+)", interval).groups()
+    num = int(num)
+    if unit == "d":
+        if num == 1:
+            return "last-day"
+        else:
+            return "last-" + str(num) + "-days"
+    elif unit == "w":
+        if num == 1:
+            return "last-week"
+        else:
+            return "last-" + str(num) + "-weeks"
+    elif unit == "m":
+        if num == 1:
+            return "last-month"
+        else:
+            return "last-" + str(num) + "-months"
+    elif unit == "y":
+        if num == 1:
+            return "last-year"
+        else:
+            return "last-" + str(num) + "-years"
     else:
         raise ValueError(f"Invalid interval format")

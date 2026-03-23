@@ -21,7 +21,8 @@ tar_option_set(
     'arrow',
     'sfarrow',
     's2',
-    'jsonlite'
+    'jsonlite',
+    'retry'
   )
 )
 
