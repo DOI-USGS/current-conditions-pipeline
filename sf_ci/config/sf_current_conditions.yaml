@@ -195,10 +195,6 @@ figure_params:
 movie_params:
   framerate: 8
 
-date_range:
-  start: "2025-01-01"
-  end: "2025-12-31"
-
 census_data:
   resolution: "5m"
   year: 2024
