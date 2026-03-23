@@ -1,37 +1,138 @@
-from tqdm import tqdm
-import urllib.request
-import numpy as np
-import pandas as pd
 import geopandas as gpd
-from sf_conditions.plot.plot_functions import shadow_plot
+import matplotlib.pyplot as plt
+from sf_conditions.plot.plot_functions import get_ax_size_inches
 
-def plot_shadow_outline(
+def plot_shadow(fig, ax, boundary_gdf, proj, scale_mult, state_style, reference_scale, shadow_color):
+    """Makes an image of the outlines of the map geometries for generated a shadow effect
+
+    Parameters
+    ----------
+    fig: matplotlib figure
+        figure of the plot
+    ax: matplotlib axis
+        axis in the figure that we are plotting data on
+    boundary_gdf: geodataframe
+        boundary geometry
+    proj: string
+        projection crs
+    scale_mult: float
+        scale multiplier
+    state_style: dictionary
+        parameters defining the geometry style
+    reference_scale: float
+        reference scale that is in meters (map dimensions) per inch (canvas dimensions)
+    shadow_color: string
+        hex code color for the shadow
+            
+    Returns
+    -------
+        Axis with geometry extent in the shadow color
+
+    """
+
+    ax_dims = get_ax_size_inches(ax, fig)
+    # project boundary
+    boundary_gdf_proj = boundary_gdf.to_crs(proj)
+
+    # plot as `shadow_color`
+    boundary_gdf_proj.plot(
+        ax=ax,
+        facecolor=shadow_color,
+        edgecolor=shadow_color,
+        linewidth=state_style["linewidth"],
+        zorder=1,
+    )
+    minx, miny, maxx, maxy = boundary_gdf_proj.total_bounds
+    center_x = 0.5 * (minx + maxx)
+    center_y = 0.5 * (miny + maxy)
+
+    # set up axis limits like in `plot_data()`
+    ax.set_xlim(
+        center_x - 0.5 * reference_scale * ax_dims[0] / scale_mult,
+        center_x + 0.5 * reference_scale * ax_dims[0] / scale_mult,
+    )
+    ax.set_ylim(
+        center_y - 0.5 * reference_scale * ax_dims[1] / scale_mult,
+        center_y + 0.5 * reference_scale * ax_dims[1] / scale_mult,
+    )
+
+    # remove box around axis
+    ax.set_axis_off()
+
+def shadow_plot(
     figure_params,
-    simplified_census_file,
+    layout_params, 
     state_params,
     shadow_image_file
 ):
-    """Set up data and make plots for the given date list."""
+    """Makes a image of the shadow outline
 
-    us_states_gdf = gpd.read_file(simplified_census_file)
+    Parameters
+    ----------
+    figure_params: dictionary
+        parameters defining the figure style
+    layout_params: dictionary
+        parameters defining the layout style
+    state_params: dictionary
+        parameters defining the geometry style
+    shadow_image_file: string
+        filepath for the shadow outline image
+            
+    Returns
+    -------
+        Makes an image of the current conditions data (image_file)
 
-    shadow_plot(
-        figure_params,
-        us_states_gdf,
-        shadow_image_file,
-        state_params,
+    """
+    
+    # Reference scale to CONUS
+    reference_gdf = gpd.read_file(layout_params["geojson"][0])
+    minx, miny, maxx, maxy = reference_gdf.to_crs(layout_params["proj"][0]).total_bounds
+    reference_length = max(maxx - minx, maxy - miny) * figure_params["axis_buffer"]
+
+    # Set up figure
+    fig = plt.figure(
+        1, figsize=(layout_params["figure_dimensions"]), facecolor=figure_params["facecolor"]
     )
 
+    for i, geojson in enumerate(layout_params["geojson"]):
+        ax = fig.add_axes(layout_params["ax_loc"][i])
+        gdf = gpd.read_file(geojson)
+
+        # reference everything to first geojson
+        if i == 0:
+            ax_dims = get_ax_size_inches(ax, fig)
+            if maxx - minx > maxy - miny:
+                reference_scale = reference_length / ax_dims[0]
+            else: 
+                reference_scale = reference_length / ax_dims[1]
+
+        # plot
+        plot_shadow(
+            fig,
+            ax,
+            gdf,
+            layout_params["proj"][i],
+            layout_params["multi"][i],
+            state_params["style"],
+            reference_scale,
+            figure_params["shadow"]["color"]
+        )
+
+    # Save figure
+    fig.savefig(shadow_image_file, dpi=600)
+
+    # Close figure
+    plt.close(fig)
 
 if __name__ == "__main__":
     figure_params = snakemake.params["figure_params"]
+    layout_params = snakemake.params["layout_params"]
     state_params = snakemake.params["state_params"]
-    simplified_census_file = snakemake.input["simplified_census_file"]
     shadow_image_file = snakemake.output["shadow_image_file"]
 
-    plot_shadow_outline(
+    shadow_plot(
         figure_params,
-        simplified_census_file,
+        layout_params, 
         state_params,
-        shadow_image_file 
+        shadow_image_file
     )

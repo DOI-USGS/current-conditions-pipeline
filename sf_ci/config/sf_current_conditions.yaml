@@ -1,13 +1,178 @@
 s3_url_prefix: "https://labs.waterdata.usgs.gov/visualizations/current_conditions/streamflow/"
 coverage_file: "metadata/sf_coverage.parquet"
 image_prefix: "images/sf-"
+video_prefix: "videos/sf-movie-"
 parquet_prefix: "data/sf_categorizations_"
-interval:
-  - 1d
+video_intervals:
+ - 5d
+
+layouts:
+  conus:
+    figure_dimensions: [4,4]
+    geojson:
+      - "data/conus_simplified_mobile.geojson"
+    metadata_column: "mobile_CONUS_image_file"
+    prefix: "mobile-CONUS-"
+    locator_map: False
+    locator_map_loc: False
+    video: False
+    ax_loc:  
+      - [0.05,0.05,0.9,0.9]
+    multi:  
+      - 1.0
+    proj:  
+      - "EPSG:5070"
+    scale_bar:
+      - False
+    scale_text:
+      - False
+  ak:
+    figure_dimensions: [4,4]
+    geojson:
+      - "data/ak_simplified_mobile.geojson"
+    metadata_column: "mobile_AK_image_file"
+    prefix: "mobile-AK-"
+    locator_map: False
+    locator_map_loc: False
+    video: False
+    ax_loc:  
+      - [0.05,0.05,0.9,0.9]
+    multi:  
+      - 1.0
+    proj:  
+      - "EPSG:3338"
+    scale_bar:
+      - False
+    scale_text:
+      - False
+  hi:
+    figure_dimensions: [4,4]
+    geojson:
+      - "data/hi_simplified_mobile.geojson"
+    metadata_column: "mobile_HI_image_file"
+    prefix: "mobile-HI-"
+    locator_map: False
+    locator_map_loc: False
+    video: False
+    ax_loc:  
+      - [0.05,0.05,0.9,0.9]
+    multi:  
+      - 1.0
+    proj:  
+      - "ESRI:102007"
+    scale_bar:
+      - False
+    scale_text:
+      - False
+  prvi:
+    figure_dimensions: [4,4]
+    geojson:
+      - "data/prvi_simplified_mobile.geojson"
+    metadata_column: "mobile_PR_VI_image_file"
+    prefix: "mobile-PR_VI-"
+    locator_map: False
+    locator_map_loc: False
+    video: False
+    ax_loc:  
+      - [0.05,0.05,0.9,0.9]
+    multi:  
+      - 1.0
+    proj:  
+      - "EPSG:2866"
+    scale_bar:
+      - False
+    scale_text:
+      - False
+  gump:
+    figure_dimensions: [4,4]
+    geojson:
+      - "data/gump_simplified_mobile.geojson"
+    metadata_column: "mobile_GU_MP_image_file"
+    prefix: "mobile-GU_MP-"
+    locator_map: False
+    locator_map_loc: False
+    video: False
+    ax_loc:
+      - [0.05,0.05,0.9,0.9]
+    multi: 
+      - 1.0
+    proj: 
+      - "EPSG:8693"
+    scale_bar:
+      - False
+    scale_text:
+      - False
+  as:
+    figure_dimensions: [6,6]
+    geojson:
+      - "data/as_simplified_mobile.geojson"
+    metadata_column: "mobile_AS_image_file"
+    prefix: "mobile-AS-"
+    locator_map: False
+    locator_map_loc: False
+    video: False
+    ax_loc:  
+      - [0.05,0.05,0.9,0.9]
+    multi:  
+      - 1.0
+    proj:  
+      - "EPSG:6636"
+    scale_bar:
+      - False
+    scale_text:
+      - False
+  desktop:
+    figure_dimensions: [8,4]
+    geojson:
+      - "data/conus_simplified_desktop.geojson"
+      - "data/ak_simplified_desktop.geojson"
+      - "data/hi_simplified_desktop.geojson"
+      - "data/prvi_simplified_desktop.geojson"
+      - "data/gump_simplified_desktop.geojson"
+      - "data/as_simplified_desktop.geojson"
+    metadata_column: "desktop_CONUS_OCONUS_image_file"
+    prefix: "desktop-CONUS_OCONUS-"
+    locator_map: True
+    locator_map_loc: [0.30, 0.05, 0.12, 0.24]
+    video: True
+    ax_loc: 
+      - [0.30, 0.01, 0.69, 0.98]
+      - [0.005, 0.63, 0.28, 0.36]
+      - [0.11, 0.30, 0.185, 0.33]
+      - [0.11, 0.12, 0.185, 0.17]
+      - [0.005, 0.0, 0.1, 0.63]
+      - [0.11, 0.0, 0.185, 0.12]
+    multi:
+      - 1.0
+      - 0.5
+      - 2.0
+      - 2.0
+      - 2.0
+      - 2.0
+    proj:
+      - "EPSG:5070"
+      - "EPSG:3338"
+      - "ESRI:102007"
+      - "EPSG:2866"
+      - "EPSG:8693"
+      - "EPSG:6636"
+    scale_bar:
+      - "upperleft"
+      - "lowerright"
+      - "upperleft"
+      - "upperleft"
+      - "upperleft"
+      - "upperleft"
+    scale_text:
+      - "Conterminous United States"
+      - "Alaska"
+      - "Hawaii"
+      - "Puerto Rico & U.S. Virgin Islands"
+      - "Northern\nMariana Islands"
+      - "American Samoa"
 
 figure_params:
   prefix: "sf_current_conditions"
-  dimensions: [8,4]
   facecolor: "#ffffff"
   fontfamily: "sans-serif"
   font: "Source Sans 3"
@@ -15,8 +180,10 @@ figure_params:
   fontcolor: "#363636"
   fontsize: 7
   scale_params:
-    linewidth: 0.5
+    linewidth: 0.25
     color: "#363636"
+    scale_length: 0.025
+  axis_buffer: 1.05
   datelabel:
     fontsize: 10.5
     xloc: 0.99
@@ -28,37 +195,43 @@ figure_params:
 movie_params:
   framerate: 8
 
-date_range:
-  start: "2025-01-01"
-  end: "2025-12-31"
-
 census_data:
-  resolution: "20m"
+  resolution: "5m"
   year: 2024
 
-geometry_simplify_percent: 20
+geometries:
+  conus:
+    geojson: "data/conus.geojson"
+    desktop: 5
+    mobile: 5
+  ak:
+    geojson: "data/ak.geojson"
+    desktop: 20
+    mobile: 20
+  hi:
+    geojson: "data/hi.geojson"
+    desktop: 50
+    mobile: 50
+  prvi:
+    geojson: "data/prvi.geojson"
+    desktop: 100
+    mobile: 100
+  gump:
+    geojson: "data/gump.geojson"
+    desktop: 80
+    mobile: 80
+  as:
+    geojson: "data/as.geojson"
+    desktop: 100
+    mobile: 100
 
 state_params:
   style:
     linewidth: 0.5
     edgecolor: "#949494"
     facecolor: "#ffffff"
-  conus:
-    ax_loc: [0.31, 0.01, 0.68, 0.98]
-    proj: "EPSG:5070"
-    multi: 1.0
-  alaska:
-    ax_loc: [0.01, 0.51, 0.28, 0.48]
-    proj: "EPSG:3338"
-    multi: 0.5
-  hawaii:
-    ax_loc: [0.01, 0.21, 0.28, 0.28]
-    proj: "EPSG:2784"
-    multi: 2.0
-  puertorico:
-    ax_loc: [0.01, 0.01, 0.28, 0.18]
-    proj: "EPSG:2866"
-    multi: 2.0
+    outerlinewidth: 0.25
+    outeredgecolor: "#949494"
 
 marker_params:
   marker: "o"
