@@ -6,7 +6,22 @@ def ff_line(path: str) -> str:
     return f"file '../{escaped}'\n"
 
 def generate_frame_list(image_list, framerate, frame_list):
-    """Generates the list of images and durations for animation."""
+    """Generates a text file with image names and durations for ffmpeg
+
+    Parameters
+    ----------
+    mage_list: list of strings
+        list of the filepaths of the images used for the video
+    framerate: integer
+        frame rate of the video in frames per second
+    frame_list: string
+        filepath to the text file that holds the list of frames and directions
+   
+    Returns
+    -------
+        Saved file of the image frames and durations
+
+    """
 
     dur = 1.0 / float(framerate)
 
