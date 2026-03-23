@@ -250,12 +250,15 @@ def plot_data(
             bbox=dict(boxstyle="round,pad=0.5", fc="none", alpha=0.0),
             style="italic",
         )
+    # return make_extent_gdf(
+    #     center_x - 0.5 * reference_scale * ax_dims[0] / scale_mult,
+    #     center_x + 0.5 * reference_scale * ax_dims[0] / scale_mult,
+    #     center_y - 0.5 * reference_scale * ax_dims[1] / scale_mult,
+    #     center_y + 0.5 * reference_scale * ax_dims[1] / scale_mult,
+    #     proj,
+    # )
     return make_extent_gdf(
-        center_x - 0.5 * reference_scale * ax_dims[0] / scale_mult,
-        center_x + 0.5 * reference_scale * ax_dims[0] / scale_mult,
-        center_y - 0.5 * reference_scale * ax_dims[1] / scale_mult,
-        center_y + 0.5 * reference_scale * ax_dims[1] / scale_mult,
-        proj,
+        boundary_gdf,
     )
 
 def make_legend_images(
@@ -329,19 +332,62 @@ def make_legend_images(
         ax.cla()
 
 
-def make_extent_gdf(west, east, north, south, crs, int_pnts = 100):
+def make_extent_gdf(gdf, buffer = 1, int_pnts = 10):
     "Create extent geodataframe in geographic coordinates"
+
+    lons = []
+    lats = []
+
+    for geom in gdf.geometry:
+        if geom.is_empty:
+            continue
+
+        if geom.geom_type == "Polygon":
+            x, y = geom.exterior.xy
+            lons.extend(x)
+            lats.extend(y)
+
+        elif geom.geom_type == "MultiPolygon":
+            for poly in geom.geoms:
+                x, y = poly.exterior.xy
+                lons.extend(x)
+                lats.extend(y)
+        else:
+            raise ValueError("Expected Polygon or MultiPolygon geometries.")
+
+    lons = np.asarray(lons)
+    lats = np.asarray(lats)
 
     lon_list = []
     lat_list = []
 
-    lon_pnts = [west,west,east,east,west]
-    lat_pnts = [north, south, south, north, north]
+    south = np.min(lats) - buffer
+    north = np.max(lats) + buffer
+    # deal with antimeridian objects
+    if np.min(lons) < 0.0 and np.max(lons) > 0.0:
+        west = np.min(lons[lons>0.0]) - buffer
+        east = np.max(lons[lons<0.0]) + buffer
 
-    for i in range(0,len(lon_pnts)-1):
-        for j in range(0,int_pnts):
-            lon_list += [np.linspace(lon_pnts[i],lon_pnts[i+1],int_pnts)[j]]
-            lat_list += [np.linspace(lat_pnts[i],lat_pnts[i+1],int_pnts)[j]]
+        lon_pnts = [west, west, 180., -180., east, east, -180., 180., west]
+        lat_pnts = [north, south, south, south, south, north, north, north, north]
+
+        for i in range(0,len(lon_pnts)-1):
+            if i == 2 or i ==6:
+                pass
+            else:
+                for j in range(0,int_pnts):
+                    lon_list += [np.linspace(lon_pnts[i],lon_pnts[i+1],int_pnts)[j]]
+                    lat_list += [np.linspace(lat_pnts[i],lat_pnts[i+1],int_pnts)[j]]
+    else:
+        west = np.min(lons) - buffer
+        east = np.max(lons) + buffer
+        lon_pnts = [west, west, east, east, west]
+        lat_pnts = [north, south, south, north, north]
+
+        for i in range(0,len(lon_pnts)-1):
+            for j in range(0,int_pnts):
+                lon_list += [np.linspace(lon_pnts[i],lon_pnts[i+1],int_pnts)[j]]
+                lat_list += [np.linspace(lat_pnts[i],lat_pnts[i+1],int_pnts)[j]]
 
     # create geometry from extent
     domain_geom = Polygon(
@@ -352,7 +398,7 @@ def make_extent_gdf(west, east, north, south, crs, int_pnts = 100):
     )
 
     # Create a geopandas dataframe from the polygon and set the CRS to WGS84
-    domain_polygon = gpd.GeoDataFrame(index=[0], crs=crs, geometry=[domain_geom])
+    domain_polygon = gpd.GeoDataFrame(index=[0], crs=gdf.crs, geometry=[domain_geom])
 
     # return in geographic coordinates EPSG:4326, WGS 84
     return domain_polygon.to_crs("EPSG:4326")
