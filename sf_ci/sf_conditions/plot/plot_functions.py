@@ -397,7 +397,7 @@ def make_extent_gdf(gdf, buffer = 1, int_pnts = 10):
         )
     )
 
-    # Create a geopandas dataframe from the polygon and set the CRS to WGS84
+    # Create a geopandas dataframe from the polygon and set the CRS
     domain_polygon = gpd.GeoDataFrame(index=[0], crs=gdf.crs, geometry=[domain_geom])
 
     # return in geographic coordinates EPSG:4326, WGS 84
