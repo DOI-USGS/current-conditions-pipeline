@@ -166,7 +166,7 @@ gw_render:
     - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/metadata/gw_file_metadata.csv gw_ci/1_fetch/in/gw_file_metadata.csv
     - pixi run Rscript -e "setwd('gw_ci'); targets::tar_make()"
     # Daily categorizations parquet files
-    - pixi run aws s3 cp gw_ci/1_fetch/out/ s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/
+    - pixi run aws s3 cp gw_ci/1_fetch/out/ s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/ --recursive
     # Visualizations
     - pixi run aws s3 cp gw_ci/3_visualize/out/ s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/images/ --recursive
     # Metadata files
