@@ -64,7 +64,6 @@ gw_shard_prep:
   stage: active_sites
   image:
     name: $IMAGE
-    pull_policy: always
   rules:
     - if: '$PIPELINE_MODE == "gw_weekly"'
     # manual run from push
@@ -90,7 +89,6 @@ gw_coverage:
   stage: active_sites
   image:
     name: $IMAGE
-    pull_policy: always
   rules:
     - if: '$PIPELINE_MODE == "gw_weekly"'
     # manual run from push
@@ -121,7 +119,6 @@ gw_coverage_merge:
   stage: active_sites
   image:
     name: $IMAGE
-    pull_policy: always
   rules:
     - if: '$PIPELINE_MODE == "gw_weekly"'
     # manual run from push
@@ -152,7 +149,6 @@ gw_render:
   stage: render
   image:
     name: $IMAGE
-    pull_policy: always
   rules:
     - if: '$PIPELINE_MODE == "gw_daily"'
     - if: '$CI_PIPELINE_SOURCE == "push"'
@@ -182,7 +178,6 @@ sf_shard_prep:
   stage: active_sites
   image:
     name: $IMAGE
-    pull_policy: always
   rules:
     - if: '$PIPELINE_MODE == "sf_weekly"'
     # manual run from push
@@ -207,7 +202,6 @@ sf_coverage:
   stage: active_sites
   image:
     name: $IMAGE
-    pull_policy: always
   rules:
     - if: '$PIPELINE_MODE == "sf_weekly"'
     # manual run from push
@@ -237,7 +231,6 @@ sf_coverage_merge:
   stage: active_sites
   image:
     name: $IMAGE
-    pull_policy: always
   rules:
     - if: '$PIPELINE_MODE == "sf_weekly"'
     # manual run from push
@@ -266,7 +259,6 @@ sf_render:
   stage: render
   image:
     name: $IMAGE
-    pull_policy: always
   timeout: 24h
   rules:
     - if: '$PIPELINE_MODE == "sf_inst"'
@@ -293,7 +285,6 @@ sf_update_metadata:
   stage: update_metadata
   image:
     name: $IMAGE
-    pull_policy: always
   rules:
     - if: '$PIPELINE_MODE == "sf_inst"'
     - if: '$PIPELINE_MODE == "sf_metadata"'   # standalone, no sf_render
