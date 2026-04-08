@@ -201,39 +201,8 @@ plot_gw_symbols <- function(gw_plot_order, palette, viz_cfg, image_screen_type) 
         alpha = after_stat(I((0.03^index - 1) / (0.03- 1)))
       )
     )
-
-    # # Layer 4: Borders
-    # # White border - wider
-    # border1_white <- geom_segment(
-    #   data = site_gw,
-    #   aes(
-    #     x = x_start + 14,
-    #     xend = x + 14,
-    #     y = y,
-    #     yend = y_end
-    #   ),
-    #   color = "white",
-    #   linewidth = 0.4
-    # )
-    # 
-    # border2_white <- geom_segment(
-    #   data = site_gw,
-    #   aes(
-    #     x = x - 14,
-    #     xend = x_end - 14,
-    #     y = y_end,
-    #     yend = y
-    #   ),
-    #   color = "white",
-    #   linewidth = 0.4
-    # )
     
-    
-    
-    # Colored border on top, inset slightly toward center
-    # inset <- site_gw$x_dif * 0.04 # will prob need to tune this for mobile/states
-    
-     border1 <- geom_segment(
+    border1 <- geom_segment(
       data = site_gw,
       aes(
         x = x_start,
@@ -963,17 +932,17 @@ plot_gw_static_png <- function(gw_bkgd_img, gw_frgd_img, date, logo_path, legend
       width = 1,
       height = 1
     ) +
-    # # Mock image legend
-    # draw_image(legend_img,
-    #   x = 0.9,
-    #   y = 1.04,
-    #   scale = 0.32,
-    #   height = 1,
-    #   hjust = 1,
-    #   vjust = 1,
-    #   halign = 1,
-    #   valign = 1
-    # ) +
+    # Mock image legend
+    draw_image(legend_img,
+      x = 0.9,
+      y = 1.04,
+      scale = 0.32,
+      height = 1,
+      hjust = 1,
+      vjust = 1,
+      halign = 1,
+      valign = 1
+    ) +
     # Add logo
     draw_image(usgs_logo,
       x = 0.98,

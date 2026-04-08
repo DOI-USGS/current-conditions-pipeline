@@ -68,14 +68,10 @@ p0_targets <- list(
     # c(lubridate::dmonths(1), lubridate::dmonths(3), lubridate::dmonths(6),
     #   lubridate::years(1))
     c(
-      "last-month" = weeks(0),
-      "last-3-months" = weeks(0),
-      "last-6-months" = months(0),
-      "last-year" = months(0)
-      # "last-month" = weeks(1),
-      # "last-3-months" = weeks(2),
-      # "last-6-months" = months(1),
-      # "last-year" = months(2)
+      "last-month" = weeks(1),
+      "last-3-months" = weeks(2),
+      "last-6-months" = months(1),
+      "last-year" = months(2)
     )
   ),
   tar_target(
@@ -132,67 +128,7 @@ p0_targets <- list(
   ##### visual parameters #####
   tar_target(
     p0_viz_gw_pal,
-    # Current
-    # c(
-    #   "Extremely above" = "#313694",
-    #   "Much above" = "#4575b4",
-    #   "Above normal" = "#74acd1",
-    #   "Normal" = "grey20",
-    #   "Below normal" = "#be812b",
-    #   "Much below" = "#8a5109",
-    #   "Extremely below" = "#532f05")),
-  # Option 1:
-  #   c(
-  #     "Extremely above" = "#172972",
-  #     "Much above" = "#425CE0",
-  #     "Above normal" = "#A3A0FC",
-  #     "Normal" = "#333333",
-  #     "Below normal" = "#FB8B75",
-  #     "Much below" = "#CD281F",
-  #     "Extremely below" = "#660702")
-  # ),
-  # Option 2:
-  #   c(
-  #     "Extremely above" = "#003233",
-  #     "Much above" = "#2C8181",
-  #     "Above normal" = "#b9d6c7",
-  #     "Normal" = "#333333",
-  #     "Below normal" = "#E6AC5C",
-  #     "Much below" = "#9E4915",
-  #     "Extremely below" = "#330000")
-  # ),
-  # Option 3:
-  #   c(
-  #     "Extremely above" = "#001f5c",
-  #     "Much above" = "#2166DE",
-  #     "Above normal" = "#AFC2F8",
-  #     "Normal" = "#333333",
-  #     "Below normal" = "#FCD783",
-  #     "Much below" = "#A27410",
-  #     "Extremely below" = "#452d00")
-  # ),
-  # Option 4:
-  # c(
-  #   "Extremely above" = "#001861",
-  #   "Much above" = "#4669af",
-  #   "Above normal" =  "#a3c2f5",
-  #   "Normal" = "#333333",
-  #   "Below normal" = "#d7bf89",
-  #   "Much below" = "#896415",
-  #   "Extremely below" = "#2c1d02")
-  # ),
-  # Option 5 (post Design Studio):
-  # c(
-  #   "Extremely above" =  "#1a3d84",
-  #   "Much above" = "#5580b9",
-  #   "Above normal" =  "#abcfe7",
-  #   "Normal" = "#333333",
-  #   "Below normal" = "#d6be94",
-  #   "Much below" = "#967131",
-  #   "Extremely below" = "#4d3705")
-  # ),
-  # Option 6:
-  c(
+    c(
     "Extremely above" =  "#003375",
     "Much above" = "#2362b3",
     "Above normal" =   "#489dd5",
@@ -200,8 +136,7 @@ p0_targets <- list(
     "Below normal" = "#c18b2f",
     "Much below" = "#8c5503",
     "Extremely below" = "#4d2b00")
-  ),
-  
+    ),
   tar_target(
     # Create a tibble to define fig width and height, conus outline colors,
     # background color, font name, and font size
