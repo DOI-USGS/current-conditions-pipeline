@@ -146,6 +146,30 @@ plot_gw_symbols <- function(gw_plot_order, palette, viz_cfg, image_screen_type) 
   peak_layers <- purrr::map(sites_order_2_to_4, function(site) {
     site_gw <- dplyr::filter(gw_plot_order, monitoring_location_id == site)
 
+    border1_white <- geom_segment(
+      data = site_gw,
+      aes(
+        x = x_start,
+        xend = x,
+        y = y,
+        yend = y_end
+      ),
+      color = "white",
+      linewidth = 0.4
+    )
+    
+    border2_white <- geom_segment(
+      data = site_gw,
+      aes(
+        x = x,
+        xend = x_end,
+        y = y_end,
+        yend = y
+      ),
+      color = "white",
+      linewidth = 0.4
+    )
+    
     # Layer 1: mask
     mask <- geom_link(
       data = site_gw,
@@ -157,8 +181,8 @@ plot_gw_symbols <- function(gw_plot_order, palette, viz_cfg, image_screen_type) 
         group = monitoring_location_id,
         peak_width = peak_width,
         linewidth = after_stat(I((1 - index) * peak_width)),
-        alpha = after_stat(I((0.2^index - 1) / (0.2 - 1)))
-      ),
+        alpha = after_stat(I((0.03^index - 1) / (0.03- 1)))
+        ),
       color = "white"
     )
 
@@ -174,23 +198,53 @@ plot_gw_symbols <- function(gw_plot_order, palette, viz_cfg, image_screen_type) 
         group = monitoring_location_id,
         peak_width = peak_width,
         linewidth = after_stat(I((1 - index) * peak_width)),
-        alpha = after_stat(I((0.2^index - 1) / (0.2 - 1)))
+        alpha = after_stat(I((0.03^index - 1) / (0.03- 1)))
       )
     )
 
-    # Layer 3: border
-    border1 <- geom_segment(
+    # # Layer 4: Borders
+    # # White border - wider
+    # border1_white <- geom_segment(
+    #   data = site_gw,
+    #   aes(
+    #     x = x_start + 14,
+    #     xend = x + 14,
+    #     y = y,
+    #     yend = y_end
+    #   ),
+    #   color = "white",
+    #   linewidth = 0.4
+    # )
+    # 
+    # border2_white <- geom_segment(
+    #   data = site_gw,
+    #   aes(
+    #     x = x - 14,
+    #     xend = x_end - 14,
+    #     y = y_end,
+    #     yend = y
+    #   ),
+    #   color = "white",
+    #   linewidth = 0.4
+    # )
+    
+    
+    
+    # Colored border on top, inset slightly toward center
+    # inset <- site_gw$x_dif * 0.04 # will prob need to tune this for mobile/states
+    
+     border1 <- geom_segment(
       data = site_gw,
       aes(
         x = x_start,
-        xend = x,
+        xend = x ,
         y = y,
         yend = y_end,
         color = per_bin
       ),
       linewidth = 0.1
     )
-
+    
     border2 <- geom_segment(
       data = site_gw,
       aes(
@@ -203,7 +257,8 @@ plot_gw_symbols <- function(gw_plot_order, palette, viz_cfg, image_screen_type) 
       linewidth = 0.1
     )
 
-    list(mask, gradient, border1, border2)
+    list(border1_white, border2_white, mask, gradient, border1, border2)
+    
   }) |>
     purrr::flatten()
 
@@ -908,17 +963,17 @@ plot_gw_static_png <- function(gw_bkgd_img, gw_frgd_img, date, logo_path, legend
       width = 1,
       height = 1
     ) +
-    # Mock image legend
-    draw_image(legend_img,
-      x = 0.9,
-      y = 1.04,
-      scale = 0.32,
-      height = 1,
-      hjust = 1,
-      vjust = 1,
-      halign = 1,
-      valign = 1
-    ) +
+    # # Mock image legend
+    # draw_image(legend_img,
+    #   x = 0.9,
+    #   y = 1.04,
+    #   scale = 0.32,
+    #   height = 1,
+    #   hjust = 1,
+    #   vjust = 1,
+    #   halign = 1,
+    #   valign = 1
+    # ) +
     # Add logo
     draw_image(usgs_logo,
       x = 0.98,
