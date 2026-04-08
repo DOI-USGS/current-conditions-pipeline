@@ -54,11 +54,26 @@ except s3.exceptions.NoSuchKey:
 # ensure date column is in YYYY-MM-DD format
 meta["date"] = pd.to_datetime(meta["date"], format="mixed").dt.strftime("%Y-%m-%d")
 
-# Dates to update: any with gaps, plus date_of_interest
+# Dates to update: any with gaps, plus date_of_interest, and range between max date and date_of_interest
 incomplete = meta[meta.drop(columns="date").isin(["NA", "", numpy.nan, None]).any(axis=1)][
     "date"
 ].tolist()
-dates_to_check = set(incomplete) | {str(date_of_interest)}
+
+# Convert max date and date_of_interest to datetime for range calculation
+start_date = pd.to_datetime(meta["date"].max())
+end_date = pd.to_datetime(date_of_interest)
+
+# Generate range of dates between max(meta) and date_of_interest (inclusive)
+# We use +1 day to start from the day after the current max date
+if end_date > start_date:
+    missing_dates = pd.date_range(
+        start=start_date + timedelta(days=1), 
+        end=end_date
+    ).strftime("%Y-%m-%d").tolist()
+else:
+    missing_dates = []
+
+dates_to_check = set(incomplete) | {str(date_of_interest)} | set(missing_dates)
 
 for d in dates_to_check:
     row = {"date": d}
