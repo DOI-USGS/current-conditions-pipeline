@@ -9,18 +9,18 @@ from botocore.exceptions import ClientError
 
 # --- Config ---
 BUCKET = "water-visualizations-prod-website"
-METADATA_KEY = "visualizations/current_conditions/streamflow/metadata/sf_file_metadata.csv"
+METADATA_KEY = "streamflow/metadata/sf_file_metadata.csv"
 EXPECTED_OUTPUTS = {
-    "parquet_file": "visualizations/current_conditions/streamflow/data/sf_categorizations_{date}.parquet",
-    "mobile_CONUS_image_file": "visualizations/current_conditions/streamflow/images/sf-mobile-CONUS-{date}.png",
-    "mobile_AK_image_file": "visualizations/current_conditions/streamflow/images/sf-mobile-AK-{date}.png",
-    "mobile_HI_image_file": "visualizations/current_conditions/streamflow/images/sf-mobile-HI-{date}.png",
-    "mobile_PR_VI_image_file": "visualizations/current_conditions/streamflow/images/sf-mobile-PR_VI-{date}.png",
-    "mobile_GU_MP_image_file": "visualizations/current_conditions/streamflow/images/sf-mobile-GU_MP-{date}.png",
-    "mobile_AS_image_file": "visualizations/current_conditions/streamflow/images/sf-mobile-AS-{date}.png",
-    "desktop_CONUS_OCONUS_image_file": "visualizations/current_conditions/streamflow/images/sf-desktop-CONUS_OCONUS-{date}.png",
-    "movie_3d": "visualizations/current_conditions/streamflow/videos/sf-movie-{date}-back-3d.mp4",
-    "movie_5d": "visualizations/current_conditions/streamflow/videos/sf-movie-{date}-back-5d.mp4",
+    "parquet_file": "streamflow/data/sf_categorizations_{date}.parquet",
+    "mobile_CONUS_image_file": "streamflow/images/sf-mobile-CONUS-{date}.png",
+    "mobile_AK_image_file": "streamflow/images/sf-mobile-AK-{date}.png",
+    "mobile_HI_image_file": "streamflow/images/sf-mobile-HI-{date}.png",
+    "mobile_PR_VI_image_file": "streamflow/images/sf-mobile-PR_VI-{date}.png",
+    "mobile_GU_MP_image_file": "streamflow/images/sf-mobile-GU_MP-{date}.png",
+    "mobile_AS_image_file": "streamflow/images/sf-mobile-AS-{date}.png",
+    "desktop_CONUS_OCONUS_image_file": "streamflow/images/sf-desktop-CONUS_OCONUS-{date}.png",
+    "movie_3d": "streamflow/videos/sf-movie-{date}-back-3d.mp4",
+    "movie_5d": "streamflow/videos/sf-movie-{date}-back-5d.mp4",
 }
 
 parser = argparse.ArgumentParser()
@@ -74,6 +74,8 @@ else:
     missing_dates = []
 
 dates_to_check = set(incomplete) | {str(date_of_interest)} | set(missing_dates)
+
+print(f"Checking dates: {dates_to_check}")
 
 for d in dates_to_check:
     row = {"date": d}
