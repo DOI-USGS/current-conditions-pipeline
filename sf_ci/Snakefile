@@ -78,8 +78,8 @@ for geometry in params["geometries"].keys():
             mobile_outfile = params["geometries"][geometry]["geojson"][:-8] + "_simplified_mobile.geojson"
         shell:
             r'''
-            mapshaper {input.infile} -simplify {params.desktop_simplify}% -o {output.desktop_outfile}
-            mapshaper {input.infile} -simplify {params.mobile_simplify}% -o {output.mobile_outfile}
+            npx mapshaper {input.infile} -simplify {params.desktop_simplify}% -o {output.desktop_outfile}
+            npx mapshaper {input.infile} -simplify {params.mobile_simplify}% -o {output.mobile_outfile}
             '''
 
 ########################################
