@@ -9,6 +9,7 @@ from botocore.exceptions import ClientError
 
 # --- Config ---
 BUCKET = "water-visualizations-prod-website"
+SF_PATH = "visualizations/current_conditions/streamflow/"
 METADATA_KEY = "metadata/sf_file_metadata.csv"
 EXPECTED_OUTPUTS = {
     "parquet_file": "data/sf_categorizations_{date}.parquet",
@@ -45,7 +46,7 @@ s3 = boto3.client("s3")
 
 # Read or initialize metadata
 try:
-    obj = s3.get_object(Bucket=BUCKET, Key=METADATA_KEY)
+    obj = s3.get_object(Bucket=BUCKET, Key=SF_PATH + METADATA_KEY)
     meta = pd.read_csv(obj["Body"], dtype=str, keep_default_na=False)
     meta = meta.loc[:, ~meta.columns.str.startswith("Unnamed")]
 except s3.exceptions.NoSuchKey:
@@ -80,7 +81,7 @@ print(f"Checking dates: {dates_to_check}")
 for d in dates_to_check:
     row = {"date": d}
     for col, key_template in EXPECTED_OUTPUTS.items():
-        key = key_template.format(date=d)
+        key = SF_PATH + key_template.format(date=d)
         # print(f"[{col}] s3://{BUCKET}/{key} → {'FOUND' if exists else 'MISSING'}", flush=True)
         row[col] = key if key_exists(s3, BUCKET, key) else "NA"
     meta = meta[meta["date"] != d]
@@ -91,4 +92,4 @@ meta = meta.sort_values("date").reset_index(drop=True)
 # Write back
 buf = StringIO()
 meta.to_csv(buf, index=False)
-s3.put_object(Bucket=BUCKET, Key=METADATA_KEY, Body=buf.getvalue())
+s3.put_object(Bucket=BUCKET, Key=SF_PATH + METADATA_KEY, Body=buf.getvalue())
