@@ -125,6 +125,20 @@ p0_targets <- list(
       )
     )
   ),
+  # State-level area info, one row per lower 48 state
+  # mirrors p0_area_info_df but scoped to individual states
+  # all use CONUS projection EPSG:5070 for now
+  tar_target(
+    p0_states_area_info_df,
+    tibble(
+      name = state.abb[!state.abb %in% c("AK", "HI")],
+      state_list = as.list(state.abb[!state.abb %in% c("AK", "HI")]),
+      full_name = state.name[!state.abb %in% c("AK", "HI")],
+      proj = "EPSG:5070",
+      simplification_keep_high_simp = 0.02,
+      scale_factor = 1
+    )
+  ),
   ##### visual parameters #####
   tar_target(
     p0_viz_gw_pal,

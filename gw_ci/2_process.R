@@ -94,6 +94,68 @@ p2_targets <- list(
         state_abbr = STUSPS
       )
   ),
+  ##### State polygon data #####
+  # State polygons, branched by state row in p0_states_area_info_df
+  # mirrors p2_areas_sf_high_simp_list / p2_areas_high_simp_extents_df
+  tar_target(
+    p2_states_sf_list,
+    {
+      # filter p1_states_sf to single state using p0_states_area_info_df[["state_list"]]
+      # reproject to p0_states_area_info_df[["proj"]] (EPSG:5070)
+      # simplify using p0_states_area_info_df[["simplification_keep_high_simp"]]
+      # return sf object for single state
+      message(sprintf(
+        "State polygons for %s, project to %s, and simplify geometry",
+        p0_states_area_info_df[["name"]],
+        p0_states_area_info_df[["proj"]]
+        ))
+      },
+    pattern = map(p0_states_area_info_df),
+    iteration = "list"
+  ),
+  
+  # Do we want one extent max across CONUS or each state extents specifically?
+  tar_target(
+    p2_states_max_x_extent,
+    {
+      # pull x_extent from each state sf object in p2_states_sf_list
+      # find max x_extent across all states
+      # return numeric max x extent
+      message("Compute maximum x extent across CONUS state polygons for relative extent scaling")
+    }
+  ),
+  
+  tar_target(
+    p2_states_max_y_extent,
+    {
+      # pull y_extent from each state sf object in p2_states_sf_list
+      # find max y_extent across all states
+      # return numeric max y extent
+      message("Compute maximum y extent across CONUS state polygons for relative extent scaling")
+    }
+  ),
+  
+  tar_target(
+    p2_states_extents_df,
+    {
+      # use:
+      #   - single state row from p0_states_area_info_df
+      #   - single state sf object from p2_states_sf_list
+      #   - p2_states_max_x_extent
+      #   - p2_states_max_y_extent
+      # compute extent information needed for plotting
+      # mirror the columns returned by get_relative_extent_information()
+      # so plot_gw_image() can use state extents the same way it uses area extents
+      # return single row extent list for the state
+      message(sprintf(
+        "Build plotting extent for %s using state bbox and max CONUS extents",
+        p0_states_area_info_df[["name"]]
+      ))
+    },
+    pattern = map(p0_states_area_info_df, p2_states_sf_list),
+    iteration = "list"
+  ),
+  
   ##### gw data #####
   # process parquet files
   tar_target(

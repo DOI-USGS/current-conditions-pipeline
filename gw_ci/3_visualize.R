@@ -144,6 +144,123 @@ p3_targets <- list(
     format = "file"
   ),
   
+  ##### Generate state-level images #####
+  # State foreground webps, branched by state x date
+  tar_target(
+    p3_states_gw_webps,
+    {
+      # call plot_gw_image() with:
+      #   gw_parquet_file  = p2_gw_clean_parquets (single date parquet)
+      #   date = p1_date_incomplete[["date"]] (single date)
+      #   area_name = p0_states_area_info_df[["name"]]  (single state name)
+      #   area_info_df = p0_states_area_info_df (single row df for this state)
+      #   area_sf = p2_states_sf_list (single state polygon)
+      #   extent_info = p2_states_extents_df (single state extent)
+      #   palette = p0_viz_gw_pal
+      #   viz_cfg = p0_viz_config_df
+      #   scale_cfg = p0_gw_binned_scales
+      #   state_lookup = p2_state_lookup
+      #   locator_map_png  = NULL (not needed)
+      #   image_screen_type = "desktop" 
+      #   layer_mode = "foreground"
+      #   output_format = "webp"
+      #   transparent_bg = TRUE
+      #   output_template = gw-desktop-{state_abbr}-{date}.webp
+      # return out_path
+      message(sprintf(
+        "Read in %s and plot state foreground webp for %s on %s, saving as gw-desktop-%s-%s.webp",
+        p2_gw_clean_parquets,
+        p0_states_area_info_df[["name"]],
+        p1_date_incomplete[["date"]],
+        p0_states_area_info_df[["name"]],
+        p1_date_incomplete[["date"]]
+      ))
+    },
+    pattern = cross(
+      map(p1_date_incomplete, p2_gw_clean_parquets),
+      map(p0_states_area_info_df, p2_states_sf_list, p2_states_extents_df)
+    ),
+    format = "file"
+  ),
+  
+  # State background webps, one per state, not date branched
+  tar_target(
+    p3_states_bkgd_webps,
+    {
+      # call plot_gw_image() with:
+      #   gw_parquet_file  = p2_gw_clean_parquets[[1]] (single parquet, base map only)
+      #   date = p1_date_incomplete[["date"]][[1]] (single date, base map only)
+      #   area_name = p0_states_area_info_df[["name"]]
+      #   area_info_df = p0_states_area_info_df
+      #   area_sf = p2_states_sf_list
+      #   extent_info = p2_states_extents_df
+      #   layer_mode = "background"
+      #   output_format = "webp"
+      #   transparent_bg = FALSE
+      #   output_template = gw-desktop-{state_abbr}-background.webp
+      # return out_path
+      message(sprintf(
+        "Plot state background webp for %s, saving as gw-desktop-%s-background.webp",
+        p0_states_area_info_df[["name"]],
+        p0_states_area_info_df[["name"]]
+      ))
+    },
+    pattern = map(p0_states_area_info_df, p2_states_sf_list, p2_states_extents_df),
+    format = "file"
+  ),
+  
+  # Expand state background webps so each state background is repeated across dates
+  tar_target(
+    p3_states_bkgd_webps_expanded,
+    {
+      # this target just repeats / aligns the single-state background webp
+      # so it can pair 1:1 with each state/date foreground branch
+      #
+      # return the matching state background webp path
+      
+      message(sprintf(
+        "Match background webp for %s to date branch %s",
+        p0_states_area_info_df[["name"]],
+        p1_date_incomplete[["date"]]
+      ))
+      },
+    pattern = cross(
+      map(p1_date_incomplete),
+      map(p0_states_area_info_df, p3_states_bkgd_webps)
+    )
+  ),
+  
+  # State static, composite bkgd + foreground per state x date
+  tar_target(
+    p3_states_static_pngs,
+    {
+      # call plot_gw_static_png() with:
+      #   gw_bkgd_img = p3_states_bkgd_webps_expanded (matched state background)
+      #   gw_frgd_img = p3_states_gw_webps (matched state x date foreground)
+      #   date = p1_date_incomplete[["date"]]
+      #   logo_path = p0_logo_path
+      #   legend_path = p0_desktop_leg_path
+      #   viz_cfg = p0_viz_config_df
+      #   image_screen_type = "desktop"
+      #   area_name = p0_states_area_info_df[["name"]]
+      #   output_template = gw-desktop-{state_abbr}-{date}.png
+      # return out_path
+      message(sprintf(
+        "Combine state background and foreground for %s on %s, saving as gw-desktop-%s-%s.png",
+        p0_states_area_info_df[["name"]],
+        p1_date_incomplete[["date"]],
+        p0_states_area_info_df[["name"]],
+        p1_date_incomplete[["date"]]
+      ))
+    },
+    pattern = cross(
+      map(p1_date_incomplete),
+      map(p0_states_area_info_df, p3_states_gw_webps, 
+          p3_states_bkgd_webps_expanded)
+      ),
+    format = "file"
+    ),
+  
   ##### Generate static stand-alone images #####
   
   # Static formatted images
@@ -267,6 +384,80 @@ p3_targets <- list(
     pattern = map(p0_area_info_df, p3_mobile_bkgd_webps)
   ),
   
+  # state foreground config
+  tar_target(
+    p3_states_gw_webps_config,
+    {
+      # build single-row tibble with:
+      #   date = p1_date_incomplete[["date"]]
+      #   local_image_type = paste0(
+      #     p0_local_image_type_prefix,
+      #     "desktop_",
+      #     p0_states_area_info_df[["name"]],
+      #     "_webp"
+      #   )
+      #   local_image_file = p3_states_gw_webps
+
+      message(sprintf(
+        "Build config row for state foreground webp for %s on %s",
+        p0_states_area_info_df[["name"]],
+        p1_date_incomplete[["date"]]
+      ))
+    },
+    pattern = cross(
+      map(p1_date_incomplete),
+      map(p0_states_area_info_df, p3_states_gw_webps)
+    )
+  ),
+  
+  # state background config
+  tar_target(
+    p3_states_bkgd_webps_config,
+    {
+      # build single-row tibble with:
+      #   date = NA
+      #   local_image_type = paste0(
+      #     p0_local_image_type_prefix,
+      #     "desktop_",
+      #     p0_states_area_info_df[["name"]],
+      #     "_background_webp"
+      #   )
+      #   local_image_file = p3_states_bkgd_webps
+    
+      message(sprintf(
+        "Build config row for state background webp for %s",
+        p0_states_area_info_df[["name"]]
+      ))
+    },
+    pattern = map(p0_states_area_info_df, p3_states_bkgd_webps)
+  ),
+  
+  # state static png config
+  tar_target(
+    p3_states_static_pngs_config,
+    {
+      # build single-row tibble with:
+      #   date = p1_date_incomplete[["date"]]
+      #   local_image_type = paste0(
+      #     p0_local_image_type_prefix,
+      #     "desktop_static_",
+      #     p0_states_area_info_df[["name"]],
+      #     "_image_file"
+      #   )
+      #   local_image_file = p3_states_static_pngs
+      
+      message(sprintf(
+        "Build config row for static state png for %s on %s",
+        p0_states_area_info_df[["name"]],
+        p1_date_incomplete[["date"]]
+      ))
+    },
+    pattern = cross(
+      map(p1_date_incomplete),
+      map(p0_states_area_info_df, p3_states_static_pngs)
+    )
+  ),
+  
   # full newly generated png config
   tar_target(
     p3_new_gw_images_config,
@@ -274,7 +465,11 @@ p3_targets <- list(
               p3_mobile_gw_webps_config,
               p3_static_gw_pngs_config,
               p3_desktop_bkgd_webp_config,
-              p3_mobile_bkgd_webps_config) |>
+              p3_mobile_bkgd_webps_config
+              # , p3_states_gw_webps_config,
+              # p3_states_bkgd_webps_config,
+              # p3_states_static_pngs_config
+              ) |>
       dplyr::mutate(
         remote_image_type = stringr::str_remove(local_image_type, 
                                                 p0_local_image_type_prefix),
@@ -353,11 +548,66 @@ p3_targets <- list(
       )
   ),
   
+  #### state level:
+  # mp4 generation for each state and interval
+  tar_target(
+    p3_gw_states_mp4,
+    {
+      # pass these in `build_gw_mp4`:
+      #   interval_start_date = p0_interval_start_dates
+      #   interval_end_date = p0_yesterday_date
+      #   interval_name = p0_interval_names
+      #   gw_png_config = p3_gw_pngs_config
+      #   viz_cfg = p0_viz_config_df
+      #   img_type_name = local_desktop_static_{state}_image_file
+      #   output_template = gw-movie-desktop-{state}-{interval}.mp4
+      
+      message(sprintf(
+        "Build state mp4 for %s for %s using static png frames, saving as gw-movie-desktop-%s-%s.mp4",
+        p0_states_area_info_df[["name"]],
+        p0_interval_names,
+        p0_states_area_info_df[["name"]],
+        p0_interval_names
+      ))
+    },
+    pattern = cross(
+      map(p0_interval_start_dates, p0_interval_names),
+      map(p0_states_area_info_df)
+    ),
+    format = "file"
+  ),
+  
+  tar_target(
+    p3_new_gw_states_mp4_config,
+    {
+      # build metadata/config row describing the state mp4
+      # include:
+      #   - date = p0_yesterday_date
+      #   - local image type = desktop_static_{state}_mp4_{interval}
+      #   - local image file = p3_gw_states_mp4
+      #
+      # derive:
+      #   - remote_image_type by removing p0_local_image_type_prefix
+      #   - remote_image_file_key by swapping local output dir for remote video dir
+      #   - newly_generated = TRUE
+      message(sprintf(
+        "Build config row for state mp4 for %s for %s",
+        p0_states_area_info_df[["name"]],
+        p0_interval_names
+      ))
+    },
+    pattern = cross(
+      map(p0_interval_names),
+      map(p0_states_area_info_df, p3_gw_states_mp4)
+    )
+  ),
+  
   tar_target(
     p3_new_gw_files_config,
     dplyr::bind_rows(
       p3_new_gw_images_config,
       p3_new_gw_mp4_config
+      # , p3_new_gw_states_mp4_config
     )
   ),
   
