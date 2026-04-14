@@ -375,20 +375,10 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
   # Ensure the directory exists so ggsave doesn't error
   if (!dir.exists(dirname(out_path))) dir.create(dirname(out_path), recursive = TRUE)
 
-  # Build base plot
-  base_plot <- NULL
-  if (draw_base && area_name != "CONUS_OCONUS") {
-    base_plot <- plot_base(
-      area_name = area_name,
-      area_sf = area_sf,
-      viz_cfg = viz_cfg
-    )
-  }
-
   # Build plot
   if (area_name == "CONUS_OCONUS") {
     # generate plots for each area
-    area_gw_plots <- purrr::pmap(
+    area_plots <- purrr::pmap(
       list(
         area_info_df[["name"]],
         area_info_df[["proj"]],
@@ -399,52 +389,61 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
       ),
       function(area_name, area_proj, area_state_list, area_scale_factor,
                extent_info, area_poly_sf) {
-        # Generate appropriate scaling parameters for each area
-        # _NOTE: this is a first stab at adjusting these for different areas. I
-        # suspect we will also need to make some further adjustments_
-        adj_scale_cfg <- scale_cfg |>
-          mutate(
-            max_vector_height =
-              max_vector_height / area_scale_factor,
-            mid_vector_height =
-              mid_vector_height / area_scale_factor,
-            min_vector_height =
-              min_vector_height / area_scale_factor,
-            max_vector_width =
-              max_vector_width / area_scale_factor,
-            mid_vector_width = max_vector_width * mid_factor,
-            min_vector_width = max_vector_width * min_factor,
-            normal_width = max_vector_width * min_factor
-          )
-
-        # Build base per-area
-        area_base_plot <- NULL
+        
+        # Build area base plot
         if (draw_base) {
-          area_base_plot <- plot_base(
+          p <- plot_base(
             area_name = area_name,
             area_sf = area_poly_sf,
             viz_cfg = viz_cfg
+          ) +
+            theme_void() +
+            theme(legend.position = "none")
+        } else {
+          p <- NULL
+        }
+        
+        # Build area symbol plot
+        if (draw_symbols) {
+          # Generate appropriate scaling parameters for each area
+          # _NOTE: this is a first stab at adjusting these for different areas. I
+          # suspect we will also need to make some further adjustments_
+          adj_scale_cfg <- scale_cfg |>
+            mutate(
+              max_vector_height =
+                max_vector_height / area_scale_factor,
+              mid_vector_height =
+                mid_vector_height / area_scale_factor,
+              min_vector_height =
+                min_vector_height / area_scale_factor,
+              max_vector_width =
+                max_vector_width / area_scale_factor,
+              mid_vector_width = max_vector_width * mid_factor,
+              min_vector_width = max_vector_width * min_factor,
+              normal_width = max_vector_width * min_factor
+            )
+          
+          p <- plot_gw(
+            gw_parquet_file = gw_parquet_file,
+            date_val = date_val,
+            incl_date = FALSE,
+            area_name = area_name,
+            area_proj = area_proj,
+            area_state_list = area_state_list,
+            area_sf = area_poly_sf,
+            palette = palette,
+            viz_cfg = viz_cfg,
+            scale_cfg = adj_scale_cfg,
+            state_lookup = state_lookup,
+            image_screen_type = image_screen_type,
+            base_plot = p,
+            draw_base = draw_base,
+            draw_symbols = draw_symbols
           )
         }
-
-        p <- plot_gw(
-          gw_parquet_file = gw_parquet_file,
-          date_val = date_val,
-          incl_date = FALSE,
-          area_name = area_name,
-          area_proj = area_proj,
-          area_state_list = area_state_list,
-          area_sf = area_poly_sf,
-          palette = palette,
-          viz_cfg = viz_cfg,
-          scale_cfg = adj_scale_cfg,
-          state_lookup = state_lookup,
-          image_screen_type = image_screen_type,
-          base_plot = area_base_plot,
-          draw_base = draw_base,
-          draw_symbols = draw_symbols
-        ) +
-          # make sure there is no expansion of extents
+        
+        # make sure there is no expansion of extents
+        p <- p +
           scale_x_continuous(expand = c(0.00, 0.00)) +
           scale_y_continuous(expand = c(0.00, 0.00))
       }
@@ -456,7 +455,7 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
     gw_plot <- generate_landscape_condensed(
       area_info_df = area_info_df,
       areas_extents = extent_info,
-      areas_plots = area_gw_plots,
+      areas_plots = area_plots,
       viz_config = viz_cfg,
       locator_map_png = if (is_foreground) NULL else locator_map_png,
       draw_labels = draw_labels,
@@ -490,53 +489,70 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
         )
     }
   } else {
+    # generate plot for single area
     # DELETE LATER
     # for now, for testing, include date on final image
     incl_date <- layer_mode %in% c("full", "foreground")
-
-    # Generate appropriate scaling parameters for each area
-    # _NOTE: this is a first stab at adjusting these for different areas. I
-    # suspect we will also need to make some further adjustments for mobile_
-    if (image_screen_type == "mobile") {
-      scale_cfg <- scale_cfg |>
-        mutate(
-          max_vector_height = max_vector_height * extent_info[["rel_height"]],
-          mid_vector_height = mid_vector_height * extent_info[["rel_height"]],
-          min_vector_height = min_vector_height * extent_info[["rel_height"]],
-          max_vector_width = max_vector_width * extent_info[["rel_width"]],
-          mid_vector_width = max_vector_width * mid_factor,
-          min_vector_width = max_vector_width * min_factor,
-          normal_width = max_vector_width * min_factor,
-          max_peak_width = max_factor_mobile,
-          mid_peak_width = max_factor_mobile * mid_factor,
-          min_peak_width = max_factor_mobile * min_factor
-        )
+    
+    # Build base plot
+    if (draw_base) {
+      p <- plot_base(
+        area_name = area_name,
+        area_sf = area_sf,
+        viz_cfg = viz_cfg
+      ) +
+        theme_void() +
+        theme(legend.position = "none")
+    } else {
+      p <- NULL
     }
-
-    gw_plot <- plot_gw(
-      gw_parquet_file = gw_parquet_file,
-      date_val = date_val,
-      incl_date = incl_date,
-      area_name = area_name,
-      area_proj = area_info_df[["proj"]],
-      area_state_list = area_info_df[["state_list"]],
-      area_sf = area_sf,
-      palette = palette,
-      viz_cfg = viz_cfg,
-      scale_cfg = scale_cfg,
-      state_lookup = state_lookup,
-      image_screen_type = image_screen_type,
-      base_plot = base_plot,
-      draw_base = draw_base,
-      draw_symbols = draw_symbols
-    )
-
+    
+    # Build area symbol plot
+    if (draw_symbols) {
+      # Generate appropriate scaling parameters for each area
+      # _NOTE: this is a first stab at adjusting these for different areas. I
+      # suspect we will also need to make some further adjustments for mobile_
+      if (image_screen_type == "mobile") {
+        scale_cfg <- scale_cfg |>
+          mutate(
+            max_vector_height = max_vector_height * extent_info[["rel_height"]],
+            mid_vector_height = mid_vector_height * extent_info[["rel_height"]],
+            min_vector_height = min_vector_height * extent_info[["rel_height"]],
+            max_vector_width = max_vector_width * extent_info[["rel_width"]],
+            mid_vector_width = max_vector_width * mid_factor,
+            min_vector_width = max_vector_width * min_factor,
+            normal_width = max_vector_width * min_factor,
+            max_peak_width = max_factor_mobile,
+            mid_peak_width = max_factor_mobile * mid_factor,
+            min_peak_width = max_factor_mobile * min_factor
+          )
+      }
+      
+      p <- plot_gw(
+        gw_parquet_file = gw_parquet_file,
+        date_val = date_val,
+        incl_date = incl_date,
+        area_name = area_name,
+        area_proj = area_info_df[["proj"]],
+        area_state_list = area_info_df[["state_list"]],
+        area_sf = area_sf,
+        palette = palette,
+        viz_cfg = viz_cfg,
+        scale_cfg = scale_cfg,
+        state_lookup = state_lookup,
+        image_screen_type = image_screen_type,
+        base_plot = p,
+        draw_base = draw_base,
+        draw_symbols = draw_symbols
+      )
+    }
+    
     # Make sure the plot extent is consistent, even if not drawing base map layers
     # Identify the center coordinates of the area that is plotted
     center_x <- 0.5 * (extent_info$x_min + extent_info$x_max)
     center_y <- 0.5 * (extent_info$y_min + extent_info$y_max)
     # Adjust the limits of the figure based on the area's x and y extent
-    gw_plot <- gw_plot +
+    gw_plot <- p +
       ggplot2::coord_sf(
         xlim = c(
           center_x - 0.5 * extent_info$x_extent,
