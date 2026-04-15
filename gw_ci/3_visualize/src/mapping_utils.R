@@ -207,6 +207,7 @@ plot_gw_symbols <- function(gw_plot_order, palette, viz_cfg, image_screen_type) 
   }) |>
     purrr::flatten()
 
+  # Return the symbol and peak layers as well as the call to scale_color_manual, to be added to a plot in `plot_gw()`
   return(c(
     symbol_layers,
     peak_layers,
