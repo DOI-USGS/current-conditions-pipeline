@@ -155,7 +155,7 @@ plot_gw_symbols <- function(gw_plot_order, palette, viz_cfg, image_screen_type) 
         yend = y_end
       ),
       color = "white",
-      linewidth = 0.4
+      linewidth = 0.8
     )
     
     border2_white <- geom_segment(
@@ -167,7 +167,7 @@ plot_gw_symbols <- function(gw_plot_order, palette, viz_cfg, image_screen_type) 
         yend = y
       ),
       color = "white",
-      linewidth = 0.4
+      linewidth = 0.8
     )
     
     # Layer 1: mask
@@ -206,12 +206,12 @@ plot_gw_symbols <- function(gw_plot_order, palette, viz_cfg, image_screen_type) 
       data = site_gw,
       aes(
         x = x_start,
-        xend = x ,
+        xend = x,
         y = y,
         yend = y_end,
         color = per_bin
       ),
-      linewidth = 0.1
+      linewidth = 0.3
     )
     
     border2 <- geom_segment(
@@ -223,7 +223,7 @@ plot_gw_symbols <- function(gw_plot_order, palette, viz_cfg, image_screen_type) 
         yend = y,
         color = per_bin
       ),
-      linewidth = 0.1
+      linewidth = 0.3
     )
 
     list(border1_white, border2_white, mask, gradient, border1, border2)
