@@ -285,11 +285,6 @@ plot_gw <- function(gw_parquet_file, date_val, incl_date, area_name, area_proj,
     }
   }
 
-  # Ensure plot exists
-  if (is.null(p)) {
-    p <- ggplot()
-  }
-
   p <- p +
     theme_void() +
     theme(legend.position = "none")
