@@ -49,3 +49,23 @@ active["preferred"] = ~active.duplicated(subset=["monitoring_location_id"], keep
 active = active.drop(columns=["stat_rank", "pcode_rank"])
 
 active.to_parquet("artifacts/sf_coverage.parquet")
+
+# Combine MM-DD percentiles as a single data set across shard IDs
+from collections import defaultdict
+
+perc_files = list(Path("artifacts").glob("sf_percentiles_*_*.parquet"))
+if len(perc_files) == 0:
+    sys.exit("No percentile shard artifacts found")
+
+perc_by_mmdd = defaultdict(list)
+for f in perc_files:
+    mm_dd = f.stem.rsplit("_", 1)[-1]  # "sf_percentiles_3_04-28" -> "04-28"
+    perc_by_mmdd[mm_dd].append(f)
+
+Path("artifacts/sf_percentiles").mkdir(exist_ok=True)
+for mm_dd, files in perc_by_mmdd.items():
+    merged = pd.concat([pd.read_parquet(f) for f in files], ignore_index=True)
+    merged = merged.drop_duplicates()
+    # discard rows not in the sf_coverage.parquet data set:
+    merged = merged[merged['parent_time_series_id'].isin(active['time_series_id'])]
+    merged.to_parquet(f"artifacts/sf_percentiles/sf_percentiles_{mm_dd}.parquet", index=False)

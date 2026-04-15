@@ -6,6 +6,8 @@ from pathlib import Path
 import pandas as pd
 from requests.exceptions import JSONDecodeError
 from dataretrieval import waterdata
+import pyarrow as pa
+import pyarrow.parquet as pq
 
 shard_id = int(sys.argv[1])
 min_years_per_yday = int(sys.argv[2])
@@ -40,6 +42,7 @@ def clean_percentiles(df: pd.DataFrame) -> pd.DataFrame:
     df.loc[fill_mask, "percentile"] = df.loc[fill_mask, "computation"].map(percentile_map)
 
     df["percentile"] = df["percentile"].astype("Int64")
+    df["value"] = pd.to_numeric(df["value"], errors="coerce")
 
     # --- 3. Drop duplicate percentile rows (median commonly duplicated) ---
     df = df.drop_duplicates(subset=["parent_time_series_id", "time_of_year", "percentile"])
@@ -128,15 +131,35 @@ def chunked(seq, size):
 
 
 active_ts_ids = set()
+writers = {}  # mm_dd -> ParquetWriter
 
-for batch in chunked(ts_ids, STATS_BATCH_SIZE):
-    # print(batch)
+batches = chunked(ts_ids, STATS_BATCH_SIZE)
 
-    raw = get_stats_por_with_retry(
-        parent_time_series_id=batch,
-        computation_type=["minimum", "maximum", "percentile"],
-        max_retries=5,
-    )
+MAX_CONSECUTIVE_FAILURES = 3
+LONG_PAUSE_SECONDS = 60
+
+consecutive_failures = 0
+
+for batch in batches:#[batch_start + 1:]:
+    print(batch)
+
+    try:
+        raw = get_stats_por_with_retry(
+            parent_time_series_id=batch,
+            computation_type=["minimum", "maximum", "percentile"],
+            max_retries=5,
+        )
+        consecutive_failures = 0  # reset on success
+
+    except Exception as e:
+        consecutive_failures += 1
+        print(f"Batch failed ({consecutive_failures} consecutive): {e}")
+
+        if consecutive_failures >= MAX_CONSECUTIVE_FAILURES:
+            print(f"Too many consecutive failures — pausing {LONG_PAUSE_SECONDS}s")
+            time.sleep(LONG_PAUSE_SECONDS)
+            consecutive_failures = 0  # reset after pause; give the API a fresh chance
+        continue  # skip processing this batch and move on
 
     time.sleep(0.5)
 
@@ -153,6 +176,17 @@ for batch in chunked(ts_ids, STATS_BATCH_SIZE):
         )
         if doy_ok.all():
             active_ts_ids.add(ts_id)
+
+        # --- Incremental write, one file per MM-DD ---
+    for mm_dd, group in tidy.groupby("time_of_year"):
+        table = pa.Table.from_pandas(group.drop(columns = "geometry", errors = "ignore"), preserve_index=False)
+        if mm_dd not in writers:
+            out_path = f"artifacts/sf_percentiles_{shard_id}_{mm_dd}.parquet"
+            writers[mm_dd] = pq.ParquetWriter(out_path, table.schema)
+        writers[mm_dd].write_table(table)
+
+for writer in writers.values():
+    writer.close()
 
 # Merge coverage back onto shard table
 shard_result = shard_table.loc[shard_table["shard_id"] == shard_id,].copy()
