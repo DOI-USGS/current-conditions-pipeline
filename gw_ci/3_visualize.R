@@ -168,9 +168,9 @@ p3_targets <- list(
   ),
   
   ##### Generate legend images #####
-  # Export png of each legend marker with same dimensions for website build
+  # Export svg of each legend marker with same dimensions for website build
   tar_target(
-    p3_gw_legend_pngs,
+    p3_gw_legend_svgs,
     plot_gw_leg(
       gw_parquet_file = p2_gw_clean_parquets[[1]],
       conus_proj = dplyr::filter(p0_area_info_df, name == "CONUS") |>
@@ -178,7 +178,7 @@ p3_targets <- list(
       palette = p0_viz_gw_pal,
       viz_cfg = p0_viz_config_df,
       scale_cfg = p0_gw_binned_scales,
-      out_path = "3_visualize/out/legend/leg_%s.png"
+      out_path = "3_visualize/out/legend/leg_%s.svg"
     ),
     format = "file"
   ),
