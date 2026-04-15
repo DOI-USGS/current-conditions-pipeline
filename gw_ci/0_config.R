@@ -143,14 +143,14 @@ p0_targets <- list(
   tar_target(
     p0_viz_gw_pal,
     c(
-      "Extremely above" = "#313694",
-      "Much above" = "#4575b4",
-      "Above normal" = "#74acd1",
-      "Normal" = "grey20",
-      "Below normal" = "#be812b",
-      "Much below" = "#8a5109",
-      "Extremely below" = "#532f05")
-  ),
+    "Extremely above" =  "#003375",
+    "Much above" = "#2362b3",
+    "Above normal" =   "#489dd5",
+    "Normal" = "#333333",
+    "Below normal" = "#c18b2f",
+    "Much below" = "#8c5503",
+    "Extremely below" = "#4d2b00")
+    ),
   tar_target(
     # Create a tibble to define fig width and height, conus outline colors,
     # background color, font name, and font size

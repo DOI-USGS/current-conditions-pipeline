@@ -63,7 +63,6 @@ gw_shard_prep:
   stage: active_sites
   image:
     name: $IMAGE
-    pull_policy: always
   rules:
     - if: '$PIPELINE_MODE == "gw_weekly"'
     # manual run from push
@@ -89,7 +88,6 @@ gw_coverage:
   stage: active_sites
   image:
     name: $IMAGE
-    pull_policy: always
   rules:
     - if: '$PIPELINE_MODE == "gw_weekly"'
     # manual run from push
@@ -120,7 +118,6 @@ gw_coverage_merge:
   stage: active_sites
   image:
     name: $IMAGE
-    pull_policy: always
   rules:
     - if: '$PIPELINE_MODE == "gw_weekly"'
     # manual run from push
@@ -151,7 +148,6 @@ gw_render:
   stage: render
   image:
     name: $IMAGE
-    pull_policy: always
   rules:
     - if: '$PIPELINE_MODE == "gw_daily"'
     - if: '$CI_PIPELINE_SOURCE == "push"'
@@ -166,7 +162,7 @@ gw_render:
     - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/metadata/gw_file_metadata.csv gw_ci/1_fetch/in/gw_file_metadata.csv
     - pixi run Rscript -e "setwd('gw_ci'); targets::tar_make()"
     # Daily categorizations parquet files
-    - pixi run aws s3 cp gw_ci/1_fetch/out/ s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/
+    - pixi run aws s3 cp gw_ci/1_fetch/out/ s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/ --recursive
     # Visualizations
     - pixi run aws s3 cp gw_ci/3_visualize/out/ s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/images/ --recursive
     # Metadata files
@@ -181,7 +177,6 @@ sf_shard_prep:
   stage: active_sites
   image:
     name: $IMAGE
-    pull_policy: always
   rules:
     - if: '$PIPELINE_MODE == "sf_weekly"'
     # manual run from push
@@ -206,7 +201,6 @@ sf_coverage:
   stage: active_sites
   image:
     name: $IMAGE
-    pull_policy: always
   rules:
     - if: '$PIPELINE_MODE == "sf_weekly"'
     # manual run from push
@@ -236,7 +230,6 @@ sf_coverage_merge:
   stage: active_sites
   image:
     name: $IMAGE
-    pull_policy: always
   rules:
     - if: '$PIPELINE_MODE == "sf_weekly"'
     # manual run from push
@@ -264,7 +257,6 @@ sf_render:
   stage: render
   image:
     name: $IMAGE
-    pull_policy: always
   timeout: 24h
   rules:
     - if: '$PIPELINE_MODE == "sf_inst"'
@@ -291,7 +283,6 @@ sf_update_metadata:
   stage: update_metadata
   image:
     name: $IMAGE
-    pull_policy: always
   rules:
     - if: '$PIPELINE_MODE == "sf_inst"'
     - if: '$PIPELINE_MODE == "sf_metadata"'   # standalone, no sf_render
