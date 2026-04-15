@@ -146,6 +146,30 @@ plot_gw_symbols <- function(gw_plot_order, palette, viz_cfg, image_screen_type) 
   peak_layers <- purrr::map(sites_order_2_to_4, function(site) {
     site_gw <- dplyr::filter(gw_plot_order, monitoring_location_id == site)
 
+    border1_white <- geom_segment(
+      data = site_gw,
+      aes(
+        x = x_start,
+        xend = x,
+        y = y,
+        yend = y_end
+      ),
+      color = "white",
+      linewidth = 0.8
+    )
+    
+    border2_white <- geom_segment(
+      data = site_gw,
+      aes(
+        x = x,
+        xend = x_end,
+        y = y_end,
+        yend = y
+      ),
+      color = "white",
+      linewidth = 0.8
+    )
+    
     # Layer 1: mask
     mask <- geom_link(
       data = site_gw,
@@ -157,8 +181,8 @@ plot_gw_symbols <- function(gw_plot_order, palette, viz_cfg, image_screen_type) 
         group = monitoring_location_id,
         peak_width = peak_width,
         linewidth = after_stat(I((1 - index) * peak_width)),
-        alpha = after_stat(I((0.2^index - 1) / (0.2 - 1)))
-      ),
+        alpha = after_stat(I((0.03^index - 1) / (0.03- 1)))
+        ),
       color = "white"
     )
 
@@ -174,11 +198,10 @@ plot_gw_symbols <- function(gw_plot_order, palette, viz_cfg, image_screen_type) 
         group = monitoring_location_id,
         peak_width = peak_width,
         linewidth = after_stat(I((1 - index) * peak_width)),
-        alpha = after_stat(I((0.2^index - 1) / (0.2 - 1)))
+        alpha = after_stat(I((0.03^index - 1) / (0.03- 1)))
       )
     )
-
-    # Layer 3: border
+    
     border1 <- geom_segment(
       data = site_gw,
       aes(
@@ -188,9 +211,9 @@ plot_gw_symbols <- function(gw_plot_order, palette, viz_cfg, image_screen_type) 
         yend = y_end,
         color = per_bin
       ),
-      linewidth = 0.1
+      linewidth = 0.3
     )
-
+    
     border2 <- geom_segment(
       data = site_gw,
       aes(
@@ -200,10 +223,11 @@ plot_gw_symbols <- function(gw_plot_order, palette, viz_cfg, image_screen_type) 
         yend = y,
         color = per_bin
       ),
-      linewidth = 0.1
+      linewidth = 0.3
     )
 
-    list(mask, gradient, border1, border2)
+    list(border1_white, border2_white, mask, gradient, border1, border2)
+    
   }) |>
     purrr::flatten()
 
