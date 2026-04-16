@@ -48,10 +48,10 @@ p0_targets <- list(
     p0_logo_path,
     "3_visualize/in/usgs_logo_black.png"
   ),
-  # Note: this will updated - Hayley will share
   tar_target(
     p0_desktop_leg_path,
-    "3_visualize/in/mock-legend.png"
+    "3_visualize/in/gw-static-legend.svg",
+    format = "file"
   ),
   ##### date parameters #####
   tar_target(
