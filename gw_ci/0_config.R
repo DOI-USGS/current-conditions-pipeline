@@ -51,7 +51,7 @@ p0_targets <- list(
   # Note: this will updated - Hayley will share
   tar_target(
     p0_desktop_leg_path,
-    "3_visualize/in/mock-legend.png"
+    "3_visualize/in/gw-static-legend.svg"
   ),
   ##### date parameters #####
   tar_target(

@@ -1,0 +1,699 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="gw-static" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 400 60">
+  <defs>
+    <clipPath id="clippath">
+      <rect x="4.8" y="-13.07" width="86.4" height="86.4" style="fill: none;"/>
+    </clipPath>
+    <clipPath id="clippath-1">
+      <rect x="40.47" y="-13.07" width="86.4" height="86.4" style="fill: none;"/>
+    </clipPath>
+    <clipPath id="clippath-2">
+      <rect x="76.13" y="-13.07" width="86.4" height="86.4" style="fill: none;"/>
+    </clipPath>
+    <clipPath id="clippath-3">
+      <rect x="111.8" y="-13.07" width="86.4" height="86.4" style="fill: none;"/>
+    </clipPath>
+    <clipPath id="clippath-4">
+      <rect x="147.47" y="-13.07" width="86.4" height="86.4" style="fill: none;"/>
+    </clipPath>
+    <clipPath id="clippath-5">
+      <rect x="183.13" y="-13.07" width="86.4" height="86.4" style="fill: none;"/>
+    </clipPath>
+    <clipPath id="clippath-6">
+      <rect x="218.8" y="-13.07" width="86.4" height="86.4" style="fill: none;"/>
+    </clipPath>
+    <clipPath id="clippath-7">
+      <rect x="300.51" y="-1.37" width="62.99" height="62.99" style="fill: none;"/>
+    </clipPath>
+  </defs>
+  <text transform="translate(3 34.28)" style="fill: #231f20; font-family: SourceSans3-Regular, &apos;Source Sans 3&apos;; font-size: 16px;"><tspan x="0" y="0" style="letter-spacing: -.01em;">L</tspan><tspan x="7.58" y="0" style="letter-spacing: 0em;">o</tspan><tspan x="16.19" y="0">w</tspan></text>
+  <text transform="translate(279 34.28)" style="fill: #231f20; font-family: SourceSans3-Regular, &apos;Source Sans 3&apos;; font-size: 16px;"><tspan x="0" y="0">High</tspan></text>
+  <text transform="translate(343.2 34.47)" style="fill: #231f20; font-family: SourceSans3-LightItalic, &apos;Source Sans 3&apos;; font-size: 16px; font-style: italic; font-weight: 300;"><tspan x="0" y="0">No da</tspan><tspan x="37.82" y="0" style="letter-spacing: -.01em;">t</tspan><tspan x="42.45" y="0" style="letter-spacing: 0em;">a</tspan></text>
+  <g>
+    <rect x="4.8" y="-13.07" width="86.4" height="86.4" style="fill: none;"/>
+    <g style="clip-path: url(#clippath);">
+      <g>
+        <rect x="4.8" y="-13.07" width="86.4" height="86.4" style="fill: none;"/>
+        <line x1="48" y1="30.41" x2="48" y2="30.69" style="fill: none; stroke: rgba(77, 43, 0, .03); stroke-linejoin: round; stroke-width: 14.6px;"/>
+        <line x1="48" y1="30.69" x2="48" y2="30.98" style="fill: none; stroke: rgba(77, 43, 0, .06); stroke-linejoin: round; stroke-width: 14.45px;"/>
+        <line x1="48" y1="30.98" x2="48" y2="31.25" style="fill: none; stroke: rgba(77, 43, 0, .09); stroke-linejoin: round; stroke-width: 14.3px;"/>
+        <line x1="48" y1="31.25" x2="48" y2="31.54" style="fill: none; stroke: rgba(77, 43, 0, .11); stroke-linejoin: round; stroke-width: 14.15px;"/>
+        <line x1="48" y1="31.54" x2="48" y2="31.83" style="fill: none; stroke: rgba(77, 43, 0, .14); stroke-linejoin: round; stroke-width: 14px;"/>
+        <line x1="48" y1="31.83" x2="48" y2="32.11" style="fill: none; stroke: rgba(77, 43, 0, .17); stroke-linejoin: round; stroke-width: 13.86px;"/>
+        <line x1="48" y1="32.11" x2="48" y2="32.39" style="fill: none; stroke: rgba(77, 43, 0, .19); stroke-linejoin: round; stroke-width: 13.7px;"/>
+        <line x1="48" y1="32.39" x2="48" y2="32.68" style="fill: none; stroke: rgba(77, 43, 0, .22); stroke-linejoin: round; stroke-width: 13.56px;"/>
+        <line x1="48" y1="32.68" x2="48" y2="32.96" style="fill: none; stroke: rgba(77, 43, 0, .24); stroke-linejoin: round; stroke-width: 13.4px;"/>
+        <line x1="48" y1="32.96" x2="48" y2="33.25" style="fill: none; stroke: rgba(77, 43, 0, .26); stroke-linejoin: round; stroke-width: 13.26px;"/>
+        <line x1="48" y1="33.25" x2="48" y2="33.52" style="fill: none; stroke: rgba(77, 43, 0, .29); stroke-linejoin: round; stroke-width: 13.12px;"/>
+        <line x1="48" y1="33.52" x2="48" y2="33.81" style="fill: none; stroke: rgba(77, 43, 0, .31); stroke-linejoin: round; stroke-width: 12.96px;"/>
+        <line x1="48" y1="33.81" x2="48" y2="34.1" style="fill: none; stroke: rgba(77, 43, 0, .33); stroke-linejoin: round; stroke-width: 12.82px;"/>
+        <line x1="48" y1="34.1" x2="48" y2="34.37" style="fill: none; stroke: rgba(77, 43, 0, .35); stroke-linejoin: round; stroke-width: 12.66px;"/>
+        <line x1="48" y1="34.37" x2="48" y2="34.66" style="fill: none; stroke: rgba(77, 43, 0, .37); stroke-linejoin: round; stroke-width: 12.52px;"/>
+        <line x1="48" y1="34.66" x2="48" y2="34.94" style="fill: none; stroke: rgba(77, 43, 0, .39); stroke-linejoin: round; stroke-width: 12.37px;"/>
+        <line x1="48" y1="34.94" x2="48" y2="35.23" style="fill: none; stroke: rgba(77, 43, 0, .41); stroke-linejoin: round; stroke-width: 12.22px;"/>
+        <line x1="48" y1="35.23" x2="48" y2="35.51" style="fill: none; stroke: rgba(77, 43, 0, .43); stroke-linejoin: round; stroke-width: 12.07px;"/>
+        <line x1="48" y1="35.51" x2="48" y2="35.79" style="fill: none; stroke: rgba(77, 43, 0, .44); stroke-linejoin: round; stroke-width: 11.92px;"/>
+        <line x1="48" y1="35.79" x2="48" y2="36.08" style="fill: none; stroke: rgba(77, 43, 0, .46); stroke-linejoin: round; stroke-width: 11.77px;"/>
+        <line x1="48" y1="36.08" x2="48" y2="36.35" style="fill: none; stroke: rgba(77, 43, 0, .48); stroke-linejoin: round; stroke-width: 11.62px;"/>
+        <line x1="48" y1="36.35" x2="48" y2="36.64" style="fill: none; stroke: rgba(77, 43, 0, .49); stroke-linejoin: round; stroke-width: 11.47px;"/>
+        <line x1="48" y1="36.64" x2="48" y2="36.93" style="fill: none; stroke: rgba(77, 43, 0, .51); stroke-linejoin: round; stroke-width: 11.33px;"/>
+        <line x1="48" y1="36.93" x2="48" y2="37.21" style="fill: none; stroke: rgba(77, 43, 0, .53); stroke-linejoin: round; stroke-width: 11.17px;"/>
+        <line x1="48" y1="37.21" x2="48" y2="37.49" style="fill: none; stroke: rgba(77, 43, 0, .54); stroke-linejoin: round; stroke-width: 11.03px;"/>
+        <line x1="48" y1="37.49" x2="48" y2="37.78" style="fill: none; stroke: rgba(77, 43, 0, .56); stroke-linejoin: round; stroke-width: 10.87px;"/>
+        <line x1="48" y1="37.78" x2="48" y2="38.06" style="fill: none; stroke: rgba(77, 43, 0, .57); stroke-linejoin: round; stroke-width: 10.73px;"/>
+        <line x1="48" y1="38.06" x2="48" y2="38.35" style="fill: none; stroke: rgba(77, 43, 0, .58); stroke-linejoin: round; stroke-width: 10.58px;"/>
+        <line x1="48" y1="38.35" x2="48" y2="38.62" style="fill: none; stroke: rgba(77, 43, 0, .6); stroke-linejoin: round; stroke-width: 10.43px;"/>
+        <line x1="48" y1="38.62" x2="48" y2="38.91" style="fill: none; stroke: rgba(77, 43, 0, .61); stroke-linejoin: round; stroke-width: 10.28px;"/>
+        <line x1="48" y1="38.91" x2="48" y2="39.2" style="fill: none; stroke: rgba(77, 43, 0, .62); stroke-linejoin: round; stroke-width: 10.13px;"/>
+        <line x1="48" y1="39.2" x2="48" y2="39.47" style="fill: none; stroke: rgba(77, 43, 0, .64); stroke-linejoin: round; stroke-width: 9.98px;"/>
+        <line x1="48" y1="39.47" x2="48" y2="39.76" style="fill: none; stroke: rgba(77, 43, 0, .65); stroke-linejoin: round; stroke-width: 9.83px;"/>
+        <line x1="48" y1="39.76" x2="48" y2="40.04" style="fill: none; stroke: rgba(77, 43, 0, .66); stroke-linejoin: round; stroke-width: 9.68px;"/>
+        <line x1="48" y1="40.04" x2="48" y2="40.33" style="fill: none; stroke: rgba(77, 43, 0, .67); stroke-linejoin: round; stroke-width: 9.54px;"/>
+        <line x1="48" y1="40.33" x2="48" y2="40.61" style="fill: none; stroke: rgba(77, 43, 0, .68); stroke-linejoin: round; stroke-width: 9.38px;"/>
+        <line x1="48" y1="40.61" x2="48" y2="40.89" style="fill: none; stroke: rgba(77, 43, 0, .69); stroke-linejoin: round; stroke-width: 9.24px;"/>
+        <line x1="48" y1="40.89" x2="48" y2="41.18" style="fill: none; stroke: rgba(77, 43, 0, .7); stroke-linejoin: round; stroke-width: 9.08px;"/>
+        <line x1="48" y1="41.18" x2="48" y2="41.47" style="fill: none; stroke: rgba(77, 43, 0, .71); stroke-linejoin: round; stroke-width: 8.94px;"/>
+        <line x1="48" y1="41.47" x2="48" y2="41.74" style="fill: none; stroke: rgba(77, 43, 0, .72); stroke-linejoin: round; stroke-width: 8.8px;"/>
+        <line x1="48" y1="41.74" x2="48" y2="42.03" style="fill: none; stroke: rgba(77, 43, 0, .73); stroke-linejoin: round; stroke-width: 8.64px;"/>
+        <line x1="48" y1="42.03" x2="48" y2="42.31" style="fill: none; stroke: rgba(77, 43, 0, .74); stroke-linejoin: round; stroke-width: 8.5px;"/>
+        <line x1="48" y1="42.31" x2="48" y2="42.59" style="fill: none; stroke: rgba(77, 43, 0, .75); stroke-linejoin: round; stroke-width: 8.34px;"/>
+        <line x1="48" y1="42.59" x2="48" y2="42.88" style="fill: none; stroke: rgba(77, 43, 0, .76); stroke-linejoin: round; stroke-width: 8.2px;"/>
+        <line x1="48" y1="42.88" x2="48" y2="43.16" style="fill: none; stroke: rgba(77, 43, 0, .77); stroke-linejoin: round; stroke-width: 8.04px;"/>
+        <line x1="48" y1="43.16" x2="48" y2="43.45" style="fill: none; stroke: rgba(77, 43, 0, .78); stroke-linejoin: round; stroke-width: 7.9px;"/>
+        <line x1="48" y1="43.45" x2="48" y2="43.72" style="fill: none; stroke: rgba(77, 43, 0, .78); stroke-linejoin: round; stroke-width: 7.75px;"/>
+        <line x1="48" y1="43.72" x2="48" y2="44.01" style="fill: none; stroke: rgba(77, 43, 0, .79); stroke-linejoin: round; stroke-width: 7.6px;"/>
+        <line x1="48" y1="44.01" x2="48" y2="44.3" style="fill: none; stroke: rgba(77, 43, 0, .8); stroke-linejoin: round; stroke-width: 7.45px;"/>
+        <line x1="48" y1="44.3" x2="48" y2="44.57" style="fill: none; stroke: rgba(77, 43, 0, .81); stroke-linejoin: round; stroke-width: 7.3px;"/>
+        <line x1="48" y1="44.57" x2="48" y2="44.86" style="fill: none; stroke: rgba(77, 43, 0, .82); stroke-linejoin: round; stroke-width: 7.15px;"/>
+        <line x1="48" y1="44.86" x2="48" y2="45.14" style="fill: none; stroke: rgba(77, 43, 0, .82); stroke-linejoin: round; stroke-width: 7.01px;"/>
+        <line x1="48" y1="45.14" x2="48" y2="45.43" style="fill: none; stroke: rgba(77, 43, 0, .83); stroke-linejoin: round; stroke-width: 6.85px;"/>
+        <line x1="48" y1="45.43" x2="48" y2="45.71" style="fill: none; stroke: rgba(77, 43, 0, .84); stroke-linejoin: round; stroke-width: 6.71px;"/>
+        <line x1="48" y1="45.71" x2="48" y2="45.99" style="fill: none; stroke: rgba(77, 43, 0, .84); stroke-linejoin: round; stroke-width: 6.55px;"/>
+        <line x1="48" y1="45.99" x2="48" y2="46.28" style="fill: none; stroke: rgba(77, 43, 0, .85); stroke-linejoin: round; stroke-width: 6.41px;"/>
+        <line x1="48" y1="46.28" x2="48" y2="46.57" style="fill: none; stroke: rgba(77, 43, 0, .85); stroke-linejoin: round; stroke-width: 6.25px;"/>
+        <line x1="48" y1="46.57" x2="48" y2="46.84" style="fill: none; stroke: rgba(77, 43, 0, .86); stroke-linejoin: round; stroke-width: 6.11px;"/>
+        <line x1="48" y1="46.84" x2="48" y2="47.13" style="fill: none; stroke: rgba(77, 43, 0, .87); stroke-linejoin: round; stroke-width: 5.96px;"/>
+        <line x1="48" y1="47.13" x2="48" y2="47.41" style="fill: none; stroke: rgba(77, 43, 0, .87); stroke-linejoin: round; stroke-width: 5.81px;"/>
+        <line x1="48" y1="47.41" x2="48" y2="47.69" style="fill: none; stroke: rgba(77, 43, 0, .87); stroke-linejoin: round; stroke-width: 5.66px;"/>
+        <line x1="48" y1="47.69" x2="48" y2="47.98" style="fill: none; stroke: rgba(77, 43, 0, .88); stroke-linejoin: round; stroke-width: 5.51px;"/>
+        <line x1="48" y1="47.98" x2="48" y2="48.26" style="fill: none; stroke: rgba(77, 43, 0, .89); stroke-linejoin: round; stroke-width: 5.36px;"/>
+        <line x1="48" y1="48.26" x2="48" y2="48.55" style="fill: none; stroke: rgba(77, 43, 0, .89); stroke-linejoin: round; stroke-width: 5.22px;"/>
+        <line x1="48" y1="48.55" x2="48" y2="48.82" style="fill: none; stroke: rgba(77, 43, 0, .9); stroke-linejoin: round; stroke-width: 5.06px;"/>
+        <line x1="48" y1="48.82" x2="48" y2="49.11" style="fill: none; stroke: rgba(77, 43, 0, .9); stroke-linejoin: round; stroke-width: 4.92px;"/>
+        <line x1="48" y1="49.11" x2="48" y2="49.4" style="fill: none; stroke: rgba(77, 43, 0, .91); stroke-linejoin: round; stroke-width: 4.76px;"/>
+        <line x1="48" y1="49.4" x2="48" y2="49.67" style="fill: none; stroke: rgba(77, 43, 0, .91); stroke-linejoin: round; stroke-width: 4.62px;"/>
+        <line x1="48" y1="49.67" x2="48" y2="49.96" style="fill: none; stroke: rgba(77, 43, 0, .91); stroke-linejoin: round; stroke-width: 4.46px;"/>
+        <line x1="48" y1="49.96" x2="48" y2="50.25" style="fill: none; stroke: rgba(77, 43, 0, .92); stroke-linejoin: round; stroke-width: 4.32px;"/>
+        <line x1="48" y1="50.25" x2="48" y2="50.53" style="fill: none; stroke: rgba(77, 43, 0, .92); stroke-linejoin: round; stroke-width: 4.18px;"/>
+        <line x1="48" y1="50.53" x2="48" y2="50.81" style="fill: none; stroke: rgba(77, 43, 0, .93); stroke-linejoin: round; stroke-width: 4.02px;"/>
+        <line x1="48" y1="50.81" x2="48" y2="51.09" style="fill: none; stroke: rgba(77, 43, 0, .93); stroke-linejoin: round; stroke-width: 3.88px;"/>
+        <line x1="48" y1="51.09" x2="48" y2="51.38" style="fill: none; stroke: rgba(77, 43, 0, .93); stroke-linejoin: round; stroke-width: 3.72px;"/>
+        <line x1="48" y1="51.38" x2="48" y2="51.67" style="fill: none; stroke: rgba(77, 43, 0, .94); stroke-linejoin: round; stroke-width: 3.58px;"/>
+        <line x1="48" y1="51.67" x2="48" y2="51.94" style="fill: none; stroke: rgba(77, 43, 0, .94); stroke-linejoin: round; stroke-width: 3.43px;"/>
+        <line x1="48" y1="51.94" x2="48" y2="52.23" style="fill: none; stroke: rgba(77, 43, 0, .95); stroke-linejoin: round; stroke-width: 3.28px;"/>
+        <line x1="48" y1="52.23" x2="48" y2="52.51" style="fill: none; stroke: rgba(77, 43, 0, .95); stroke-linejoin: round; stroke-width: 3.13px;"/>
+        <line x1="48" y1="52.51" x2="48" y2="52.79" style="fill: none; stroke: rgba(77, 43, 0, .95); stroke-linejoin: round; stroke-width: 2.98px;"/>
+        <line x1="48" y1="52.79" x2="48" y2="53.08" style="fill: none; stroke: rgba(77, 43, 0, .95); stroke-linejoin: round; stroke-width: 2.83px;"/>
+        <line x1="48" y1="53.08" x2="48" y2="53.36" style="fill: none; stroke: rgba(77, 43, 0, .96); stroke-linejoin: round; stroke-width: 2.68px;"/>
+        <line x1="48" y1="53.36" x2="48" y2="53.65" style="fill: none; stroke: rgba(77, 43, 0, .96); stroke-linejoin: round; stroke-width: 2.53px;"/>
+        <line x1="48" y1="53.65" x2="48" y2="53.92" style="fill: none; stroke: rgba(77, 43, 0, .96); stroke-linejoin: round; stroke-width: 2.39px;"/>
+        <line x1="48" y1="53.92" x2="48" y2="54.21" style="fill: none; stroke: rgba(77, 43, 0, .96); stroke-linejoin: round; stroke-width: 2.23px;"/>
+        <line x1="48" y1="54.21" x2="48" y2="54.5" style="fill: none; stroke: rgba(77, 43, 0, .97); stroke-linejoin: round; stroke-width: 2.09px;"/>
+        <line x1="48" y1="54.5" x2="48" y2="54.77" style="fill: none; stroke: rgba(77, 43, 0, .97); stroke-linejoin: round; stroke-width: 1.93px;"/>
+        <line x1="48" y1="54.77" x2="48" y2="55.06" style="fill: none; stroke: rgba(77, 43, 0, .97); stroke-linejoin: round; stroke-width: 1.79px;"/>
+        <line x1="48" y1="55.06" x2="48" y2="55.35" style="fill: none; stroke: rgba(77, 43, 0, .98); stroke-linejoin: round; stroke-width: 1.64px;"/>
+        <line x1="48" y1="55.35" x2="48" y2="55.63" style="fill: none; stroke: rgba(77, 43, 0, .98); stroke-linejoin: round; stroke-width: 1.49px;"/>
+        <line x1="48" y1="55.63" x2="48" y2="55.91" style="fill: none; stroke: rgba(77, 43, 0, .98); stroke-linejoin: round; stroke-width: 1.34px;"/>
+        <line x1="48" y1="55.91" x2="48" y2="56.19" style="fill: none; stroke: rgba(77, 43, 0, .98); stroke-linejoin: round; stroke-width: 1.19px;"/>
+        <line x1="48" y1="56.19" x2="48" y2="56.48" style="fill: none; stroke: rgba(77, 43, 0, .98); stroke-linejoin: round; stroke-width: 1.04px;"/>
+        <line x1="48" y1="56.48" x2="48" y2="56.77" style="fill: none; stroke: rgba(77, 43, 0, .99); stroke-linejoin: round; stroke-width: .89px;"/>
+        <line x1="48" y1="56.77" x2="48" y2="57.04" style="fill: none; stroke: rgba(77, 43, 0, .99); stroke-linejoin: round; stroke-width: .74px;"/>
+        <line x1="48" y1="57.04" x2="48" y2="57.33" style="fill: none; stroke: rgba(77, 43, 0, .99); stroke-linejoin: round; stroke-width: .6px;"/>
+        <line x1="48" y1="57.33" x2="48" y2="57.61" style="fill: none; stroke: #4d2b00; stroke-linejoin: round; stroke-width: .44px;"/>
+        <line x1="48" y1="57.61" x2="48" y2="57.89" style="fill: none; stroke: #4d2b00; stroke-linejoin: round; stroke-width: .3px;"/>
+        <line x1="48" y1="57.89" x2="48" y2="58.18" style="fill: none; stroke: #4d2b00; stroke-linejoin: round; stroke-width: .14px;"/>
+        <line x1="41.12" y1="30.13" x2="48" y2="58.18" style="fill: none; stroke: #4d2b00; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.28px;"/>
+        <line x1="48" y1="58.18" x2="54.88" y2="30.13" style="fill: none; stroke: #4d2b00; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.28px;"/>
+      </g>
+    </g>
+  </g>
+  <g>
+    <rect x="40.47" y="-13.07" width="86.4" height="86.4" style="fill: none;"/>
+    <g style="clip-path: url(#clippath-1);">
+      <g>
+        <rect x="40.47" y="-13.07" width="86.4" height="86.4" style="fill: none;"/>
+        <line x1="83.67" y1="30.35" x2="83.67" y2="30.58" style="fill: none; stroke: rgba(140, 85, 3, .03); stroke-linejoin: round; stroke-width: 10.96px;"/>
+        <line x1="83.67" y1="30.58" x2="83.67" y2="30.81" style="fill: none; stroke: rgba(140, 85, 3, .06); stroke-linejoin: round; stroke-width: 10.84px;"/>
+        <line x1="83.67" y1="30.81" x2="83.67" y2="31.04" style="fill: none; stroke: rgba(140, 85, 3, .09); stroke-linejoin: round; stroke-width: 10.73px;"/>
+        <line x1="83.67" y1="31.04" x2="83.67" y2="31.25" style="fill: none; stroke: rgba(140, 85, 3, .11); stroke-linejoin: round; stroke-width: 10.62px;"/>
+        <line x1="83.67" y1="31.25" x2="83.67" y2="31.48" style="fill: none; stroke: rgba(140, 85, 3, .14); stroke-linejoin: round; stroke-width: 10.5px;"/>
+        <line x1="83.67" y1="31.48" x2="83.67" y2="31.71" style="fill: none; stroke: rgba(140, 85, 3, .17); stroke-linejoin: round; stroke-width: 10.39px;"/>
+        <line x1="83.67" y1="31.71" x2="83.67" y2="31.94" style="fill: none; stroke: rgba(140, 85, 3, .19); stroke-linejoin: round; stroke-width: 10.28px;"/>
+        <line x1="83.67" y1="31.94" x2="83.67" y2="32.17" style="fill: none; stroke: rgba(140, 85, 3, .22); stroke-linejoin: round; stroke-width: 10.16px;"/>
+        <line x1="83.67" y1="32.17" x2="83.67" y2="32.39" style="fill: none; stroke: rgba(140, 85, 3, .24); stroke-linejoin: round; stroke-width: 10.06px;"/>
+        <line x1="83.67" y1="32.39" x2="83.67" y2="32.62" style="fill: none; stroke: rgba(140, 85, 3, .26); stroke-linejoin: round; stroke-width: 9.95px;"/>
+        <line x1="83.67" y1="32.62" x2="83.67" y2="32.85" style="fill: none; stroke: rgba(140, 85, 3, .29); stroke-linejoin: round; stroke-width: 9.83px;"/>
+        <line x1="83.67" y1="32.85" x2="83.67" y2="33.08" style="fill: none; stroke: rgba(140, 85, 3, .31); stroke-linejoin: round; stroke-width: 9.72px;"/>
+        <line x1="83.67" y1="33.08" x2="83.67" y2="33.29" style="fill: none; stroke: rgba(140, 85, 3, .33); stroke-linejoin: round; stroke-width: 9.61px;"/>
+        <line x1="83.67" y1="33.29" x2="83.67" y2="33.52" style="fill: none; stroke: rgba(140, 85, 3, .35); stroke-linejoin: round; stroke-width: 9.5px;"/>
+        <line x1="83.67" y1="33.52" x2="83.67" y2="33.75" style="fill: none; stroke: rgba(140, 85, 3, .37); stroke-linejoin: round; stroke-width: 9.38px;"/>
+        <line x1="83.67" y1="33.75" x2="83.67" y2="33.98" style="fill: none; stroke: rgba(140, 85, 3, .39); stroke-linejoin: round; stroke-width: 9.28px;"/>
+        <line x1="83.67" y1="33.98" x2="83.67" y2="34.21" style="fill: none; stroke: rgba(140, 85, 3, .41); stroke-linejoin: round; stroke-width: 9.17px;"/>
+        <line x1="83.67" y1="34.21" x2="83.67" y2="34.43" style="fill: none; stroke: rgba(140, 85, 3, .43); stroke-linejoin: round; stroke-width: 9.05px;"/>
+        <line x1="83.67" y1="34.43" x2="83.67" y2="34.66" style="fill: none; stroke: rgba(140, 85, 3, .44); stroke-linejoin: round; stroke-width: 8.94px;"/>
+        <line x1="83.67" y1="34.66" x2="83.67" y2="34.89" style="fill: none; stroke: rgba(140, 85, 3, .46); stroke-linejoin: round; stroke-width: 8.83px;"/>
+        <line x1="83.67" y1="34.89" x2="83.67" y2="35.12" style="fill: none; stroke: rgba(140, 85, 3, .48); stroke-linejoin: round; stroke-width: 8.71px;"/>
+        <line x1="83.67" y1="35.12" x2="83.67" y2="35.33" style="fill: none; stroke: rgba(140, 85, 3, .49); stroke-linejoin: round; stroke-width: 8.6px;"/>
+        <line x1="83.67" y1="35.33" x2="83.67" y2="35.56" style="fill: none; stroke: rgba(140, 85, 3, .51); stroke-linejoin: round; stroke-width: 8.5px;"/>
+        <line x1="83.67" y1="35.56" x2="83.67" y2="35.79" style="fill: none; stroke: rgba(140, 85, 3, .53); stroke-linejoin: round; stroke-width: 8.38px;"/>
+        <line x1="83.67" y1="35.79" x2="83.67" y2="36.02" style="fill: none; stroke: rgba(140, 85, 3, .54); stroke-linejoin: round; stroke-width: 8.27px;"/>
+        <line x1="83.67" y1="36.02" x2="83.67" y2="36.25" style="fill: none; stroke: rgba(140, 85, 3, .56); stroke-linejoin: round; stroke-width: 8.16px;"/>
+        <line x1="83.67" y1="36.25" x2="83.67" y2="36.47" style="fill: none; stroke: rgba(140, 85, 3, .57); stroke-linejoin: round; stroke-width: 8.04px;"/>
+        <line x1="83.67" y1="36.47" x2="83.67" y2="36.7" style="fill: none; stroke: rgba(140, 85, 3, .58); stroke-linejoin: round; stroke-width: 7.93px;"/>
+        <line x1="83.67" y1="36.7" x2="83.67" y2="36.93" style="fill: none; stroke: rgba(140, 85, 3, .6); stroke-linejoin: round; stroke-width: 7.82px;"/>
+        <line x1="83.67" y1="36.93" x2="83.67" y2="37.16" style="fill: none; stroke: rgba(140, 85, 3, .61); stroke-linejoin: round; stroke-width: 7.72px;"/>
+        <line x1="83.67" y1="37.16" x2="83.67" y2="37.37" style="fill: none; stroke: rgba(140, 85, 3, .62); stroke-linejoin: round; stroke-width: 7.6px;"/>
+        <line x1="83.67" y1="37.37" x2="83.67" y2="37.6" style="fill: none; stroke: rgba(140, 85, 3, .64); stroke-linejoin: round; stroke-width: 7.49px;"/>
+        <line x1="83.67" y1="37.6" x2="83.67" y2="37.83" style="fill: none; stroke: rgba(140, 85, 3, .65); stroke-linejoin: round; stroke-width: 7.38px;"/>
+        <line x1="83.67" y1="37.83" x2="83.67" y2="38.06" style="fill: none; stroke: rgba(140, 85, 3, .66); stroke-linejoin: round; stroke-width: 7.26px;"/>
+        <line x1="83.67" y1="38.06" x2="83.67" y2="38.29" style="fill: none; stroke: rgba(140, 85, 3, .67); stroke-linejoin: round; stroke-width: 7.15px;"/>
+        <line x1="83.67" y1="38.29" x2="83.67" y2="38.51" style="fill: none; stroke: rgba(140, 85, 3, .68); stroke-linejoin: round; stroke-width: 7.04px;"/>
+        <line x1="83.67" y1="38.51" x2="83.67" y2="38.74" style="fill: none; stroke: rgba(140, 85, 3, .69); stroke-linejoin: round; stroke-width: 6.92px;"/>
+        <line x1="83.67" y1="38.74" x2="83.67" y2="38.97" style="fill: none; stroke: rgba(140, 85, 3, .7); stroke-linejoin: round; stroke-width: 6.82px;"/>
+        <line x1="83.67" y1="38.97" x2="83.67" y2="39.2" style="fill: none; stroke: rgba(140, 85, 3, .71); stroke-linejoin: round; stroke-width: 6.71px;"/>
+        <line x1="83.67" y1="39.2" x2="83.67" y2="39.41" style="fill: none; stroke: rgba(140, 85, 3, .72); stroke-linejoin: round; stroke-width: 6.59px;"/>
+        <line x1="83.67" y1="39.41" x2="83.67" y2="39.64" style="fill: none; stroke: rgba(140, 85, 3, .73); stroke-linejoin: round; stroke-width: 6.48px;"/>
+        <line x1="83.67" y1="39.64" x2="83.67" y2="39.87" style="fill: none; stroke: rgba(140, 85, 3, .74); stroke-linejoin: round; stroke-width: 6.37px;"/>
+        <line x1="83.67" y1="39.87" x2="83.67" y2="40.1" style="fill: none; stroke: rgba(140, 85, 3, .75); stroke-linejoin: round; stroke-width: 6.25px;"/>
+        <line x1="83.67" y1="40.1" x2="83.67" y2="40.33" style="fill: none; stroke: rgba(140, 85, 3, .76); stroke-linejoin: round; stroke-width: 6.14px;"/>
+        <line x1="83.67" y1="40.33" x2="83.67" y2="40.55" style="fill: none; stroke: rgba(140, 85, 3, .77); stroke-linejoin: round; stroke-width: 6.04px;"/>
+        <line x1="83.67" y1="40.55" x2="83.67" y2="40.78" style="fill: none; stroke: rgba(140, 85, 3, .78); stroke-linejoin: round; stroke-width: 5.93px;"/>
+        <line x1="83.67" y1="40.78" x2="83.67" y2="41.01" style="fill: none; stroke: rgba(140, 85, 3, .78); stroke-linejoin: round; stroke-width: 5.81px;"/>
+        <line x1="83.67" y1="41.01" x2="83.67" y2="41.24" style="fill: none; stroke: rgba(140, 85, 3, .79); stroke-linejoin: round; stroke-width: 5.7px;"/>
+        <line x1="83.67" y1="41.24" x2="83.67" y2="41.47" style="fill: none; stroke: rgba(140, 85, 3, .8); stroke-linejoin: round; stroke-width: 5.59px;"/>
+        <line x1="83.67" y1="41.47" x2="83.67" y2="41.68" style="fill: none; stroke: rgba(140, 85, 3, .81); stroke-linejoin: round; stroke-width: 5.47px;"/>
+        <line x1="83.67" y1="41.68" x2="83.67" y2="41.91" style="fill: none; stroke: rgba(140, 85, 3, .82); stroke-linejoin: round; stroke-width: 5.36px;"/>
+        <line x1="83.67" y1="41.91" x2="83.67" y2="42.14" style="fill: none; stroke: rgba(140, 85, 3, .82); stroke-linejoin: round; stroke-width: 5.26px;"/>
+        <line x1="83.67" y1="42.14" x2="83.67" y2="42.37" style="fill: none; stroke: rgba(140, 85, 3, .83); stroke-linejoin: round; stroke-width: 5.14px;"/>
+        <line x1="83.67" y1="42.37" x2="83.67" y2="42.59" style="fill: none; stroke: rgba(140, 85, 3, .84); stroke-linejoin: round; stroke-width: 5.03px;"/>
+        <line x1="83.67" y1="42.59" x2="83.67" y2="42.82" style="fill: none; stroke: rgba(140, 85, 3, .84); stroke-linejoin: round; stroke-width: 4.92px;"/>
+        <line x1="83.67" y1="42.82" x2="83.67" y2="43.05" style="fill: none; stroke: rgba(140, 85, 3, .85); stroke-linejoin: round; stroke-width: 4.8px;"/>
+        <line x1="83.67" y1="43.05" x2="83.67" y2="43.28" style="fill: none; stroke: rgba(140, 85, 3, .85); stroke-linejoin: round; stroke-width: 4.69px;"/>
+        <line x1="83.67" y1="43.28" x2="83.67" y2="43.51" style="fill: none; stroke: rgba(140, 85, 3, .86); stroke-linejoin: round; stroke-width: 4.58px;"/>
+        <line x1="83.67" y1="43.51" x2="83.67" y2="43.72" style="fill: none; stroke: rgba(140, 85, 3, .87); stroke-linejoin: round; stroke-width: 4.46px;"/>
+        <line x1="83.67" y1="43.72" x2="83.67" y2="43.95" style="fill: none; stroke: rgba(140, 85, 3, .87); stroke-linejoin: round; stroke-width: 4.36px;"/>
+        <line x1="83.67" y1="43.95" x2="83.67" y2="44.18" style="fill: none; stroke: rgba(140, 85, 3, .87); stroke-linejoin: round; stroke-width: 4.25px;"/>
+        <line x1="83.67" y1="44.18" x2="83.67" y2="44.41" style="fill: none; stroke: rgba(140, 85, 3, .88); stroke-linejoin: round; stroke-width: 4.14px;"/>
+        <line x1="83.67" y1="44.41" x2="83.67" y2="44.63" style="fill: none; stroke: rgba(140, 85, 3, .89); stroke-linejoin: round; stroke-width: 4.02px;"/>
+        <line x1="83.67" y1="44.63" x2="83.67" y2="44.86" style="fill: none; stroke: rgba(140, 85, 3, .89); stroke-linejoin: round; stroke-width: 3.91px;"/>
+        <line x1="83.67" y1="44.86" x2="83.67" y2="45.09" style="fill: none; stroke: rgba(140, 85, 3, .9); stroke-linejoin: round; stroke-width: 3.8px;"/>
+        <line x1="83.67" y1="45.09" x2="83.67" y2="45.32" style="fill: none; stroke: rgba(140, 85, 3, .9); stroke-linejoin: round; stroke-width: 3.68px;"/>
+        <line x1="83.67" y1="45.32" x2="83.67" y2="45.55" style="fill: none; stroke: rgba(140, 85, 3, .91); stroke-linejoin: round; stroke-width: 3.58px;"/>
+        <line x1="83.67" y1="45.55" x2="83.67" y2="45.76" style="fill: none; stroke: rgba(140, 85, 3, .91); stroke-linejoin: round; stroke-width: 3.47px;"/>
+        <line x1="83.67" y1="45.76" x2="83.67" y2="45.99" style="fill: none; stroke: rgba(140, 85, 3, .91); stroke-linejoin: round; stroke-width: 3.35px;"/>
+        <line x1="83.67" y1="45.99" x2="83.67" y2="46.22" style="fill: none; stroke: rgba(140, 85, 3, .92); stroke-linejoin: round; stroke-width: 3.24px;"/>
+        <line x1="83.67" y1="46.22" x2="83.67" y2="46.45" style="fill: none; stroke: rgba(140, 85, 3, .92); stroke-linejoin: round; stroke-width: 3.13px;"/>
+        <line x1="83.67" y1="46.45" x2="83.67" y2="46.67" style="fill: none; stroke: rgba(140, 85, 3, .93); stroke-linejoin: round; stroke-width: 3.01px;"/>
+        <line x1="83.67" y1="46.67" x2="83.67" y2="46.9" style="fill: none; stroke: rgba(140, 85, 3, .93); stroke-linejoin: round; stroke-width: 2.9px;"/>
+        <line x1="83.67" y1="46.9" x2="83.67" y2="47.13" style="fill: none; stroke: rgba(140, 85, 3, .93); stroke-linejoin: round; stroke-width: 2.8px;"/>
+        <line x1="83.67" y1="47.13" x2="83.67" y2="47.36" style="fill: none; stroke: rgba(140, 85, 3, .94); stroke-linejoin: round; stroke-width: 2.68px;"/>
+        <line x1="83.67" y1="47.36" x2="83.67" y2="47.59" style="fill: none; stroke: rgba(140, 85, 3, .94); stroke-linejoin: round; stroke-width: 2.57px;"/>
+        <line x1="83.67" y1="47.59" x2="83.67" y2="47.8" style="fill: none; stroke: rgba(140, 85, 3, .95); stroke-linejoin: round; stroke-width: 2.46px;"/>
+        <line x1="83.67" y1="47.8" x2="83.67" y2="48.03" style="fill: none; stroke: rgba(140, 85, 3, .95); stroke-linejoin: round; stroke-width: 2.35px;"/>
+        <line x1="83.67" y1="48.03" x2="83.67" y2="48.26" style="fill: none; stroke: rgba(140, 85, 3, .95); stroke-linejoin: round; stroke-width: 2.23px;"/>
+        <line x1="83.67" y1="48.26" x2="83.67" y2="48.49" style="fill: none; stroke: rgba(140, 85, 3, .95); stroke-linejoin: round; stroke-width: 2.12px;"/>
+        <line x1="83.67" y1="48.49" x2="83.67" y2="48.71" style="fill: none; stroke: rgba(140, 85, 3, .96); stroke-linejoin: round; stroke-width: 2.02px;"/>
+        <line x1="83.67" y1="48.71" x2="83.67" y2="48.94" style="fill: none; stroke: rgba(140, 85, 3, .96); stroke-linejoin: round; stroke-width: 1.9px;"/>
+        <line x1="83.67" y1="48.94" x2="83.67" y2="49.17" style="fill: none; stroke: rgba(140, 85, 3, .96); stroke-linejoin: round; stroke-width: 1.79px;"/>
+        <line x1="83.67" y1="49.17" x2="83.67" y2="49.4" style="fill: none; stroke: rgba(140, 85, 3, .96); stroke-linejoin: round; stroke-width: 1.68px;"/>
+        <line x1="83.67" y1="49.4" x2="83.67" y2="49.63" style="fill: none; stroke: rgba(140, 85, 3, .97); stroke-linejoin: round; stroke-width: 1.56px;"/>
+        <line x1="83.67" y1="49.63" x2="83.67" y2="49.84" style="fill: none; stroke: rgba(140, 85, 3, .97); stroke-linejoin: round; stroke-width: 1.45px;"/>
+        <line x1="83.67" y1="49.84" x2="83.67" y2="50.07" style="fill: none; stroke: rgba(140, 85, 3, .97); stroke-linejoin: round; stroke-width: 1.34px;"/>
+        <line x1="83.67" y1="50.07" x2="83.67" y2="50.3" style="fill: none; stroke: rgba(140, 85, 3, .98); stroke-linejoin: round; stroke-width: 1.22px;"/>
+        <line x1="83.67" y1="50.3" x2="83.67" y2="50.53" style="fill: none; stroke: rgba(140, 85, 3, .98); stroke-linejoin: round; stroke-width: 1.12px;"/>
+        <line x1="83.67" y1="50.53" x2="83.67" y2="50.75" style="fill: none; stroke: rgba(140, 85, 3, .98); stroke-linejoin: round; stroke-width: 1.01px;"/>
+        <line x1="83.67" y1="50.75" x2="83.67" y2="50.98" style="fill: none; stroke: rgba(140, 85, 3, .98); stroke-linejoin: round; stroke-width: .89px;"/>
+        <line x1="83.67" y1="50.98" x2="83.67" y2="51.21" style="fill: none; stroke: rgba(140, 85, 3, .98); stroke-linejoin: round; stroke-width: .78px;"/>
+        <line x1="83.67" y1="51.21" x2="83.67" y2="51.44" style="fill: none; stroke: rgba(140, 85, 3, .99); stroke-linejoin: round; stroke-width: .67px;"/>
+        <line x1="83.67" y1="51.44" x2="83.67" y2="51.67" style="fill: none; stroke: rgba(140, 85, 3, .99); stroke-linejoin: round; stroke-width: .56px;"/>
+        <line x1="83.67" y1="51.67" x2="83.67" y2="51.88" style="fill: none; stroke: rgba(140, 85, 3, .99); stroke-linejoin: round; stroke-width: .44px;"/>
+        <line x1="83.67" y1="51.88" x2="83.67" y2="52.11" style="fill: none; stroke: #8c5503; stroke-linejoin: round; stroke-width: .34px;"/>
+        <line x1="83.67" y1="52.11" x2="83.67" y2="52.34" style="fill: none; stroke: #8c5503; stroke-linejoin: round; stroke-width: .23px;"/>
+        <line x1="83.67" y1="52.34" x2="83.67" y2="52.57" style="fill: none; stroke: #8c5503; stroke-linejoin: round; stroke-width: .11px;"/>
+        <line x1="78.51" y1="30.13" x2="83.67" y2="52.57" style="fill: none; stroke: #8c5503; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.28px;"/>
+        <line x1="83.67" y1="52.57" x2="88.83" y2="30.13" style="fill: none; stroke: #8c5503; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.28px;"/>
+      </g>
+    </g>
+  </g>
+  <g>
+    <rect x="76.13" y="-13.07" width="86.4" height="86.4" style="fill: none;"/>
+    <g style="clip-path: url(#clippath-2);">
+      <g>
+        <rect x="76.13" y="-13.07" width="86.4" height="86.4" style="fill: none;"/>
+        <line x1="119.33" y1="30.29" x2="119.33" y2="30.46" style="fill: none; stroke: rgba(193, 139, 47, .03); stroke-linejoin: round; stroke-width: 7.3px;"/>
+        <line x1="119.33" y1="30.46" x2="119.33" y2="30.64" style="fill: none; stroke: rgba(193, 139, 47, .06); stroke-linejoin: round; stroke-width: 7.22px;"/>
+        <line x1="119.33" y1="30.64" x2="119.33" y2="30.81" style="fill: none; stroke: rgba(193, 139, 47, .09); stroke-linejoin: round; stroke-width: 7.15px;"/>
+        <line x1="119.33" y1="30.81" x2="119.33" y2="30.98" style="fill: none; stroke: rgba(193, 139, 47, .11); stroke-linejoin: round; stroke-width: 7.08px;"/>
+        <line x1="119.33" y1="30.98" x2="119.33" y2="31.15" style="fill: none; stroke: rgba(193, 139, 47, .14); stroke-linejoin: round; stroke-width: 7.01px;"/>
+        <line x1="119.33" y1="31.15" x2="119.33" y2="31.31" style="fill: none; stroke: rgba(193, 139, 47, .17); stroke-linejoin: round; stroke-width: 6.92px;"/>
+        <line x1="119.33" y1="31.31" x2="119.33" y2="31.48" style="fill: none; stroke: rgba(193, 139, 47, .19); stroke-linejoin: round; stroke-width: 6.85px;"/>
+        <line x1="119.33" y1="31.48" x2="119.33" y2="31.66" style="fill: none; stroke: rgba(193, 139, 47, .22); stroke-linejoin: round; stroke-width: 6.78px;"/>
+        <line x1="119.33" y1="31.66" x2="119.33" y2="31.83" style="fill: none; stroke: rgba(193, 139, 47, .24); stroke-linejoin: round; stroke-width: 6.71px;"/>
+        <line x1="119.33" y1="31.83" x2="119.33" y2="32" style="fill: none; stroke: rgba(193, 139, 47, .26); stroke-linejoin: round; stroke-width: 6.64px;"/>
+        <line x1="119.33" y1="32" x2="119.33" y2="32.17" style="fill: none; stroke: rgba(193, 139, 47, .29); stroke-linejoin: round; stroke-width: 6.55px;"/>
+        <line x1="119.33" y1="32.17" x2="119.33" y2="32.33" style="fill: none; stroke: rgba(193, 139, 47, .31); stroke-linejoin: round; stroke-width: 6.48px;"/>
+        <line x1="119.33" y1="32.33" x2="119.33" y2="32.5" style="fill: none; stroke: rgba(193, 139, 47, .33); stroke-linejoin: round; stroke-width: 6.41px;"/>
+        <line x1="119.33" y1="32.5" x2="119.33" y2="32.68" style="fill: none; stroke: rgba(193, 139, 47, .35); stroke-linejoin: round; stroke-width: 6.34px;"/>
+        <line x1="119.33" y1="32.68" x2="119.33" y2="32.85" style="fill: none; stroke: rgba(193, 139, 47, .37); stroke-linejoin: round; stroke-width: 6.25px;"/>
+        <line x1="119.33" y1="32.85" x2="119.33" y2="33.02" style="fill: none; stroke: rgba(193, 139, 47, .39); stroke-linejoin: round; stroke-width: 6.18px;"/>
+        <line x1="119.33" y1="33.02" x2="119.33" y2="33.19" style="fill: none; stroke: rgba(193, 139, 47, .41); stroke-linejoin: round; stroke-width: 6.11px;"/>
+        <line x1="119.33" y1="33.19" x2="119.33" y2="33.35" style="fill: none; stroke: rgba(193, 139, 47, .43); stroke-linejoin: round; stroke-width: 6.04px;"/>
+        <line x1="119.33" y1="33.35" x2="119.33" y2="33.52" style="fill: none; stroke: rgba(193, 139, 47, .44); stroke-linejoin: round; stroke-width: 5.96px;"/>
+        <line x1="119.33" y1="33.52" x2="119.33" y2="33.7" style="fill: none; stroke: rgba(193, 139, 47, .46); stroke-linejoin: round; stroke-width: 5.88px;"/>
+        <line x1="119.33" y1="33.7" x2="119.33" y2="33.87" style="fill: none; stroke: rgba(193, 139, 47, .48); stroke-linejoin: round; stroke-width: 5.81px;"/>
+        <line x1="119.33" y1="33.87" x2="119.33" y2="34.04" style="fill: none; stroke: rgba(193, 139, 47, .49); stroke-linejoin: round; stroke-width: 5.74px;"/>
+        <line x1="119.33" y1="34.04" x2="119.33" y2="34.21" style="fill: none; stroke: rgba(193, 139, 47, .51); stroke-linejoin: round; stroke-width: 5.66px;"/>
+        <line x1="119.33" y1="34.21" x2="119.33" y2="34.37" style="fill: none; stroke: rgba(193, 139, 47, .53); stroke-linejoin: round; stroke-width: 5.59px;"/>
+        <line x1="119.33" y1="34.37" x2="119.33" y2="34.54" style="fill: none; stroke: rgba(193, 139, 47, .54); stroke-linejoin: round; stroke-width: 5.51px;"/>
+        <line x1="119.33" y1="34.54" x2="119.33" y2="34.72" style="fill: none; stroke: rgba(193, 139, 47, .56); stroke-linejoin: round; stroke-width: 5.44px;"/>
+        <line x1="119.33" y1="34.72" x2="119.33" y2="34.89" style="fill: none; stroke: rgba(193, 139, 47, .57); stroke-linejoin: round; stroke-width: 5.36px;"/>
+        <line x1="119.33" y1="34.89" x2="119.33" y2="35.06" style="fill: none; stroke: rgba(193, 139, 47, .58); stroke-linejoin: round; stroke-width: 5.29px;"/>
+        <line x1="119.33" y1="35.06" x2="119.33" y2="35.23" style="fill: none; stroke: rgba(193, 139, 47, .6); stroke-linejoin: round; stroke-width: 5.22px;"/>
+        <line x1="119.33" y1="35.23" x2="119.33" y2="35.39" style="fill: none; stroke: rgba(193, 139, 47, .61); stroke-linejoin: round; stroke-width: 5.14px;"/>
+        <line x1="119.33" y1="35.39" x2="119.33" y2="35.56" style="fill: none; stroke: rgba(193, 139, 47, .62); stroke-linejoin: round; stroke-width: 5.06px;"/>
+        <line x1="119.33" y1="35.56" x2="119.33" y2="35.74" style="fill: none; stroke: rgba(193, 139, 47, .64); stroke-linejoin: round; stroke-width: 4.99px;"/>
+        <line x1="119.33" y1="35.74" x2="119.33" y2="35.91" style="fill: none; stroke: rgba(193, 139, 47, .65); stroke-linejoin: round; stroke-width: 4.92px;"/>
+        <line x1="119.33" y1="35.91" x2="119.33" y2="36.08" style="fill: none; stroke: rgba(193, 139, 47, .66); stroke-linejoin: round; stroke-width: 4.85px;"/>
+        <line x1="119.33" y1="36.08" x2="119.33" y2="36.25" style="fill: none; stroke: rgba(193, 139, 47, .67); stroke-linejoin: round; stroke-width: 4.76px;"/>
+        <line x1="119.33" y1="36.25" x2="119.33" y2="36.41" style="fill: none; stroke: rgba(193, 139, 47, .68); stroke-linejoin: round; stroke-width: 4.69px;"/>
+        <line x1="119.33" y1="36.41" x2="119.33" y2="36.58" style="fill: none; stroke: rgba(193, 139, 47, .69); stroke-linejoin: round; stroke-width: 4.62px;"/>
+        <line x1="119.33" y1="36.58" x2="119.33" y2="36.76" style="fill: none; stroke: rgba(193, 139, 47, .7); stroke-linejoin: round; stroke-width: 4.55px;"/>
+        <line x1="119.33" y1="36.76" x2="119.33" y2="36.93" style="fill: none; stroke: rgba(193, 139, 47, .71); stroke-linejoin: round; stroke-width: 4.46px;"/>
+        <line x1="119.33" y1="36.93" x2="119.33" y2="37.1" style="fill: none; stroke: rgba(193, 139, 47, .72); stroke-linejoin: round; stroke-width: 4.39px;"/>
+        <line x1="119.33" y1="37.1" x2="119.33" y2="37.27" style="fill: none; stroke: rgba(193, 139, 47, .73); stroke-linejoin: round; stroke-width: 4.32px;"/>
+        <line x1="119.33" y1="37.27" x2="119.33" y2="37.43" style="fill: none; stroke: rgba(193, 139, 47, .74); stroke-linejoin: round; stroke-width: 4.25px;"/>
+        <line x1="119.33" y1="37.43" x2="119.33" y2="37.6" style="fill: none; stroke: rgba(193, 139, 47, .75); stroke-linejoin: round; stroke-width: 4.18px;"/>
+        <line x1="119.33" y1="37.6" x2="119.33" y2="37.78" style="fill: none; stroke: rgba(193, 139, 47, .76); stroke-linejoin: round; stroke-width: 4.09px;"/>
+        <line x1="119.33" y1="37.78" x2="119.33" y2="37.95" style="fill: none; stroke: rgba(193, 139, 47, .77); stroke-linejoin: round; stroke-width: 4.02px;"/>
+        <line x1="119.33" y1="37.95" x2="119.33" y2="38.12" style="fill: none; stroke: rgba(193, 139, 47, .78); stroke-linejoin: round; stroke-width: 3.95px;"/>
+        <line x1="119.33" y1="38.12" x2="119.33" y2="38.29" style="fill: none; stroke: rgba(193, 139, 47, .78); stroke-linejoin: round; stroke-width: 3.88px;"/>
+        <line x1="119.33" y1="38.29" x2="119.33" y2="38.45" style="fill: none; stroke: rgba(193, 139, 47, .79); stroke-linejoin: round; stroke-width: 3.8px;"/>
+        <line x1="119.33" y1="38.45" x2="119.33" y2="38.62" style="fill: none; stroke: rgba(193, 139, 47, .8); stroke-linejoin: round; stroke-width: 3.72px;"/>
+        <line x1="119.33" y1="38.62" x2="119.33" y2="38.8" style="fill: none; stroke: rgba(193, 139, 47, .81); stroke-linejoin: round; stroke-width: 3.65px;"/>
+        <line x1="119.33" y1="38.8" x2="119.33" y2="38.97" style="fill: none; stroke: rgba(193, 139, 47, .82); stroke-linejoin: round; stroke-width: 3.58px;"/>
+        <line x1="119.33" y1="38.97" x2="119.33" y2="39.14" style="fill: none; stroke: rgba(193, 139, 47, .82); stroke-linejoin: round; stroke-width: 3.5px;"/>
+        <line x1="119.33" y1="39.14" x2="119.33" y2="39.31" style="fill: none; stroke: rgba(193, 139, 47, .83); stroke-linejoin: round; stroke-width: 3.43px;"/>
+        <line x1="119.33" y1="39.31" x2="119.33" y2="39.47" style="fill: none; stroke: rgba(193, 139, 47, .84); stroke-linejoin: round; stroke-width: 3.35px;"/>
+        <line x1="119.33" y1="39.47" x2="119.33" y2="39.64" style="fill: none; stroke: rgba(193, 139, 47, .84); stroke-linejoin: round; stroke-width: 3.28px;"/>
+        <line x1="119.33" y1="39.64" x2="119.33" y2="39.82" style="fill: none; stroke: rgba(193, 139, 47, .85); stroke-linejoin: round; stroke-width: 3.2px;"/>
+        <line x1="119.33" y1="39.82" x2="119.33" y2="39.99" style="fill: none; stroke: rgba(193, 139, 47, .85); stroke-linejoin: round; stroke-width: 3.13px;"/>
+        <line x1="119.33" y1="39.99" x2="119.33" y2="40.16" style="fill: none; stroke: rgba(193, 139, 47, .86); stroke-linejoin: round; stroke-width: 3.06px;"/>
+        <line x1="119.33" y1="40.16" x2="119.33" y2="40.33" style="fill: none; stroke: rgba(193, 139, 47, .87); stroke-linejoin: round; stroke-width: 2.98px;"/>
+        <line x1="119.33" y1="40.33" x2="119.33" y2="40.49" style="fill: none; stroke: rgba(193, 139, 47, .87); stroke-linejoin: round; stroke-width: 2.9px;"/>
+        <line x1="119.33" y1="40.49" x2="119.33" y2="40.66" style="fill: none; stroke: rgba(193, 139, 47, .87); stroke-linejoin: round; stroke-width: 2.83px;"/>
+        <line x1="119.33" y1="40.66" x2="119.33" y2="40.84" style="fill: none; stroke: rgba(193, 139, 47, .88); stroke-linejoin: round; stroke-width: 2.76px;"/>
+        <line x1="119.33" y1="40.84" x2="119.33" y2="41.01" style="fill: none; stroke: rgba(193, 139, 47, .89); stroke-linejoin: round; stroke-width: 2.68px;"/>
+        <line x1="119.33" y1="41.01" x2="119.33" y2="41.18" style="fill: none; stroke: rgba(193, 139, 47, .89); stroke-linejoin: round; stroke-width: 2.6px;"/>
+        <line x1="119.33" y1="41.18" x2="119.33" y2="41.35" style="fill: none; stroke: rgba(193, 139, 47, .9); stroke-linejoin: round; stroke-width: 2.53px;"/>
+        <line x1="119.33" y1="41.35" x2="119.33" y2="41.51" style="fill: none; stroke: rgba(193, 139, 47, .9); stroke-linejoin: round; stroke-width: 2.46px;"/>
+        <line x1="119.33" y1="41.51" x2="119.33" y2="41.68" style="fill: none; stroke: rgba(193, 139, 47, .91); stroke-linejoin: round; stroke-width: 2.39px;"/>
+        <line x1="119.33" y1="41.68" x2="119.33" y2="41.86" style="fill: none; stroke: rgba(193, 139, 47, .91); stroke-linejoin: round; stroke-width: 2.3px;"/>
+        <line x1="119.33" y1="41.86" x2="119.33" y2="42.03" style="fill: none; stroke: rgba(193, 139, 47, .91); stroke-linejoin: round; stroke-width: 2.23px;"/>
+        <line x1="119.33" y1="42.03" x2="119.33" y2="42.2" style="fill: none; stroke: rgba(193, 139, 47, .92); stroke-linejoin: round; stroke-width: 2.16px;"/>
+        <line x1="119.33" y1="42.2" x2="119.33" y2="42.37" style="fill: none; stroke: rgba(193, 139, 47, .92); stroke-linejoin: round; stroke-width: 2.09px;"/>
+        <line x1="119.33" y1="42.37" x2="119.33" y2="42.53" style="fill: none; stroke: rgba(193, 139, 47, .93); stroke-linejoin: round; stroke-width: 2.02px;"/>
+        <line x1="119.33" y1="42.53" x2="119.33" y2="42.7" style="fill: none; stroke: rgba(193, 139, 47, .93); stroke-linejoin: round; stroke-width: 1.93px;"/>
+        <line x1="119.33" y1="42.7" x2="119.33" y2="42.88" style="fill: none; stroke: rgba(193, 139, 47, .93); stroke-linejoin: round; stroke-width: 1.86px;"/>
+        <line x1="119.33" y1="42.88" x2="119.33" y2="43.05" style="fill: none; stroke: rgba(193, 139, 47, .94); stroke-linejoin: round; stroke-width: 1.79px;"/>
+        <line x1="119.33" y1="43.05" x2="119.33" y2="43.22" style="fill: none; stroke: rgba(193, 139, 47, .94); stroke-linejoin: round; stroke-width: 1.72px;"/>
+        <line x1="119.33" y1="43.22" x2="119.33" y2="43.39" style="fill: none; stroke: rgba(193, 139, 47, .95); stroke-linejoin: round; stroke-width: 1.64px;"/>
+        <line x1="119.33" y1="43.39" x2="119.33" y2="43.55" style="fill: none; stroke: rgba(193, 139, 47, .95); stroke-linejoin: round; stroke-width: 1.56px;"/>
+        <line x1="119.33" y1="43.55" x2="119.33" y2="43.72" style="fill: none; stroke: rgba(193, 139, 47, .95); stroke-linejoin: round; stroke-width: 1.49px;"/>
+        <line x1="119.33" y1="43.72" x2="119.33" y2="43.9" style="fill: none; stroke: rgba(193, 139, 47, .95); stroke-linejoin: round; stroke-width: 1.42px;"/>
+        <line x1="119.33" y1="43.9" x2="119.33" y2="44.07" style="fill: none; stroke: rgba(193, 139, 47, .96); stroke-linejoin: round; stroke-width: 1.34px;"/>
+        <line x1="119.33" y1="44.07" x2="119.33" y2="44.24" style="fill: none; stroke: rgba(193, 139, 47, .96); stroke-linejoin: round; stroke-width: 1.27px;"/>
+        <line x1="119.33" y1="44.24" x2="119.33" y2="44.41" style="fill: none; stroke: rgba(193, 139, 47, .96); stroke-linejoin: round; stroke-width: 1.19px;"/>
+        <line x1="119.33" y1="44.41" x2="119.33" y2="44.57" style="fill: none; stroke: rgba(193, 139, 47, .96); stroke-linejoin: round; stroke-width: 1.12px;"/>
+        <line x1="119.33" y1="44.57" x2="119.33" y2="44.74" style="fill: none; stroke: rgba(193, 139, 47, .97); stroke-linejoin: round; stroke-width: 1.04px;"/>
+        <line x1="119.33" y1="44.74" x2="119.33" y2="44.92" style="fill: none; stroke: rgba(193, 139, 47, .97); stroke-linejoin: round; stroke-width: .97px;"/>
+        <line x1="119.33" y1="44.92" x2="119.33" y2="45.09" style="fill: none; stroke: rgba(193, 139, 47, .97); stroke-linejoin: round; stroke-width: .89px;"/>
+        <line x1="119.33" y1="45.09" x2="119.33" y2="45.26" style="fill: none; stroke: rgba(193, 139, 47, .98); stroke-linejoin: round; stroke-width: .82px;"/>
+        <line x1="119.33" y1="45.26" x2="119.33" y2="45.43" style="fill: none; stroke: rgba(193, 139, 47, .98); stroke-linejoin: round; stroke-width: .74px;"/>
+        <line x1="119.33" y1="45.43" x2="119.33" y2="45.59" style="fill: none; stroke: rgba(193, 139, 47, .98); stroke-linejoin: round; stroke-width: .67px;"/>
+        <line x1="119.33" y1="45.59" x2="119.33" y2="45.76" style="fill: none; stroke: rgba(193, 139, 47, .98); stroke-linejoin: round; stroke-width: .6px;"/>
+        <line x1="119.33" y1="45.76" x2="119.33" y2="45.94" style="fill: none; stroke: rgba(193, 139, 47, .98); stroke-linejoin: round; stroke-width: .52px;"/>
+        <line x1="119.33" y1="45.94" x2="119.33" y2="46.11" style="fill: none; stroke: rgba(193, 139, 47, .99); stroke-linejoin: round; stroke-width: .44px;"/>
+        <line x1="119.33" y1="46.11" x2="119.33" y2="46.28" style="fill: none; stroke: rgba(193, 139, 47, .99); stroke-linejoin: round; stroke-width: .37px;"/>
+        <line x1="119.33" y1="46.28" x2="119.33" y2="46.45" style="fill: none; stroke: rgba(193, 139, 47, .99); stroke-linejoin: round; stroke-width: .3px;"/>
+        <line x1="119.33" y1="46.45" x2="119.33" y2="46.61" style="fill: none; stroke: #c18b2f; stroke-linejoin: round; stroke-width: .23px;"/>
+        <line x1="119.33" y1="46.61" x2="119.33" y2="46.78" style="fill: none; stroke: #c18b2f; stroke-linejoin: round; stroke-width: .14px;"/>
+        <line x1="119.33" y1="46.78" x2="119.33" y2="46.96" style="fill: none; stroke: #c18b2f; stroke-linejoin: round; stroke-width: .07px;"/>
+        <line x1="115.9" y1="30.13" x2="119.33" y2="46.96" style="fill: none; stroke: #c18b2f; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.28px;"/>
+        <line x1="119.33" y1="46.96" x2="122.77" y2="30.13" style="fill: none; stroke: #c18b2f; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.28px;"/>
+      </g>
+    </g>
+  </g>
+  <g>
+    <rect x="111.8" y="-13.07" width="86.4" height="86.4" style="fill: none;"/>
+    <g style="clip-path: url(#clippath-3);">
+      <g>
+        <rect x="111.8" y="-13.07" width="86.4" height="86.4" style="fill: none;"/>
+        <line x1="151.57" y1="30.13" x2="158.43" y2="30.13" style="fill: none; stroke: #333; stroke-linejoin: round; stroke-width: 1.5px;"/>
+      </g>
+    </g>
+  </g>
+  <g>
+    <rect x="147.47" y="-13.07" width="86.4" height="86.4" style="fill: none;"/>
+    <g style="clip-path: url(#clippath-4);">
+      <g>
+        <rect x="147.47" y="-13.07" width="86.4" height="86.4" style="fill: none;"/>
+        <line x1="190.67" y1="29.96" x2="190.67" y2="29.79" style="fill: none; stroke: rgba(72, 157, 213, .03); stroke-linejoin: round; stroke-width: 7.3px;"/>
+        <line x1="190.67" y1="29.79" x2="190.67" y2="29.61" style="fill: none; stroke: rgba(72, 157, 213, .06); stroke-linejoin: round; stroke-width: 7.22px;"/>
+        <line x1="190.67" y1="29.61" x2="190.67" y2="29.44" style="fill: none; stroke: rgba(72, 157, 213, .09); stroke-linejoin: round; stroke-width: 7.15px;"/>
+        <line x1="190.67" y1="29.44" x2="190.67" y2="29.27" style="fill: none; stroke: rgba(72, 157, 213, .11); stroke-linejoin: round; stroke-width: 7.08px;"/>
+        <line x1="190.67" y1="29.27" x2="190.67" y2="29.11" style="fill: none; stroke: rgba(72, 157, 213, .14); stroke-linejoin: round; stroke-width: 7.01px;"/>
+        <line x1="190.67" y1="29.11" x2="190.67" y2="28.94" style="fill: none; stroke: rgba(72, 157, 213, .17); stroke-linejoin: round; stroke-width: 6.92px;"/>
+        <line x1="190.67" y1="28.94" x2="190.67" y2="28.77" style="fill: none; stroke: rgba(72, 157, 213, .19); stroke-linejoin: round; stroke-width: 6.85px;"/>
+        <line x1="190.67" y1="28.77" x2="190.67" y2="28.59" style="fill: none; stroke: rgba(72, 157, 213, .22); stroke-linejoin: round; stroke-width: 6.78px;"/>
+        <line x1="190.67" y1="28.59" x2="190.67" y2="28.42" style="fill: none; stroke: rgba(72, 157, 213, .24); stroke-linejoin: round; stroke-width: 6.71px;"/>
+        <line x1="190.67" y1="28.42" x2="190.67" y2="28.25" style="fill: none; stroke: rgba(72, 157, 213, .26); stroke-linejoin: round; stroke-width: 6.64px;"/>
+        <line x1="190.67" y1="28.25" x2="190.67" y2="28.09" style="fill: none; stroke: rgba(72, 157, 213, .29); stroke-linejoin: round; stroke-width: 6.55px;"/>
+        <line x1="190.67" y1="28.09" x2="190.67" y2="27.92" style="fill: none; stroke: rgba(72, 157, 213, .31); stroke-linejoin: round; stroke-width: 6.48px;"/>
+        <line x1="190.67" y1="27.92" x2="190.67" y2="27.75" style="fill: none; stroke: rgba(72, 157, 213, .33); stroke-linejoin: round; stroke-width: 6.41px;"/>
+        <line x1="190.67" y1="27.75" x2="190.67" y2="27.57" style="fill: none; stroke: rgba(72, 157, 213, .35); stroke-linejoin: round; stroke-width: 6.34px;"/>
+        <line x1="190.67" y1="27.57" x2="190.67" y2="27.4" style="fill: none; stroke: rgba(72, 157, 213, .37); stroke-linejoin: round; stroke-width: 6.25px;"/>
+        <line x1="190.67" y1="27.4" x2="190.67" y2="27.23" style="fill: none; stroke: rgba(72, 157, 213, .39); stroke-linejoin: round; stroke-width: 6.18px;"/>
+        <line x1="190.67" y1="27.23" x2="190.67" y2="27.07" style="fill: none; stroke: rgba(72, 157, 213, .41); stroke-linejoin: round; stroke-width: 6.11px;"/>
+        <line x1="190.67" y1="27.07" x2="190.67" y2="26.9" style="fill: none; stroke: rgba(72, 157, 213, .43); stroke-linejoin: round; stroke-width: 6.04px;"/>
+        <line x1="190.67" y1="26.9" x2="190.67" y2="26.73" style="fill: none; stroke: rgba(72, 157, 213, .44); stroke-linejoin: round; stroke-width: 5.96px;"/>
+        <line x1="190.67" y1="26.73" x2="190.67" y2="26.55" style="fill: none; stroke: rgba(72, 157, 213, .46); stroke-linejoin: round; stroke-width: 5.88px;"/>
+        <line x1="190.67" y1="26.55" x2="190.67" y2="26.38" style="fill: none; stroke: rgba(72, 157, 213, .48); stroke-linejoin: round; stroke-width: 5.81px;"/>
+        <line x1="190.67" y1="26.38" x2="190.67" y2="26.21" style="fill: none; stroke: rgba(72, 157, 213, .49); stroke-linejoin: round; stroke-width: 5.74px;"/>
+        <line x1="190.67" y1="26.21" x2="190.67" y2="26.05" style="fill: none; stroke: rgba(72, 157, 213, .51); stroke-linejoin: round; stroke-width: 5.66px;"/>
+        <line x1="190.67" y1="26.05" x2="190.67" y2="25.88" style="fill: none; stroke: rgba(72, 157, 213, .53); stroke-linejoin: round; stroke-width: 5.59px;"/>
+        <line x1="190.67" y1="25.88" x2="190.67" y2="25.71" style="fill: none; stroke: rgba(72, 157, 213, .54); stroke-linejoin: round; stroke-width: 5.51px;"/>
+        <line x1="190.67" y1="25.71" x2="190.67" y2="25.53" style="fill: none; stroke: rgba(72, 157, 213, .56); stroke-linejoin: round; stroke-width: 5.44px;"/>
+        <line x1="190.67" y1="25.53" x2="190.67" y2="25.36" style="fill: none; stroke: rgba(72, 157, 213, .57); stroke-linejoin: round; stroke-width: 5.36px;"/>
+        <line x1="190.67" y1="25.36" x2="190.67" y2="25.19" style="fill: none; stroke: rgba(72, 157, 213, .58); stroke-linejoin: round; stroke-width: 5.29px;"/>
+        <line x1="190.67" y1="25.19" x2="190.67" y2="25.03" style="fill: none; stroke: rgba(72, 157, 213, .6); stroke-linejoin: round; stroke-width: 5.22px;"/>
+        <line x1="190.67" y1="25.03" x2="190.67" y2="24.86" style="fill: none; stroke: rgba(72, 157, 213, .61); stroke-linejoin: round; stroke-width: 5.14px;"/>
+        <line x1="190.67" y1="24.86" x2="190.67" y2="24.69" style="fill: none; stroke: rgba(72, 157, 213, .62); stroke-linejoin: round; stroke-width: 5.06px;"/>
+        <line x1="190.67" y1="24.69" x2="190.67" y2="24.51" style="fill: none; stroke: rgba(72, 157, 213, .64); stroke-linejoin: round; stroke-width: 4.99px;"/>
+        <line x1="190.67" y1="24.51" x2="190.67" y2="24.34" style="fill: none; stroke: rgba(72, 157, 213, .65); stroke-linejoin: round; stroke-width: 4.92px;"/>
+        <line x1="190.67" y1="24.34" x2="190.67" y2="24.17" style="fill: none; stroke: rgba(72, 157, 213, .66); stroke-linejoin: round; stroke-width: 4.85px;"/>
+        <line x1="190.67" y1="24.17" x2="190.67" y2="24.01" style="fill: none; stroke: rgba(72, 157, 213, .67); stroke-linejoin: round; stroke-width: 4.76px;"/>
+        <line x1="190.67" y1="24.01" x2="190.67" y2="23.84" style="fill: none; stroke: rgba(72, 157, 213, .68); stroke-linejoin: round; stroke-width: 4.69px;"/>
+        <line x1="190.67" y1="23.84" x2="190.67" y2="23.67" style="fill: none; stroke: rgba(72, 157, 213, .69); stroke-linejoin: round; stroke-width: 4.62px;"/>
+        <line x1="190.67" y1="23.67" x2="190.67" y2="23.49" style="fill: none; stroke: rgba(72, 157, 213, .7); stroke-linejoin: round; stroke-width: 4.55px;"/>
+        <line x1="190.67" y1="23.49" x2="190.67" y2="23.32" style="fill: none; stroke: rgba(72, 157, 213, .71); stroke-linejoin: round; stroke-width: 4.46px;"/>
+        <line x1="190.67" y1="23.32" x2="190.67" y2="23.15" style="fill: none; stroke: rgba(72, 157, 213, .72); stroke-linejoin: round; stroke-width: 4.39px;"/>
+        <line x1="190.67" y1="23.15" x2="190.67" y2="22.99" style="fill: none; stroke: rgba(72, 157, 213, .73); stroke-linejoin: round; stroke-width: 4.32px;"/>
+        <line x1="190.67" y1="22.99" x2="190.67" y2="22.82" style="fill: none; stroke: rgba(72, 157, 213, .74); stroke-linejoin: round; stroke-width: 4.25px;"/>
+        <line x1="190.67" y1="22.82" x2="190.67" y2="22.65" style="fill: none; stroke: rgba(72, 157, 213, .75); stroke-linejoin: round; stroke-width: 4.18px;"/>
+        <line x1="190.67" y1="22.65" x2="190.67" y2="22.47" style="fill: none; stroke: rgba(72, 157, 213, .76); stroke-linejoin: round; stroke-width: 4.09px;"/>
+        <line x1="190.67" y1="22.47" x2="190.67" y2="22.3" style="fill: none; stroke: rgba(72, 157, 213, .77); stroke-linejoin: round; stroke-width: 4.02px;"/>
+        <line x1="190.67" y1="22.3" x2="190.67" y2="22.13" style="fill: none; stroke: rgba(72, 157, 213, .78); stroke-linejoin: round; stroke-width: 3.95px;"/>
+        <line x1="190.67" y1="22.13" x2="190.67" y2="21.97" style="fill: none; stroke: rgba(72, 157, 213, .78); stroke-linejoin: round; stroke-width: 3.88px;"/>
+        <line x1="190.67" y1="21.97" x2="190.67" y2="21.8" style="fill: none; stroke: rgba(72, 157, 213, .79); stroke-linejoin: round; stroke-width: 3.8px;"/>
+        <line x1="190.67" y1="21.8" x2="190.67" y2="21.63" style="fill: none; stroke: rgba(72, 157, 213, .8); stroke-linejoin: round; stroke-width: 3.72px;"/>
+        <line x1="190.67" y1="21.63" x2="190.67" y2="21.45" style="fill: none; stroke: rgba(72, 157, 213, .81); stroke-linejoin: round; stroke-width: 3.65px;"/>
+        <line x1="190.67" y1="21.45" x2="190.67" y2="21.28" style="fill: none; stroke: rgba(72, 157, 213, .82); stroke-linejoin: round; stroke-width: 3.58px;"/>
+        <line x1="190.67" y1="21.28" x2="190.67" y2="21.11" style="fill: none; stroke: rgba(72, 157, 213, .82); stroke-linejoin: round; stroke-width: 3.5px;"/>
+        <line x1="190.67" y1="21.11" x2="190.67" y2="20.95" style="fill: none; stroke: rgba(72, 157, 213, .83); stroke-linejoin: round; stroke-width: 3.43px;"/>
+        <line x1="190.67" y1="20.95" x2="190.67" y2="20.78" style="fill: none; stroke: rgba(72, 157, 213, .84); stroke-linejoin: round; stroke-width: 3.35px;"/>
+        <line x1="190.67" y1="20.78" x2="190.67" y2="20.61" style="fill: none; stroke: rgba(72, 157, 213, .84); stroke-linejoin: round; stroke-width: 3.28px;"/>
+        <line x1="190.67" y1="20.61" x2="190.67" y2="20.43" style="fill: none; stroke: rgba(72, 157, 213, .85); stroke-linejoin: round; stroke-width: 3.2px;"/>
+        <line x1="190.67" y1="20.43" x2="190.67" y2="20.26" style="fill: none; stroke: rgba(72, 157, 213, .85); stroke-linejoin: round; stroke-width: 3.13px;"/>
+        <line x1="190.67" y1="20.26" x2="190.67" y2="20.09" style="fill: none; stroke: rgba(72, 157, 213, .86); stroke-linejoin: round; stroke-width: 3.06px;"/>
+        <line x1="190.67" y1="20.09" x2="190.67" y2="19.93" style="fill: none; stroke: rgba(72, 157, 213, .87); stroke-linejoin: round; stroke-width: 2.98px;"/>
+        <line x1="190.67" y1="19.93" x2="190.67" y2="19.76" style="fill: none; stroke: rgba(72, 157, 213, .87); stroke-linejoin: round; stroke-width: 2.9px;"/>
+        <line x1="190.67" y1="19.76" x2="190.67" y2="19.59" style="fill: none; stroke: rgba(72, 157, 213, .87); stroke-linejoin: round; stroke-width: 2.83px;"/>
+        <line x1="190.67" y1="19.59" x2="190.67" y2="19.41" style="fill: none; stroke: rgba(72, 157, 213, .88); stroke-linejoin: round; stroke-width: 2.76px;"/>
+        <line x1="190.67" y1="19.41" x2="190.67" y2="19.24" style="fill: none; stroke: rgba(72, 157, 213, .89); stroke-linejoin: round; stroke-width: 2.68px;"/>
+        <line x1="190.67" y1="19.24" x2="190.67" y2="19.07" style="fill: none; stroke: rgba(72, 157, 213, .89); stroke-linejoin: round; stroke-width: 2.6px;"/>
+        <line x1="190.67" y1="19.07" x2="190.67" y2="18.91" style="fill: none; stroke: rgba(72, 157, 213, .9); stroke-linejoin: round; stroke-width: 2.53px;"/>
+        <line x1="190.67" y1="18.91" x2="190.67" y2="18.74" style="fill: none; stroke: rgba(72, 157, 213, .9); stroke-linejoin: round; stroke-width: 2.46px;"/>
+        <line x1="190.67" y1="18.74" x2="190.67" y2="18.57" style="fill: none; stroke: rgba(72, 157, 213, .91); stroke-linejoin: round; stroke-width: 2.39px;"/>
+        <line x1="190.67" y1="18.57" x2="190.67" y2="18.39" style="fill: none; stroke: rgba(72, 157, 213, .91); stroke-linejoin: round; stroke-width: 2.3px;"/>
+        <line x1="190.67" y1="18.39" x2="190.67" y2="18.22" style="fill: none; stroke: rgba(72, 157, 213, .91); stroke-linejoin: round; stroke-width: 2.23px;"/>
+        <line x1="190.67" y1="18.22" x2="190.67" y2="18.05" style="fill: none; stroke: rgba(72, 157, 213, .92); stroke-linejoin: round; stroke-width: 2.16px;"/>
+        <line x1="190.67" y1="18.05" x2="190.67" y2="17.89" style="fill: none; stroke: rgba(72, 157, 213, .92); stroke-linejoin: round; stroke-width: 2.09px;"/>
+        <line x1="190.67" y1="17.89" x2="190.67" y2="17.72" style="fill: none; stroke: rgba(72, 157, 213, .93); stroke-linejoin: round; stroke-width: 2.02px;"/>
+        <line x1="190.67" y1="17.72" x2="190.67" y2="17.55" style="fill: none; stroke: rgba(72, 157, 213, .93); stroke-linejoin: round; stroke-width: 1.93px;"/>
+        <line x1="190.67" y1="17.55" x2="190.67" y2="17.37" style="fill: none; stroke: rgba(72, 157, 213, .93); stroke-linejoin: round; stroke-width: 1.86px;"/>
+        <line x1="190.67" y1="17.37" x2="190.67" y2="17.2" style="fill: none; stroke: rgba(72, 157, 213, .94); stroke-linejoin: round; stroke-width: 1.79px;"/>
+        <line x1="190.67" y1="17.2" x2="190.67" y2="17.03" style="fill: none; stroke: rgba(72, 157, 213, .94); stroke-linejoin: round; stroke-width: 1.72px;"/>
+        <line x1="190.67" y1="17.03" x2="190.67" y2="16.87" style="fill: none; stroke: rgba(72, 157, 213, .95); stroke-linejoin: round; stroke-width: 1.64px;"/>
+        <line x1="190.67" y1="16.87" x2="190.67" y2="16.7" style="fill: none; stroke: rgba(72, 157, 213, .95); stroke-linejoin: round; stroke-width: 1.56px;"/>
+        <line x1="190.67" y1="16.7" x2="190.67" y2="16.53" style="fill: none; stroke: rgba(72, 157, 213, .95); stroke-linejoin: round; stroke-width: 1.49px;"/>
+        <line x1="190.67" y1="16.53" x2="190.67" y2="16.35" style="fill: none; stroke: rgba(72, 157, 213, .95); stroke-linejoin: round; stroke-width: 1.42px;"/>
+        <line x1="190.67" y1="16.35" x2="190.67" y2="16.18" style="fill: none; stroke: rgba(72, 157, 213, .96); stroke-linejoin: round; stroke-width: 1.34px;"/>
+        <line x1="190.67" y1="16.18" x2="190.67" y2="16.01" style="fill: none; stroke: rgba(72, 157, 213, .96); stroke-linejoin: round; stroke-width: 1.27px;"/>
+        <line x1="190.67" y1="16.01" x2="190.67" y2="15.85" style="fill: none; stroke: rgba(72, 157, 213, .96); stroke-linejoin: round; stroke-width: 1.19px;"/>
+        <line x1="190.67" y1="15.85" x2="190.67" y2="15.68" style="fill: none; stroke: rgba(72, 157, 213, .96); stroke-linejoin: round; stroke-width: 1.12px;"/>
+        <line x1="190.67" y1="15.68" x2="190.67" y2="15.51" style="fill: none; stroke: rgba(72, 157, 213, .97); stroke-linejoin: round; stroke-width: 1.04px;"/>
+        <line x1="190.67" y1="15.51" x2="190.67" y2="15.33" style="fill: none; stroke: rgba(72, 157, 213, .97); stroke-linejoin: round; stroke-width: .97px;"/>
+        <line x1="190.67" y1="15.33" x2="190.67" y2="15.16" style="fill: none; stroke: rgba(72, 157, 213, .97); stroke-linejoin: round; stroke-width: .89px;"/>
+        <line x1="190.67" y1="15.16" x2="190.67" y2="14.99" style="fill: none; stroke: rgba(72, 157, 213, .98); stroke-linejoin: round; stroke-width: .82px;"/>
+        <line x1="190.67" y1="14.99" x2="190.67" y2="14.83" style="fill: none; stroke: rgba(72, 157, 213, .98); stroke-linejoin: round; stroke-width: .74px;"/>
+        <line x1="190.67" y1="14.83" x2="190.67" y2="14.66" style="fill: none; stroke: rgba(72, 157, 213, .98); stroke-linejoin: round; stroke-width: .67px;"/>
+        <line x1="190.67" y1="14.66" x2="190.67" y2="14.49" style="fill: none; stroke: rgba(72, 157, 213, .98); stroke-linejoin: round; stroke-width: .6px;"/>
+        <line x1="190.67" y1="14.49" x2="190.67" y2="14.31" style="fill: none; stroke: rgba(72, 157, 213, .98); stroke-linejoin: round; stroke-width: .52px;"/>
+        <line x1="190.67" y1="14.31" x2="190.67" y2="14.14" style="fill: none; stroke: rgba(72, 157, 213, .99); stroke-linejoin: round; stroke-width: .44px;"/>
+        <line x1="190.67" y1="14.14" x2="190.67" y2="13.97" style="fill: none; stroke: rgba(72, 157, 213, .99); stroke-linejoin: round; stroke-width: .37px;"/>
+        <line x1="190.67" y1="13.97" x2="190.67" y2="13.81" style="fill: none; stroke: rgba(72, 157, 213, .99); stroke-linejoin: round; stroke-width: .3px;"/>
+        <line x1="190.67" y1="13.81" x2="190.67" y2="13.64" style="fill: none; stroke: #489dd5; stroke-linejoin: round; stroke-width: .23px;"/>
+        <line x1="190.67" y1="13.64" x2="190.67" y2="13.47" style="fill: none; stroke: #489dd5; stroke-linejoin: round; stroke-width: .14px;"/>
+        <line x1="190.67" y1="13.47" x2="190.67" y2="13.29" style="fill: none; stroke: #489dd5; stroke-linejoin: round; stroke-width: .07px;"/>
+        <line x1="187.23" y1="30.13" x2="190.67" y2="13.29" style="fill: none; stroke: #489dd5; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.28px;"/>
+        <line x1="190.67" y1="13.29" x2="194.1" y2="30.13" style="fill: none; stroke: #489dd5; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.28px;"/>
+      </g>
+    </g>
+  </g>
+  <g>
+    <rect x="183.13" y="-13.07" width="86.4" height="86.4" style="fill: none;"/>
+    <g style="clip-path: url(#clippath-5);">
+      <g>
+        <rect x="183.13" y="-13.07" width="86.4" height="86.4" style="fill: none;"/>
+        <line x1="226.33" y1="29.9" x2="226.33" y2="29.67" style="fill: none; stroke: rgba(35, 98, 179, .03); stroke-linejoin: round; stroke-width: 10.96px;"/>
+        <line x1="226.33" y1="29.67" x2="226.33" y2="29.44" style="fill: none; stroke: rgba(35, 98, 179, .06); stroke-linejoin: round; stroke-width: 10.84px;"/>
+        <line x1="226.33" y1="29.44" x2="226.33" y2="29.21" style="fill: none; stroke: rgba(35, 98, 179, .09); stroke-linejoin: round; stroke-width: 10.73px;"/>
+        <line x1="226.33" y1="29.21" x2="226.33" y2="29" style="fill: none; stroke: rgba(35, 98, 179, .11); stroke-linejoin: round; stroke-width: 10.62px;"/>
+        <line x1="226.33" y1="29" x2="226.33" y2="28.77" style="fill: none; stroke: rgba(35, 98, 179, .14); stroke-linejoin: round; stroke-width: 10.5px;"/>
+        <line x1="226.33" y1="28.77" x2="226.33" y2="28.54" style="fill: none; stroke: rgba(35, 98, 179, .17); stroke-linejoin: round; stroke-width: 10.39px;"/>
+        <line x1="226.33" y1="28.54" x2="226.33" y2="28.31" style="fill: none; stroke: rgba(35, 98, 179, .19); stroke-linejoin: round; stroke-width: 10.28px;"/>
+        <line x1="226.33" y1="28.31" x2="226.33" y2="28.09" style="fill: none; stroke: rgba(35, 98, 179, .22); stroke-linejoin: round; stroke-width: 10.16px;"/>
+        <line x1="226.33" y1="28.09" x2="226.33" y2="27.86" style="fill: none; stroke: rgba(35, 98, 179, .24); stroke-linejoin: round; stroke-width: 10.06px;"/>
+        <line x1="226.33" y1="27.86" x2="226.33" y2="27.63" style="fill: none; stroke: rgba(35, 98, 179, .26); stroke-linejoin: round; stroke-width: 9.95px;"/>
+        <line x1="226.33" y1="27.63" x2="226.33" y2="27.4" style="fill: none; stroke: rgba(35, 98, 179, .29); stroke-linejoin: round; stroke-width: 9.83px;"/>
+        <line x1="226.33" y1="27.4" x2="226.33" y2="27.17" style="fill: none; stroke: rgba(35, 98, 179, .31); stroke-linejoin: round; stroke-width: 9.72px;"/>
+        <line x1="226.33" y1="27.17" x2="226.33" y2="26.96" style="fill: none; stroke: rgba(35, 98, 179, .33); stroke-linejoin: round; stroke-width: 9.61px;"/>
+        <line x1="226.33" y1="26.96" x2="226.33" y2="26.73" style="fill: none; stroke: rgba(35, 98, 179, .35); stroke-linejoin: round; stroke-width: 9.5px;"/>
+        <line x1="226.33" y1="26.73" x2="226.33" y2="26.5" style="fill: none; stroke: rgba(35, 98, 179, .37); stroke-linejoin: round; stroke-width: 9.38px;"/>
+        <line x1="226.33" y1="26.5" x2="226.33" y2="26.27" style="fill: none; stroke: rgba(35, 98, 179, .39); stroke-linejoin: round; stroke-width: 9.28px;"/>
+        <line x1="226.33" y1="26.27" x2="226.33" y2="26.05" style="fill: none; stroke: rgba(35, 98, 179, .41); stroke-linejoin: round; stroke-width: 9.17px;"/>
+        <line x1="226.33" y1="26.05" x2="226.33" y2="25.82" style="fill: none; stroke: rgba(35, 98, 179, .43); stroke-linejoin: round; stroke-width: 9.05px;"/>
+        <line x1="226.33" y1="25.82" x2="226.33" y2="25.59" style="fill: none; stroke: rgba(35, 98, 179, .44); stroke-linejoin: round; stroke-width: 8.94px;"/>
+        <line x1="226.33" y1="25.59" x2="226.33" y2="25.36" style="fill: none; stroke: rgba(35, 98, 179, .46); stroke-linejoin: round; stroke-width: 8.83px;"/>
+        <line x1="226.33" y1="25.36" x2="226.33" y2="25.13" style="fill: none; stroke: rgba(35, 98, 179, .48); stroke-linejoin: round; stroke-width: 8.71px;"/>
+        <line x1="226.33" y1="25.13" x2="226.33" y2="24.92" style="fill: none; stroke: rgba(35, 98, 179, .49); stroke-linejoin: round; stroke-width: 8.6px;"/>
+        <line x1="226.33" y1="24.92" x2="226.33" y2="24.69" style="fill: none; stroke: rgba(35, 98, 179, .51); stroke-linejoin: round; stroke-width: 8.5px;"/>
+        <line x1="226.33" y1="24.69" x2="226.33" y2="24.46" style="fill: none; stroke: rgba(35, 98, 179, .53); stroke-linejoin: round; stroke-width: 8.38px;"/>
+        <line x1="226.33" y1="24.46" x2="226.33" y2="24.23" style="fill: none; stroke: rgba(35, 98, 179, .54); stroke-linejoin: round; stroke-width: 8.27px;"/>
+        <line x1="226.33" y1="24.23" x2="226.33" y2="24.01" style="fill: none; stroke: rgba(35, 98, 179, .56); stroke-linejoin: round; stroke-width: 8.16px;"/>
+        <line x1="226.33" y1="24.01" x2="226.33" y2="23.78" style="fill: none; stroke: rgba(35, 98, 179, .57); stroke-linejoin: round; stroke-width: 8.04px;"/>
+        <line x1="226.33" y1="23.78" x2="226.33" y2="23.55" style="fill: none; stroke: rgba(35, 98, 179, .58); stroke-linejoin: round; stroke-width: 7.93px;"/>
+        <line x1="226.33" y1="23.55" x2="226.33" y2="23.32" style="fill: none; stroke: rgba(35, 98, 179, .6); stroke-linejoin: round; stroke-width: 7.82px;"/>
+        <line x1="226.33" y1="23.32" x2="226.33" y2="23.09" style="fill: none; stroke: rgba(35, 98, 179, .61); stroke-linejoin: round; stroke-width: 7.72px;"/>
+        <line x1="226.33" y1="23.09" x2="226.33" y2="22.88" style="fill: none; stroke: rgba(35, 98, 179, .62); stroke-linejoin: round; stroke-width: 7.6px;"/>
+        <line x1="226.33" y1="22.88" x2="226.33" y2="22.65" style="fill: none; stroke: rgba(35, 98, 179, .64); stroke-linejoin: round; stroke-width: 7.49px;"/>
+        <line x1="226.33" y1="22.65" x2="226.33" y2="22.42" style="fill: none; stroke: rgba(35, 98, 179, .65); stroke-linejoin: round; stroke-width: 7.38px;"/>
+        <line x1="226.33" y1="22.42" x2="226.33" y2="22.19" style="fill: none; stroke: rgba(35, 98, 179, .66); stroke-linejoin: round; stroke-width: 7.26px;"/>
+        <line x1="226.33" y1="22.19" x2="226.33" y2="21.97" style="fill: none; stroke: rgba(35, 98, 179, .67); stroke-linejoin: round; stroke-width: 7.15px;"/>
+        <line x1="226.33" y1="21.97" x2="226.33" y2="21.74" style="fill: none; stroke: rgba(35, 98, 179, .68); stroke-linejoin: round; stroke-width: 7.04px;"/>
+        <line x1="226.33" y1="21.74" x2="226.33" y2="21.51" style="fill: none; stroke: rgba(35, 98, 179, .69); stroke-linejoin: round; stroke-width: 6.92px;"/>
+        <line x1="226.33" y1="21.51" x2="226.33" y2="21.28" style="fill: none; stroke: rgba(35, 98, 179, .7); stroke-linejoin: round; stroke-width: 6.82px;"/>
+        <line x1="226.33" y1="21.28" x2="226.33" y2="21.05" style="fill: none; stroke: rgba(35, 98, 179, .71); stroke-linejoin: round; stroke-width: 6.71px;"/>
+        <line x1="226.33" y1="21.05" x2="226.33" y2="20.84" style="fill: none; stroke: rgba(35, 98, 179, .72); stroke-linejoin: round; stroke-width: 6.59px;"/>
+        <line x1="226.33" y1="20.84" x2="226.33" y2="20.61" style="fill: none; stroke: rgba(35, 98, 179, .73); stroke-linejoin: round; stroke-width: 6.48px;"/>
+        <line x1="226.33" y1="20.61" x2="226.33" y2="20.38" style="fill: none; stroke: rgba(35, 98, 179, .74); stroke-linejoin: round; stroke-width: 6.37px;"/>
+        <line x1="226.33" y1="20.38" x2="226.33" y2="20.15" style="fill: none; stroke: rgba(35, 98, 179, .75); stroke-linejoin: round; stroke-width: 6.25px;"/>
+        <line x1="226.33" y1="20.15" x2="226.33" y2="19.93" style="fill: none; stroke: rgba(35, 98, 179, .76); stroke-linejoin: round; stroke-width: 6.14px;"/>
+        <line x1="226.33" y1="19.93" x2="226.33" y2="19.7" style="fill: none; stroke: rgba(35, 98, 179, .77); stroke-linejoin: round; stroke-width: 6.04px;"/>
+        <line x1="226.33" y1="19.7" x2="226.33" y2="19.47" style="fill: none; stroke: rgba(35, 98, 179, .78); stroke-linejoin: round; stroke-width: 5.93px;"/>
+        <line x1="226.33" y1="19.47" x2="226.33" y2="19.24" style="fill: none; stroke: rgba(35, 98, 179, .78); stroke-linejoin: round; stroke-width: 5.81px;"/>
+        <line x1="226.33" y1="19.24" x2="226.33" y2="19.01" style="fill: none; stroke: rgba(35, 98, 179, .79); stroke-linejoin: round; stroke-width: 5.7px;"/>
+        <line x1="226.33" y1="19.01" x2="226.33" y2="18.79" style="fill: none; stroke: rgba(35, 98, 179, .8); stroke-linejoin: round; stroke-width: 5.59px;"/>
+        <line x1="226.33" y1="18.79" x2="226.33" y2="18.57" style="fill: none; stroke: rgba(35, 98, 179, .81); stroke-linejoin: round; stroke-width: 5.47px;"/>
+        <line x1="226.33" y1="18.57" x2="226.33" y2="18.34" style="fill: none; stroke: rgba(35, 98, 179, .82); stroke-linejoin: round; stroke-width: 5.36px;"/>
+        <line x1="226.33" y1="18.34" x2="226.33" y2="18.11" style="fill: none; stroke: rgba(35, 98, 179, .82); stroke-linejoin: round; stroke-width: 5.26px;"/>
+        <line x1="226.33" y1="18.11" x2="226.33" y2="17.89" style="fill: none; stroke: rgba(35, 98, 179, .83); stroke-linejoin: round; stroke-width: 5.14px;"/>
+        <line x1="226.33" y1="17.89" x2="226.33" y2="17.66" style="fill: none; stroke: rgba(35, 98, 179, .84); stroke-linejoin: round; stroke-width: 5.03px;"/>
+        <line x1="226.33" y1="17.66" x2="226.33" y2="17.43" style="fill: none; stroke: rgba(35, 98, 179, .84); stroke-linejoin: round; stroke-width: 4.92px;"/>
+        <line x1="226.33" y1="17.43" x2="226.33" y2="17.2" style="fill: none; stroke: rgba(35, 98, 179, .85); stroke-linejoin: round; stroke-width: 4.8px;"/>
+        <line x1="226.33" y1="17.2" x2="226.33" y2="16.97" style="fill: none; stroke: rgba(35, 98, 179, .85); stroke-linejoin: round; stroke-width: 4.69px;"/>
+        <line x1="226.33" y1="16.97" x2="226.33" y2="16.75" style="fill: none; stroke: rgba(35, 98, 179, .86); stroke-linejoin: round; stroke-width: 4.58px;"/>
+        <line x1="226.33" y1="16.75" x2="226.33" y2="16.53" style="fill: none; stroke: rgba(35, 98, 179, .87); stroke-linejoin: round; stroke-width: 4.46px;"/>
+        <line x1="226.33" y1="16.53" x2="226.33" y2="16.3" style="fill: none; stroke: rgba(35, 98, 179, .87); stroke-linejoin: round; stroke-width: 4.36px;"/>
+        <line x1="226.33" y1="16.3" x2="226.33" y2="16.07" style="fill: none; stroke: rgba(35, 98, 179, .87); stroke-linejoin: round; stroke-width: 4.25px;"/>
+        <line x1="226.33" y1="16.07" x2="226.33" y2="15.85" style="fill: none; stroke: rgba(35, 98, 179, .88); stroke-linejoin: round; stroke-width: 4.14px;"/>
+        <line x1="226.33" y1="15.85" x2="226.33" y2="15.62" style="fill: none; stroke: rgba(35, 98, 179, .89); stroke-linejoin: round; stroke-width: 4.02px;"/>
+        <line x1="226.33" y1="15.62" x2="226.33" y2="15.39" style="fill: none; stroke: rgba(35, 98, 179, .89); stroke-linejoin: round; stroke-width: 3.91px;"/>
+        <line x1="226.33" y1="15.39" x2="226.33" y2="15.16" style="fill: none; stroke: rgba(35, 98, 179, .9); stroke-linejoin: round; stroke-width: 3.8px;"/>
+        <line x1="226.33" y1="15.16" x2="226.33" y2="14.93" style="fill: none; stroke: rgba(35, 98, 179, .9); stroke-linejoin: round; stroke-width: 3.68px;"/>
+        <line x1="226.33" y1="14.93" x2="226.33" y2="14.71" style="fill: none; stroke: rgba(35, 98, 179, .91); stroke-linejoin: round; stroke-width: 3.58px;"/>
+        <line x1="226.33" y1="14.71" x2="226.33" y2="14.49" style="fill: none; stroke: rgba(35, 98, 179, .91); stroke-linejoin: round; stroke-width: 3.47px;"/>
+        <line x1="226.33" y1="14.49" x2="226.33" y2="14.26" style="fill: none; stroke: rgba(35, 98, 179, .91); stroke-linejoin: round; stroke-width: 3.35px;"/>
+        <line x1="226.33" y1="14.26" x2="226.33" y2="14.03" style="fill: none; stroke: rgba(35, 98, 179, .92); stroke-linejoin: round; stroke-width: 3.24px;"/>
+        <line x1="226.33" y1="14.03" x2="226.33" y2="13.81" style="fill: none; stroke: rgba(35, 98, 179, .92); stroke-linejoin: round; stroke-width: 3.13px;"/>
+        <line x1="226.33" y1="13.81" x2="226.33" y2="13.58" style="fill: none; stroke: rgba(35, 98, 179, .93); stroke-linejoin: round; stroke-width: 3.01px;"/>
+        <line x1="226.33" y1="13.58" x2="226.33" y2="13.35" style="fill: none; stroke: rgba(35, 98, 179, .93); stroke-linejoin: round; stroke-width: 2.9px;"/>
+        <line x1="226.33" y1="13.35" x2="226.33" y2="13.12" style="fill: none; stroke: rgba(35, 98, 179, .93); stroke-linejoin: round; stroke-width: 2.8px;"/>
+        <line x1="226.33" y1="13.12" x2="226.33" y2="12.89" style="fill: none; stroke: rgba(35, 98, 179, .94); stroke-linejoin: round; stroke-width: 2.68px;"/>
+        <line x1="226.33" y1="12.89" x2="226.33" y2="12.67" style="fill: none; stroke: rgba(35, 98, 179, .94); stroke-linejoin: round; stroke-width: 2.57px;"/>
+        <line x1="226.33" y1="12.67" x2="226.33" y2="12.45" style="fill: none; stroke: rgba(35, 98, 179, .95); stroke-linejoin: round; stroke-width: 2.46px;"/>
+        <line x1="226.33" y1="12.45" x2="226.33" y2="12.22" style="fill: none; stroke: rgba(35, 98, 179, .95); stroke-linejoin: round; stroke-width: 2.35px;"/>
+        <line x1="226.33" y1="12.22" x2="226.33" y2="11.99" style="fill: none; stroke: rgba(35, 98, 179, .95); stroke-linejoin: round; stroke-width: 2.23px;"/>
+        <line x1="226.33" y1="11.99" x2="226.33" y2="11.77" style="fill: none; stroke: rgba(35, 98, 179, .95); stroke-linejoin: round; stroke-width: 2.12px;"/>
+        <line x1="226.33" y1="11.77" x2="226.33" y2="11.54" style="fill: none; stroke: rgba(35, 98, 179, .96); stroke-linejoin: round; stroke-width: 2.02px;"/>
+        <line x1="226.33" y1="11.54" x2="226.33" y2="11.31" style="fill: none; stroke: rgba(35, 98, 179, .96); stroke-linejoin: round; stroke-width: 1.9px;"/>
+        <line x1="226.33" y1="11.31" x2="226.33" y2="11.08" style="fill: none; stroke: rgba(35, 98, 179, .96); stroke-linejoin: round; stroke-width: 1.79px;"/>
+        <line x1="226.33" y1="11.08" x2="226.33" y2="10.85" style="fill: none; stroke: rgba(35, 98, 179, .96); stroke-linejoin: round; stroke-width: 1.68px;"/>
+        <line x1="226.33" y1="10.85" x2="226.33" y2="10.63" style="fill: none; stroke: rgba(35, 98, 179, .97); stroke-linejoin: round; stroke-width: 1.56px;"/>
+        <line x1="226.33" y1="10.63" x2="226.33" y2="10.41" style="fill: none; stroke: rgba(35, 98, 179, .97); stroke-linejoin: round; stroke-width: 1.45px;"/>
+        <line x1="226.33" y1="10.41" x2="226.33" y2="10.18" style="fill: none; stroke: rgba(35, 98, 179, .97); stroke-linejoin: round; stroke-width: 1.34px;"/>
+        <line x1="226.33" y1="10.18" x2="226.33" y2="9.95" style="fill: none; stroke: rgba(35, 98, 179, .98); stroke-linejoin: round; stroke-width: 1.22px;"/>
+        <line x1="226.33" y1="9.95" x2="226.33" y2="9.73" style="fill: none; stroke: rgba(35, 98, 179, .98); stroke-linejoin: round; stroke-width: 1.12px;"/>
+        <line x1="226.33" y1="9.73" x2="226.33" y2="9.5" style="fill: none; stroke: rgba(35, 98, 179, .98); stroke-linejoin: round; stroke-width: 1.01px;"/>
+        <line x1="226.33" y1="9.5" x2="226.33" y2="9.27" style="fill: none; stroke: rgba(35, 98, 179, .98); stroke-linejoin: round; stroke-width: .89px;"/>
+        <line x1="226.33" y1="9.27" x2="226.33" y2="9.04" style="fill: none; stroke: rgba(35, 98, 179, .98); stroke-linejoin: round; stroke-width: .78px;"/>
+        <line x1="226.33" y1="9.04" x2="226.33" y2="8.81" style="fill: none; stroke: rgba(35, 98, 179, .99); stroke-linejoin: round; stroke-width: .67px;"/>
+        <line x1="226.33" y1="8.81" x2="226.33" y2="8.59" style="fill: none; stroke: rgba(35, 98, 179, .99); stroke-linejoin: round; stroke-width: .56px;"/>
+        <line x1="226.33" y1="8.59" x2="226.33" y2="8.37" style="fill: none; stroke: rgba(35, 98, 179, .99); stroke-linejoin: round; stroke-width: .44px;"/>
+        <line x1="226.33" y1="8.37" x2="226.33" y2="8.14" style="fill: none; stroke: #2362b3; stroke-linejoin: round; stroke-width: .34px;"/>
+        <line x1="226.33" y1="8.14" x2="226.33" y2="7.91" style="fill: none; stroke: #2362b3; stroke-linejoin: round; stroke-width: .23px;"/>
+        <line x1="226.33" y1="7.91" x2="226.33" y2="7.69" style="fill: none; stroke: #2362b3; stroke-linejoin: round; stroke-width: .11px;"/>
+        <line x1="221.17" y1="30.13" x2="226.33" y2="7.69" style="fill: none; stroke: #2362b3; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.28px;"/>
+        <line x1="226.33" y1="7.69" x2="231.49" y2="30.13" style="fill: none; stroke: #2362b3; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.28px;"/>
+      </g>
+    </g>
+  </g>
+  <g>
+    <rect x="218.8" y="-13.07" width="86.4" height="86.4" style="fill: none;"/>
+    <g style="clip-path: url(#clippath-6);">
+      <g>
+        <rect x="218.8" y="-13.07" width="86.4" height="86.4" style="fill: none;"/>
+        <line x1="262" y1="29.84" x2="262" y2="29.56" style="fill: none; stroke: rgba(0, 51, 117, .03); stroke-linejoin: round; stroke-width: 14.6px;"/>
+        <line x1="262" y1="29.56" x2="262" y2="29.27" style="fill: none; stroke: rgba(0, 51, 117, .06); stroke-linejoin: round; stroke-width: 14.45px;"/>
+        <line x1="262" y1="29.27" x2="262" y2="29" style="fill: none; stroke: rgba(0, 51, 117, .09); stroke-linejoin: round; stroke-width: 14.3px;"/>
+        <line x1="262" y1="29" x2="262" y2="28.71" style="fill: none; stroke: rgba(0, 51, 117, .11); stroke-linejoin: round; stroke-width: 14.15px;"/>
+        <line x1="262" y1="28.71" x2="262" y2="28.42" style="fill: none; stroke: rgba(0, 51, 117, .14); stroke-linejoin: round; stroke-width: 14px;"/>
+        <line x1="262" y1="28.42" x2="262" y2="28.15" style="fill: none; stroke: rgba(0, 51, 117, .17); stroke-linejoin: round; stroke-width: 13.86px;"/>
+        <line x1="262" y1="28.15" x2="262" y2="27.86" style="fill: none; stroke: rgba(0, 51, 117, .19); stroke-linejoin: round; stroke-width: 13.7px;"/>
+        <line x1="262" y1="27.86" x2="262" y2="27.57" style="fill: none; stroke: rgba(0, 51, 117, .22); stroke-linejoin: round; stroke-width: 13.56px;"/>
+        <line x1="262" y1="27.57" x2="262" y2="27.29" style="fill: none; stroke: rgba(0, 51, 117, .24); stroke-linejoin: round; stroke-width: 13.4px;"/>
+        <line x1="262" y1="27.29" x2="262" y2="27.01" style="fill: none; stroke: rgba(0, 51, 117, .26); stroke-linejoin: round; stroke-width: 13.26px;"/>
+        <line x1="262" y1="27.01" x2="262" y2="26.73" style="fill: none; stroke: rgba(0, 51, 117, .29); stroke-linejoin: round; stroke-width: 13.12px;"/>
+        <line x1="262" y1="26.73" x2="262" y2="26.44" style="fill: none; stroke: rgba(0, 51, 117, .31); stroke-linejoin: round; stroke-width: 12.96px;"/>
+        <line x1="262" y1="26.44" x2="262" y2="26.15" style="fill: none; stroke: rgba(0, 51, 117, .33); stroke-linejoin: round; stroke-width: 12.82px;"/>
+        <line x1="262" y1="26.15" x2="262" y2="25.88" style="fill: none; stroke: rgba(0, 51, 117, .35); stroke-linejoin: round; stroke-width: 12.66px;"/>
+        <line x1="262" y1="25.88" x2="262" y2="25.59" style="fill: none; stroke: rgba(0, 51, 117, .37); stroke-linejoin: round; stroke-width: 12.52px;"/>
+        <line x1="262" y1="25.59" x2="262" y2="25.31" style="fill: none; stroke: rgba(0, 51, 117, .39); stroke-linejoin: round; stroke-width: 12.37px;"/>
+        <line x1="262" y1="25.31" x2="262" y2="25.03" style="fill: none; stroke: rgba(0, 51, 117, .41); stroke-linejoin: round; stroke-width: 12.22px;"/>
+        <line x1="262" y1="25.03" x2="262" y2="24.74" style="fill: none; stroke: rgba(0, 51, 117, .43); stroke-linejoin: round; stroke-width: 12.07px;"/>
+        <line x1="262" y1="24.74" x2="262" y2="24.46" style="fill: none; stroke: rgba(0, 51, 117, .44); stroke-linejoin: round; stroke-width: 11.92px;"/>
+        <line x1="262" y1="24.46" x2="262" y2="24.17" style="fill: none; stroke: rgba(0, 51, 117, .46); stroke-linejoin: round; stroke-width: 11.77px;"/>
+        <line x1="262" y1="24.17" x2="262" y2="23.9" style="fill: none; stroke: rgba(0, 51, 117, .48); stroke-linejoin: round; stroke-width: 11.62px;"/>
+        <line x1="262" y1="23.9" x2="262" y2="23.61" style="fill: none; stroke: rgba(0, 51, 117, .49); stroke-linejoin: round; stroke-width: 11.47px;"/>
+        <line x1="262" y1="23.61" x2="262" y2="23.32" style="fill: none; stroke: rgba(0, 51, 117, .51); stroke-linejoin: round; stroke-width: 11.33px;"/>
+        <line x1="262" y1="23.32" x2="262" y2="23.05" style="fill: none; stroke: rgba(0, 51, 117, .53); stroke-linejoin: round; stroke-width: 11.17px;"/>
+        <line x1="262" y1="23.05" x2="262" y2="22.76" style="fill: none; stroke: rgba(0, 51, 117, .54); stroke-linejoin: round; stroke-width: 11.03px;"/>
+        <line x1="262" y1="22.76" x2="262" y2="22.47" style="fill: none; stroke: rgba(0, 51, 117, .56); stroke-linejoin: round; stroke-width: 10.87px;"/>
+        <line x1="262" y1="22.47" x2="262" y2="22.19" style="fill: none; stroke: rgba(0, 51, 117, .57); stroke-linejoin: round; stroke-width: 10.73px;"/>
+        <line x1="262" y1="22.19" x2="262" y2="21.91" style="fill: none; stroke: rgba(0, 51, 117, .58); stroke-linejoin: round; stroke-width: 10.58px;"/>
+        <line x1="262" y1="21.91" x2="262" y2="21.63" style="fill: none; stroke: rgba(0, 51, 117, .6); stroke-linejoin: round; stroke-width: 10.43px;"/>
+        <line x1="262" y1="21.63" x2="262" y2="21.34" style="fill: none; stroke: rgba(0, 51, 117, .61); stroke-linejoin: round; stroke-width: 10.28px;"/>
+        <line x1="262" y1="21.34" x2="262" y2="21.05" style="fill: none; stroke: rgba(0, 51, 117, .62); stroke-linejoin: round; stroke-width: 10.13px;"/>
+        <line x1="262" y1="21.05" x2="262" y2="20.78" style="fill: none; stroke: rgba(0, 51, 117, .64); stroke-linejoin: round; stroke-width: 9.98px;"/>
+        <line x1="262" y1="20.78" x2="262" y2="20.49" style="fill: none; stroke: rgba(0, 51, 117, .65); stroke-linejoin: round; stroke-width: 9.83px;"/>
+        <line x1="262" y1="20.49" x2="262" y2="20.21" style="fill: none; stroke: rgba(0, 51, 117, .66); stroke-linejoin: round; stroke-width: 9.68px;"/>
+        <line x1="262" y1="20.21" x2="262" y2="19.93" style="fill: none; stroke: rgba(0, 51, 117, .67); stroke-linejoin: round; stroke-width: 9.54px;"/>
+        <line x1="262" y1="19.93" x2="262" y2="19.64" style="fill: none; stroke: rgba(0, 51, 117, .68); stroke-linejoin: round; stroke-width: 9.38px;"/>
+        <line x1="262" y1="19.64" x2="262" y2="19.36" style="fill: none; stroke: rgba(0, 51, 117, .69); stroke-linejoin: round; stroke-width: 9.24px;"/>
+        <line x1="262" y1="19.36" x2="262" y2="19.07" style="fill: none; stroke: rgba(0, 51, 117, .7); stroke-linejoin: round; stroke-width: 9.08px;"/>
+        <line x1="262" y1="19.07" x2="262" y2="18.79" style="fill: none; stroke: rgba(0, 51, 117, .71); stroke-linejoin: round; stroke-width: 8.94px;"/>
+        <line x1="262" y1="18.79" x2="262" y2="18.51" style="fill: none; stroke: rgba(0, 51, 117, .72); stroke-linejoin: round; stroke-width: 8.8px;"/>
+        <line x1="262" y1="18.51" x2="262" y2="18.22" style="fill: none; stroke: rgba(0, 51, 117, .73); stroke-linejoin: round; stroke-width: 8.64px;"/>
+        <line x1="262" y1="18.22" x2="262" y2="17.95" style="fill: none; stroke: rgba(0, 51, 117, .74); stroke-linejoin: round; stroke-width: 8.5px;"/>
+        <line x1="262" y1="17.95" x2="262" y2="17.66" style="fill: none; stroke: rgba(0, 51, 117, .75); stroke-linejoin: round; stroke-width: 8.34px;"/>
+        <line x1="262" y1="17.66" x2="262" y2="17.37" style="fill: none; stroke: rgba(0, 51, 117, .76); stroke-linejoin: round; stroke-width: 8.2px;"/>
+        <line x1="262" y1="17.37" x2="262" y2="17.09" style="fill: none; stroke: rgba(0, 51, 117, .77); stroke-linejoin: round; stroke-width: 8.04px;"/>
+        <line x1="262" y1="17.09" x2="262" y2="16.81" style="fill: none; stroke: rgba(0, 51, 117, .78); stroke-linejoin: round; stroke-width: 7.9px;"/>
+        <line x1="262" y1="16.81" x2="262" y2="16.53" style="fill: none; stroke: rgba(0, 51, 117, .78); stroke-linejoin: round; stroke-width: 7.75px;"/>
+        <line x1="262" y1="16.53" x2="262" y2="16.24" style="fill: none; stroke: rgba(0, 51, 117, .79); stroke-linejoin: round; stroke-width: 7.6px;"/>
+        <line x1="262" y1="16.24" x2="262" y2="15.95" style="fill: none; stroke: rgba(0, 51, 117, .8); stroke-linejoin: round; stroke-width: 7.45px;"/>
+        <line x1="262" y1="15.95" x2="262" y2="15.68" style="fill: none; stroke: rgba(0, 51, 117, .81); stroke-linejoin: round; stroke-width: 7.3px;"/>
+        <line x1="262" y1="15.68" x2="262" y2="15.39" style="fill: none; stroke: rgba(0, 51, 117, .82); stroke-linejoin: round; stroke-width: 7.15px;"/>
+        <line x1="262" y1="15.39" x2="262" y2="15.11" style="fill: none; stroke: rgba(0, 51, 117, .82); stroke-linejoin: round; stroke-width: 7.01px;"/>
+        <line x1="262" y1="15.11" x2="262" y2="14.83" style="fill: none; stroke: rgba(0, 51, 117, .83); stroke-linejoin: round; stroke-width: 6.85px;"/>
+        <line x1="262" y1="14.83" x2="262" y2="14.54" style="fill: none; stroke: rgba(0, 51, 117, .84); stroke-linejoin: round; stroke-width: 6.71px;"/>
+        <line x1="262" y1="14.54" x2="262" y2="14.26" style="fill: none; stroke: rgba(0, 51, 117, .84); stroke-linejoin: round; stroke-width: 6.55px;"/>
+        <line x1="262" y1="14.26" x2="262" y2="13.97" style="fill: none; stroke: rgba(0, 51, 117, .85); stroke-linejoin: round; stroke-width: 6.41px;"/>
+        <line x1="262" y1="13.97" x2="262" y2="13.69" style="fill: none; stroke: rgba(0, 51, 117, .85); stroke-linejoin: round; stroke-width: 6.25px;"/>
+        <line x1="262" y1="13.69" x2="262" y2="13.41" style="fill: none; stroke: rgba(0, 51, 117, .86); stroke-linejoin: round; stroke-width: 6.11px;"/>
+        <line x1="262" y1="13.41" x2="262" y2="13.12" style="fill: none; stroke: rgba(0, 51, 117, .87); stroke-linejoin: round; stroke-width: 5.96px;"/>
+        <line x1="262" y1="13.12" x2="262" y2="12.85" style="fill: none; stroke: rgba(0, 51, 117, .87); stroke-linejoin: round; stroke-width: 5.81px;"/>
+        <line x1="262" y1="12.85" x2="262" y2="12.56" style="fill: none; stroke: rgba(0, 51, 117, .87); stroke-linejoin: round; stroke-width: 5.66px;"/>
+        <line x1="262" y1="12.56" x2="262" y2="12.27" style="fill: none; stroke: rgba(0, 51, 117, .88); stroke-linejoin: round; stroke-width: 5.51px;"/>
+        <line x1="262" y1="12.27" x2="262" y2="11.99" style="fill: none; stroke: rgba(0, 51, 117, .89); stroke-linejoin: round; stroke-width: 5.36px;"/>
+        <line x1="262" y1="11.99" x2="262" y2="11.71" style="fill: none; stroke: rgba(0, 51, 117, .89); stroke-linejoin: round; stroke-width: 5.22px;"/>
+        <line x1="262" y1="11.71" x2="262" y2="11.43" style="fill: none; stroke: rgba(0, 51, 117, .9); stroke-linejoin: round; stroke-width: 5.06px;"/>
+        <line x1="262" y1="11.43" x2="262" y2="11.14" style="fill: none; stroke: rgba(0, 51, 117, .9); stroke-linejoin: round; stroke-width: 4.92px;"/>
+        <line x1="262" y1="11.14" x2="262" y2="10.85" style="fill: none; stroke: rgba(0, 51, 117, .91); stroke-linejoin: round; stroke-width: 4.76px;"/>
+        <line x1="262" y1="10.85" x2="262" y2="10.58" style="fill: none; stroke: rgba(0, 51, 117, .91); stroke-linejoin: round; stroke-width: 4.62px;"/>
+        <line x1="262" y1="10.58" x2="262" y2="10.29" style="fill: none; stroke: rgba(0, 51, 117, .91); stroke-linejoin: round; stroke-width: 4.46px;"/>
+        <line x1="262" y1="10.29" x2="262" y2="10" style="fill: none; stroke: rgba(0, 51, 117, .92); stroke-linejoin: round; stroke-width: 4.32px;"/>
+        <line x1="262" y1="10" x2="262" y2="9.73" style="fill: none; stroke: rgba(0, 51, 117, .92); stroke-linejoin: round; stroke-width: 4.18px;"/>
+        <line x1="262" y1="9.73" x2="262" y2="9.44" style="fill: none; stroke: rgba(0, 51, 117, .93); stroke-linejoin: round; stroke-width: 4.02px;"/>
+        <line x1="262" y1="9.44" x2="262" y2="9.16" style="fill: none; stroke: rgba(0, 51, 117, .93); stroke-linejoin: round; stroke-width: 3.88px;"/>
+        <line x1="262" y1="9.16" x2="262" y2="8.87" style="fill: none; stroke: rgba(0, 51, 117, .93); stroke-linejoin: round; stroke-width: 3.72px;"/>
+        <line x1="262" y1="8.87" x2="262" y2="8.59" style="fill: none; stroke: rgba(0, 51, 117, .94); stroke-linejoin: round; stroke-width: 3.58px;"/>
+        <line x1="262" y1="8.59" x2="262" y2="8.31" style="fill: none; stroke: rgba(0, 51, 117, .94); stroke-linejoin: round; stroke-width: 3.43px;"/>
+        <line x1="262" y1="8.31" x2="262" y2="8.02" style="fill: none; stroke: rgba(0, 51, 117, .95); stroke-linejoin: round; stroke-width: 3.28px;"/>
+        <line x1="262" y1="8.02" x2="262" y2="7.75" style="fill: none; stroke: rgba(0, 51, 117, .95); stroke-linejoin: round; stroke-width: 3.13px;"/>
+        <line x1="262" y1="7.75" x2="262" y2="7.46" style="fill: none; stroke: rgba(0, 51, 117, .95); stroke-linejoin: round; stroke-width: 2.98px;"/>
+        <line x1="262" y1="7.46" x2="262" y2="7.17" style="fill: none; stroke: rgba(0, 51, 117, .95); stroke-linejoin: round; stroke-width: 2.83px;"/>
+        <line x1="262" y1="7.17" x2="262" y2="6.89" style="fill: none; stroke: rgba(0, 51, 117, .96); stroke-linejoin: round; stroke-width: 2.68px;"/>
+        <line x1="262" y1="6.89" x2="262" y2="6.61" style="fill: none; stroke: rgba(0, 51, 117, .96); stroke-linejoin: round; stroke-width: 2.53px;"/>
+        <line x1="262" y1="6.61" x2="262" y2="6.33" style="fill: none; stroke: rgba(0, 51, 117, .96); stroke-linejoin: round; stroke-width: 2.39px;"/>
+        <line x1="262" y1="6.33" x2="262" y2="6.04" style="fill: none; stroke: rgba(0, 51, 117, .96); stroke-linejoin: round; stroke-width: 2.23px;"/>
+        <line x1="262" y1="6.04" x2="262" y2="5.75" style="fill: none; stroke: rgba(0, 51, 117, .97); stroke-linejoin: round; stroke-width: 2.09px;"/>
+        <line x1="262" y1="5.75" x2="262" y2="5.48" style="fill: none; stroke: rgba(0, 51, 117, .97); stroke-linejoin: round; stroke-width: 1.93px;"/>
+        <line x1="262" y1="5.48" x2="262" y2="5.19" style="fill: none; stroke: rgba(0, 51, 117, .97); stroke-linejoin: round; stroke-width: 1.79px;"/>
+        <line x1="262" y1="5.19" x2="262" y2="4.9" style="fill: none; stroke: rgba(0, 51, 117, .98); stroke-linejoin: round; stroke-width: 1.64px;"/>
+        <line x1="262" y1="4.9" x2="262" y2="4.63" style="fill: none; stroke: rgba(0, 51, 117, .98); stroke-linejoin: round; stroke-width: 1.49px;"/>
+        <line x1="262" y1="4.63" x2="262" y2="4.34" style="fill: none; stroke: rgba(0, 51, 117, .98); stroke-linejoin: round; stroke-width: 1.34px;"/>
+        <line x1="262" y1="4.34" x2="262" y2="4.06" style="fill: none; stroke: rgba(0, 51, 117, .98); stroke-linejoin: round; stroke-width: 1.19px;"/>
+        <line x1="262" y1="4.06" x2="262" y2="3.77" style="fill: none; stroke: rgba(0, 51, 117, .98); stroke-linejoin: round; stroke-width: 1.04px;"/>
+        <line x1="262" y1="3.77" x2="262" y2="3.49" style="fill: none; stroke: rgba(0, 51, 117, .99); stroke-linejoin: round; stroke-width: .89px;"/>
+        <line x1="262" y1="3.49" x2="262" y2="3.21" style="fill: none; stroke: rgba(0, 51, 117, .99); stroke-linejoin: round; stroke-width: .74px;"/>
+        <line x1="262" y1="3.21" x2="262" y2="2.92" style="fill: none; stroke: rgba(0, 51, 117, .99); stroke-linejoin: round; stroke-width: .6px;"/>
+        <line x1="262" y1="2.92" x2="262" y2="2.65" style="fill: none; stroke: #003375; stroke-linejoin: round; stroke-width: .44px;"/>
+        <line x1="262" y1="2.65" x2="262" y2="2.36" style="fill: none; stroke: #003375; stroke-linejoin: round; stroke-width: .3px;"/>
+        <line x1="262" y1="2.36" x2="262" y2="2.07" style="fill: none; stroke: #003375; stroke-linejoin: round; stroke-width: .14px;"/>
+        <line x1="255.12" y1="30.13" x2="262" y2="2.07" style="fill: none; stroke: #003375; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.28px;"/>
+        <line x1="262" y1="2.07" x2="268.88" y2="30.13" style="fill: none; stroke: #003375; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.28px;"/>
+      </g>
+    </g>
+  </g>
+  <g>
+    <rect x="300.51" y="-1.37" width="62.99" height="62.99" style="fill: none;"/>
+    <g style="clip-path: url(#clippath-7);">
+      <g>
+        <rect x="300.51" y="-1.37" width="62.99" height="62.99" style="fill: none;"/>
+        <line x1="328.89" y1="33.23" x2="335.11" y2="27.02" style="fill: none; stroke: #b3b3b3; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.55px;"/>
+        <line x1="328.89" y1="27.02" x2="335.11" y2="33.23" style="fill: none; stroke: #b3b3b3; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.55px;"/>
+      </g>
+    </g>
+  </g>
+</svg>

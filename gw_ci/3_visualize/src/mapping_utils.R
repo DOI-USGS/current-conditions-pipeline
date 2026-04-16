@@ -915,8 +915,10 @@ plot_gw_static_png <- function(gw_bkgd_img, gw_frgd_img, date, logo_path, legend
   usgs_logo <- magick::image_read(logo_path) |>
     magick::image_colorize(100, "black")
 
-  legend_img <- magick::image_read(legend_path)
-
+  legend_img <- magick::image_read(
+    rsvg::rsvg_png(legend_path, width = 2000)
+  )
+  
   canvas <- grid::rectGrob(
     x = 0, y = 0,
     width = viz_cfg$width, height = viz_cfg$height,
@@ -950,17 +952,17 @@ plot_gw_static_png <- function(gw_bkgd_img, gw_frgd_img, date, logo_path, legend
       width = 1,
       height = 1
     ) +
-    # Mock image legend
+    # Legend
     draw_image(legend_img,
       x = 0.9,
-      y = 1.04,
+      y = 0.98,
       scale = 0.32,
       height = 1,
       hjust = 1,
       vjust = 1,
       halign = 1,
       valign = 1
-    ) +
+      ) +
     # Add logo
     draw_image(usgs_logo,
       x = 0.98,
