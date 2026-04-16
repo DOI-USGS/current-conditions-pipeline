@@ -1,10 +1,14 @@
-s3_url_prefix: "https://labs.waterdata.usgs.gov/visualizations/current_conditions/streamflow/"
+s3_url_prefix: "https://dfi09q69oy2jm.cloudfront.net/visualizations/current_conditions/streamflow/"
 coverage_file: "metadata/sf_coverage.parquet"
+dates_file: "metadata/sf_dates.json"
 image_prefix: "images/sf-"
 video_prefix: "videos/sf-movie-"
 parquet_prefix: "data/sf_categorizations_"
 video_intervals:
- - 5d
+ - 1m
+ - 3m
+ - 6m
+ - 1y
 
 layouts:
   conus:

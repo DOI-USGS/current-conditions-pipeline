@@ -155,7 +155,8 @@ plot_gw_symbols <- function(gw_plot_order, palette, viz_cfg, image_screen_type) 
         yend = y_end
       ),
       color = "white",
-      linewidth = 0.8
+      linewidth = 0.8,
+      lineend = "round"
     )
     
     border2_white <- geom_segment(
@@ -167,7 +168,8 @@ plot_gw_symbols <- function(gw_plot_order, palette, viz_cfg, image_screen_type) 
         yend = y
       ),
       color = "white",
-      linewidth = 0.8
+      linewidth = 0.8,
+      lineend = "round"
     )
     
     # Layer 1: mask
@@ -211,7 +213,8 @@ plot_gw_symbols <- function(gw_plot_order, palette, viz_cfg, image_screen_type) 
         yend = y_end,
         color = per_bin
       ),
-      linewidth = 0.3
+      linewidth = 0.3,
+      lineend = "round"
     )
     
     border2 <- geom_segment(
@@ -223,7 +226,8 @@ plot_gw_symbols <- function(gw_plot_order, palette, viz_cfg, image_screen_type) 
         yend = y,
         color = per_bin
       ),
-      linewidth = 0.3
+      linewidth = 0.3,
+      lineend = "round"
     )
 
     list(border1_white, border2_white, mask, gradient, border1, border2)
@@ -657,7 +661,7 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
 #' @param palette The color palette
 #' @param viz_cfg Visual config (for dimensions/colors)
 #' @param scale_cfg Scaling config (for linewidth/height)
-#' @param out_path Path to save the PNGs
+#' @param out_path Path to save the SVGs
 plot_gw_leg <- function(gw_parquet_file, conus_proj, palette, viz_cfg,
                         scale_cfg, out_path) {
   # Ensure directory exists
@@ -676,7 +680,7 @@ plot_gw_leg <- function(gw_parquet_file, conus_proj, palette, viz_cfg,
     slice_head(n = 1) |>
     ungroup()
 
-  # Build each legend PNG
+  # Build each legend SVG
   purrr::map_chr(seq_len(nrow(legend_rows)), function(i) {
     leg_row <- legend_rows[i, ]
     # Assign values
@@ -753,7 +757,7 @@ plot_gw_leg <- function(gw_parquet_file, conus_proj, palette, viz_cfg,
                 mf = scale_cfg$max_factor,
                 sf = current_sf,
                 linewidth = after_stat(I((1 - index) * mf * sf * 1.2)),
-                alpha = after_stat(I((0.99^index - 1) / (0.99 - 1)))
+                alpha = after_stat(I((0.06^index - 1) / (0.06- 1)))
               )
             ),
             geom_segment(
@@ -762,7 +766,8 @@ plot_gw_leg <- function(gw_parquet_file, conus_proj, palette, viz_cfg,
                 y = y, yend = y_end,
                 color = per_bin
               ),
-              linewidth = 0.15
+              linewidth = 0.5,
+              lineend = "round"
             ),
             geom_segment(
               aes(
@@ -770,7 +775,8 @@ plot_gw_leg <- function(gw_parquet_file, conus_proj, palette, viz_cfg,
                 y = y_end, yend = y,
                 color = per_bin
               ),
-              linewidth = 0.15
+              linewidth = 0.5,
+              lineend = "round"
             )
           )
         }
@@ -909,8 +915,10 @@ plot_gw_static_png <- function(gw_bkgd_img, gw_frgd_img, date, logo_path, legend
   usgs_logo <- magick::image_read(logo_path) |>
     magick::image_colorize(100, "black")
 
-  legend_img <- magick::image_read(legend_path)
-
+  legend_img <- magick::image_read(
+    rsvg::rsvg_png(legend_path, width = 2000)
+  )
+  
   canvas <- grid::rectGrob(
     x = 0, y = 0,
     width = viz_cfg$width, height = viz_cfg$height,
@@ -944,17 +952,17 @@ plot_gw_static_png <- function(gw_bkgd_img, gw_frgd_img, date, logo_path, legend
       width = 1,
       height = 1
     ) +
-    # Mock image legend
+    # Legend
     draw_image(legend_img,
       x = 0.9,
-      y = 1.04,
+      y = 0.98,
       scale = 0.32,
       height = 1,
       hjust = 1,
       vjust = 1,
       halign = 1,
       valign = 1
-    ) +
+      ) +
     # Add logo
     draw_image(usgs_logo,
       x = 0.98,

@@ -14,7 +14,7 @@ def blanks_mask(df: pd.DataFrame, cols):
     sub = df[cols].copy()
 
     # Mark whitespace-only strings as NA, leave other values unchanged
-    sub = sub.replace(r"^\s*$", pd.NA, regex=True)
+    sub = sub.replace("NA", pd.NA, regex=True)
 
     # Now NA (including those we just introduced) are blanks
     return sub.isna()
@@ -90,7 +90,7 @@ def generate_image_list(
             while current <= end_date:
                 full_date_list.append(current.strftime("%Y-%m-%d"))
                 current += timedelta(days=1)
-
+    
     # determine which parquets need downloading
     # Filter to only the dates you care about
     filtered_metadata = metadata[metadata["date"].isin(full_date_list)]
@@ -111,13 +111,13 @@ def generate_image_list(
         parquet_prefix + str(date) + ".parquet"
         for date in dates_that_need_image_generation
     ]
-
+    
     # Get a list of parquet files urls that are going to be downloaded, "" means it needs to be generated
     parquets_to_download = [
         (
             metadata.loc[metadata["date"] == d, "parquet_file"].values[0]
             if d in metadata["date"].values
-            else ""
+            else "NA"
         )
         for d in dates_that_need_image_generation
     ]
@@ -168,7 +168,7 @@ def generate_image_list(
     # Get a list of images that need to be downloaded
     images_to_download = (
         metadata[[layout["metadata_column"] for layout in layout_params.values()]]
-            .replace(r"^\s*$", pd.NA, regex=True)  # convert "" / "   " → NA
+            .replace("NA", pd.NA, regex=True)  # convert "" / "   " → NA
             .stack()
             .dropna()
             .tolist()
@@ -195,13 +195,13 @@ def generate_image_list(
             (
                 metadata.loc[metadata["date"] == d, layout_param["metadata_column"]].values[0]
                 if d in metadata["date"].values
-                else ""
+                else "NA"
             )
             for d in date_list
         ]
         # list images that aren't on s3
         for j, s3_image in enumerate(s3_image_list):
-            if s3_image == "":
+            if s3_image == "NA":
                 images_to_generate += [image_list[j]]
                 parquets_for_image_generation += [parquet_list[j]]
                 layout_for_image_generation += [layout] 
