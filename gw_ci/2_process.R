@@ -114,41 +114,28 @@ p2_targets <- list(
     iteration = "list"
   ),
   
-  # Do we want one extent max across CONUS or each state extents specifically?
-  tar_target(
-    p2_states_max_x_extent,
-    {
-      # pull x_extent from each state sf object in p2_states_sf_list
-      # find max x_extent across all states
-      # return numeric max x extent
-      message("Compute maximum x extent across CONUS state polygons for relative extent scaling")
-    }
-  ),
-  
-  tar_target(
-    p2_states_max_y_extent,
-    {
-      # pull y_extent from each state sf object in p2_states_sf_list
-      # find max y_extent across all states
-      # return numeric max y extent
-      message("Compute maximum y extent across CONUS state polygons for relative extent scaling")
-    }
-  ),
-  
   tar_target(
     p2_states_extents_df,
     {
       # use:
       #   - single state row from p0_states_area_info_df
       #   - single state sf object from p2_states_sf_list
-      #   - p2_areas_low_simp_max_x_extent
-      #   - p2_areas_low_simp_max_y_extent
-      # compute relative extent information needed for plotting
-      # mirror the columns returned by get_relative_extent_information()
-      # so plot_gw_image() can use state extents the same way it uses area extents
-      # return single row extent list for the state
+      #   - p2_areas_low_simp_max_x_extent 
+      #   - p2_areas_low_simp_max_y_extent 
+      #
+      # compute extent information needed for plotting
+      # including:
+      #   - x_extent
+      #   - y_extent
+      #   - rel_width = state x_extent / CONUS x_extent
+      #   - rel_height = state y_extent / CONUS y_extent
+      #
+      # this ensures symbol scaling is consistent with CONUS logic
+      # used in mobile and other area-based plots
+      #
+      # return single-row extent list for the state
       message(sprintf(
-        "Build plotting extent for %s using state bbox and max CONUS extents",
+        "Build plotting extent for %s using CONUS reference extents for scaling",
         p0_states_area_info_df[["name"]]
       ))
     },
