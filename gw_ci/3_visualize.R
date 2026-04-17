@@ -441,9 +441,9 @@ p3_targets <- list(
         p1_date_incomplete[["date"]]
       ))
     },
-    pattern = cross(
-      map(p1_date_incomplete),
-      map(p0_states_area_info_df, p3_states_static_pngs)
+    pattern = map(
+      cross(p1_date_incomplete, p0_states_area_info_df),
+      p3_states_static_pngs
     )
   ),
   
