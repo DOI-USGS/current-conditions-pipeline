@@ -117,23 +117,17 @@ p2_targets <- list(
   tar_target(
     p2_states_extents_df,
     {
-      # use:
-      #   - single state row from p0_states_area_info_df
-      #   - single state sf object from p2_states_sf_list
-      #   - p2_areas_low_simp_max_x_extent 
-      #   - p2_areas_low_simp_max_y_extent 
+      # call get_relative_extent_information() with:
+      #   area_info_df = p0_states_area_info_df (single state row)
+      #   area_sf = p2_states_sf_list (single state polygon)
+      #   max_x_extent = p2_areas_low_simp_max_x_extent (CONUS reference)
+      #   max_y_extent = p2_areas_low_simp_max_y_extent (CONUS reference)
       #
-      # compute extent information needed for plotting
-      # including:
-      #   - x_extent
-      #   - y_extent
-      #   - rel_width = state x_extent / CONUS x_extent
-      #   - rel_height = state y_extent / CONUS y_extent
+      # this will:
+      #   - compute x_extent and y_extent for the state
+      #   - compute rel_width and rel_height relative to CONUS
       #
-      # this ensures symbol scaling is consistent with CONUS logic
-      # used in mobile and other area-based plots
-      #
-      # return single-row extent list for the state
+      # return single row extent list for the state
       message(sprintf(
         "Build plotting extent for %s using CONUS reference extents for scaling",
         p0_states_area_info_df[["name"]]
