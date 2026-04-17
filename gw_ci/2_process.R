@@ -94,6 +94,49 @@ p2_targets <- list(
         state_abbr = STUSPS
       )
   ),
+  ##### State polygon data #####
+  # State polygons, branched by state row in p0_states_area_info_df
+  # mirrors p2_areas_sf_high_simp_list / p2_areas_high_simp_extents_df
+  tar_target(
+    p2_states_sf_list,
+    {
+      # filter p1_states_sf to single state using p0_states_area_info_df[["state_list"]]
+      # reproject to p0_states_area_info_df[["proj"]] (EPSG:5070)
+      # simplify using p0_states_area_info_df[["simplification_keep_low_simp"]]
+      # return sf object for single state
+      message(sprintf(
+        "State polygons for %s, project to %s, and simplify geometry",
+        p0_states_area_info_df[["name"]],
+        p0_states_area_info_df[["proj"]]
+        ))
+      },
+    pattern = map(p0_states_area_info_df),
+    iteration = "list"
+  ),
+  
+  tar_target(
+    p2_states_extents_df,
+    {
+      # call get_relative_extent_information() with:
+      #   area_info_df = p0_states_area_info_df (single state row)
+      #   area_sf = p2_states_sf_list (single state polygon)
+      #   max_x_extent = p2_areas_low_simp_max_x_extent (CONUS reference)
+      #   max_y_extent = p2_areas_low_simp_max_y_extent (CONUS reference)
+      #
+      # this will:
+      #   - compute x_extent and y_extent for the state
+      #   - compute rel_width and rel_height relative to CONUS
+      #
+      # return single row extent list for the state
+      message(sprintf(
+        "Build plotting extent for %s using CONUS reference extents for scaling",
+        p0_states_area_info_df[["name"]]
+      ))
+    },
+    pattern = map(p0_states_area_info_df, p2_states_sf_list),
+    iteration = "list"
+  ),
+  
   ##### gw data #####
   # process parquet files
   tar_target(

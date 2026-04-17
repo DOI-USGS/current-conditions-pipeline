@@ -22,7 +22,8 @@ tar_option_set(
     'sfarrow',
     's2',
     'jsonlite',
-    'retry'
+    'retry',
+    'USAboundaries'
   )
 )
 
