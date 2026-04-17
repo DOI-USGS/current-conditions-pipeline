@@ -572,7 +572,7 @@ p3_targets <- list(
     },
     pattern = cross(
       map(p0_interval_start_dates, p0_interval_names),
-      map(p0_states_area_info_df)
+      p0_states_area_info_df
     ),
     format = "file"
   ),

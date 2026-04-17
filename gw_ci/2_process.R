@@ -102,7 +102,7 @@ p2_targets <- list(
     {
       # filter p1_states_sf to single state using p0_states_area_info_df[["state_list"]]
       # reproject to p0_states_area_info_df[["proj"]] (EPSG:5070)
-      # simplify using p0_states_area_info_df[["simplification_keep_high_simp"]]
+      # simplify using p0_states_area_info_df[["simplification_keep_low_simp"]]
       # return sf object for single state
       message(sprintf(
         "State polygons for %s, project to %s, and simplify geometry",
@@ -141,9 +141,9 @@ p2_targets <- list(
       # use:
       #   - single state row from p0_states_area_info_df
       #   - single state sf object from p2_states_sf_list
-      #   - p2_states_max_x_extent
-      #   - p2_states_max_y_extent
-      # compute extent information needed for plotting
+      #   - p2_areas_low_simp_max_x_extent
+      #   - p2_areas_low_simp_max_y_extent
+      # compute relative extent information needed for plotting
       # mirror the columns returned by get_relative_extent_information()
       # so plot_gw_image() can use state extents the same way it uses area extents
       # return single row extent list for the state
