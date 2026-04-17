@@ -130,15 +130,31 @@ p0_targets <- list(
   # all use CONUS projection EPSG:5070 for now
   tar_target(
     p0_states_area_info_df,
-    tibble(
-      name = state.abb[!state.abb %in% c("AK", "HI")],
-      state_list = as.list(state.abb[!state.abb %in% c("AK", "HI")]),
-      full_name = state.name[!state.abb %in% c("AK", "HI")],
-      proj = "EPSG:5070",
-      simplification_keep_high_simp = 0.1,
-      scale_factor = 1
-    )
-  ),
+    {
+      # Lower 48 state info
+      states_df <- tibble(
+        name = state.abb[!state.abb %in% c("AK", "HI")],
+        full_name = state.name[!state.abb %in% c("AK", "HI")]
+        )
+      
+      # State projection lookup
+      state_projs <- USAboundaries::state_proj |>
+        filter(statewide_proj) |>
+        select(
+          name = state,
+          proj = proj4_string
+          )
+      
+      # Join projections onto state metadata
+      states_df |>
+        left_join(state_projs, by = "name") |>
+        mutate(
+          state_list = as.list(name),
+          simplification_keep_high_simp = 0.1,
+          scale_factor = 1
+        )
+      }
+    ),
   ##### visual parameters #####
   tar_target(
     p0_viz_gw_pal,
