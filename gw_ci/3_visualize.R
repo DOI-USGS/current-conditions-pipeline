@@ -219,34 +219,13 @@ p3_targets <- list(
     format = "file"
   ),
   
-  # Expand state background webps so each state background is repeated across dates
-  tar_target(
-    p3_states_bkgd_webps_expanded,
-    {
-      # this target just repeats / aligns the single-state background webp
-      # so it can pair 1:1 with each state/date foreground branch
-      #
-      # return the matching state background webp path
-      
-      message(sprintf(
-        "Match background webp for %s to date branch %s",
-        p0_states_area_info_df[["name"]],
-        p1_date_incomplete[["date"]]
-      ))
-      },
-    pattern = cross(
-      map(p1_date_incomplete),
-      map(p0_states_area_info_df, p3_states_bkgd_webps)
-    )
-  ),
-  
   # State static, composite bkgd + foreground per state x date
   tar_target(
     p3_states_static_pngs,
     {
       # call plot_gw_static_png() with:
-      #   gw_bkgd_img = p3_states_bkgd_webps_expanded (matched state background)
-      #   gw_frgd_img = p3_states_gw_webps (matched state x date foreground)
+      #   gw_bkgd_img = p3_states_bkgd_webps (state-level background)
+      #   gw_frgd_img = p3_states_gw_webps (state x date foreground)
       #   date = p1_date_incomplete[["date"]]
       #   logo_path = p0_logo_path
       #   legend_path = p0_desktop_leg_path
@@ -259,20 +238,17 @@ p3_targets <- list(
       #   )
       # return out_path
       message(sprintf(
-        "Combine state background and foreground for %s on %s, saving using standardized png output template",
-        p0_states_area_info_df[["name"]],
-        p1_date_incomplete[["date"]],
+        "Combine state background and foreground for %s on %s",
         p0_states_area_info_df[["name"]],
         p1_date_incomplete[["date"]]
       ))
     },
-    pattern = cross(
-      map(p1_date_incomplete),
-      map(p0_states_area_info_df, p3_states_gw_webps, 
-          p3_states_bkgd_webps_expanded)
-      ),
-    format = "file"
+    pattern = map(
+      cross(p1_date_incomplete, p3_states_bkgd_webps),
+      p3_states_gw_webps
     ),
+    format = "file"
+  ),
   
   ##### Generate static stand-alone images #####
   
