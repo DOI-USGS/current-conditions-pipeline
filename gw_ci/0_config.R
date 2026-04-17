@@ -135,7 +135,7 @@ p0_targets <- list(
       state_list = as.list(state.abb[!state.abb %in% c("AK", "HI")]),
       full_name = state.name[!state.abb %in% c("AK", "HI")],
       proj = "EPSG:5070",
-      simplification_keep_high_simp = 0.02,
+      simplification_keep_high_simp = 0.1,
       scale_factor = 1
     )
   ),
