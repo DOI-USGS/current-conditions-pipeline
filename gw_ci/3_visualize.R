@@ -161,7 +161,7 @@ p3_targets <- list(
       #   scale_cfg = p0_gw_binned_scales
       #   state_lookup = p2_state_lookup
       #   locator_map_png  = NULL (not needed)
-      #   image_screen_type = "desktop" 
+      #   image_screen_type = "mobile" 
       #   layer_mode = "foreground"
       #   output_format = "webp"
       #   transparent_bg = TRUE
