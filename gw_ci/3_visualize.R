@@ -244,8 +244,9 @@ p3_targets <- list(
       ))
     },
     pattern = map(
-      cross(p1_date_incomplete, p3_states_bkgd_webps),
-      p3_states_gw_webps
+      p3_states_gw_webps,
+      p0_states_area_info_df,
+      p3_states_bkgd_webps
     ),
     format = "file"
   ),
