@@ -165,10 +165,13 @@ p3_targets <- list(
       #   layer_mode = "foreground"
       #   output_format = "webp"
       #   transparent_bg = TRUE
-      #   output_template = gw-desktop-{state_abbr}-{date}.webp
+      #   output_template = file.path(
+      #     p0_local_image_file_dir,
+      #     gsub("\\.png$", ".webp", basename(p0_remote_image_file_template))
+      #   )
       # return out_path
       message(sprintf(
-        "Read in %s and plot state foreground webp for %s on %s, saving as gw-desktop-%s-%s.webp",
+        "Read in %s and plot state foreground webp for %s on %s, saving using remote image template in webp",
         p2_gw_clean_parquets,
         p0_states_area_info_df[["name"]],
         p1_date_incomplete[["date"]],
@@ -197,7 +200,14 @@ p3_targets <- list(
       #   layer_mode = "background"
       #   output_format = "webp"
       #   transparent_bg = FALSE
-      #   output_template = gw-desktop-{state_abbr}-background.webp
+      #   output_template = file.path(
+      #     p0_local_image_file_dir,
+      #     sprintf(
+      #       "gw-%s-%s-background.webp",
+      #       "mobile",
+      #       p0_states_area_info_df[["name"]]
+      #     )
+      #   )
       # return out_path
       message(sprintf(
         "Plot state background webp for %s, saving as gw-desktop-%s-background.webp",
@@ -243,10 +253,13 @@ p3_targets <- list(
       #   viz_cfg = p0_viz_config_df
       #   image_screen_type = "desktop"
       #   area_name = p0_states_area_info_df[["name"]]
-      #   output_template = gw-desktop-{state_abbr}-{date}.png
+      #   output_template = file.path(
+      #     p0_local_image_file_dir,
+      #     basename(p0_remote_image_file_template)
+      #   )
       # return out_path
       message(sprintf(
-        "Combine state background and foreground for %s on %s, saving as gw-desktop-%s-%s.png",
+        "Combine state background and foreground for %s on %s, saving using standardized png output template",
         p0_states_area_info_df[["name"]],
         p1_date_incomplete[["date"]],
         p0_states_area_info_df[["name"]],
@@ -560,10 +573,18 @@ p3_targets <- list(
       #   gw_png_config = p3_gw_pngs_config
       #   viz_cfg = p0_viz_config_df
       #   img_type_name = local_desktop_static_{state}_image_file
-      #   output_template = gw-movie-desktop-{state}-{interval}.mp4
+      #   output_template = file.path(
+      #     p0_local_image_file_dir,
+      #     sprintf(
+      #       "gw-movie-%s-%s-%s.mp4",
+      #       "desktop",
+      #       p0_states_area_info_df[["name"]],
+      #       p0_interval_names
+      #     )
+      #   )
       
       message(sprintf(
-        "Build state mp4 for %s for %s using static png frames, saving as gw-movie-desktop-%s-%s.mp4",
+        "Build state mp4 for %s for %s using static png frames, saving using standardized mp4 output template",
         p0_states_area_info_df[["name"]],
         p0_interval_names,
         p0_states_area_info_df[["name"]],
