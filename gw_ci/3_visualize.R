@@ -596,9 +596,9 @@ p3_targets <- list(
         p0_interval_names
       ))
     },
-    pattern = cross(
-      map(p0_interval_names),
-      map(p0_states_area_info_df, p3_gw_states_mp4)
+    pattern = map(
+      cross(p0_interval_names, p0_states_area_info_df),
+      p3_gw_states_mp4
     )
   ),
   
