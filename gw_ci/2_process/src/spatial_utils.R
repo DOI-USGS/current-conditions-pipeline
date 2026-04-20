@@ -10,15 +10,15 @@
 munge_area_polys <- function(states_sf, area_name, area_state_list, area_proj, 
                              simplification_keep) {
   
-  state_subset <- states_sf %>%
-    dplyr::filter(STUSPS %in% unlist(area_state_list)) %>%
-    sf::st_transform(area_proj) %>%
+  state_subset <- states_sf |> 
+    dplyr::filter(STUSPS %in% unlist(area_state_list)) |> 
+    sf::st_transform(area_proj) |> 
     rmapshaper::ms_simplify(simplification_keep)
   
   if (area_name == 'AS') {
-    state_subset <- state_subset %>%
-      sf::st_cast("POLYGON") %>% 
-      dplyr::mutate(ID = sprintf("%s_%s", STUSPS, row_number())) %>%
+    state_subset <- state_subset |> 
+      sf::st_cast("POLYGON") |> 
+      dplyr::mutate(ID = sprintf("%s_%s", STUSPS, row_number())) |> 
       # filter out outlying ring islands
       # NOTE IDs vary based on level of simplification
       # this works if simplification_keep = 0.1 for AS
@@ -26,7 +26,7 @@ munge_area_polys <- function(states_sf, area_name, area_state_list, area_proj,
   }
   
   bbox <- st_bbox(state_subset)
-  state_subset <- state_subset %>%
+  state_subset <- state_subset |> 
     dplyr::mutate(
       x_max = unname(bbox$xmax),
       x_min = unname(bbox$xmin),
