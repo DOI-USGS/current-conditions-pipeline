@@ -911,7 +911,9 @@ plot_gw_static_png <- function(gw_bkgd_img, gw_frgd_img, date, logo_path, legend
   # read in webp images
   bkgd_img <- magick::image_read(gw_bkgd_img)
   frgd_img <- magick::image_read(gw_frgd_img)
-
+  
+  is_state <- !area_name %in% c("CONUS_OCONUS", "CONUS", "AK", "HI", "PR_VI", "GU_MP", "AS")
+  
   usgs_logo <- magick::image_read(logo_path) |>
     magick::image_colorize(100, "black")
 
@@ -938,19 +940,19 @@ plot_gw_static_png <- function(gw_bkgd_img, gw_frgd_img, date, logo_path, legend
       height = 8, width = 8,
       hjust = 0, vjust = 1
     ) +
-    # background image
+     # background image
     draw_image(bkgd_img,
-      x = 0,
-      y = 0,
-      width = 1,
-      height = 1
-    ) +
+               x = if (is_state) 0.15 else 0,
+               y = if (is_state) 0.05 else 0,
+               width = if (is_state) 0.7 else 1,
+               height = if (is_state) 0.8 else 1
+               ) +
     # foreground image
     draw_image(frgd_img,
-      x = 0,
-      y = 0,
-      width = 1,
-      height = 1
+               x = if (is_state) 0.15 else 0,
+               y = if (is_state) 0.05 else 0,
+               width = if (is_state) 0.7 else 1,
+               height = if (is_state) 0.8 else 1
     ) +
     # Legend
     draw_image(legend_img,
