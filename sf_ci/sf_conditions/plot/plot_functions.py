@@ -64,13 +64,8 @@ def plot_data(
     boundary_gdf,
     proj,
     scale_mult,
-    state_style,
     marker_params,
-    scale_params,
     reference_scale,
-    reference_length,
-    scale_bar_type,
-    scale_text,
 ):
     """Plots stream flow current conditions data on the specified axis
 
@@ -116,7 +111,7 @@ def plot_data(
     # get axis dimensions
     ax_dims = get_ax_size_inches(ax, fig)
     boundary_gdf_proj = boundary_gdf.to_crs(proj)
-    setup_boundary(ax, boundary_gdf_proj, state_style)
+    #setup_boundary(ax, boundary_gdf_proj, state_style)
     minx, miny, maxx, maxy = boundary_gdf_proj.total_bounds
     center_x = 0.5 * (minx + maxx)
     center_y = 0.5 * (miny + maxy)
@@ -156,6 +151,78 @@ def plot_data(
             markersize=marker_params["markersize"][i],
             zorder=marker_params["zorder"][i],
         )
+
+    # set up the x and y limits of the axis
+    ax.set_xlim(
+        center_x - 0.5 * reference_scale * ax_dims[0] / scale_mult,
+        center_x + 0.5 * reference_scale * ax_dims[0] / scale_mult,
+    )
+    ax.set_ylim(
+        center_y - 0.5 * reference_scale * ax_dims[1] / scale_mult,
+        center_y + 0.5 * reference_scale * ax_dims[1] / scale_mult,
+    )
+
+    # remove box around axis
+    ax.set_axis_off()
+
+
+def plot_background(
+    fig,
+    ax,
+    boundary_gdf,
+    proj,
+    scale_mult,
+    state_style,
+    scale_params,
+    reference_scale,
+    reference_length,
+    scale_bar_type,
+    scale_text,
+):
+    """Plots stream flow current conditions data on the specified axis
+
+    Parameters
+    ----------
+    fig: matplotlib figure
+        figure of the plot
+    ax: matplotlib axis
+        axis in the figure that we are plotting data on
+    boundary_gdf: geodataframe
+        boundary geometry
+    proj: string
+        projection crs
+    scale_mult: float
+        scale multiplier
+    state_style: dictionary
+        parameters defining the geometry style
+    scale_params: dictionary
+        parameters defining the scale bar style
+    reference_scale: float
+        reference scale that is in meters (map dimensions) per inch (canvas dimensions)
+    reference_length: float
+        total width or height (whichever is larger) of the geometries extent
+    scale_bar_type: float
+        type of scale bar, none, top left corner, or bottom right corner
+    scale_text: string
+        text to add to the scale bar
+
+    Returns
+    -------
+    extent_gdf: geodataframe
+        geodataframe of the extent in NAD83
+    not explicitly returned:
+        Axis with plotted geometry and streamflow current conditions
+
+
+    """
+
+    # get axis dimensions
+    ax_dims = get_ax_size_inches(ax, fig)
+    boundary_gdf_proj = boundary_gdf.to_crs(proj)
+    setup_boundary(ax, boundary_gdf_proj, state_style)
+    minx, miny, maxx, maxy = boundary_gdf_proj.total_bounds
+    center_x = 0.5 * (minx + maxx)
+    center_y = 0.5 * (miny + maxy)
 
     # set up the x and y limits of the axis
     ax.set_xlim(
@@ -250,13 +317,6 @@ def plot_data(
             bbox=dict(boxstyle="round,pad=0.5", fc="none", alpha=0.0),
             style="italic",
         )
-    # return make_extent_gdf(
-    #     center_x - 0.5 * reference_scale * ax_dims[0] / scale_mult,
-    #     center_x + 0.5 * reference_scale * ax_dims[0] / scale_mult,
-    #     center_y - 0.5 * reference_scale * ax_dims[1] / scale_mult,
-    #     center_y + 0.5 * reference_scale * ax_dims[1] / scale_mult,
-    #     proj,
-    # )
     return make_extent_gdf(
         boundary_gdf,
     )

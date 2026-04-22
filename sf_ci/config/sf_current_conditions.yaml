@@ -19,6 +19,7 @@ layouts:
     prefix: "mobile-CONUS-"
     locator_map: False
     locator_map_loc: False
+    static: False
     video: False
     ax_loc:  
       - [0.05,0.05,0.9,0.9]
@@ -38,6 +39,7 @@ layouts:
     prefix: "mobile-AK-"
     locator_map: False
     locator_map_loc: False
+    static: False
     video: False
     ax_loc:  
       - [0.05,0.05,0.9,0.9]
@@ -57,6 +59,7 @@ layouts:
     prefix: "mobile-HI-"
     locator_map: False
     locator_map_loc: False
+    static: False
     video: False
     ax_loc:  
       - [0.05,0.05,0.9,0.9]
@@ -76,6 +79,7 @@ layouts:
     prefix: "mobile-PR_VI-"
     locator_map: False
     locator_map_loc: False
+    static: False
     video: False
     ax_loc:  
       - [0.05,0.05,0.9,0.9]
@@ -95,6 +99,7 @@ layouts:
     prefix: "mobile-GU_MP-"
     locator_map: False
     locator_map_loc: False
+    static: False
     video: False
     ax_loc:
       - [0.05,0.05,0.9,0.9]
@@ -114,6 +119,7 @@ layouts:
     prefix: "mobile-AS-"
     locator_map: False
     locator_map_loc: False
+    static: False
     video: False
     ax_loc:  
       - [0.05,0.05,0.9,0.9]
@@ -138,7 +144,8 @@ layouts:
     prefix: "desktop-CONUS_OCONUS-"
     locator_map: True
     locator_map_loc: [0.30, 0.05, 0.12, 0.24]
-    video: True
+    static: False
+    video: False
     ax_loc: 
       - [0.30, 0.01, 0.69, 0.98]
       - [0.005, 0.63, 0.28, 0.36]
@@ -174,6 +181,14 @@ layouts:
       - "Puerto Rico & U.S. Virgin Islands"
       - "Northern\nMariana Islands"
       - "American Samoa"
+  desktop_static:
+    figure_dimensions: [8,4]
+    metadata_column: "desktop_static_CONUS_OCONUS_image_file"
+    prefix: "desktop-static-CONUS_OCONUS-"
+    source_prefix: "desktop-CONUS_OCONUS-"
+    static: True
+    video: True
+
 
 figure_params:
   prefix: "sf_current_conditions"
@@ -195,6 +210,8 @@ figure_params:
   shadow:
     sigma: 25
     color: "#999999"
+  webp_quality: 75
+  dpi: 600
 
 movie_params:
   framerate: 8
