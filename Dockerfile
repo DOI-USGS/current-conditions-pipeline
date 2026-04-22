@@ -9,18 +9,21 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     libgl1 \
     libglib2.0-0 \
+    fontconfig unzip grep sed \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Source Sans 3 font
-RUN mkdir -p /tmp/ttf \
-    && cd /tmp/ttf \
-    && wget -q https://github.com/adobe-fonts/source-sans/releases/download/3.052R/TTF-source-sans-3.052R.zip \
-    && unzip -o TTF-source-sans-3.052R.zip \
-    && mkdir -p /usr/share/fonts/truetype/source-sans-3 \
-    && mv TTF/*.ttf /usr/share/fonts/truetype/source-sans-3/ \
-    && fc-cache -f -v \
-    && cd / \
-    && rm -rf /tmp/ttf
+RUN mkdir -p /usr/local/share/fonts/source-sans-3 && \
+    GF_CSS_URL="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" && \
+    UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0 Safari/537.36" && \
+    curl -fsSL -A "$UA" "$GF_CSS_URL" \
+      | grep -Eo 'https://fonts.gstatic.com/[^)]+\.ttf' \
+      | sort -u \
+      | while read -r URL; do \
+          echo "Downloading $URL"; \
+          curl -fsSL "$URL" -o "/usr/local/share/fonts/source-sans-3/$(basename "$URL")"; \
+        done && \
+    fc-cache -f -v
 
 # Install pixi
 RUN curl -fsSL https://pixi.sh/install.sh | bash
