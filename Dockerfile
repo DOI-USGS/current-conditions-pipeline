@@ -11,6 +11,18 @@ RUN apt-get update && apt-get install -y \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
+# Install Source Sans 3 font
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    fontconfig unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /usr/local/share/fonts/source-sans-3 && \
+    cd /usr/local/share/fonts/source-sans-3 && \
+    curl -L -o source-sans-3.zip "https://fonts.google.com/download?family=Source+Sans+3" && \
+    unzip -o source-sans-3.zip && rm source-sans-3.zip && \
+    fc-cache -f -v
+
+
 # Install pixi
 RUN curl -fsSL https://pixi.sh/install.sh | bash
 ENV PATH="/root/.pixi/bin:$PATH"
