@@ -2,16 +2,30 @@ FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Minimal system deps   that  conda/pixi can't provide
+# Minimal system deps that conda/pixi can't provide
 RUN apt-get update && apt-get install -y \
     git \
     curl \
     ca-certificates \
     libgl1 \
     libglib2.0-0 \
-    fonts-source-sans-pro \
     fontconfig unzip grep sed \
     && rm -rf /var/lib/apt/lists/*
+
+# Install Source Sans Pro directly from Google Fonts
+RUN mkdir -p /usr/share/fonts/truetype/source-sans-pro && \
+    curl -fsSL "https://fonts.google.com/download?family=Source+Sans+Pro" -o /tmp/SourceSansPro.zip && \
+    unzip /tmp/SourceSansPro.zip -d /usr/share/fonts/truetype/source-sans-pro && \
+    rm /tmp/SourceSansPro.zip && \
+    fc-cache -fv
+
+# Clear any stale matplotlib font cache
+RUN find /root -name "fontList*.json" -delete 2>/dev/null || true
+
+# Set Source Sans Pro as default matplotlib font
+RUN mkdir -p /root/.config/matplotlib && \
+    echo "font.family: sans-serif" >> /root/.config/matplotlib/matplotlibrc && \
+    echo "font.sans-serif: Source Sans Pro, DejaVu Sans" >> /root/.config/matplotlib/matplotlibrc
 
 # Install pixi
 RUN curl -fsSL https://pixi.sh/install.sh | bash
@@ -23,7 +37,7 @@ COPY pixi.toml pixi.lock ./
 # Avoiding "Skipped running the post-link scripts"
 RUN pixi config set --local run-post-link-scripts insecure
 
-# Install all Python + R deps from  lock file
+# Install all Python + R deps from lock file
 RUN pixi install
 RUN pixi run install-mapshaper
 
@@ -35,14 +49,6 @@ RUN mkdir -p /root/R/library
 ENV R_LIBS_USER=/root/R/library
 
 # Install CRAN-only packages (not available on conda-forge)
-
-# Note that rmapshaper is technically available on conda-forge at time of writing,
-# but it can't resolve with R 4.X.X because rgeojson, one of its 
-# dependencies, is compiled with an old version of R. This is a workaround.
-
-# av is also available on conda-forge, but not available for Windows for some reason.
-# It's possible to specify only MacOS/Linux, but I figured this would be easiest to ensure
-# consistency across platforms
 RUN pixi run Rscript - << "EOF"
 remotes::install_version('sfarrow', version = '0.4.1', lib='/root/R/library', repos='https://cran.rstudio.com/')
 remotes::install_version('retry', version = '0.1.1', lib='/root/R/library', repos='https://cran.rstudio.com/')
@@ -53,9 +59,7 @@ remotes::install_version('tarchetypes', version = '0.14.0', lib='/root/R/library
 remotes::install_version('USAboundaries', version = '0.5.1', lib='/root/R/library', repos='https://cran.rstudio.com/')
 EOF
 
-# install.packages(c('sfarrow', 'retry', 'rmapshaper', 'av'), repos = 'http://cran.us.r-project.org')
-
-# Install GitHub-only  R package (not available on conda-forge)
+# Install GitHub-only R package (not available on conda-forge)
 RUN pixi run Rscript -e "remotes::install_github('DOI-USGS/dataRetrieval', ref='df7edad434e3c804ca30354132e5b4dae6c8f435', upgrade='never', lib='/root/R/library')"
 
 # Sanity checks
@@ -68,3 +72,12 @@ import dataretrieval.waterdata
 import pandas
 import pyarrow
 EOF
+
+# Confirm matplotlib can find Source Sans Pro
+RUN pixi run python -c "
+import matplotlib.font_manager as fm
+fm._load_fontmanager(try_read_cache=False)
+fonts = [f.name for f in fm.fontManager.ttflist]
+assert 'Source Sans Pro' in fonts, f'Font not found! Available: {sorted(set(fonts))[:20]}'
+print('Source Sans Pro found OK')
+"
