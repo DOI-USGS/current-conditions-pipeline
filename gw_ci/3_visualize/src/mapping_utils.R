@@ -914,6 +914,9 @@ plot_gw_static_png <- function(gw_bkgd_img, gw_frgd_img, date, logo_path, legend
 
   usgs_logo <- magick::image_read(logo_path) |>
     magick::image_colorize(100, "black")
+  
+  tmp <- tempfile(fileext = ".svg")
+  download.file(legend_path, tmp, quiet = TRUE)
 
   legend_img <- magick::image_read(
     rsvg::rsvg_png(legend_path, width = 2000)
