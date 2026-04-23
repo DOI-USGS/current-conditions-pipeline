@@ -12,11 +12,12 @@ RUN apt-get update && apt-get install -y \
     fontconfig unzip grep sed \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Source Sans Pro directly from Google Fonts
+# Install Source Sans Pro directly from GitHub
 RUN mkdir -p /usr/share/fonts/truetype/source-sans-pro && \
-    curl -fsSL "https://fonts.google.com/download?family=Source+Sans+Pro" -o /tmp/SourceSansPro.zip && \
-    unzip /tmp/SourceSansPro.zip -d /usr/share/fonts/truetype/source-sans-pro && \
-    rm /tmp/SourceSansPro.zip && \
+    curl -fsSL "https://github.com/adobe-fonts/source-sans/releases/download/3.052R/OTF-source-sans-3.052R.zip" -o /tmp/SourceSansPro.zip && \
+    unzip /tmp/SourceSansPro.zip -d /tmp/source-sans && \
+    cp /tmp/source-sans/OTF/*.otf /usr/share/fonts/truetype/source-sans-pro/ && \
+    rm -rf /tmp/SourceSansPro.zip /tmp/source-sans && \
     fc-cache -fv
 
 # Clear any stale matplotlib font cache
