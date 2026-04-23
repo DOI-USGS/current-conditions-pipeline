@@ -74,10 +74,4 @@ import pyarrow
 EOF
 
 # Confirm matplotlib can find Source Sans Pro
-RUN pixi run python -c "
-import matplotlib.font_manager as fm
-fm._load_fontmanager(try_read_cache=False)
-fonts = [f.name for f in fm.fontManager.ttflist]
-assert 'Source Sans Pro' in fonts, f'Font not found! Available: {sorted(set(fonts))[:20]}'
-print('Source Sans Pro found OK')
-"
+RUN pixi run python -c "import matplotlib.font_manager as fm; fm._load_fontmanager(try_read_cache=False); fonts = [f.name for f in fm.fontManager.ttflist]; assert 'Source Sans Pro' in fonts, 'Font not found! Available: ' + str(sorted(set(fonts))[:20]); print('Source Sans Pro found OK')"
