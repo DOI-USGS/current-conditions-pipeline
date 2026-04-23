@@ -2,6 +2,15 @@ tar_source('1_fetch/src/download_utils.R')
 tar_source('1_fetch/src/gw_categorize_daily_vals.R')
 
 p1_targets <- list(
+  ##### legend image #####
+  tar_target(
+    p1_desktop_legend_svg,
+    {
+      download.file(p0_desktop_leg_path, p0_desktop_leg_out_path, quiet = TRUE)
+      p0_desktop_leg_out_path
+    },
+    format = "file"
+  ),
   ##### spatial data #####
   tar_target(
     p1_states_sf,
@@ -28,8 +37,9 @@ p1_targets <- list(
   ), 
   tar_target(
     p1_metadata,
-    dplyr::mutate(readr::read_csv(p1_metadata_csv), date = lubridate::mdy(date))
-  ),
+    readr::read_csv(p1_metadata_csv, col_types = cols(.default = "c")) |>
+      mutate(date = lubridate::mdy(date))
+    ),
   # Build out data tibble for all dates
   tar_target(
     p1_date_config,

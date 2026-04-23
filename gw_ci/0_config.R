@@ -50,28 +50,27 @@ p0_targets <- list(
   ),
   tar_target(
     p0_desktop_leg_path,
-    "3_visualize/in/gw-static-legend.svg",
-    format = "file"
+    paste0(p0_s3_prod_URL,
+           "current_conditions/groundwater/legends/gw-static-legend.svg")
   ),
+  tar_target(
+    p0_desktop_leg_out_path,
+    "3_visualize/in/gw-static-legend.svg"
+    ),
   ##### date parameters #####
   tar_target(
     p0_yesterday_date,
-    # # fix date for now, while building out pipeline
-    as.Date("2026/03/05"),
-    # Sys.Date() - 1,
+    Sys.Date() - 1,
     # ensure target is reran and not skipped for CI
     cue = tar_cue(mode = "always")
   ),
   tar_target(
     p0_intervals,
-    # will need to updated once we have 1, 3, 6, and 12 months of data from todays date
-    # c(lubridate::dmonths(1), lubridate::dmonths(3), lubridate::dmonths(6),
-    #   lubridate::years(1))
     c(
-      "last-month" = weeks(1),
-      "last-3-months" = weeks(2),
-      "last-6-months" = months(1),
-      "last-year" = months(2)
+      "last-month" = base::months(1),
+      "last-3-months" = base::months(3),
+      "last-6-months" = base::months(6),
+      "last-year" = base::months(15) + lubridate::days(21)
     )
   ),
   tar_target(
