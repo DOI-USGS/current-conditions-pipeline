@@ -24,7 +24,7 @@ RUN mkdir -p /usr/share/fonts/truetype/source-sans-3 && \
           curl -fsSL "$URL" -o "/usr/share/fonts/truetype/source-sans-3/$(basename "$URL")"; \
         done && \
     fc-cache -f -v
-
+RUN fc-list | grep -i "Source Sans"
 
 # Install pixi
 RUN curl -fsSL https://pixi.sh/install.sh | bash
