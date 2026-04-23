@@ -50,6 +50,14 @@ RUN mkdir -p /root/R/library
 ENV R_LIBS_USER=/root/R/library
 
 # Install CRAN-only packages (not available on conda-forge)
+
+# Note that rmapshaper is technically available on conda-forge at time of writing,
+# but it can't resolve with R 4.X.X because rgeojson, one of its 
+# dependencies, is compiled with an old version of R. This is a workaround.
+
+# av is also available on conda-forge, but not available for Windows for some reason.
+# It's possible to specify only MacOS/Linux, but I figured this would be easiest to ensure
+# consistency across platforms
 RUN pixi run Rscript - << "EOF"
 remotes::install_version('sfarrow', version = '0.4.1', lib='/root/R/library', repos='https://cran.rstudio.com/')
 remotes::install_version('retry', version = '0.1.1', lib='/root/R/library', repos='https://cran.rstudio.com/')
@@ -59,6 +67,8 @@ remotes::install_version('targets', version = '1.12.0', lib='/root/R/library', r
 remotes::install_version('tarchetypes', version = '0.14.0', lib='/root/R/library', repos='https://cran.rstudio.com/')
 remotes::install_version('USAboundaries', version = '0.5.1', lib='/root/R/library', repos='https://cran.rstudio.com/')
 EOF
+
+# install.packages(c('sfarrow', 'retry', 'rmapshaper', 'av'), repos = 'http://cran.us.r-project.org')
 
 # Install GitHub-only R package (not available on conda-forge)
 RUN pixi run Rscript -e "remotes::install_github('DOI-USGS/dataRetrieval', ref='df7edad434e3c804ca30354132e5b4dae6c8f435', upgrade='never', lib='/root/R/library')"
@@ -73,6 +83,3 @@ import dataretrieval.waterdata
 import pandas
 import pyarrow
 EOF
-
-# Confirm matplotlib can find Source Sans Pro
-RUN pixi run python -c "import matplotlib.font_manager as fm; fm._load_fontmanager(try_read_cache=False); fonts = sorted(set([f.name for f in fm.fontManager.ttflist])); print('Found fonts:', [f for f in fonts if 'Source' in f]); print('All sans-serif sample:', fonts[:30])"
