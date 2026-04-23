@@ -261,7 +261,7 @@ p3_targets <- list(
       gw_frgd_img = p3_desktop_gw_webps,  
       date = p1_date_incomplete[["date"]],
       logo_path = p0_logo_path,
-      legend_path = p0_desktop_leg_path,
+      legend_path = p1_desktop_legend_file,
       viz_cfg = p0_viz_config_df,
       image_screen_type = "desktop",
       area_name = p0_desktop_area_name,

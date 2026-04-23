@@ -53,6 +53,10 @@ p0_targets <- list(
     paste0(p0_s3_prod_URL,
            "current_conditions/groundwater/legends/gw-static-legend.svg")
   ),
+  tar_target(
+    p0_desktop_leg_out_path,
+    "3_visualize/in/gw-static-legend.svg"
+    ),
   ##### date parameters #####
   tar_target(
     p0_yesterday_date,
