@@ -9,9 +9,8 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     libgl1 \
     libglib2.0-0 \
+    fonts-source-sans-pro \
     fontconfig unzip grep sed \
-    fonts-sourcesanspro \
-    fontconfig \
     && rm -rf /var/lib/apt/lists/*
 
 # Install pixi
