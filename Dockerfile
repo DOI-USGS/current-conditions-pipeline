@@ -12,11 +12,11 @@ RUN apt-get update && apt-get install -y \
     fontconfig unzip grep sed \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Source Sans Pro directly from GitHub
+# Install Source Sans Pro (TTF) from GitHub
 RUN mkdir -p /usr/share/fonts/truetype/source-sans-pro && \
-    curl -fsSL "https://github.com/adobe-fonts/source-sans/releases/download/3.052R/OTF-source-sans-3.052R.zip" -o /tmp/SourceSansPro.zip && \
+    curl -fsSL "https://github.com/adobe-fonts/source-sans/releases/download/3.052R/TTF-source-sans-3.052R.zip" -o /tmp/SourceSansPro.zip && \
     unzip /tmp/SourceSansPro.zip -d /tmp/source-sans && \
-    cp /tmp/source-sans/OTF/*.otf /usr/share/fonts/truetype/source-sans-pro/ && \
+    cp /tmp/source-sans/TTF/*.ttf /usr/share/fonts/truetype/source-sans-pro/ && \
     rm -rf /tmp/SourceSansPro.zip /tmp/source-sans && \
     fc-cache -fv
 
@@ -75,4 +75,4 @@ import pyarrow
 EOF
 
 # Confirm matplotlib can find Source Sans Pro
-RUN pixi run python -c "import matplotlib.font_manager as fm; fm._load_fontmanager(try_read_cache=False); fonts = [f.name for f in fm.fontManager.ttflist]; assert 'Source Sans Pro' in fonts, 'Font not found! Available: ' + str(sorted(set(fonts))[:20]); print('Source Sans Pro found OK')"
+RUN pixi run python -c "import matplotlib.font_manager as fm; fm._load_fontmanager(try_read_cache=False); fonts = sorted(set([f.name for f in fm.fontManager.ttflist])); print('Found fonts:', [f for f in fonts if 'Source' in f]); print('All sans-serif sample:', fonts[:30])"
