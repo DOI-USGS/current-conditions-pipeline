@@ -10,16 +10,9 @@ RUN apt-get update && apt-get install -y \
     libgl1 \
     libglib2.0-0 \
     fontconfig unzip grep sed \
+    fonts-sourcesanspro \
+    fontconfig \
     && rm -rf /var/lib/apt/lists/*
-
-# Install Source Sans 3 font
-RUN mkdir /tmp/ttf \
-    && cd /tmp/ttf \
-    && curl -L -o source-sans.zip https://github.com/adobe-fonts/source-sans/releases/download/3.052R/TTF-source-sans-3.052R.zip \
-    && unzip TTF-source-sans-3.052R.zip \
-    && mv TTF/*.ttf /usr/share/fonts/ \
-    && cd - \
-    && rm -rf /tmp/ttf \
 
 # Install pixi
 RUN curl -fsSL https://pixi.sh/install.sh | bash
