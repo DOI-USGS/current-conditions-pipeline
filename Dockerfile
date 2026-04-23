@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Source Sans 3 font
-RUN mkdir -p /usr/share/fonts/source-sans-3 && \
+RUN mkdir -p /usr/share/fonts/truetype/source-sans-3 && \
     GF_CSS_URL="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" && \
     UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0 Safari/537.36" && \
     curl -fsSL -A "$UA" "$GF_CSS_URL" \
@@ -21,9 +21,10 @@ RUN mkdir -p /usr/share/fonts/source-sans-3 && \
       | sort -u \
       | while read -r URL; do \
           echo "Downloading $URL"; \
-          curl -fsSL "$URL" -o "/usr/share/fonts/source-sans-3/$(basename "$URL")"; \
+          curl -fsSL "$URL" -o "/usr/share/fonts/truetype/source-sans-3/$(basename "$URL")"; \
         done && \
     fc-cache -f -v
+
 
 # Install pixi
 RUN curl -fsSL https://pixi.sh/install.sh | bash
