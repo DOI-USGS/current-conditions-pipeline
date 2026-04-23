@@ -4,7 +4,7 @@ tar_source('1_fetch/src/gw_categorize_daily_vals.R')
 p1_targets <- list(
   ##### legend image #####
   tar_target(
-    p1_desktop_legend_file,
+    p1_desktop_legend_svg,
     {
       download.file(p0_desktop_leg_path, p0_desktop_leg_out_path, quiet = TRUE)
       p0_desktop_leg_out_path
