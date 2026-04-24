@@ -245,8 +245,7 @@ p3_targets <- list(
     },
     pattern = map(
       p3_states_gw_webps,
-      p0_states_area_info_df,
-      p3_states_bkgd_webps
+      cross(p1_date_incomplete, map(p0_states_area_info_df, p3_states_bkgd_webps))
     ),
     format = "file"
   ),
@@ -261,7 +260,7 @@ p3_targets <- list(
       gw_frgd_img = p3_desktop_gw_webps,  
       date = p1_date_incomplete[["date"]],
       logo_path = p0_logo_path,
-      legend_path = p0_desktop_leg_path,
+      legend_path = p1_desktop_legend_svg,
       viz_cfg = p0_viz_config_df,
       image_screen_type = "desktop",
       area_name = p0_desktop_area_name,
