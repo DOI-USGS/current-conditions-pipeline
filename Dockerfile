@@ -86,6 +86,8 @@ RUN pixi run python -c "import dataretrieval.waterdata; print(dir(dataretrieval.
 RUN pixi run python - << 'EOF'
 import dataretrieval
 import dataretrieval.waterdata
+import pyarrow
+EOF
 
 # Clear any stale matplotlib font cache
 RUN find /root -name "fontList*.json" -delete 2>/dev/null || true
@@ -97,5 +99,3 @@ RUN mkdir -p /root/.config/matplotlib && \
 
 # Confirm matplotlib can find Source Sans 3
 RUN pixi run python -c "import matplotlib.font_manager as fm; fm._load_fontmanager(try_read_cache=False); fonts = sorted(set([f.name for f in fm.fontManager.ttflist])); print('Found fonts:', [f for f in fonts if 'Source' in f]); print('All sans-serif sample:', fonts[:30])"
-import pyarrow
-EOF
