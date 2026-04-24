@@ -32,14 +32,15 @@ p1_targets <- list(
       url_prefix = p0_s3_prod_URL,
       outfile = file.path(
         p0_parquet_file_dir,
-        basename(p0_parquet_coverage_path))
+        basename(p0_parquet_coverage_path)
       )
-  ), 
+    )
+  ),
   tar_target(
     p1_metadata,
     readr::read_csv(p1_metadata_csv, col_types = cols(.default = "c")) |>
-      mutate(date = lubridate::mdy(date))
-    ),
+      mutate(date = lubridate::format_ISO8601(date))
+  ),
   # Build out data tibble for all dates
   tar_target(
     p1_date_config,
