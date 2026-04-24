@@ -145,7 +145,7 @@ def generate_image_list(
                 ]
                 video_frame_lists += [image_list]
                 video_names += [
-                    video_prefix + layout["prefix"] + video_label(interval) + ".mp4"
+                    video_prefix + layout["source_prefix"] + video_label(interval) + ".mp4"
                 ]
 
     # define date dictionary for a json
