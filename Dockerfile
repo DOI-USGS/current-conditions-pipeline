@@ -14,10 +14,24 @@ RUN apt-get update && apt-get install -y \
 
 # Install Source Sans Pro (TTF) from GitHub
 RUN mkdir -p /usr/share/fonts/truetype/source-sans-pro && \
-    curl -fsSL "https://github.com/adobe-fonts/source-sans/releases/download/3.052R/TTF-source-sans-3.052R.zip" -o /tmp/SourceSansPro.zip && \
-    unzip /tmp/SourceSansPro.zip -d /tmp/source-sans && \
-    cp /tmp/source-sans/TTF/*.ttf /usr/share/fonts/truetype/source-sans-pro/ && \
-    rm -rf /tmp/SourceSansPro.zip /tmp/source-sans && \
+    for font in \
+        SourceSans3-Black.ttf \
+        SourceSans3-BlackIt.ttf \
+        SourceSans3-Bold.ttf \
+        SourceSans3-BoldIt.ttf \
+        SourceSans3-ExtraLight.ttf \
+        SourceSans3-ExtraLightIt.ttf \
+        SourceSans3-It.ttf \
+        SourceSans3-Light.ttf \
+        SourceSans3-LightIt.ttf \
+        SourceSans3-Medium.ttf \
+        SourceSans3-MediumIt.ttf \
+        SourceSans3-Regular.ttf \
+        SourceSans3-Semibold.ttf \
+        SourceSans3-SemiboldIt.ttf; do \
+        curl -fsSL "https://raw.githubusercontent.com/adobe-fonts/source-sans/ed1808970eb3c7301c9a523bee26473ba0bb62fa/TTF/${font}" \
+            -o "/usr/share/fonts/truetype/source-sans-pro/${font}"; \
+    done && \
     fc-cache -fv
 
 # Clear any stale matplotlib font cache
