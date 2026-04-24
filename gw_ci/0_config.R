@@ -34,7 +34,7 @@ p0_targets <- list(
   ),
   tar_target(
     p0_local_image_file_dir,
-    "3_visualize/out
+    "3_visualize/out"
   ),
   tar_target(
     p0_local_image_type_prefix,
