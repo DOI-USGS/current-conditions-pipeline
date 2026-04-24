@@ -34,14 +34,6 @@ RUN mkdir -p /usr/share/fonts/truetype/source-sans-pro && \
     done && \
     fc-cache -fv
 
-# Clear any stale matplotlib font cache
-RUN find /root -name "fontList*.json" -delete 2>/dev/null || true
-
-# Set Source Sans Pro as default matplotlib font
-RUN mkdir -p /root/.config/matplotlib && \
-    echo "font.family: sans-serif" >> /root/.config/matplotlib/matplotlibrc && \
-    echo "font.sans-serif: Source Sans Pro, DejaVu Sans" >> /root/.config/matplotlib/matplotlibrc
-
 # Install pixi
 RUN curl -fsSL https://pixi.sh/install.sh | bash
 ENV PATH="/root/.pixi/bin:$PATH"
@@ -94,6 +86,16 @@ RUN pixi run python -c "import dataretrieval.waterdata; print(dir(dataretrieval.
 RUN pixi run python - << 'EOF'
 import dataretrieval
 import dataretrieval.waterdata
-import pandas
+
+# Clear any stale matplotlib font cache
+RUN find /root -name "fontList*.json" -delete 2>/dev/null || true
+
+# Set Source Sans 3 as default matplotlib font
+RUN mkdir -p /root/.config/matplotlib && \
+    echo "font.family: sans-serif" >> /root/.config/matplotlib/matplotlibrc && \
+    echo "font.sans-serif: Source Sans 3, DejaVu Sans" >> /root/.config/matplotlib/matplotlibrc
+
+# Confirm matplotlib can find Source Sans 3
+RUN pixi run python -c "import matplotlib.font_manager as fm; fm._load_fontmanager(try_read_cache=False); fonts = sorted(set([f.name for f in fm.fontManager.ttflist])); print('Found fonts:', [f for f in fonts if 'Source' in f]); print('All sans-serif sample:', fonts[:30])"
 import pyarrow
 EOF
