@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
-from sf_conditions.plot.plot_functions import plot_data, get_ax_size_inches, mpl_setup
+from sf_conditions.plot.plot_functions import plot_data, get_ax_size_inches, mpl_setup, date_text
     
 def plot_daily_sf_condition(
     figure_params,
@@ -60,10 +60,22 @@ def plot_daily_sf_condition(
     fig.text(
         figure_params["datelabel"]["xloc"],
         figure_params["datelabel"]["yloc"],
-        date,
+        date_text(date),
         fontsize=figure_params["datelabel"]["fontsize"],
+        weight=figure_params["datelabel"]["fontweight"],
+        color=figure_params["datelabel"]["fontcolor"],
+        ha="left",
+        va="top",
+    )
+
+    # add temp date label
+    fig.text(
+        figure_params["datelabel_temp"]["xloc"],
+        figure_params["datelabel_temp"]["yloc"],
+        date,
+        fontsize=figure_params["datelabel_temp"]["fontsize"],
         ha="right",
-        va="bottom",
+        va="top",
     )
 
     # Save figure

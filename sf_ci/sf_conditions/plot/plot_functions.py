@@ -56,6 +56,18 @@ def setup_boundary(ax, boundary_gdf_proj, state_style):
             joinstyle="round",
         )
 
+def date_text(date):
+    Y = date[0:4]
+    M = date[5:7]
+    D = date[8:10]
+
+    months = ["January", "February", "March",
+              "April", "May", "June",
+              "July", "August", "September",
+              "October", "November", "December"]
+    
+    return months[int(M)-1] + " " + str(int(D)) + ", " + str(int(Y))
+
 
 def plot_data(
     fig,

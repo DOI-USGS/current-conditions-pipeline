@@ -205,8 +205,14 @@ figure_params:
   axis_buffer: 1.05
   datelabel:
     fontsize: 10.5
+    xloc: 0.01
+    yloc: 0.99
+    fontweight: "extra bold"
+    fontcolor: "#363636"
+  datelabel_temp:
+    fontsize: 10.5
     xloc: 0.99
-    yloc: 0.01
+    yloc: 0.99
   shadow:
     sigma: 25
     color: "#999999"
