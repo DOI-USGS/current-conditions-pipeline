@@ -971,16 +971,18 @@ plot_gw_static_png <- function(gw_bkgd_img, gw_frgd_img, date, logo_path, legend
       hjust = 1, vjust = 0,
       halign = 0, valign = 0
     ) +
-    # Add date
-    draw_label(format(date, "%B%e, %Y"),
-      x = 0.01,
-      y = 0.98,
-      hjust = 0,
-      vjust = 1,
+    # Add date | title below map, right-justified
+    draw_label(
+      paste0(format(date, "%b %d, %Y"), "│Groundwater Conditions│"),
+      x = 0.875,
+      y = 0.035,
+      hjust = 1,
+      vjust = 0,
       fontfamily = viz_cfg[["date_font"]],
+      fontface = "bold",
       color = viz_cfg[["date_font_color"]],
       size = viz_cfg[["date_font_size"]]
-    )
+      )
 
   ggsave(
     filename = out_path,
