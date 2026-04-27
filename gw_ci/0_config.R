@@ -72,7 +72,7 @@ p0_targets <- list(
       "last-month" = lubridate::days(7), #base::months(1)
       "last-3-months" = lubridate::days(14), # base::months(3),
       "last-6-months" = base::months(1), # base::months(6),
-      "last-year" = base::months(2), # base::months(15) + lubridate::days(21)
+      "last-year" = base::months(2) # base::months(15) + lubridate::days(21)
     )
   ),
   tar_target(
