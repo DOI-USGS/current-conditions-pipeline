@@ -10,8 +10,9 @@ with open("config/sf_current_conditions.yaml", "r") as file:
 
 # Load metadata and generate list of files to make
 metadata = pd.read_csv(params["s3_url_prefix"] + "metadata/sf_file_metadata.csv", dtype=str, keep_default_na=False)
-metadata.iloc[:, metadata.columns.get_loc('desktop_CONUS_OCONUS_image_file')] = 'NA'
-metadata['desktop_static_CONUS_OCONUS_image_file'] = 'NA'
+
+# refresh all image files
+metadata.iloc[-1, 1:] = 'NA'
 
 # Set default date if nothing is specified
 date_of_interest = config.get("date", "2026-03-03")
@@ -90,6 +91,26 @@ for geometry in params["geometries"].keys():
 ########################################
 #############DATA  DOWNLOAD#############
 ########################################
+
+# download usgs logo
+rule download_usgs_logo:
+    params:
+        s3_url_prefix = params["s3_url_prefix"],
+        folder = "logos"
+    output:
+        s3_file = "logos/usgs_logo_black.png"
+    script:
+        "sf_conditions/fetch/get_s3.py"
+
+# download legend
+rule download_legend:
+    params:
+        s3_url_prefix = params["s3_url_prefix"],
+        folder = "legends"
+    output:
+        s3_file = "legends/sf-static-legend.png"
+    script:
+        "sf_conditions/fetch/get_s3.py"
 
 # download images that are available for longest interval
 for image_file in images_to_download:
@@ -209,7 +230,9 @@ for i, image_file in enumerate(images_for_static_image_generation[:]):
             layout_params = params["layouts"][layout]
         input:
             background_image_file = "images/background-" + params["layouts"][layout]["source_prefix"][:-1] + ".webp",
-            foreground_image_file = image_file
+            foreground_image_file = image_file,
+            usgs_image_file = "logos/usgs_logo_black.png",
+            legend_image_file = "legends/sf-static-legend.png"
         output:
             static_image_file = static_images_to_generate[i]
         script:
