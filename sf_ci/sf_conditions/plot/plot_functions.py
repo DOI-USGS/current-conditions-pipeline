@@ -66,8 +66,8 @@ def date_text(date):
               "July", "August", "September",
               "October", "November", "December"]
     
-    return months[int(M)-1] + " " + str(int(D)) + ", " + str(int(Y))
-
+    #return months[int(M)-1] + " " + str(int(D)) + ", " + str(int(Y))
+    return M + "/" + D + "/" + Y + " | Surface Water Conditions | " 
 
 def plot_data(
     fig,

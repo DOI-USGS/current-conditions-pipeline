@@ -83,8 +83,8 @@ def plot_daily_sf_condition(
         fontsize=figure_params["datelabel"]["fontsize"],
         weight=figure_params["datelabel"]["fontweight"],
         color=figure_params["datelabel"]["fontcolor"],
-        ha="left",
-        va="top",
+        ha=figure_params["datelabel"]["ha"],
+        va=figure_params["datelabel"]["va"],
     )
 
     # add temp date label
