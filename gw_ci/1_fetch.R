@@ -39,7 +39,7 @@ p1_targets <- list(
   tar_target(
     p1_metadata,
     readr::read_csv(p1_metadata_csv, col_types = cols(.default = "c")) |>
-      mutate(date = lubridate::format_ISO8601(lubridate::as_date(date)))
+      mutate(date = lubridate::as_date(date))
   ),
   # Build out data tibble for all dates
   tar_target(

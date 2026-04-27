@@ -15,7 +15,7 @@ p0_targets <- list(
   tar_target(
     p0_parquet_coverage_path,
     "current_conditions/groundwater/metadata/gw_coverage.parquet"
-    ),
+  ),
   tar_target(
     p0_remote_parquet_file_template,
     "current_conditions/groundwater/stage/gw_categorizations_%s.parquet"
@@ -50,13 +50,15 @@ p0_targets <- list(
   ),
   tar_target(
     p0_desktop_leg_path,
-    paste0(p0_s3_prod_URL,
-           "current_conditions/groundwater/legends/gw-static-legend.svg")
+    paste0(
+      p0_s3_prod_URL,
+      "current_conditions/groundwater/legends/gw-static-legend.svg"
+    )
   ),
   tar_target(
     p0_desktop_leg_out_path,
     "3_visualize/in/gw-static-legend.svg"
-    ),
+  ),
   ##### date parameters #####
   tar_target(
     p0_yesterday_date,
@@ -67,10 +69,10 @@ p0_targets <- list(
   tar_target(
     p0_intervals,
     c(
-      "last-month" = base::months(1)
-      #,"last-3-months" = base::months(3),
-      #"last-6-months" = base::months(6),
-      #"last-year" = base::months(15) + lubridate::days(21)
+      "last-month" = lubridate::days(7), #base::months(1)
+      "last-3-months" = lubridate::days(14), # base::months(3),
+      "last-6-months" = base::months(1), # base::months(6),
+      "last-year" = base::months(2), # base::months(15) + lubridate::days(21)
     )
   ),
   tar_target(
@@ -96,21 +98,47 @@ p0_targets <- list(
     p0_area_info_df,
     tibble(
       name = c('CONUS', 'AK', 'HI', 'PR_VI', 'GU_MP', 'AS'),
-      full_name = 
-        c('Conterminous United States', 'Alaska', 'Hawaii', 'Puerto Rico & U.S. Virgin Islands', 
-          list(c('Guam', 'Northern \nMariana Islands')), 'American Samoa'),
-      state_list = c(
-        list('conus' = state.abb[! state.abb %in% c('AK', 'HI')]), 'AK', 'HI', 
-        list(c('PR', 'VI')), list(c('GU','MP')), 'AS'
+      full_name = c(
+        'Conterminous United States',
+        'Alaska',
+        'Hawaii',
+        'Puerto Rico & U.S. Virgin Islands',
+        list(c('Guam', 'Northern \nMariana Islands')),
+        'American Samoa'
       ),
-      proj = c("EPSG:5070", "EPSG:3338", 'ESRI:102007', "EPSG:2866", "EPSG:8693", 
-               "EPSG:2195"),
-      proj_name = c('Albers Equal Area','Alaska Albers Equal Area',
-                    'Hawaii_Albers_Equal_Area_Conic','Puerto Rico and Virgin Is.',
-                    'UTM zone 55N','UTM zone 2S'),
-      proj_datum = c('NAD83','NAD83','NAD83','NAD83(HARN)','NAD83(MA11)',
-                     'NAD83(HARN)'),
-      proj_units = c('meter','meter','meter','meter','meter','meter'),
+      state_list = c(
+        list('conus' = state.abb[!state.abb %in% c('AK', 'HI')]),
+        'AK',
+        'HI',
+        list(c('PR', 'VI')),
+        list(c('GU', 'MP')),
+        'AS'
+      ),
+      proj = c(
+        "EPSG:5070",
+        "EPSG:3338",
+        'ESRI:102007',
+        "EPSG:2866",
+        "EPSG:8693",
+        "EPSG:2195"
+      ),
+      proj_name = c(
+        'Albers Equal Area',
+        'Alaska Albers Equal Area',
+        'Hawaii_Albers_Equal_Area_Conic',
+        'Puerto Rico and Virgin Is.',
+        'UTM zone 55N',
+        'UTM zone 2S'
+      ),
+      proj_datum = c(
+        'NAD83',
+        'NAD83',
+        'NAD83',
+        'NAD83(HARN)',
+        'NAD83(MA11)',
+        'NAD83(HARN)'
+      ),
+      proj_units = c('meter', 'meter', 'meter', 'meter', 'meter', 'meter'),
       simplification_keep_high_simp = c(0.02, 0.011, 0.13, 0.03, 0.15, 0.03),
       simplification_keep_low_simp = c(0.1, 0.015, 0.15, 0.1, 0.2, 0.1),
       scale_factor = c(1, 0.5, 2, 2, 2, 2),
@@ -134,16 +162,16 @@ p0_targets <- list(
       states_df <- tibble(
         name = state.abb[!state.abb %in% c("AK", "HI")],
         full_name = state.name[!state.abb %in% c("AK", "HI")]
-        )
-      
+      )
+
       # State projection lookup
       state_projs <- USAboundaries::state_proj |>
         filter(statewide_proj) |>
         select(
           name = state,
           proj = proj4_string
-          )
-      
+        )
+
       # Join projections onto state metadata
       states_df |>
         left_join(state_projs, by = "name") |>
@@ -152,20 +180,21 @@ p0_targets <- list(
           simplification_keep_high_simp = 0.1,
           scale_factor = 1
         )
-      }
-    ),
+    }
+  ),
   ##### visual parameters #####
   tar_target(
     p0_viz_gw_pal,
     c(
-    "Extremely above" =  "#003375",
-    "Much above" = "#2362b3",
-    "Above normal" =   "#489dd5",
-    "Normal" = "#333333",
-    "Below normal" = "#c18b2f",
-    "Much below" = "#8c5503",
-    "Extremely below" = "#4d2b00")
-    ),
+      "Extremely above" = "#003375",
+      "Much above" = "#2362b3",
+      "Above normal" = "#489dd5",
+      "Normal" = "#333333",
+      "Below normal" = "#c18b2f",
+      "Much below" = "#8c5503",
+      "Extremely below" = "#4d2b00"
+    )
+  ),
   tar_target(
     # Create a tibble to define fig width and height, conus outline colors,
     # background color, font name, and font size
