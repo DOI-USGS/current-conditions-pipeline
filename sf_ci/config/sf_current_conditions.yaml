@@ -188,6 +188,10 @@ layouts:
     source_prefix: "desktop-CONUS_OCONUS-"
     static: True
     video: True
+    usgs_img_pos: [0.89,0.01]
+    usgs_img_height: 0.05
+    legend_pos: [0.55,0.9]
+    legend_scale: 1.0
 
 
 figure_params:
@@ -195,7 +199,7 @@ figure_params:
   facecolor: "#ffffff"
   fontfamily: "sans-serif"
   font: "Source Sans 3"
-  fontweight: "normal"
+  fontweight: "light"
   fontcolor: "#363636"
   fontsize: 7
   scale_params:
@@ -204,15 +208,17 @@ figure_params:
     scale_length: 0.025
   axis_buffer: 1.05
   datelabel:
-    fontsize: 10.5
+    fontsize: 12
     xloc: 0.01
     yloc: 0.99
-    fontweight: "extra bold"
+    fontweight: "bold"
     fontcolor: "#363636"
   datelabel_temp:
-    fontsize: 10.5
+    fontsize: 8
     xloc: 0.99
     yloc: 0.99
+    fontweight: "normal"
+    fontcolor: "#363636"
   shadow:
     sigma: 25
     color: "#999999"

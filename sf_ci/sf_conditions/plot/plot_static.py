@@ -9,7 +9,9 @@ def plot_daily_sf_condition(
     layout_params, 
     static_image_file,
     background_image_file,
-    foreground_image_file
+    foreground_image_file,
+    usgs_image_file,
+    legend_image_file
 ):
     """Makes a image of stream flow current conditions
 
@@ -45,16 +47,33 @@ def plot_daily_sf_condition(
     # Set up figure
     fig = plt.figure(1, figsize=(layout_params["figure_dimensions"]))
 
-    # Add shadow axes
+    # Add background image
     img_background = plt.imread(background_image_file)
     ax_background = fig.add_axes([0, 0, 1, 1])
     ax_background.imshow(img_background)
     ax_background.set_axis_off()
 
+    # Add foreground image
     img_foreground = plt.imread(foreground_image_file)
     ax_foreground = fig.add_axes([0, 0, 1, 1])
     ax_foreground.imshow(img_foreground)
     ax_foreground.set_axis_off()
+
+    # Add usgs image
+    img_usgs = plt.imread(usgs_image_file)
+    aspect_usgs = img_usgs.shape[1] / img_usgs.shape[0]
+    aspect_usgs_ax = aspect_usgs / (layout_params["figure_dimensions"][0] / layout_params["figure_dimensions"][1])
+    ax_usgs = fig.add_axes([layout_params["usgs_img_pos"][0], layout_params["usgs_img_pos"][1], layout_params["usgs_img_height"] * aspect_usgs_ax, layout_params["usgs_img_height"]])
+    ax_usgs.imshow(img_usgs)
+    ax_usgs.set_axis_off()
+
+    # Add legend
+    img_legend = plt.imread(legend_image_file)
+    legend_height_ax = img_legend.shape[0] / (layout_params["figure_dimensions"][1] * figure_params["dpi"]) * layout_params["legend_scale"]
+    legend_length_ax = img_legend.shape[1] / (layout_params["figure_dimensions"][0] * figure_params["dpi"]) * layout_params["legend_scale"]
+    ax_legend = fig.add_axes([layout_params["legend_pos"][0], layout_params["legend_pos"][1], legend_length_ax, legend_height_ax])
+    ax_legend.imshow(img_legend)
+    ax_legend.set_axis_off()
 
     # add date label
     fig.text(
@@ -74,12 +93,14 @@ def plot_daily_sf_condition(
         figure_params["datelabel_temp"]["yloc"],
         date,
         fontsize=figure_params["datelabel_temp"]["fontsize"],
+        weight=figure_params["datelabel_temp"]["fontweight"],
+        color=figure_params["datelabel_temp"]["fontcolor"],
         ha="right",
         va="top",
     )
 
     # Save figure
-    fig.savefig(static_image_file, dpi=600)
+    fig.savefig(static_image_file, dpi = figure_params["dpi"])
 
     # Close figure
     plt.close(fig)
@@ -90,6 +111,8 @@ if __name__ == "__main__":
     layout_params = snakemake.params["layout_params"]
     background_image_file = snakemake.input["background_image_file"]
     foreground_image_file = snakemake.input["foreground_image_file"]
+    usgs_image_file = snakemake.input["usgs_image_file"]
+    legend_image_file = snakemake.input["legend_image_file"]
     static_image_file = snakemake.output["static_image_file"]
 
 
@@ -98,4 +121,6 @@ if __name__ == "__main__":
         layout_params, 
         static_image_file,
         background_image_file,
-        foreground_image_file)
+        foreground_image_file,
+        usgs_image_file,
+        legend_image_file)
