@@ -61,13 +61,13 @@ def date_text(date):
     M = date[5:7]
     D = date[8:10]
 
-    months = ["January", "February", "March",
-              "April", "May", "June",
-              "July", "August", "September",
-              "October", "November", "December"]
+    months = ["Jan", "Feb", "Mar",
+              "Apr", "May", "Jun",
+              "Jul", "Aug", "Sep",
+              "Oct", "Nov", "Dec"]
     
     #return months[int(M)-1] + " " + str(int(D)) + ", " + str(int(Y))
-    return M + "/" + D + "/" + Y + " | Surface Water Conditions | " 
+    return months[int(M)-1] + " " + D + ", " + Y + " │ Surface Water Conditions │ " 
 
 def plot_data(
     fig,
