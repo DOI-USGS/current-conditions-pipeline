@@ -27,7 +27,7 @@ gw_ci/3_visualize/out/*
 # Ignore the targets metadata folder
 gw_ci/_targets/
 
-# Gw conditions viz
+# Sf conditions viz
 sf_ci/api_key.txt
 sf_ci/sf_dates.json
 sf_ci/.pixi
@@ -52,4 +52,8 @@ sf_ci/sf_conditions/fetch/__pycache__
 sf_ci/sf_conditions/plot/__pycache__
 sf_ci/metadata/*
 !sf_ci/metadata/.empty
+sf_ci/logos/*
+!sf_ci/logos/.empty
+sf_ci/legends/*
+!sf_ci/legends/.empty
 usgs_current.py
