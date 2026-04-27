@@ -19,9 +19,8 @@ EXPECTED_OUTPUTS = {
     "mobile_PR_VI_image_file": "images/sf-mobile-PR_VI-{date}.png",
     "mobile_GU_MP_image_file": "images/sf-mobile-GU_MP-{date}.png",
     "mobile_AS_image_file": "images/sf-mobile-AS-{date}.png",
-    "desktop_CONUS_OCONUS_image_file": "images/sf-desktop-CONUS_OCONUS-{date}.png",
-    "movie_3d": "videos/sf-movie-{date}-back-3d.mp4",
-    "movie_5d": "videos/sf-movie-{date}-back-5d.mp4",
+    "desktop_CONUS_OCONUS_image_file": "images/sf-desktop-CONUS_OCONUS-{date}.webp",
+    "desktop_static_CONUS_OCONUS_image_file": "images/sf-desktop-static-CONUS_OCONUS-{date}.png",
 }
 
 parser = argparse.ArgumentParser()
