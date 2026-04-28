@@ -163,11 +163,11 @@ gw_render:
     - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/metadata/gw_file_metadata.csv gw_ci/1_fetch/in/gw_file_metadata.csv
     - pixi run Rscript -e "setwd('gw_ci'); targets::tar_make()"
     # Daily categorizations parquet files
-    - pixi run aws s3 sync gw_ci/1_fetch/out/ s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/ --recursive
+    - pixi run aws s3 sync gw_ci/1_fetch/out/ s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/
     # Visualizations
-    - pixi run aws s3 sync gw_ci/3_visualize/out/ s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/images/ --recursive
+    - pixi run aws s3 sync gw_ci/3_visualize/out/ s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/images/
     # Metadata files
-    - pixi run aws s3 sync gw_ci/4_update/out/ s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/metadata/ --recursive
+    - pixi run aws s3 sync gw_ci/4_update/out/ s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/metadata/
   tags:
     - water
     - computational_tools
@@ -245,7 +245,7 @@ sf_coverage_merge:
     - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
     - pixi run python sf_ci/sf_coverage_merge.py ${SF_PCODES} ${SF_STAT_IDS}
     - pixi run aws s3 cp artifacts/sf_coverage.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/metadata/sf_coverage.parquet
-    - pixi run aws s3 sync artifacts/sf_percentiles/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/metadata/sf_percentiles/ --recursive
+    - pixi run aws s3 sync artifacts/sf_percentiles/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/metadata/sf_percentiles/
   artifacts:
     paths:
       - artifacts/sf_coverage.parquet
@@ -274,9 +274,9 @@ sf_render:
     # - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/metadata/sf_file_metadata.csv sf_ci/metadata/sf_file_metadata.csv
     - pixi run snakemake --snakefile sf_ci/Snakefile --cores all --directory sf_ci --config date=$(date +%F)
     - pixi run aws s3 cp sf_ci/metadata/sf_dates.json s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/metadata/sf_dates.json
-    - pixi run aws s3 sync sf_ci/data/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/data/ --recursive
-    - pixi run aws s3 sync sf_ci/images/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/images/ --recursive
-    - pixi run aws s3 sync sf_ci/videos/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/videos/ --recursive
+    - pixi run aws s3 sync sf_ci/data/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/data/
+    - pixi run aws s3 sync sf_ci/images/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/images/
+    - pixi run aws s3 sync sf_ci/videos/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/videos/
   tags:
     - water
     - computational_tools
