@@ -34,12 +34,19 @@ date_dict
     date_of_interest, params["image_prefix"], params["video_prefix"], params["parquet_prefix"], params["layouts"], params["video_intervals"], metadata
 )
 
+# Get list of background images (non-static)
+background_images_to_generate = []
+for layout in params["layouts"].keys():
+    if params["layouts"][layout]["static"] == False:
+        background_images_to_generate += ["images/background-" + params["layouts"][layout]["prefix"][:-1] + ".webp"]
+
 # set final intended output
 rule all:
     input:
         images_to_generate,
         video_names,
-        params["dates_file"]
+        params["dates_file"],
+        background_images_to_generate
 
 # make date json
 rule make_date_json:
