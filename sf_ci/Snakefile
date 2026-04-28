@@ -236,7 +236,7 @@ for i, image_file in enumerate(images_for_static_image_generation[:]):
             figure_params = params["figure_params"],
             layout_params = params["layouts"][layout]
         input:
-            background_image_file = "images/sf-" + params["layouts"][layout]["prefix"][:-1] + "-background.webp",
+            background_image_file = "images/sf-" + params["layouts"][layout]["source_prefix"][:-1] + "-background.webp",
             foreground_image_file = image_file,
             usgs_image_file = "logos/usgs_logo_black.png",
             legend_image_file = "legends/sf-static-legend.png"
