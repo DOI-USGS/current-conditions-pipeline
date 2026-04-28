@@ -38,7 +38,7 @@ date_dict
 background_images_to_generate = []
 for layout in params["layouts"].keys():
     if params["layouts"][layout]["static"] == False:
-        background_images_to_generate += ["images/background-" + params["layouts"][layout]["prefix"][:-1] + ".webp"]
+        background_images_to_generate += ["images/sf-" + params["layouts"][layout]["prefix"][:-1] + "-background.webp"]
 
 # set final intended output
 rule all:
@@ -189,7 +189,7 @@ for layout in params["layouts"].keys():
             input:
                 reference_geojson = params["layouts"][layout]["geojson"]
             output:
-                shadow_image_file = "images/shadow-" + params["layouts"][layout]["prefix"][:-1] + ".png"
+                shadow_image_file = "images/sf-" + params["layouts"][layout]["prefix"][:-1] + "-shadow.png"
             script:
                 "sf_conditions/plot/plot_shadow.py"
 
@@ -204,9 +204,9 @@ for layout in params["layouts"].keys():
                 layout_params = params["layouts"][layout]
             input:
                 reference_geojson = params["layouts"][layout]["geojson"],
-                shadow_image_file = "images/shadow-" +  params["layouts"][layout]["prefix"][:-1] + ".png"
+                shadow_image_file = "images/sf-" + params["layouts"][layout]["prefix"][:-1] + "-shadow.png"
             output:
-                background_image_file = "images/background-" + params["layouts"][layout]["prefix"][:-1] + ".webp"
+                background_image_file = "images/sf-" + params["layouts"][layout]["prefix"][:-1] + "-background.webp"
             script:
                 "sf_conditions/plot/plot_background.py"
 
@@ -236,7 +236,7 @@ for i, image_file in enumerate(images_for_static_image_generation[:]):
             figure_params = params["figure_params"],
             layout_params = params["layouts"][layout]
         input:
-            background_image_file = "images/background-" + params["layouts"][layout]["source_prefix"][:-1] + ".webp",
+            background_image_file = "images/sf-" + params["layouts"][layout]["prefix"][:-1] + "-background.webp",
             foreground_image_file = image_file,
             usgs_image_file = "logos/usgs_logo_black.png",
             legend_image_file = "legends/sf-static-legend.png"
