@@ -10,7 +10,6 @@ def background_setup(
     figure_params,
     layout_params, 
     background_image_file,
-    marker_params,
     state_params,
     shadow_image_file
 ):
@@ -22,10 +21,8 @@ def background_setup(
         parameters defining the figure style
     layout_params: dictionary
         parameters defining the layout style
-    image_file: string
-        filepath for the output image file 
-    marker_params: dictionary
-        parameters defining the marker style
+    background_image_file: string
+        filepath for the output background image file 
     state_params: dictionary
         parameters defining the geometry style
     shadow_image_file: string
@@ -154,7 +151,6 @@ if __name__ == "__main__":
     figure_params = snakemake.params["figure_params"]
     layout_params = snakemake.params["layout_params"]
     state_params = snakemake.params["state_params"]
-    marker_params = snakemake.params["marker_params"]
     shadow_image_file = snakemake.input["shadow_image_file"]
     background_image_file = snakemake.output["background_image_file"]
 
@@ -163,6 +159,5 @@ if __name__ == "__main__":
         figure_params,
         layout_params, 
         background_image_file,
-        marker_params,
         state_params,
         shadow_image_file)

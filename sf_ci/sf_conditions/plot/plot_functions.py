@@ -57,6 +57,19 @@ def setup_boundary(ax, boundary_gdf_proj, state_style):
         )
 
 def date_text(date):
+    """Makes formatted date text
+
+    Parameters
+    ----------
+    date: string
+        in YYYY-MM-DD format
+
+    Returns
+    -------
+    formatted date string
+
+
+    """
     Y = date[0:4]
     M = date[5:7]
     D = date[8:10]
@@ -491,6 +504,7 @@ def make_extent_gdf(gdf, buffer = 1, int_pnts = 10):
 
 
 def draw_gdf_on_basemap(gdf,ax,map,facecolor,edgecolor,linewidth):
+    """ Draws the geodataframe on the basemap """
     patches = []
 
     polys = gdf[gdf.geometry.geom_type.isin(["Polygon", "MultiPolygon"])]

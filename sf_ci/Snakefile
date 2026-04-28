@@ -199,7 +199,6 @@ for layout in params["layouts"].keys():
                 "make_background_plot_" + layout
             params:
                 figure_params = params["figure_params"],
-                marker_params = params["marker_params"],
                 state_params = params["state_params"],
                 layout_params = params["layouts"][layout]
             input:

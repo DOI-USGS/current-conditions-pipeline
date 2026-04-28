@@ -25,14 +25,10 @@ def plot_daily_sf_condition(
         filepath for the output image file 
     marker_params: dictionary
         parameters defining the marker style
-    state_params: dictionary
-        parameters defining the geometry style
-    background_image_file: string
-        filepath for the shadow outline image
             
     Returns
     -------
-        Makes an image of the current conditions data (image_file)
+        Makes an image of current condition markers, foreground image (image_file)
 
     """
 

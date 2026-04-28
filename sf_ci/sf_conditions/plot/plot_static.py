@@ -23,18 +23,20 @@ def plot_daily_sf_condition(
         parameters defining the figure style
     layout_params: dictionary
         parameters defining the layout style
-    image_file: string
-        filepath for the output image file 
-    marker_params: dictionary
-        parameters defining the marker style
-    state_params: dictionary
-        parameters defining the geometry style
+    static_image_file: string
+        filepath for the output static image file 
     background_image_file: string
-        filepath for the shadow outline image
+        filepath for the input background image file 
+    foreground_image_file: string
+        filepath for the input foreground image file 
+    usgs_image_file: string
+        filepath for the input usgs logo image file 
+    legend_image_file: string
+        filepath for the input legend image file 
             
     Returns
     -------
-        Makes an image of the current conditions data (image_file)
+        Makes an static formatted image of the current conditions data (image_file)
 
     """
 
