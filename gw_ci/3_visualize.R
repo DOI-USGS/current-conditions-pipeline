@@ -300,7 +300,7 @@ p3_targets <- list(
         p0_local_image_type_prefix,
         "desktop_",
         p0_desktop_area_name,
-        "_webp"
+        "_image_file"
       ),
       local_image_file = p3_desktop_gw_webps
     )
@@ -346,7 +346,7 @@ p3_targets <- list(
         p0_local_image_type_prefix,
         "mobile_",
         p0_area_info_df[["name"]],
-        "_webp"
+        "_image_file"
       ),
       local_image_file = p3_mobile_gw_webps
     ),
@@ -452,9 +452,7 @@ p3_targets <- list(
     p3_new_gw_images_config,
     bind_rows(p3_desktop_gw_webps_config,
               p3_mobile_gw_webps_config,
-              p3_static_gw_pngs_config,
-              p3_desktop_bkgd_webp_config,
-              p3_mobile_bkgd_webps_config
+              p3_static_gw_pngs_config
               # , p3_states_gw_webps_config,
               # p3_states_bkgd_webps_config,
               # p3_states_static_pngs_config
@@ -474,7 +472,7 @@ p3_targets <- list(
     p3_new_gw_images_config_csv,
     {
       outfile <- file.path("3_visualize/out", "local_pngs_for_upload.csv")
-      readr::write_csv(p3_new_gw_images_config, outfile)
+      readr::write_csv(p3_new_gw_files_config, outfile)
       return(outfile)
     },
     format = "file"
@@ -617,7 +615,7 @@ p3_targets <- list(
     p3_date_incomplete_updated,
     p1_date_incomplete |>
       dplyr::select(-complete) |>
-      tidyr::pivot_longer(cols = matches("(image_file|mp4|webp)"), 
+      tidyr::pivot_longer(cols = matches("(image_file|mp4)"),
                    names_to = "remote_image_type",
                    values_to = "remote_image_file_key") |>
       # Drop column `remote_image_key` since by default NA for incomplete dates

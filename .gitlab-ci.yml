@@ -133,7 +133,7 @@ gw_coverage_merge:
     - echo "PIPELINE_MODE=${PIPELINE_MODE}"
     - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
     - pixi run Rscript gw_ci/gw_coverage_merge.R ${GW_PCODES} ${GW_STAT_IDS}
-    - pixi run aws s3 cp artifacts/gw_coverage.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/metadata/gw_coverage.parquet
+    - pixi run aws s3 sync artifacts/gw_coverage.parquet s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/metadata/gw_coverage.parquet
   artifacts:
     paths:
       - artifacts/gw_coverage.parquet
@@ -164,10 +164,35 @@ gw_render:
     - pixi run Rscript -e "setwd('gw_ci'); targets::tar_make()"
     # Daily categorizations parquet files
     - pixi run aws s3 sync gw_ci/1_fetch/out/ s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/
-    # Visualizations
-    - pixi run aws s3 sync gw_ci/3_visualize/out/ s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/images/
+    # Visualizations (images only)
+    - pixi run aws s3 sync gw_ci/3_visualize/out/ s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/images/ --exclude "*.mp4"
+    # Videos
+    - pixi run aws s3 sync gw_ci/3_visualize/out/ s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/videos/ --exclude "*" --include "*.mp4"
+
     # Metadata files
     - pixi run aws s3 sync gw_ci/4_update/out/ s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/metadata/
+  tags:
+    - water
+    - computational_tools
+    - production
+
+gw_update_metadata:
+  stage: update_metadata
+  image:
+    name: $IMAGE
+  rules:
+    - if: '$PIPELINE_MODE == "gw_daily"'
+    - if: '$PIPELINE_MODE == "gw_metadata"'   # standalone, no gw_render
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: manual
+    - when: never
+  needs:
+    - job: gw_render
+      artifacts: false
+      optional: true
+  script:
+    - pixi run Rscript gw_ci/gw_update_metadata.R $(date +%F)
+    - pixi run aws s3 cp gw_ci/4_update/out/gw_file_metadata.csv s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/metadata/gw_file_metadata.csv
   tags:
     - water
     - computational_tools
