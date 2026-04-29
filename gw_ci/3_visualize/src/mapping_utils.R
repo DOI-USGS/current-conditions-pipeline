@@ -973,7 +973,7 @@ plot_gw_static_png <- function(gw_bkgd_img, gw_frgd_img, date, logo_path, legend
     ) +
     # Add date | title below map, right-justified
     draw_label(
-      paste0(format(date, "%b %d, %Y"), "│Groundwater Conditions│"),
+      paste0(format(date, "%b %d, %Y"), " | Groundwater Conditions |"),
       x = 0.875,
       y = 0.035,
       hjust = 1,
