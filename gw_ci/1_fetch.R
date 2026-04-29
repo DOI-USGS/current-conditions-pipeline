@@ -52,7 +52,10 @@ p1_targets <- list(
         # Determine completeness by all image files for a given date documented
         # as existing on s3
         dplyr::mutate(
-          complete = if_all(.cols = matches("*_image_file"), .fns = ~ !is.na(.))
+          complete = if_all(
+            .cols = matches("_image_file$"),
+            .fns = ~ !is.na(.)
+          )
         )
     }
   ),
@@ -75,7 +78,7 @@ p1_targets <- list(
         p1_date_complete |>
           dplyr::select(-c(parquet_file, complete, matches("(mp4)"))) |>
           tidyr::pivot_longer(
-            cols = matches("*_image_file"),
+            cols = matches("_image_file$"),
             names_to = "remote_image_type",
             values_to = "remote_image_file_key"
           )
