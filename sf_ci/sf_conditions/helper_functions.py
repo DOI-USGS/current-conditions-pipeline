@@ -219,7 +219,7 @@ def generate_image_list(
                 image_prefix + layout_param["prefix"] + str(date) + ".png"
                 for date in full_date_list
             ]
-            # Webp images for make the static png image
+            # Webp images for making the static png image
             for_static_image_list = [
                 image_prefix + layout_param["source_prefix"] + str(date) + ".webp"
                 for date in full_date_list

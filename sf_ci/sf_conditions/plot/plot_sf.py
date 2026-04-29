@@ -11,7 +11,7 @@ def plot_daily_sf_condition(
     image_file,
     marker_params,
 ):
-    """Makes a image of stream flow current conditions
+    """Makes a image of stream flow current conditions, without background geometry or the shadow image
 
     Parameters
     ----------

@@ -30,7 +30,7 @@ def background_setup(
             
     Returns
     -------
-        Makes an background image of the current conditions data (background_image_file)
+        Makes a background image of the shadow image and boundary geometry data (background_image_file)
 
     """
 

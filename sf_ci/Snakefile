@@ -11,7 +11,7 @@ with open("config/sf_current_conditions.yaml", "r") as file:
 # Load metadata and generate list of files to make
 metadata = pd.read_csv(params["s3_url_prefix"] + "metadata/sf_file_metadata.csv", dtype=str, keep_default_na=False)
 
-# refresh all image files
+# refresh all image files for the latest date
 metadata.iloc[-1, 1:] = 'NA'
 
 # Set default date if nothing is specified

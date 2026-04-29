@@ -128,7 +128,7 @@ def plot_data(
     extent_gdf: geodataframe
         geodataframe of the extent in NAD83
     not explicitly returned:
-        Axis with plotted geometry and streamflow current conditions
+        Axis with plotted streamflow current conditions
 
 
     """
@@ -204,7 +204,7 @@ def plot_background(
     scale_bar_type,
     scale_text,
 ):
-    """Plots stream flow current conditions data on the specified axis
+    """Plots boundary geometry data on the specified axis
 
     Parameters
     ----------
@@ -236,7 +236,7 @@ def plot_background(
     extent_gdf: geodataframe
         geodataframe of the extent in NAD83
     not explicitly returned:
-        Axis with plotted geometry and streamflow current conditions
+        Axis with plotted geometry
 
 
     """
