@@ -125,8 +125,6 @@ def plot_data(
 
     Returns
     -------
-    extent_gdf: geodataframe
-        geodataframe of the extent in NAD83
     not explicitly returned:
         Axis with plotted streamflow current conditions
 
@@ -136,7 +134,6 @@ def plot_data(
     # get axis dimensions
     ax_dims = get_ax_size_inches(ax, fig)
     boundary_gdf_proj = boundary_gdf.to_crs(proj)
-    #setup_boundary(ax, boundary_gdf_proj, state_style)
     minx, miny, maxx, maxy = boundary_gdf_proj.total_bounds
     center_x = 0.5 * (minx + maxx)
     center_y = 0.5 * (miny + maxy)
