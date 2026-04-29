@@ -22,6 +22,10 @@ p4_targets <-
       {
         outfile <- p0_date_json_path
         named_interval_dates <- set_names(p0_interval_dates, p0_interval_names)
+        named_interval_dates <- c(
+          named_interval_dates,
+          "latest-update" = format(Sys.time(), "%B %d, %Y %I:%M %p")
+        )
         jsonlite::write_json(
           named_interval_dates,
           outfile,

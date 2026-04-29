@@ -27,7 +27,7 @@ base_request <- httr2::request(url_begin) |>
 
 expected_parquet <- c("parquet_file" = "gw_categorizations")
 
-expected_images <-
+expected_webp_images <-
   c(
     "mobile_CONUS_image_file" = "gw-mobile-CONUS",
     "mobile_AK_image_file" = "gw-mobile-AK",
@@ -35,7 +35,11 @@ expected_images <-
     "mobile_PR_VI_image_file" = "gw-mobile-PR_VI",
     "mobile_GU_MP_image_file" = "gw-mobile-GU_MP",
     "mobile_AS_image_file" = "gw-mobile-AS",
-    "desktop_CONUS_OCONUS_image_file" = "gw-desktop-CONUS_OCONUS",
+    "desktop_CONUS_OCONUS_image_file" = "gw-desktop-CONUS_OCONUS"
+  )
+
+expected_png_images <-
+  c(
     "desktop_static_CONUS_OCONUS_image_file" = "gw-static-desktop-CONUS_OCONUS"
   )
 
@@ -45,12 +49,13 @@ date_files <-
     expected_content <-
       c(
         paste0("stage/", expected_parquet, "_", date, ".parquet"),
-        paste0("images/", expected_images, "-", date, ".png")
+        paste0("images/", expected_webp_images, "-", date, ".webp"),
+        paste0("images/", expected_png_images, "-", date, ".png")
       )
 
     purrr::map2_dfc(
       expected_content,
-      names(c(expected_parquet, expected_images)),
+      names(c(expected_parquet, expected_webp_images, expected_png_images)),
       function(file_path, col_name) {
         response <- base_request |>
           httr2::req_url_path_append(file_path) |>

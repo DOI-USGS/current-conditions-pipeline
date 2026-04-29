@@ -30,7 +30,7 @@ p0_targets <- list(
   ),
   tar_target(
     p0_remote_video_file_template,
-    "current_conditions/groundwater/videos/gw-%s-%s-%s.png"
+    "current_conditions/groundwater/videos/gw-movie-%s-%s-%s.mp4"
   ),
   tar_target(
     p0_local_image_file_dir,
