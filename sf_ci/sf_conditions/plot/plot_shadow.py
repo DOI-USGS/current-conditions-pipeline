@@ -119,7 +119,7 @@ def shadow_plot(
         )
 
     # Save figure
-    fig.savefig(shadow_image_file, dpi=600)
+    fig.savefig(shadow_image_file, dpi=figure_params["dpi"])
 
     # Close figure
     plt.close(fig)

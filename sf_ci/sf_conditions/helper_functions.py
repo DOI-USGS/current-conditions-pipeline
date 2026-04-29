@@ -112,7 +112,7 @@ def generate_image_list(
         for date in dates_that_need_image_generation
     ]
     
-    # Get a list of parquet files urls that are going to be downloaded, "" means it needs to be generated
+    # Get a list of parquet files urls that are going to be downloaded, "NA" means it needs to be generated
     parquets_to_download = [
         (
             metadata.loc[metadata["date"] == d, "parquet_file"].values[0]
@@ -145,7 +145,7 @@ def generate_image_list(
                 ]
                 video_frame_lists += [image_list]
                 video_names += [
-                    video_prefix + layout["prefix"] + video_label(interval) + ".mp4"
+                    video_prefix + layout["source_prefix"] + video_label(interval) + ".mp4"
                 ]
 
     # define date dictionary for a json
@@ -178,39 +178,77 @@ def generate_image_list(
     images_to_generate = []
     parquets_for_image_generation = []
     layout_for_image_generation = []
+
+    static_images_to_generate = []
+    images_for_static_image_generation = []
+    layout_for_static_image_generation = []
+
     for layout in layout_params.keys():
-        layout_param = layout_params[layout]
-        # Get full list of images needed
-        image_list = [
-            image_prefix + layout_param["prefix"] + str(date) + ".png"
-            for date in full_date_list
-        ]
-        # Get corresponding parquet files
-        parquet_list = [
-            parquet_prefix + str(date) + ".parquet"
-            for date in date_list
-        ]
-        # Get list of images that are on s3
-        s3_image_list = [
-            (
-                metadata.loc[metadata["date"] == d, layout_param["metadata_column"]].values[0]
-                if d in metadata["date"].values
-                else "NA"
-            )
-            for d in date_list
-        ]
-        # list images that aren't on s3
-        for j, s3_image in enumerate(s3_image_list):
-            if s3_image == "NA":
-                images_to_generate += [image_list[j]]
-                parquets_for_image_generation += [parquet_list[j]]
-                layout_for_image_generation += [layout] 
+        if layout_params[layout]["static"] == False:
+            layout_param = layout_params[layout]
+            # Get full list of images needed
+            image_list = [
+                image_prefix + layout_param["prefix"] + str(date) + ".webp"
+                for date in full_date_list
+            ]
+            # Get corresponding parquet files
+            parquet_list = [
+                parquet_prefix + str(date) + ".parquet"
+                for date in date_list
+            ]
+            # Get list of images that are on s3
+            s3_image_list = [
+                (
+                    metadata.loc[metadata["date"] == d, layout_param["metadata_column"]].values[0]
+                    if d in metadata["date"].values
+                    else "NA"
+                )
+                for d in date_list
+            ]
+            # list images that aren't on s3
+            for j, s3_image in enumerate(s3_image_list):
+                if s3_image == "NA":
+                    images_to_generate += [image_list[j]]
+                    parquets_for_image_generation += [parquet_list[j]]
+                    layout_for_image_generation += [layout] 
+
+        elif layout_params[layout]["static"] == True:
+            layout_param = layout_params[layout]
+            # Get full list of images png images
+            static_image_list = [
+                image_prefix + layout_param["prefix"] + str(date) + ".png"
+                for date in full_date_list
+            ]
+            # Webp images for making the static png image
+            for_static_image_list = [
+                image_prefix + layout_param["source_prefix"] + str(date) + ".webp"
+                for date in full_date_list
+            ]
+            # Get list of images that are on s3
+            s3_image_list = [
+                (
+                    metadata.loc[metadata["date"] == d, layout_param["metadata_column"]].values[0]
+                    if d in metadata["date"].values
+                    else "NA"
+                )
+                for d in date_list
+            ]
+            # list images that aren't on s3
+            for j, s3_image in enumerate(s3_image_list):
+                if s3_image == "NA":
+                    static_images_to_generate += [static_image_list[j]]
+                    images_for_static_image_generation += [for_static_image_list[j]]
+                    layout_for_static_image_generation += [layout] 
+
 
     return (
         images_to_download,
         images_to_generate,
         parquets_for_image_generation,
         layout_for_image_generation,
+        static_images_to_generate,
+        images_for_static_image_generation,
+        layout_for_static_image_generation,
         video_frame_lists,
         video_names,
         parquets_to_download_or_generate,

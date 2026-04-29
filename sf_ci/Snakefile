@@ -11,6 +11,9 @@ with open("config/sf_current_conditions.yaml", "r") as file:
 # Load metadata and generate list of files to make
 metadata = pd.read_csv(params["s3_url_prefix"] + "metadata/sf_file_metadata.csv", dtype=str, keep_default_na=False)
 
+# refresh all image files for the latest date
+metadata.iloc[-1, 1:] = 'NA'
+
 # Set default date if nothing is specified
 date_of_interest = config.get("date", "2026-03-03")
 
@@ -19,6 +22,9 @@ date_of_interest = config.get("date", "2026-03-03")
 images_to_generate,
 parquets_for_image_generation,
 layout_for_image_generation,
+static_images_to_generate,
+images_for_static_image_generation,
+layout_for_static_image_generation,
 video_frame_lists,
 video_names,
 parquets_to_download_or_generate,
@@ -28,12 +34,19 @@ date_dict
     date_of_interest, params["image_prefix"], params["video_prefix"], params["parquet_prefix"], params["layouts"], params["video_intervals"], metadata
 )
 
+# Get list of background images (non-static)
+background_images_to_generate = []
+for layout in params["layouts"].keys():
+    if params["layouts"][layout]["static"] == False:
+        background_images_to_generate += ["images/sf-" + params["layouts"][layout]["prefix"][:-1] + "-background.webp"]
+
 # set final intended output
 rule all:
     input:
         images_to_generate,
         video_names,
-        params["dates_file"]
+        params["dates_file"],
+        background_images_to_generate
 
 # make date json
 rule make_date_json:
@@ -85,6 +98,26 @@ for geometry in params["geometries"].keys():
 ########################################
 #############DATA  DOWNLOAD#############
 ########################################
+
+# download usgs logo
+rule download_usgs_logo:
+    params:
+        s3_url_prefix = params["s3_url_prefix"],
+        folder = "logos"
+    output:
+        s3_file = "logos/usgs_logo_black.png"
+    script:
+        "sf_conditions/fetch/get_s3.py"
+
+# download legend
+rule download_legend:
+    params:
+        s3_url_prefix = params["s3_url_prefix"],
+        folder = "legends"
+    output:
+        s3_file = "legends/sf-static-legend.png"
+    script:
+        "sf_conditions/fetch/get_s3.py"
 
 # download images that are available for longest interval
 for image_file in images_to_download:
@@ -143,21 +176,38 @@ rule make_legend_elements:
     script:
             "sf_conditions/plot/plot_legend_elements.py"
 
-# Create shadow background for each layout
-for i, layout in enumerate(params["layouts"].keys()):
-    rule:
-        name:
-            "make_shadow_plot_mobile" + layout
-        params:
-            figure_params = params["figure_params"],
-            state_params = params["state_params"],
-            layout_params = params["layouts"][layout]
-        input:
-            reference_geojson = params["layouts"][layout]["geojson"]
-        output:
-            shadow_image_file = "images/shadow-" + params["layouts"][layout]["prefix"][:-1] + ".png"
-        script:
-            "sf_conditions/plot/plot_shadow.py"
+for layout in params["layouts"].keys():
+    if params["layouts"][layout]["static"] == False:
+        # Create shadow background for each layout
+        rule:
+            name:
+                "make_shadow_plot_" + layout
+            params:
+                figure_params = params["figure_params"],
+                state_params = params["state_params"],
+                layout_params = params["layouts"][layout]
+            input:
+                reference_geojson = params["layouts"][layout]["geojson"]
+            output:
+                shadow_image_file = "images/sf-" + params["layouts"][layout]["prefix"][:-1] + "-shadow.png"
+            script:
+                "sf_conditions/plot/plot_shadow.py"
+
+        # Create background for each layout
+        rule:
+            name:
+                "make_background_plot_" + layout
+            params:
+                figure_params = params["figure_params"],
+                state_params = params["state_params"],
+                layout_params = params["layouts"][layout]
+            input:
+                reference_geojson = params["layouts"][layout]["geojson"],
+                shadow_image_file = "images/sf-" + params["layouts"][layout]["prefix"][:-1] + "-shadow.png"
+            output:
+                background_image_file = "images/sf-" + params["layouts"][layout]["prefix"][:-1] + "-background.webp"
+            script:
+                "sf_conditions/plot/plot_background.py"
 
 # Create sf current conditions plots for the given list of dates and layouts
 for i, parquet_file in enumerate(parquets_for_image_generation[:]):
@@ -167,16 +217,32 @@ for i, parquet_file in enumerate(parquets_for_image_generation[:]):
         params:
             figure_params = params["figure_params"],
             marker_params = params["marker_params"],
-            state_params = params["state_params"],
             layout_params = params["layouts"][layout_for_image_generation[i]]
         input:
             parquet_file = parquet_file,
-            reference_geojson = params["layouts"][layout_for_image_generation[i]]["geojson"],
-            shadow_image_file = "images/shadow-" + params["layouts"][layout_for_image_generation[i]]["prefix"][:-1] + ".png"
+            reference_geojson = params["layouts"][layout_for_image_generation[i]]["geojson"]
         output:
             image_file = images_to_generate[i]
         script:
             "sf_conditions/plot/plot_sf.py"
+
+# Create static png for each layout that requires it
+for i, image_file in enumerate(images_for_static_image_generation[:]):
+    rule:
+        name:
+            "image_make: " + static_images_to_generate[i]
+        params:
+            figure_params = params["figure_params"],
+            layout_params = params["layouts"][layout]
+        input:
+            background_image_file = "images/sf-" + params["layouts"][layout]["source_prefix"][:-1] + "-background.webp",
+            foreground_image_file = image_file,
+            usgs_image_file = "logos/usgs_logo_black.png",
+            legend_image_file = "legends/sf-static-legend.png"
+        output:
+            static_image_file = static_images_to_generate[i]
+        script:
+            "sf_conditions/plot/plot_static.py"
 
 ########################################
 ############VIDEO GENERATION############
