@@ -399,6 +399,23 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
   # Ensure the directory exists so ggsave doesn't error
   if (!dir.exists(dirname(out_path))) dir.create(dirname(out_path), recursive = TRUE)
 
+  # Load fonts
+  # For font use approach outlined here: # https://yjunechoe.github.io/posts/2021-06-24-setting-up-and-debugging-custom-fonts/
+  # CHECK IF HAVE FONT IN SYSTEM
+  system_fonts <- systemfonts::system_fonts() |> pull(family)
+  if (!viz_cfg[["plot_font"]] %in% system_fonts) {
+    stop("You must install the Source Sans 3 font to your system. Download all variants of the font from https://fonts.google.com/specimen/Source+Sans+3?query=source+sans")
+  }
+  
+  # get all font styles
+  font_hoist(viz_cfg[["plot_font"]], silent = TRUE)
+  
+  # # If want to check style names
+  # # Grab the newly registered font families
+  # source_sans_3_styles <- systemfonts::registry_fonts() %>%
+  #   filter(str_detect(family, viz_cfg[["plot_font"]]), style == "Regular") %>%
+  #   pull(family)
+  
   # Build plot
   if (area_name == "CONUS_OCONUS") {
     # generate plots for each area
@@ -919,6 +936,24 @@ plot_gw_static_png <- function(gw_bkgd_img, gw_frgd_img, date, logo_path, legend
     rsvg::rsvg_png(legend_path, width = 2000)
   )
   
+  # Load fonts
+  # For font use approach outlined here: # https://yjunechoe.github.io/posts/2021-06-24-setting-up-and-debugging-custom-fonts/
+  # CHECK IF HAVE FONT IN SYSTEM
+  system_fonts <- systemfonts::system_fonts() |> pull(family)
+  if (!viz_cfg[["plot_font"]] %in% system_fonts) {
+    stop("You must install the Source Sans 3 font to your system. Download all variants of the font from https://fonts.google.com/specimen/Source+Sans+3?query=source+sans")
+  }
+  
+  # get all font styles
+  font_hoist(viz_cfg[["plot_font"]], silent = TRUE)
+  
+  # # If want to check style names
+  # # Grab the newly registered font families
+  # source_sans_3_styles <- systemfonts::registry_fonts() %>%
+  #   filter(str_detect(family, viz_cfg[["plot_font"]]), style == "Regular") %>%
+  #   pull(family)
+  
+  # build plot
   canvas <- grid::rectGrob(
     x = 0, y = 0,
     width = viz_cfg$width, height = viz_cfg$height,
