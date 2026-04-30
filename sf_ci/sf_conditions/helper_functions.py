@@ -150,6 +150,10 @@ def generate_image_list(
 
     # define date dictionary for a json
     date_dict = {}
+
+    # add latest-update
+    date_dict["latest-update"] = datetime.now().strftime("%B %d, %Y %I:%M %p")
+
     for interval in intervals:
         for interval in intervals:
             end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
