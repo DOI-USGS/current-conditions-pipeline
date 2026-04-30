@@ -120,6 +120,22 @@ generate_landscape_condensed <- function(area_info_df, areas_extents,
     }) |>
     set_names(area_info_df[["name"]])
   
+  # For font use approach outlined here: # https://yjunechoe.github.io/posts/2021-06-24-setting-up-and-debugging-custom-fonts/
+  # CHECK IF HAVE FONT IN SYSTEM
+  system_fonts <- systemfonts::system_fonts() |> pull(family)
+  if (!viz_config[["plot_font"]] %in% system_fonts) {
+    stop("You must install the Source Sans 3 font to your system. Download all variants of the font from https://fonts.google.com/specimen/Source+Sans+3?query=source+sans")
+  }
+  
+  # get all font styles
+  font_hoist(viz_config[["plot_font"]], silent = TRUE)
+  
+  # # If want to check style names
+  # # Grab the newly registered font families
+  # source_sans_3_styles <- systemfonts::registry_fonts() %>%
+  #   filter(str_detect(family, viz_config[["plot_font"]]), style == "Regular") %>%
+  #   pull(family)
+  
   # build final plot
   canvas <- grid::rectGrob(
     x = 0, y = 0, 
