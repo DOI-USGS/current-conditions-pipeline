@@ -574,18 +574,6 @@ p3_targets <- list(
     p3_date_incomplete_updated,
     p1_date_incomplete |>
       dplyr::select(-complete) |>
-<<<<<<< HEAD
-      tidyr::pivot_longer(cols = matches("(image_file|mp4|webp)"),
-                          names_to = "remote_image_type",
-                          values_to = "remote_image_file_key") |>
-      dplyr::select(-remote_image_file_key) |>
-      # Bind in all newly generated keys (including state rows)
-      # before pivoting wide so they land as columns on the same row
-      dplyr::bind_rows(
-        p3_new_gw_files_config |>
-          dplyr::select(date, remote_image_type, remote_image_file_key)
-      ) |>
-=======
       tidyr::pivot_longer(cols = matches("(image_file|mp4)"),
                    names_to = "remote_image_type",
                    values_to = "remote_image_file_key") |>
@@ -597,7 +585,6 @@ p3_targets <- list(
                        by = c("date", "remote_image_type")
                        ) |> 
       # Pivot back to wide to match original format
->>>>>>> origin
       tidyr::pivot_wider(names_from = remote_image_type,
                          values_from = remote_image_file_key,
                          values_fn = dplyr::first
