@@ -19,6 +19,7 @@ layouts:
     prefix: "mobile-CONUS-"
     locator_map: False
     locator_map_loc: False
+    static: False
     video: False
     ax_loc:  
       - [0.05,0.05,0.9,0.9]
@@ -38,6 +39,7 @@ layouts:
     prefix: "mobile-AK-"
     locator_map: False
     locator_map_loc: False
+    static: False
     video: False
     ax_loc:  
       - [0.05,0.05,0.9,0.9]
@@ -57,6 +59,7 @@ layouts:
     prefix: "mobile-HI-"
     locator_map: False
     locator_map_loc: False
+    static: False
     video: False
     ax_loc:  
       - [0.05,0.05,0.9,0.9]
@@ -76,6 +79,7 @@ layouts:
     prefix: "mobile-PR_VI-"
     locator_map: False
     locator_map_loc: False
+    static: False
     video: False
     ax_loc:  
       - [0.05,0.05,0.9,0.9]
@@ -95,6 +99,7 @@ layouts:
     prefix: "mobile-GU_MP-"
     locator_map: False
     locator_map_loc: False
+    static: False
     video: False
     ax_loc:
       - [0.05,0.05,0.9,0.9]
@@ -114,6 +119,7 @@ layouts:
     prefix: "mobile-AS-"
     locator_map: False
     locator_map_loc: False
+    static: False
     video: False
     ax_loc:  
       - [0.05,0.05,0.9,0.9]
@@ -138,7 +144,8 @@ layouts:
     prefix: "desktop-CONUS_OCONUS-"
     locator_map: True
     locator_map_loc: [0.30, 0.05, 0.12, 0.24]
-    video: True
+    static: False
+    video: False
     ax_loc: 
       - [0.30, 0.01, 0.69, 0.98]
       - [0.005, 0.63, 0.28, 0.36]
@@ -174,13 +181,25 @@ layouts:
       - "Puerto Rico & U.S. Virgin Islands"
       - "Northern\nMariana Islands"
       - "American Samoa"
+  desktop_static:
+    figure_dimensions: [8,4]
+    metadata_column: "desktop_static_CONUS_OCONUS_image_file"
+    prefix: "desktop-static-CONUS_OCONUS-"
+    source_prefix: "desktop-CONUS_OCONUS-"
+    static: True
+    video: True
+    usgs_img_pos: [0.89,0.01]
+    usgs_img_height: 0.05
+    legend_pos: [0.55,0.9]
+    legend_scale: 1.0
+
 
 figure_params:
   prefix: "sf_current_conditions"
   facecolor: "#ffffff"
   fontfamily: "sans-serif"
   font: "Source Sans 3"
-  fontweight: "normal"
+  fontweight: "light"
   fontcolor: "#363636"
   fontsize: 7
   scale_params:
@@ -189,12 +208,24 @@ figure_params:
     scale_length: 0.025
   axis_buffer: 1.05
   datelabel:
-    fontsize: 10.5
+    fontsize: 12
+    xloc: 0.89
+    yloc: 0.035
+    va: "center"
+    ha: "right"
+    fontweight: "bold"
+    fontcolor: "#363636"
+  datelabel_temp:
+    fontsize: 8
     xloc: 0.99
-    yloc: 0.01
+    yloc: 0.99
+    fontweight: "normal"
+    fontcolor: "#363636"
   shadow:
     sigma: 25
     color: "#999999"
+  webp_quality: 75
+  dpi: 600
 
 movie_params:
   framerate: 8
@@ -251,14 +282,14 @@ marker_params:
     - "#ffffffbf"  # Extremely below
     - "#ffffffbf"  # Much below
     - "#ffffffbf"  # Below normal
-    - "#494949ff"  # Normal
-    - "#74acd1ff"  # Above normal
-    - "#4575b4ff"  # Much above
-    - "#313694ff"  # Extremely above
+    - "#333333ff"  # Normal
+    - "#489dd5ff"  # Above normal
+    - "#2362b3ff"  # Much above
+    - "#003375ff"  # Extremely above
   edgecolor:
-    - "#532f05ff"  # Extremely below
-    - "#8a5109ff"  # Much below
-    - "#be812bff"  # Below normal
+    - "#4d2b00ff"  # Extremely below
+    - "#8c5503ff"  # Much below
+    - "#c18b2fff"  # Below normal
     - "#ffffffff"  # Normal
     - "#ffffffff"  # Above normal
     - "#ffffffff"  # Much above

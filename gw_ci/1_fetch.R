@@ -2,6 +2,15 @@ tar_source('1_fetch/src/download_utils.R')
 tar_source('1_fetch/src/gw_categorize_daily_vals.R')
 
 p1_targets <- list(
+  ##### legend image #####
+  tar_target(
+    p1_desktop_legend_svg,
+    {
+      download.file(p0_desktop_leg_path, p0_desktop_leg_out_path, quiet = TRUE)
+      p0_desktop_leg_out_path
+    },
+    format = "file"
+  ),
   ##### spatial data #####
   tar_target(
     p1_states_sf,
@@ -23,12 +32,14 @@ p1_targets <- list(
       url_prefix = p0_s3_prod_URL,
       outfile = file.path(
         p0_parquet_file_dir,
-        basename(p0_parquet_coverage_path))
+        basename(p0_parquet_coverage_path)
       )
-  ), 
+    )
+  ),
   tar_target(
     p1_metadata,
-    readr::read_csv(p1_metadata_csv)
+    readr::read_csv(p1_metadata_csv, col_types = cols(.default = "c")) |>
+      mutate(date = lubridate::as_date(date))
   ),
   # Build out data tibble for all dates
   tar_target(
@@ -41,7 +52,10 @@ p1_targets <- list(
         # Determine completeness by all image files for a given date documented
         # as existing on s3
         dplyr::mutate(
-          complete = if_all(.cols = matches("*_image_file"), .fns = ~ !is.na(.))
+          complete = if_all(
+            .cols = matches("_image_file$"),
+            .fns = ~ !is.na(.)
+          )
         )
     }
   ),
@@ -64,7 +78,7 @@ p1_targets <- list(
         p1_date_complete |>
           dplyr::select(-c(parquet_file, complete, matches("(mp4)"))) |>
           tidyr::pivot_longer(
-            cols = matches("*_image_file"),
+            cols = matches("_image_file$"),
             names_to = "remote_image_type",
             values_to = "remote_image_file_key"
           )

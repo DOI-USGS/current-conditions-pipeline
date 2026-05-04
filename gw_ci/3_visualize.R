@@ -227,8 +227,7 @@ p3_targets <- list(
     ),
     pattern = map(
       p3_states_gw_webps,
-      p0_states_area_info_df,
-      p3_states_bkgd_webps
+      cross(p1_date_incomplete, map(p0_states_area_info_df, p3_states_bkgd_webps))
     ),
     format = "file"
   ),
@@ -243,7 +242,7 @@ p3_targets <- list(
       gw_frgd_img = p3_desktop_gw_webps,  
       date = p1_date_incomplete[["date"]],
       logo_path = p0_logo_path,
-      legend_path = p0_desktop_leg_path,
+      legend_path = p1_desktop_legend_svg,
       viz_cfg = p0_viz_config_df,
       image_screen_type = "desktop",
       area_name = p0_desktop_area_name,
@@ -283,7 +282,7 @@ p3_targets <- list(
         p0_local_image_type_prefix,
         "desktop_",
         p0_desktop_area_name,
-        "_webp"
+        "_image_file"
       ),
       local_image_file = p3_desktop_gw_webps
     )
@@ -329,7 +328,7 @@ p3_targets <- list(
         p0_local_image_type_prefix,
         "mobile_",
         p0_area_info_df[["name"]],
-        "_webp"
+        "_image_file"
       ),
       local_image_file = p3_mobile_gw_webps
     ),
@@ -416,10 +415,7 @@ p3_targets <- list(
     bind_rows(p3_desktop_gw_webps_config,
               p3_mobile_gw_webps_config,
               p3_static_gw_pngs_config,
-              p3_desktop_bkgd_webp_config,
-              p3_mobile_bkgd_webps_config,
               p3_states_gw_webps_config,
-              p3_states_bkgd_webps_config,
               p3_states_static_pngs_config
               ) |>
       mutate(
@@ -437,7 +433,7 @@ p3_targets <- list(
     p3_new_gw_images_config_csv,
     {
       outfile <- file.path("3_visualize/out", "local_pngs_for_upload.csv")
-      readr::write_csv(p3_new_gw_images_config, outfile)
+      readr::write_csv(p3_new_gw_files_config, outfile)
       return(outfile)
     },
     format = "file"
@@ -578,6 +574,7 @@ p3_targets <- list(
     p3_date_incomplete_updated,
     p1_date_incomplete |>
       dplyr::select(-complete) |>
+<<<<<<< HEAD
       tidyr::pivot_longer(cols = matches("(image_file|mp4|webp)"),
                           names_to = "remote_image_type",
                           values_to = "remote_image_file_key") |>
@@ -588,6 +585,19 @@ p3_targets <- list(
         p3_new_gw_files_config |>
           dplyr::select(date, remote_image_type, remote_image_file_key)
       ) |>
+=======
+      tidyr::pivot_longer(cols = matches("(image_file|mp4)"),
+                   names_to = "remote_image_type",
+                   values_to = "remote_image_file_key") |>
+      # Drop column `remote_image_key` since by default NA for incomplete dates
+      dplyr::select(-c(remote_image_file_key)) |>
+      # Join in info on remote files based on locally generated files
+      dplyr::left_join(p3_new_gw_files_config |>
+                         select(date, remote_image_type, remote_image_file_key),
+                       by = c("date", "remote_image_type")
+                       ) |> 
+      # Pivot back to wide to match original format
+>>>>>>> origin
       tidyr::pivot_wider(names_from = remote_image_type,
                          values_from = remote_image_file_key,
                          values_fn = dplyr::first

@@ -2,14 +2,37 @@ FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Minimal system deps   that  conda/pixi can't provide
+# Minimal system deps that conda/pixi can't provide
 RUN apt-get update && apt-get install -y \
     git \
     curl \
     ca-certificates \
     libgl1 \
     libglib2.0-0 \
+    fontconfig unzip grep sed \
     && rm -rf /var/lib/apt/lists/*
+
+# Install Source Sans Pro (TTF) from GitHub
+RUN mkdir -p /usr/share/fonts/truetype/source-sans-pro && \
+    for font in \
+        SourceSans3-Black.ttf \
+        SourceSans3-BlackIt.ttf \
+        SourceSans3-Bold.ttf \
+        SourceSans3-BoldIt.ttf \
+        SourceSans3-ExtraLight.ttf \
+        SourceSans3-ExtraLightIt.ttf \
+        SourceSans3-It.ttf \
+        SourceSans3-Light.ttf \
+        SourceSans3-LightIt.ttf \
+        SourceSans3-Medium.ttf \
+        SourceSans3-MediumIt.ttf \
+        SourceSans3-Regular.ttf \
+        SourceSans3-Semibold.ttf \
+        SourceSans3-SemiboldIt.ttf; do \
+        curl -fsSL "https://raw.githubusercontent.com/adobe-fonts/source-sans/ed1808970eb3c7301c9a523bee26473ba0bb62fa/TTF/${font}" \
+            -o "/usr/share/fonts/truetype/source-sans-pro/${font}"; \
+    done && \
+    fc-cache -fv
 
 # Install pixi
 RUN curl -fsSL https://pixi.sh/install.sh | bash
@@ -21,7 +44,7 @@ COPY pixi.toml pixi.lock ./
 # Avoiding "Skipped running the post-link scripts"
 RUN pixi config set --local run-post-link-scripts insecure
 
-# Install all Python + R deps from  lock file
+# Install all Python + R deps from lock file
 RUN pixi install
 RUN pixi run install-mapshaper
 
@@ -48,6 +71,7 @@ remotes::install_version('av', version = '0.9.6', lib='/root/R/library', repos='
 remotes::install_version('rmapshaper', version = '0.6.0', lib='/root/R/library', repos='https://cran.rstudio.com/')
 remotes::install_version('targets', version = '1.12.0', lib='/root/R/library', repos='https://cran.rstudio.com/')
 remotes::install_version('tarchetypes', version = '0.14.0', lib='/root/R/library', repos='https://cran.rstudio.com/')
+remotes::install_version('USAboundaries', version = '0.5.1', lib='/root/R/library', repos='https://cran.rstudio.com/')
 EOF
 
 # install.packages(c('sfarrow', 'retry', 'rmapshaper', 'av'), repos = 'http://cran.us.r-project.org')
@@ -62,6 +86,16 @@ RUN pixi run python -c "import dataretrieval.waterdata; print(dir(dataretrieval.
 RUN pixi run python - << 'EOF'
 import dataretrieval
 import dataretrieval.waterdata
-import pandas
 import pyarrow
 EOF
+
+# Clear any stale matplotlib font cache
+RUN find /root -name "fontList*.json" -delete 2>/dev/null || true
+
+# Set Source Sans 3 as default matplotlib font
+RUN mkdir -p /root/.config/matplotlib && \
+    echo "font.family: sans-serif" >> /root/.config/matplotlib/matplotlibrc && \
+    echo "font.sans-serif: Source Sans 3, DejaVu Sans" >> /root/.config/matplotlib/matplotlibrc
+
+# Confirm matplotlib can find Source Sans 3
+RUN pixi run python -c "import matplotlib.font_manager as fm; fm._load_fontmanager(try_read_cache=False); fonts = sorted(set([f.name for f in fm.fontManager.ttflist])); print('Found fonts:', [f for f in fonts if 'Source' in f]); print('All sans-serif sample:', fonts[:30])"
