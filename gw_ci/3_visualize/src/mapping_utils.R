@@ -252,7 +252,6 @@ plot_gw_symbols <- function(gw_plot_order, palette, viz_cfg, image_screen_type) 
 #'
 #' @param gw_parquet_file Path to processed parquet file for one date.
 #' @param date_val Date for which gw data are being plotted.
-#' @param incl_date Boolean - Include date on plot.
 #' @param area_name Name of area
 #' @param area_proj proj to use for `area`
 #' @param area_state_list list of states within `area`
@@ -269,7 +268,7 @@ plot_gw_symbols <- function(gw_plot_order, palette, viz_cfg, image_screen_type) 
 #' @param draw_symbols Logical; if TRUE, include groundwater symbol layers.
 #'
 #' @return Final ggplot.
-plot_gw <- function(gw_parquet_file, date_val, incl_date, area_name, area_proj,
+plot_gw <- function(gw_parquet_file, date_val, area_name, area_proj,
                     area_state_list, area_sf, palette, viz_cfg, scale_cfg,
                     state_lookup, image_screen_type, base_plot = NULL,
                     draw_base = TRUE, draw_symbols = TRUE) {
@@ -316,10 +315,6 @@ plot_gw <- function(gw_parquet_file, date_val, incl_date, area_name, area_proj,
   p <- p +
     theme_void() +
     theme(legend.position = "none")
-
-  if (incl_date) {
-    p <- p + labs(title = date_val)
-  }
 
   return(p)
 }
@@ -416,6 +411,20 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
   #   filter(str_detect(family, viz_cfg[["plot_font"]]), style == "Regular") %>%
   #   pull(family)
   
+  # Export dims
+  if (image_screen_type == "desktop" && area_name == "CONUS_OCONUS") {
+    export_width <- viz_cfg$width
+    export_height <- viz_cfg$height
+  } else if (image_screen_type == "desktop" && !(area_name == "CONUS_OCONUS")) {
+    export_width <- viz_cfg$desktop_width
+    export_height <- viz_cfg$height
+  } else if (image_screen_type == "mobile") {
+    export_width <- viz_cfg$mobile_width
+    export_height <- viz_cfg$mobile_height
+  } else {
+    stop(message("image_screen_type must be either 'desktop' or 'mobile'"))
+  }
+  
   # Build plot
   if (area_name == "CONUS_OCONUS") {
     # generate plots for each area
@@ -467,7 +476,6 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
           p <- plot_gw(
             gw_parquet_file = gw_parquet_file,
             date_val = date_val,
-            incl_date = FALSE,
             area_name = area_name,
             area_proj = area_proj,
             area_state_list = area_state_list,
@@ -531,9 +539,21 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
     }
   } else {
     # generate plot for single area
-    # DELETE LATER
-    # for now, for testing, include date on final image
-    incl_date <- layer_mode %in% c("full", "foreground")
+
+    # Build reference scale (m/pixel) based on area x extent and plotted width
+    reference_length <- max(extent_info[["x_extent"]], extent_info[["y_extent"]])
+    # account for the Gaussian blur, so that it doesn't get cut off
+    # viz_cfg[["ggfx_sigma"]] = the SD of the Gaussian blur
+    # 95% of the Gaussian kernel should fall within +- 2 SD
+    # 99% within +- 3 SD
+    # remaining width = width that actual area map will take up
+    gaussian_blur_px <- 4*viz_cfg[["ggfx_sigma"]]
+    # m per pixel reference scale
+    reference_scale <- ifelse(
+      extent_info[["x_extent"]] > extent_info[["y_extent"]],
+      reference_length/(export_width - gaussian_blur_px),
+      reference_length/(export_height - gaussian_blur_px)
+    )
     
     # Build base plot
     if (draw_base) {
@@ -553,26 +573,38 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
       # Generate appropriate scaling parameters for each area
       # _NOTE: this is a first stab at adjusting these for different areas. I
       # suspect we will also need to make some further adjustments for mobile_
-      if (image_screen_type == "mobile") {
-        scale_cfg <- scale_cfg |>
-          mutate(
-            max_vector_height = max_vector_height * extent_info[["rel_height"]],
-            mid_vector_height = mid_vector_height * extent_info[["rel_height"]],
-            min_vector_height = min_vector_height * extent_info[["rel_height"]],
-            max_vector_width = max_vector_width * extent_info[["rel_width"]],
-            mid_vector_width = max_vector_width * mid_factor,
-            min_vector_width = max_vector_width * min_factor,
-            normal_width = max_vector_width * min_factor,
-            max_peak_width = max_factor_mobile,
-            mid_peak_width = max_factor_mobile * mid_factor,
-            min_peak_width = max_factor_mobile * min_factor
-          )
-      }
+      scale_cfg <- scale_cfg |>
+        mutate(
+          max_vector_height = max_vector_height_px * reference_scale,
+          mid_vector_height = mid_vector_height_px * reference_scale,
+          min_vector_height = min_vector_height_px * reference_scale,
+          max_vector_width = max_vector_width_px * reference_scale,
+          mid_vector_width = max_vector_width * mid_factor,
+          min_vector_width = max_vector_width * min_factor,
+          normal_width = max_vector_width * min_factor,
+          max_peak_width = max_factor,
+          mid_peak_width = max_factor * mid_factor,
+          min_peak_width = max_factor * min_factor
+        )
+      # if (image_screen_type == "mobile") {
+      #   scale_cfg <- scale_cfg |>
+      #     mutate(
+      #       max_vector_height = max_vector_height * extent_info[["rel_height"]],
+      #       mid_vector_height = mid_vector_height * extent_info[["rel_height"]],
+      #       min_vector_height = min_vector_height * extent_info[["rel_height"]],
+      #       max_vector_width = max_vector_width * extent_info[["rel_width"]],
+      #       mid_vector_width = max_vector_width * mid_factor,
+      #       min_vector_width = max_vector_width * min_factor,
+      #       normal_width = max_vector_width * min_factor,
+      #       max_peak_width = max_factor_mobile,
+      #       mid_peak_width = max_factor_mobile * mid_factor,
+      #       min_peak_width = max_factor_mobile * min_factor
+      #     )
+      # }
       
       p <- plot_gw(
         gw_parquet_file = gw_parquet_file,
         date_val = date_val,
-        incl_date = incl_date,
         area_name = area_name,
         area_proj = area_info_df[["proj"]],
         area_state_list = area_info_df[["state_list"]],
@@ -588,6 +620,12 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
       )
     }
     
+    # make sure there is no expansion of extents and no margin
+    p <- p +
+      scale_x_continuous(expand = c(0.00, 0.00)) +
+      scale_y_continuous(expand = c(0.00, 0.00)) +
+      theme(plot.margin = margin(0, 0, 0, 0, "pt"))
+    
     # Make sure the plot extent is consistent, even if not drawing base map layers
     # Identify the center coordinates of the area that is plotted
     center_x <- 0.5 * (extent_info$x_min + extent_info$x_max)
@@ -596,38 +634,71 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
     gw_plot <- p +
       ggplot2::coord_sf(
         xlim = c(
-          center_x - 0.5 * extent_info$x_extent,
-          center_x + 0.5 * extent_info$x_extent
+          center_x - 0.5 * reference_scale * export_width, #extent_info$x_extent,
+          center_x + 0.5 * reference_scale * export_width#extent_info$x_extent
         ),
         ylim = c(
-          center_y - 0.5 * extent_info$y_extent,
-          center_y + 0.5 * extent_info$y_extent
+          center_y - 0.5 * reference_scale* export_height,#extent_info$y_extent,
+          center_y + 0.5 * reference_scale * export_height#extent_info$y_extent
         )
       )
-
-    # make space for ggfx shadow
-    gw_plot <- gw_plot +
-      scale_x_continuous(expand = c(0.05, 0.05)) +
-      scale_y_continuous(expand = c(0.05, 0.05))
-
+    
+    # # make space for ggfx shadow
+    # gw_plot <- gw_plot +
+    #   scale_x_continuous(expand = c(0.05, 0.05)) +
+    #   scale_y_continuous(expand = c(0.05, 0.05))
+    
     # DELETE LATER
-    # if not including date add placeholder title to ensure map placement on plot is the same
-    if (!incl_date) {
-      gw_plot <- gw_plot +
-        labs(title = " ")
+    # for now, for testing, include date on final image
+    incl_date <- layer_mode %in% c("full", "foreground")
+    if (incl_date) {
+      canvas <- grid::rectGrob(
+        x = 0, y = 0, 
+        width = export_width, height = export_height,
+        gp = grid::gpar(fill = NA, col = NA)
+      )
+      
+      gw_plot <- ggdraw(ylim = c(0,1), 
+                        xlim = c(0,1)) +
+        # a background
+        draw_grob(
+          canvas,
+          x = 0, 
+          y = 1,
+          height = export_height, 
+          width = export_width,
+          hjust = 0, 
+          vjust = 1) +
+        draw_plot(
+          gw_plot,
+          x = 0,
+          y = 0,
+          width = 1,
+          height = 1,
+          hjust = 0,
+          vjust = 0) +
+        draw_label(date_val,
+                   x = 0.99,
+                   y = 0.99,
+                   hjust = 1,
+                   vjust = 1,
+                   fontfamily = viz_cfg[["annotation_font"]],
+                   color = viz_cfg[["annotation_font_color"]],
+                   size = viz_cfg[["annotation_font_size"]]
+        )
     }
   }
-
+  
   # Export
-  if (image_screen_type == "desktop") {
-    export_width <- viz_cfg$width
-    export_height <- viz_cfg$height
-  } else if (image_screen_type == "mobile") {
-    export_width <- viz_cfg$mobile_width
-    export_height <- viz_cfg$mobile_height
-  } else {
-    stop(message("image_screen_type must be either 'desktop' or 'mobile'"))
-  }
+  # if (image_screen_type == "desktop") {
+  #   export_width <- viz_cfg$width
+  #   export_height <- viz_cfg$height
+  # } else if (image_screen_type == "mobile") {
+  #   export_width <- viz_cfg$mobile_width
+  #   export_height <- viz_cfg$mobile_height
+  # } else {
+  #   stop(message("image_screen_type must be either 'desktop' or 'mobile'"))
+  # }
 
   bg_col <- if (transparent_bg) "transparent" else viz_cfg$bg_col
 

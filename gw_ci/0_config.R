@@ -202,6 +202,7 @@ p0_targets <- list(
     tibble(
       width = 4800,
       height = 2400,
+      desktop_width = 2400,
       mobile_width = 1600,
       mobile_height = 1600,
       leg_width = 300,
@@ -246,6 +247,10 @@ p0_targets <- list(
       mid_vector_height = 40000,
       min_vector_height = 30000,
       max_vector_width = 28000,
+      max_vector_height_px = 35,
+      mid_vector_height_px = 28,
+      min_vector_height_px = 21,
+      max_vector_width_px = 19.5,
       max_factor = 2, # Adjust based on plot width to match max_vector_width,
       max_factor_mobile = 1,
       mid_factor = 0.75,
