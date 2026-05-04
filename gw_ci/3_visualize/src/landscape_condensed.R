@@ -93,9 +93,9 @@ generate_landscape_condensed <- function(area_info_df, areas_extents,
   # Build reference scale (m/pixel) based on CONUS x extent and plotted width
   conus_fig_width <- viz_config$width*placement_params[["CONUS"]][["width"]]
   reference_length <- areas_extents$CONUS$x_extent
-  # account for the gaussian blur, so that it doesn't get cut off
-  # viz_config[["ggfx_sigma"]] = the SD of the gaussian blur
-  # 95% of the gaussian kernal should fall within +- 2 SD
+  # account for the Gaussian blur, so that it doesn't get cut off
+  # viz_config[["ggfx_sigma"]] = the SD of the Gaussian blur
+  # 95% of the Gaussian kernel should fall within +- 2 SD
   # 99% within +- 3 SD
   # remaining width = width that actual conus map will take up
   reference_scale <- reference_length/(conus_fig_width - 4*viz_config[["ggfx_sigma"]] ) # m per pixel
