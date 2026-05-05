@@ -156,8 +156,8 @@ p3_targets <- list(
       area_sf = p2_states_sf_list,
       extent_info = p2_states_extents_df,
       palette = p0_viz_gw_pal,
-      viz_cfg = p2_states_viz_cfg,
-      scale_cfg = p2_states_scale_cfg,
+      viz_cfg = p0_viz_config_df,
+      scale_cfg = p0_gw_binned_scales,
       state_lookup = p2_state_lookup,
       locator_map_png = NULL,
       image_screen_type = "desktop",
@@ -171,8 +171,7 @@ p3_targets <- list(
       ),
     pattern = cross(
       map(p1_date_incomplete, p2_gw_clean_parquets),
-      map(p0_states_area_info_df, p2_states_sf_list, p2_states_extents_df,
-          p2_states_scale_cfg, p2_states_viz_cfg)
+      map(p0_states_area_info_df, p2_states_sf_list, p2_states_extents_df)
       ),
     format = "file"
     ),
@@ -188,23 +187,22 @@ p3_targets <- list(
       area_sf = p2_states_sf_list,
       extent_info = p2_states_extents_df,
       palette = p0_viz_gw_pal,
-      viz_cfg = p2_states_viz_cfg,
-      scale_cfg = p2_states_scale_cfg,
+      viz_cfg = p0_viz_config_df,
+      scale_cfg = p0_gw_binned_scales,
       state_lookup = p2_state_lookup,
       locator_map_png = NULL,
       image_screen_type = "desktop",
       layer_mode = "background",
       output_format = "webp",
-      transparent_bg = FALSE,
+      transparent_bg = TRUE,
       output_template = file.path(
         p0_local_image_file_dir,
-        sprintf("gw-%s-%s-background.webp", "mobile",
+        sprintf("gw-%s-%s-background.webp", "desktop",
                 p0_states_area_info_df[["name"]])
         )
       ),
     pattern = map(p0_states_area_info_df, p2_states_sf_list,
-                  p2_states_extents_df, p2_states_scale_cfg,
-                  p2_states_viz_cfg),
+                  p2_states_extents_df),
     format = "file"
     ),
   
