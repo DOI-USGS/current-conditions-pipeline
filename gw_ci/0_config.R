@@ -154,7 +154,6 @@ p0_targets <- list(
   ),
   # State-level area info, one row per lower 48 state
   # mirrors p0_area_info_df but scoped to individual states
-  # all use CONUS projection EPSG:5070 for now
   tar_target(
     p0_states_area_info_df,
     {
