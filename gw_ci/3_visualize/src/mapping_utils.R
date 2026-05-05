@@ -569,7 +569,6 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
     
     # Build area symbol plot
     if (draw_symbols) {
-      if (image_screen_type == "mobile")
       # Generate appropriate scaling parameters for each area
       # _NOTE: this is a first stab at adjusting these for different areas. I
       # suspect we will also need to make some further adjustments for mobile_
