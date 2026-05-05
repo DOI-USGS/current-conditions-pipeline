@@ -255,7 +255,6 @@ p0_targets <- list(
       mobile_min_vector_height_px = 18,
       mobile_max_vector_width_px = 16.5,
       max_factor = 2, # Adjust based on plot width to match max_vector_width,
-      max_factor_mobile = 1,
       mid_factor = 0.75,
       min_factor = 0.5,
       mid_vector_width = max_vector_width * mid_factor,
