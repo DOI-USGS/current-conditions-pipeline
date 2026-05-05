@@ -1,4 +1,5 @@
 import re
+import pytz
 import pandas as pd
 from itertools import chain
 from datetime import datetime, timedelta
@@ -151,8 +152,10 @@ def generate_image_list(
     # define date dictionary for a json
     date_dict = {}
 
+    # Set timezone to Eastern
+    eastern = pytz.timezone('US/Eastern')
     # add latest-update
-    date_dict["latest-update"] = datetime.now().strftime("%B %d, %Y %I:%M %p")
+    date_dict["latest-update"] = datetime.now(eastern).strftime("%B %d, %Y %I:%M %p %Z")
 
     for interval in intervals:
         for interval in intervals:
