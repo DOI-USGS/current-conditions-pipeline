@@ -9,8 +9,8 @@
 font_hoist <- function(family, silent = FALSE) {
   font_specs <- systemfonts::system_fonts() |>
     dplyr::filter(family == .env[["family"]]) |>
-    dplyr::mutate(family = paste(.data[["family"]], .data[["style"]])) |>
-    dplyr::select(plain = .data[["path"]], name = .data[["family"]])
+    dplyr::mutate(family = paste(family, style)) |>
+    dplyr::select(plain = all_of("path"), name = all_of("family"))
   
   purrr::pwalk(as.list(font_specs), systemfonts::register_font)
   
