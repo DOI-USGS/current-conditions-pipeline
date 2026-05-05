@@ -73,7 +73,7 @@ p3_targets <- list(
       image_screen_type = "desktop",
       layer_mode = "background",
       output_format = "webp",
-      transparent_bg = FALSE,
+      transparent_bg = TRUE,
       output_template = file.path(
         p0_local_image_file_dir,
         sprintf("gw-%s-%s-background.webp", "desktop", p0_desktop_area_name)
@@ -132,7 +132,7 @@ p3_targets <- list(
       image_screen_type = "mobile",
       layer_mode = "background",
       output_format = "webp",
-      transparent_bg = FALSE,
+      transparent_bg = TRUE,
       output_template = file.path(
         p0_local_image_file_dir,
         sprintf("gw-%s-%s-background.webp", "mobile", p0_area_info_df[["name"]])
