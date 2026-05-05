@@ -122,10 +122,10 @@ def background_setup(
         # initialize basemap    
         map = Basemap(projection='ortho',lat_0=0.5*(min_lat + max_lat),lon_0=0.5*(min_lon + max_lon),resolution='l')
         # draw circle around globe
-        circ = map.drawmapboundary(color='#7F7F7F', linewidth=0.2)
+        circ = map.drawmapboundary(color='#FFFFFF', linewidth=0.2)
         circ.set_clip_on(False)
         # add countries
-        map.fillcontinents(color=(0.75,0.75,0.75),lake_color='#FAFAFA')
+        map.fillcontinents(color=(0.75,0.75,0.75),lake_color='#FFFFFF')
         map.drawcountries(linewidth=0.15, color='#B3B3B3')
         # add latitudes and longitudes
         meridians = map.drawmeridians(np.arange(0, 360, 30), linewidth=0.1, color='#A6A6A6')
