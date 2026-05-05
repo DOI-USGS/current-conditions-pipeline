@@ -73,8 +73,10 @@ def plot_daily_sf_condition(
     minx, miny, maxx, maxy = reference_gdf.to_crs(layout_params["proj"][0]).total_bounds
     reference_length = max(maxx - minx, maxy - miny) * figure_params["axis_buffer"]
 
-    # filter out markers outside of the reference gdf
-    dv_gdf_day = dv_gdf_day[dv_gdf_day.within(reference_gdf.union_all())]
+    # filter out markers outside of the reference gdf (if not conus-oconus)
+    reference_gdfs = [gpd.read_file(f) for f in layout_params["geojson"]]
+    reference_union = gpd.GeoDataFrame(pd.concat(reference_gdfs, ignore_index=True)).union_all()
+    dv_gdf_day = dv_gdf_day[dv_gdf_day.within(reference_union)]
 
     # Set up figure
     fig = plt.figure(1, figsize=(layout_params["figure_dimensions"]), facecolor='none')
