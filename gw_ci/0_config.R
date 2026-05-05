@@ -177,7 +177,7 @@ p0_targets <- list(
         left_join(state_projs, by = "name") |>
         mutate(
           state_list = as.list(name),
-          simplification_keep_high_simp = 0.1,
+          simplification_keep_low_simp = 0.1,
           scale_factor = 1
         )
     }

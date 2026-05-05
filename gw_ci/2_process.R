@@ -104,7 +104,7 @@ p2_targets <- list(
       area_name = p0_states_area_info_df[["name"]],
       area_state_list = p0_states_area_info_df[["state_list"]],
       area_proj = p0_states_area_info_df[["proj"]],
-      simplification_keep = p0_states_area_info_df[["simplification_keep_high_simp"]]
+      simplification_keep = p0_states_area_info_df[["simplification_keep_low_simp"]]
     ),
     pattern = map(p0_states_area_info_df),
     iteration = "list"
