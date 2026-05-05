@@ -998,6 +998,20 @@ plot_gw_static_png <- function(gw_bkgd_img, gw_frgd_img, date, logo_path, legend
   if (!dir.exists(dirname(out_path))) {
     dir.create(dirname(out_path), recursive = TRUE)
   }
+  
+  # Export dims
+  if (image_screen_type == "desktop" && area_name == "CONUS_OCONUS") {
+    export_width <- viz_cfg$desktop_conus_oconus_width
+    export_height <- viz_cfg$desktop_height
+  } else if (image_screen_type == "desktop" && !(area_name == "CONUS_OCONUS")) {
+    export_width <- viz_cfg$desktop_width
+    export_height <- viz_cfg$desktop_height
+  } else if (image_screen_type == "mobile") {
+    export_width <- viz_cfg$mobile_width
+    export_height <- viz_cfg$mobile_height
+  } else {
+    stop(message("image_screen_type must be either 'desktop' or 'mobile'"))
+  }
 
   # read in webp images
   bkgd_img <- magick::image_read(gw_bkgd_img)
@@ -1032,7 +1046,7 @@ plot_gw_static_png <- function(gw_bkgd_img, gw_frgd_img, date, logo_path, legend
   # build plot
   canvas <- grid::rectGrob(
     x = 0, y = 0,
-    width = viz_cfg$width, height = viz_cfg$height,
+    width = export_width, height = export_height,
     gp = grid::gpar(
       fill = viz_cfg$bg_col,
       alpha = 1, col = viz_cfg$bg_col
@@ -1051,23 +1065,23 @@ plot_gw_static_png <- function(gw_bkgd_img, gw_frgd_img, date, logo_path, legend
     ) +
      # background image
     draw_image(bkgd_img,
-               x = if (is_state) 0.15 else 0,
-               y = if (is_state) 0.05 else 0,
-               width = if (is_state) 0.7 else 1,
+               x = if (is_state) 0.1 else 0,
+               y = if (is_state) 0.1 else 0,
+               width = if (is_state) 0.8 else 1,
                height = if (is_state) 0.8 else 1
                ) +
     # foreground image
     draw_image(frgd_img,
-               x = if (is_state) 0.15 else 0,
-               y = if (is_state) 0.05 else 0,
-               width = if (is_state) 0.7 else 1,
+               x = if (is_state) 0.1 else 0,
+               y = if (is_state) 0.1 else 0,
+               width = if (is_state) 0.8 else 1,
                height = if (is_state) 0.8 else 1
     ) +
     # Legend
     draw_image(legend_img,
       x = 0.9,
       y = 0.98,
-      scale = 0.32,
+      scale = if (is_state) 0.5 else 0.32,
       height = 1,
       hjust = 1,
       vjust = 1,
@@ -1078,14 +1092,14 @@ plot_gw_static_png <- function(gw_bkgd_img, gw_frgd_img, date, logo_path, legend
     draw_image(usgs_logo,
       x = 0.98,
       y = 0.024,
-      width = 0.1,
+      width = if (is_state) 0.16 else 0.083,
       hjust = 1, vjust = 0,
       halign = 0, valign = 0
     ) +
     # Add date | title below map, right-justified
     draw_label(
       paste0(format(date, "%b %d, %Y"), " | Groundwater Conditions |"),
-      x = 0.875,
+      x = if (is_state) 0.805 else 0.89,
       y = 0.035,
       hjust = 1,
       vjust = 0,
@@ -1098,8 +1112,8 @@ plot_gw_static_png <- function(gw_bkgd_img, gw_frgd_img, date, logo_path, legend
   ggsave(
     filename = out_path,
     plot = p,
-    width = viz_cfg$width,
-    height = viz_cfg$height,
+    width = export_width,
+    height = export_height,
     dpi = viz_cfg$dpi,
     units = viz_cfg$units,
     bg = viz_cfg$bg_col
