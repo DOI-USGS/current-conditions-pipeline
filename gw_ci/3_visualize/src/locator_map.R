@@ -136,7 +136,7 @@ generate_extent_locator_map <- function(area_name, in_map, add_sf, shift_longitu
          locator_map, 
          width = viz_cfg[["locator_map_width"]], 
          height = viz_cfg[["locator_map_height"]], 
-         bg = viz_cfg[["bg_col"]], 
+         bg = "transparent", 
          dpi = viz_cfg[["dpi"]],
          units = viz_cfg[["units"]])
   
@@ -333,7 +333,7 @@ extent_locator_map <- function(in_map, buffer_m_in_map = 200000, add_sf = NULL,
   # Make plot
   out_plot <- ggplot() +
     # Add globe
-    geom_sf(data = map_buffer, fill = "#FAFAFA", color = NA) +
+    geom_sf(data = map_buffer, fill = "#FFFFFF", color = NA) +
     # Add land
     geom_sf(data = map_ortho, fill = "#B3B3B3", color = "#E5E5E5", linewidth = 0.15) +
     # Add bounding box
