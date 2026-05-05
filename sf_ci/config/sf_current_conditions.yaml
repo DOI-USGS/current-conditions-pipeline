@@ -9,7 +9,7 @@ video_intervals:
  - 3m
  - 6m
  - 1y
-
+ 
 layouts:
   conus:
     figure_dimensions: [4,4]
@@ -224,6 +224,7 @@ figure_params:
   shadow:
     sigma: 25
     color: "#999999"
+    decay: 5
   webp_quality: 75
   dpi: 600
 
