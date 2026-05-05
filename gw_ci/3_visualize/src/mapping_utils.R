@@ -405,12 +405,6 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
   # get all font styles
   font_hoist(viz_cfg[["plot_font"]], silent = TRUE)
   
-  # # If want to check style names
-  # # Grab the newly registered font families
-  # source_sans_3_styles <- systemfonts::registry_fonts() %>%
-  #   filter(str_detect(family, viz_cfg[["plot_font"]]), style == "Regular") %>%
-  #   pull(family)
-  
   # Export dims
   if (image_screen_type == "desktop" && area_name == "CONUS_OCONUS") {
     export_width <- viz_cfg$desktop_conus_oconus_width
@@ -600,19 +594,6 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
             mid_peak_width = max_factor * mid_factor,
             min_peak_width = max_factor * min_factor
           )
-        # scale_cfg <- scale_cfg |>
-        #   mutate(
-        #     max_vector_height = max_vector_height * extent_info[["rel_height"]],
-        #     mid_vector_height = mid_vector_height * extent_info[["rel_height"]],
-        #     min_vector_height = min_vector_height * extent_info[["rel_height"]],
-        #     max_vector_width = max_vector_width * extent_info[["rel_width"]],
-        #     mid_vector_width = max_vector_width * mid_factor,
-        #     min_vector_width = max_vector_width * min_factor,
-        #     normal_width = max_vector_width * min_factor,
-        #     max_peak_width = max_factor_mobile,
-        #     mid_peak_width = max_factor_mobile * mid_factor,
-        #     min_peak_width = max_factor_mobile * min_factor
-        #   )
       }
       
       p <- plot_gw(
@@ -655,12 +636,7 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
           center_y + 0.5 * reference_scale * export_height#extent_info$y_extent
         )
       )
-    
-    # # make space for ggfx shadow
-    # gw_plot <- gw_plot +
-    #   scale_x_continuous(expand = c(0.05, 0.05)) +
-    #   scale_y_continuous(expand = c(0.05, 0.05))
-    
+  
     # DELETE LATER
     # for now, for testing, include date on final image
     incl_date <- layer_mode %in% c("full", "foreground")
@@ -894,35 +870,6 @@ plot_gw_leg <- function(gw_parquet_file, conus_proj, palette, viz_cfg,
   })
 }
 
-#' Create triangle polygon coordinates for groundwater peaks
-#'
-#' Transforms site level peak dimensions into a long-format coordinate table
-#' suitable for geom_polygon.
-#'
-#' @param df A data frame containing monitoring_location_id, x, y, x_start, x_end, and y_end.
-#' @param expand Numeric factor to scale the triangle size beyond its base height and width.
-#'
-#' @return A data frame with three rows per site, containing x_poly and y_poly.
-make_peak_polygon <- function(df, expand = 0.06) {
-  df |>
-    uncount(3) |>
-    group_by(monitoring_location_id) |>
-    mutate(
-      vertex = row_number(),
-      x_poly = case_when(
-        vertex == 1 ~ x_start - expand * x_dif / 2,
-        vertex == 2 ~ x,
-        vertex == 3 ~ x_end + expand * x_dif / 2
-      ),
-      y_poly = case_when(
-        vertex == 1 ~ y,
-        vertex == 2 ~ y_end + expand * y_dif / 2,
-        vertex == 3 ~ y
-      )
-    ) |>
-    ungroup()
-}
-
 #' Compute peak geometry for projected groundwater data
 #'
 #' @param gw_sf An sf object containing groundwater data with
@@ -1035,12 +982,6 @@ plot_gw_static_png <- function(gw_bkgd_img, gw_frgd_img, date, logo_path, legend
   
   # get all font styles
   font_hoist(viz_cfg[["plot_font"]], silent = TRUE)
-  
-  # # If want to check style names
-  # # Grab the newly registered font families
-  # source_sans_3_styles <- systemfonts::registry_fonts() %>%
-  #   filter(str_detect(family, viz_cfg[["plot_font"]]), style == "Regular") %>%
-  #   pull(family)
   
   # build plot
   canvas <- grid::rectGrob(
