@@ -106,7 +106,7 @@ def generate_image_list(
     metadata = pd.concat([metadata, new_rows], ignore_index=True)
 
     # refresh all image files for the latest date
-    metadata.iloc[-1, 2:] = 'NA'
+    metadata.iloc[-1, 1:] = 'NA'
 
     # determine which parquets need downloading
     # Filter to only the dates you care about
