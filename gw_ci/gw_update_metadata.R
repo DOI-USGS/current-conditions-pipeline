@@ -43,6 +43,12 @@ expected_png_images <-
     "desktop_static_CONUS_OCONUS_image_file" = "gw-static-desktop-CONUS_OCONUS"
   )
 
+lower48_states <- state.abb[!state.abb %in% c("AK", "HI")]
+expected_state_webp_images <- setNames(
+  paste0("gw-desktop-", lower48_states),
+  paste0("desktop_", lower48_states, "_webp")
+)
+
 date_files <-
   purrr::map_dfr(dates, function(date) {
     print(date)
@@ -50,12 +56,13 @@ date_files <-
       c(
         paste0("stage/", expected_parquet, "_", date, ".parquet"),
         paste0("images/", expected_webp_images, "-", date, ".webp"),
-        paste0("images/", expected_png_images, "-", date, ".png")
+        paste0("images/", expected_png_images, "-", date, ".png"),
+        paste0("images/", expected_state_webp_images, "-", date, ".webp")
       )
 
     purrr::map2_dfc(
       expected_content,
-      names(c(expected_parquet, expected_webp_images, expected_png_images)),
+      names(c(expected_parquet, expected_webp_images, expected_png_images, expected_state_webp_images)),
       function(file_path, col_name) {
         response <- base_request |>
           httr2::req_url_path_append(file_path) |>
