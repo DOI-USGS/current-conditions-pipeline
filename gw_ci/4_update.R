@@ -24,7 +24,7 @@ p4_targets <-
         named_interval_dates <- set_names(p0_interval_dates, p0_interval_names)
         named_interval_dates <- c(
           named_interval_dates,
-          "latest-update" = format(Sys.time(), "%B %d, %Y %I:%M %p")
+          "latest-update" = format(lubridate::with_tz(Sys.time(), "America/New_York"), "%B %d, %Y %I:%M %p %Z")
         )
         jsonlite::write_json(
           named_interval_dates,

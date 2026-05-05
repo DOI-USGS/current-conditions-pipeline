@@ -9,8 +9,8 @@
 font_hoist <- function(family, silent = FALSE) {
   font_specs <- systemfonts::system_fonts() |>
     dplyr::filter(family == .env[["family"]]) |>
-    dplyr::mutate(family = paste(.data[["family"]], .data[["style"]])) |>
-    dplyr::select(plain = .data[["path"]], name = .data[["family"]])
+    dplyr::mutate(family = paste(family, style)) |>
+    dplyr::select(plain = all_of("path"), name = all_of("family"))
   
   purrr::pwalk(as.list(font_specs), systemfonts::register_font)
   
@@ -37,8 +37,8 @@ font_hoist <- function(family, silent = FALSE) {
 adjust_plot_lims <- function(raw_plot, fig_dims, extent_info, reference_scale, 
                              scale_factor, viz_config) {
   # Pull the figure width and height, in pixels
-  fig_width <- viz_config$width*fig_dims[["width"]]
-  fig_height <- viz_config$height*fig_dims[["height"]]
+  fig_width <- viz_config$desktop_conus_oconus_width*fig_dims[["width"]]
+  fig_height <- viz_config$desktop_height*fig_dims[["height"]]
   # Identify the center coordinates of the area that is plotted
   center_x <- 0.5 * (extent_info$x_min + extent_info$x_max)
   center_y <- 0.5 * (extent_info$y_min + extent_info$y_max)
@@ -84,6 +84,7 @@ generate_landscape_condensed <- function(area_info_df, areas_extents,
                                          locator_map_png = NULL,
                                          draw_labels = TRUE,
                                          draw_scale_markers = TRUE ) {
+  
   # extract key variables  
   placement_params <- area_info_df[["placement_params"]] |>
     set_names(area_info_df[["name"]])
@@ -91,11 +92,11 @@ generate_landscape_condensed <- function(area_info_df, areas_extents,
     set_names(area_info_df[["name"]])
 
   # Build reference scale (m/pixel) based on CONUS x extent and plotted width
-  conus_fig_width <- viz_config$width*placement_params[["CONUS"]][["width"]]
+  conus_fig_width <- viz_config$desktop_conus_oconus_width*placement_params[["CONUS"]][["width"]]
   reference_length <- areas_extents$CONUS$x_extent
-  # account for the gaussian blur, so that it doesn't get cut off
-  # viz_config[["ggfx_sigma"]] = the SD of the gaussian blur
-  # 95% of the gaussian kernal should fall within +- 2 SD
+  # account for the Gaussian blur, so that it doesn't get cut off
+  # viz_config[["ggfx_sigma"]] = the SD of the Gaussian blur
+  # 95% of the Gaussian kernel should fall within +- 2 SD
   # 99% within +- 3 SD
   # remaining width = width that actual conus map will take up
   reference_scale <- reference_length/(conus_fig_width - 4*viz_config[["ggfx_sigma"]] ) # m per pixel
@@ -139,12 +140,14 @@ generate_landscape_condensed <- function(area_info_df, areas_extents,
   # build final plot
   canvas <- grid::rectGrob(
     x = 0, y = 0, 
-    width = viz_config[["width"]], height = viz_config[["height"]],
+    width = viz_config[["desktop_conus_oconus_width"]], 
+    height = viz_config[["desktop_height"]],
     gp = grid::gpar(fill = NA, col = NA)
   )
   
   # set up scaling parameters and visual parameters for scale markers
-  plot_width_cowplot_scalar <- viz_config[["height"]] / viz_config[["width"]]
+  plot_width_cowplot_scalar <- viz_config[["desktop_height"]] / 
+    viz_config[["desktop_conus_oconus_width"]]
   scale_base_height <- 0.03
   scale_base_width <- scale_base_height * plot_width_cowplot_scalar
   scale_buffer_vertical <- 0.01
@@ -157,8 +160,8 @@ generate_landscape_condensed <- function(area_info_df, areas_extents,
       canvas,
       x = 0, 
       y = 1,
-      height = viz_config[["height"]], 
-      width = viz_config[["width"]],
+      height = viz_config[["desktop_height"]], 
+      width = viz_config[["desktop_conus_oconus_width"]],
       hjust = 0, 
       vjust = 1)
   

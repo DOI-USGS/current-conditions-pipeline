@@ -154,7 +154,6 @@ p0_targets <- list(
   ),
   # State-level area info, one row per lower 48 state
   # mirrors p0_area_info_df but scoped to individual states
-  # all use CONUS projection EPSG:5070 for now
   tar_target(
     p0_states_area_info_df,
     {
@@ -177,7 +176,7 @@ p0_targets <- list(
         left_join(state_projs, by = "name") |>
         mutate(
           state_list = as.list(name),
-          simplification_keep_high_simp = 0.1,
+          simplification_keep_low_simp = 0.1,
           scale_factor = 1
         )
     }
@@ -200,8 +199,9 @@ p0_targets <- list(
     # background color, font name, and font size
     p0_viz_config_df,
     tibble(
-      width = 4800,
-      height = 2400,
+      desktop_conus_oconus_width = 4800,
+      desktop_height = 2400,
+      desktop_width = 2400,
       mobile_width = 1600,
       mobile_height = 1600,
       leg_width = 300,
@@ -217,10 +217,10 @@ p0_targets <- list(
       outer_states_col = "#949494",
       outer_states_stroke = 0.1,
       na_sites_col = "grey70",
-      na_sites_size_desktop = 0.9,
-      na_sites_size_mobile = 0.6,
+      na_sites_size_desktop = 1.2,
+      na_sites_size_mobile = 0.9,
       na_sites_stroke = 0.25,
-      normal_sites_stroke = 0.25,
+      normal_sites_stroke = 0.35,
       primary_font_color = "#000000",
       plot_font = "Source Sans 3",
       scale_font = paste(plot_font, "Light Italic"),
@@ -246,13 +246,20 @@ p0_targets <- list(
       mid_vector_height = 40000,
       min_vector_height = 30000,
       max_vector_width = 28000,
+      max_vector_height_px = 35,
+      mid_vector_height_px = 28,
+      min_vector_height_px = 21,
+      max_vector_width_px = 19.5,
+      mobile_max_vector_height_px = 32,
+      mobile_mid_vector_height_px = 25,
+      mobile_min_vector_height_px = 18,
+      mobile_max_vector_width_px = 16.5,
       max_factor = 2, # Adjust based on plot width to match max_vector_width,
-      max_factor_mobile = 1,
       mid_factor = 0.75,
       min_factor = 0.5,
       mid_vector_width = max_vector_width * mid_factor,
       min_vector_width = max_vector_width * min_factor,
-      normal_width = max_vector_width * min_factor,
+      normal_width = max_vector_width * mid_factor,
       max_peak_width = max_factor,
       mid_peak_width = max_factor * mid_factor,
       min_peak_width = max_factor * min_factor,

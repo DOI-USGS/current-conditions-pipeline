@@ -252,7 +252,6 @@ plot_gw_symbols <- function(gw_plot_order, palette, viz_cfg, image_screen_type) 
 #'
 #' @param gw_parquet_file Path to processed parquet file for one date.
 #' @param date_val Date for which gw data are being plotted.
-#' @param incl_date Boolean - Include date on plot.
 #' @param area_name Name of area
 #' @param area_proj proj to use for `area`
 #' @param area_state_list list of states within `area`
@@ -269,7 +268,7 @@ plot_gw_symbols <- function(gw_plot_order, palette, viz_cfg, image_screen_type) 
 #' @param draw_symbols Logical; if TRUE, include groundwater symbol layers.
 #'
 #' @return Final ggplot.
-plot_gw <- function(gw_parquet_file, date_val, incl_date, area_name, area_proj,
+plot_gw <- function(gw_parquet_file, date_val, area_name, area_proj,
                     area_state_list, area_sf, palette, viz_cfg, scale_cfg,
                     state_lookup, image_screen_type, base_plot = NULL,
                     draw_base = TRUE, draw_symbols = TRUE) {
@@ -316,10 +315,6 @@ plot_gw <- function(gw_parquet_file, date_val, incl_date, area_name, area_proj,
   p <- p +
     theme_void() +
     theme(legend.position = "none")
-
-  if (incl_date) {
-    p <- p + labs(title = date_val)
-  }
 
   return(p)
 }
@@ -410,11 +405,19 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
   # get all font styles
   font_hoist(viz_cfg[["plot_font"]], silent = TRUE)
   
-  # # If want to check style names
-  # # Grab the newly registered font families
-  # source_sans_3_styles <- systemfonts::registry_fonts() %>%
-  #   filter(str_detect(family, viz_cfg[["plot_font"]]), style == "Regular") %>%
-  #   pull(family)
+  # Export dims
+  if (image_screen_type == "desktop" && area_name == "CONUS_OCONUS") {
+    export_width <- viz_cfg$desktop_conus_oconus_width
+    export_height <- viz_cfg$desktop_height
+  } else if (image_screen_type == "desktop" && !(area_name == "CONUS_OCONUS")) {
+    export_width <- viz_cfg$desktop_width
+    export_height <- viz_cfg$desktop_height
+  } else if (image_screen_type == "mobile") {
+    export_width <- viz_cfg$mobile_width
+    export_height <- viz_cfg$mobile_height
+  } else {
+    stop(message("image_screen_type must be either 'desktop' or 'mobile'"))
+  }
   
   # Build plot
   if (area_name == "CONUS_OCONUS") {
@@ -430,7 +433,6 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
       ),
       function(area_name, area_proj, area_state_list, area_scale_factor,
                extent_info, area_poly_sf) {
-        
         # Build area base plot
         if (draw_base) {
           p <- plot_base(
@@ -467,7 +469,6 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
           p <- plot_gw(
             gw_parquet_file = gw_parquet_file,
             date_val = date_val,
-            incl_date = FALSE,
             area_name = area_name,
             area_proj = area_proj,
             area_state_list = area_state_list,
@@ -490,7 +491,7 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
       }
     ) |>
       set_names(area_info_df[["name"]])
-
+    
     # arrange plots
     extent_info <- set_names(extent_info, area_info_df[["name"]])
     gw_plot <- generate_landscape_condensed(
@@ -531,9 +532,21 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
     }
   } else {
     # generate plot for single area
-    # DELETE LATER
-    # for now, for testing, include date on final image
-    incl_date <- layer_mode %in% c("full", "foreground")
+
+    # Build reference scale (m/pixel) based on area x extent and plotted width
+    reference_length <- max(extent_info[["x_extent"]], extent_info[["y_extent"]])
+    # account for the Gaussian blur, so that it doesn't get cut off
+    # viz_cfg[["ggfx_sigma"]] = the SD of the Gaussian blur
+    # 95% of the Gaussian kernel should fall within +- 2 SD
+    # 99% within +- 3 SD
+    # remaining width = width that actual area map will take up
+    gaussian_blur_px <- 4*viz_cfg[["ggfx_sigma"]]
+    # m per pixel reference scale
+    reference_scale <- ifelse(
+      extent_info[["x_extent"]] > extent_info[["y_extent"]],
+      reference_length/(export_width - gaussian_blur_px),
+      reference_length/(export_height - gaussian_blur_px)
+    )
     
     # Build base plot
     if (draw_base) {
@@ -553,26 +566,39 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
       # Generate appropriate scaling parameters for each area
       # _NOTE: this is a first stab at adjusting these for different areas. I
       # suspect we will also need to make some further adjustments for mobile_
-      if (image_screen_type == "mobile") {
+      if (image_screen_type == "desktop") {
         scale_cfg <- scale_cfg |>
           mutate(
-            max_vector_height = max_vector_height * extent_info[["rel_height"]],
-            mid_vector_height = mid_vector_height * extent_info[["rel_height"]],
-            min_vector_height = min_vector_height * extent_info[["rel_height"]],
-            max_vector_width = max_vector_width * extent_info[["rel_width"]],
+            max_vector_height = max_vector_height_px * reference_scale,
+            mid_vector_height = mid_vector_height_px * reference_scale,
+            min_vector_height = min_vector_height_px * reference_scale,
+            max_vector_width = max_vector_width_px * reference_scale,
             mid_vector_width = max_vector_width * mid_factor,
             min_vector_width = max_vector_width * min_factor,
             normal_width = max_vector_width * min_factor,
-            max_peak_width = max_factor_mobile,
-            mid_peak_width = max_factor_mobile * mid_factor,
-            min_peak_width = max_factor_mobile * min_factor
+            max_peak_width = max_factor,
+            mid_peak_width = max_factor * mid_factor,
+            min_peak_width = max_factor * min_factor
+          )
+      } else if (image_screen_type == "mobile") {
+        scale_cfg <- scale_cfg |>
+          mutate(
+            max_vector_height = mobile_max_vector_height_px * reference_scale,
+            mid_vector_height = mobile_mid_vector_height_px * reference_scale,
+            min_vector_height = mobile_min_vector_height_px * reference_scale,
+            max_vector_width = mobile_max_vector_width_px * reference_scale,
+            mid_vector_width = max_vector_width * mid_factor,
+            min_vector_width = max_vector_width * min_factor,
+            normal_width = max_vector_width * min_factor,
+            max_peak_width = max_factor,
+            mid_peak_width = max_factor * mid_factor,
+            min_peak_width = max_factor * min_factor
           )
       }
       
       p <- plot_gw(
         gw_parquet_file = gw_parquet_file,
         date_val = date_val,
-        incl_date = incl_date,
         area_name = area_name,
         area_proj = area_info_df[["proj"]],
         area_state_list = area_info_df[["state_list"]],
@@ -588,6 +614,12 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
       )
     }
     
+    # make sure there is no expansion of extents and no margin
+    p <- p +
+      scale_x_continuous(expand = c(0.00, 0.00)) +
+      scale_y_continuous(expand = c(0.00, 0.00)) +
+      theme(plot.margin = margin(0, 0, 0, 0, "pt"))
+    
     # Make sure the plot extent is consistent, even if not drawing base map layers
     # Identify the center coordinates of the area that is plotted
     center_x <- 0.5 * (extent_info$x_min + extent_info$x_max)
@@ -596,37 +628,54 @@ plot_gw_image <- function(gw_parquet_file, date, area_name, area_info_df, area_s
     gw_plot <- p +
       ggplot2::coord_sf(
         xlim = c(
-          center_x - 0.5 * extent_info$x_extent,
-          center_x + 0.5 * extent_info$x_extent
+          center_x - 0.5 * reference_scale * export_width, #extent_info$x_extent,
+          center_x + 0.5 * reference_scale * export_width#extent_info$x_extent
         ),
         ylim = c(
-          center_y - 0.5 * extent_info$y_extent,
-          center_y + 0.5 * extent_info$y_extent
+          center_y - 0.5 * reference_scale* export_height,#extent_info$y_extent,
+          center_y + 0.5 * reference_scale * export_height#extent_info$y_extent
         )
       )
-
-    # make space for ggfx shadow
-    gw_plot <- gw_plot +
-      scale_x_continuous(expand = c(0.05, 0.05)) +
-      scale_y_continuous(expand = c(0.05, 0.05))
-
+  
     # DELETE LATER
-    # if not including date add placeholder title to ensure map placement on plot is the same
-    if (!incl_date) {
-      gw_plot <- gw_plot +
-        labs(title = " ")
+    # for now, for testing, include date on final image
+    incl_date <- layer_mode %in% c("full", "foreground")
+    if (incl_date) {
+      canvas <- grid::rectGrob(
+        x = 0, y = 0, 
+        width = export_width, height = export_height,
+        gp = grid::gpar(fill = NA, col = NA)
+      )
+      
+      gw_plot <- ggdraw(ylim = c(0,1), 
+                        xlim = c(0,1)) +
+        # a background
+        draw_grob(
+          canvas,
+          x = 0, 
+          y = 1,
+          height = export_height, 
+          width = export_width,
+          hjust = 0, 
+          vjust = 1) +
+        draw_plot(
+          gw_plot,
+          x = 0,
+          y = 0,
+          width = 1,
+          height = 1,
+          hjust = 0,
+          vjust = 0) +
+        draw_label(date_val,
+                   x = 0.99,
+                   y = 0.99,
+                   hjust = 1,
+                   vjust = 1,
+                   fontfamily = viz_cfg[["annotation_font"]],
+                   color = viz_cfg[["annotation_font_color"]],
+                   size = viz_cfg[["annotation_font_size"]]
+        )
     }
-  }
-
-  # Export
-  if (image_screen_type == "desktop") {
-    export_width <- viz_cfg$width
-    export_height <- viz_cfg$height
-  } else if (image_screen_type == "mobile") {
-    export_width <- viz_cfg$mobile_width
-    export_height <- viz_cfg$mobile_height
-  } else {
-    stop(message("image_screen_type must be either 'desktop' or 'mobile'"))
   }
 
   bg_col <- if (transparent_bg) "transparent" else viz_cfg$bg_col
@@ -821,35 +870,6 @@ plot_gw_leg <- function(gw_parquet_file, conus_proj, palette, viz_cfg,
   })
 }
 
-#' Create triangle polygon coordinates for groundwater peaks
-#'
-#' Transforms site level peak dimensions into a long-format coordinate table
-#' suitable for geom_polygon.
-#'
-#' @param df A data frame containing monitoring_location_id, x, y, x_start, x_end, and y_end.
-#' @param expand Numeric factor to scale the triangle size beyond its base height and width.
-#'
-#' @return A data frame with three rows per site, containing x_poly and y_poly.
-make_peak_polygon <- function(df, expand = 0.06) {
-  df |>
-    uncount(3) |>
-    group_by(monitoring_location_id) |>
-    mutate(
-      vertex = row_number(),
-      x_poly = case_when(
-        vertex == 1 ~ x_start - expand * x_dif / 2,
-        vertex == 2 ~ x,
-        vertex == 3 ~ x_end + expand * x_dif / 2
-      ),
-      y_poly = case_when(
-        vertex == 1 ~ y,
-        vertex == 2 ~ y_end + expand * y_dif / 2,
-        vertex == 3 ~ y
-      )
-    ) |>
-    ungroup()
-}
-
 #' Compute peak geometry for projected groundwater data
 #'
 #' @param gw_sf An sf object containing groundwater data with
@@ -924,11 +944,27 @@ plot_gw_static_png <- function(gw_bkgd_img, gw_frgd_img, date, logo_path, legend
   if (!dir.exists(dirname(out_path))) {
     dir.create(dirname(out_path), recursive = TRUE)
   }
+  
+  # Export dims
+  if (image_screen_type == "desktop" && area_name == "CONUS_OCONUS") {
+    export_width <- viz_cfg$desktop_conus_oconus_width
+    export_height <- viz_cfg$desktop_height
+  } else if (image_screen_type == "desktop" && !(area_name == "CONUS_OCONUS")) {
+    export_width <- viz_cfg$desktop_width
+    export_height <- viz_cfg$desktop_height
+  } else if (image_screen_type == "mobile") {
+    export_width <- viz_cfg$mobile_width
+    export_height <- viz_cfg$mobile_height
+  } else {
+    stop(message("image_screen_type must be either 'desktop' or 'mobile'"))
+  }
 
   # read in webp images
   bkgd_img <- magick::image_read(gw_bkgd_img)
   frgd_img <- magick::image_read(gw_frgd_img)
-
+  
+  is_state <- !area_name %in% c("CONUS_OCONUS", "CONUS", "AK", "HI", "PR_VI", "GU_MP", "AS")
+  
   usgs_logo <- magick::image_read(logo_path) |>
     magick::image_colorize(100, "black")
   
@@ -947,16 +983,10 @@ plot_gw_static_png <- function(gw_bkgd_img, gw_frgd_img, date, logo_path, legend
   # get all font styles
   font_hoist(viz_cfg[["plot_font"]], silent = TRUE)
   
-  # # If want to check style names
-  # # Grab the newly registered font families
-  # source_sans_3_styles <- systemfonts::registry_fonts() %>%
-  #   filter(str_detect(family, viz_cfg[["plot_font"]]), style == "Regular") %>%
-  #   pull(family)
-  
   # build plot
   canvas <- grid::rectGrob(
     x = 0, y = 0,
-    width = viz_cfg$width, height = viz_cfg$height,
+    width = export_width, height = export_height,
     gp = grid::gpar(
       fill = viz_cfg$bg_col,
       alpha = 1, col = viz_cfg$bg_col
@@ -973,25 +1003,25 @@ plot_gw_static_png <- function(gw_bkgd_img, gw_frgd_img, date, logo_path, legend
       height = 8, width = 8,
       hjust = 0, vjust = 1
     ) +
-    # background image
+     # background image
     draw_image(bkgd_img,
-      x = 0,
-      y = 0,
-      width = 1,
-      height = 1
-    ) +
+               x = if (is_state) 0.1 else 0,
+               y = if (is_state) 0.1 else 0,
+               width = if (is_state) 0.8 else 1,
+               height = if (is_state) 0.8 else 1
+               ) +
     # foreground image
     draw_image(frgd_img,
-      x = 0,
-      y = 0,
-      width = 1,
-      height = 1
+               x = if (is_state) 0.1 else 0,
+               y = if (is_state) 0.1 else 0,
+               width = if (is_state) 0.8 else 1,
+               height = if (is_state) 0.8 else 1
     ) +
     # Legend
     draw_image(legend_img,
       x = 0.9,
       y = 0.98,
-      scale = 0.32,
+      scale = if (is_state) 0.5 else 0.32,
       height = 1,
       hjust = 1,
       vjust = 1,
@@ -1002,14 +1032,14 @@ plot_gw_static_png <- function(gw_bkgd_img, gw_frgd_img, date, logo_path, legend
     draw_image(usgs_logo,
       x = 0.98,
       y = 0.024,
-      width = 0.1,
+      width = if (is_state) 0.16 else 0.083,
       hjust = 1, vjust = 0,
       halign = 0, valign = 0
     ) +
     # Add date | title below map, right-justified
     draw_label(
       paste0(format(date, "%b %d, %Y"), " | Groundwater Conditions |"),
-      x = 0.875,
+      x = if (is_state) 0.805 else 0.89,
       y = 0.035,
       hjust = 1,
       vjust = 0,
@@ -1022,8 +1052,8 @@ plot_gw_static_png <- function(gw_bkgd_img, gw_frgd_img, date, logo_path, legend
   ggsave(
     filename = out_path,
     plot = p,
-    width = viz_cfg$width,
-    height = viz_cfg$height,
+    width = export_width,
+    height = export_height,
     dpi = viz_cfg$dpi,
     units = viz_cfg$units,
     bg = viz_cfg$bg_col
