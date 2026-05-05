@@ -207,28 +207,28 @@ p3_targets <- list(
     ),
   
   # State static, composite bkgd + foreground per state x date
-  tar_target(
-    p3_states_static_pngs,
-    plot_gw_static_png(
-      gw_bkgd_img = p3_states_bkgd_webps,
-      gw_frgd_img = p3_states_gw_webps,
-      date = p1_date_incomplete[["date"]],
-      logo_path = p0_logo_path,
-      legend_path = p0_desktop_leg_path,
-      viz_cfg = p0_viz_config_df,
-      image_screen_type = "desktop",
-      area_name = p0_states_area_info_df[["name"]],
-      output_template = file.path(
-        p0_local_image_file_dir,
-        basename(p0_remote_image_file_template)
-      )
-    ),
-    pattern = map(
-      p3_states_gw_webps,
-      cross(p1_date_incomplete, map(p0_states_area_info_df, p3_states_bkgd_webps))
-    ),
-    format = "file"
-  ),
+  # tar_target(
+  #   p3_states_static_pngs,
+  #   plot_gw_static_png(
+  #     gw_bkgd_img = p3_states_bkgd_webps,
+  #     gw_frgd_img = p3_states_gw_webps,
+  #     date = p1_date_incomplete[["date"]],
+  #     logo_path = p0_logo_path,
+  #     legend_path = p0_desktop_leg_path,
+  #     viz_cfg = p0_viz_config_df,
+  #     image_screen_type = "desktop",
+  #     area_name = p0_states_area_info_df[["name"]],
+  #     output_template = file.path(
+  #       p0_local_image_file_dir,
+  #       basename(p0_remote_image_file_template)
+  #     )
+  #   ),
+  #   pattern = map(
+  #     p3_states_gw_webps,
+  #     cross(p1_date_incomplete, map(p0_states_area_info_df, p3_states_bkgd_webps))
+  #   ),
+  #   format = "file"
+  # ),
   
   ##### Generate static stand-alone images #####
   
@@ -389,23 +389,23 @@ p3_targets <- list(
   ),
   
   # state static png config
-  tar_target(
-    p3_states_static_pngs_config,
-    tibble(
-      date = p1_date_incomplete[["date"]],
-      local_image_type = paste0(
-        p0_local_image_type_prefix,
-        "desktop_static_",
-        p0_states_area_info_df[["name"]],
-        "_image_file"
-      ),
-      local_image_file = p3_states_static_pngs
-    ),
-    pattern = map(
-      cross(p1_date_incomplete, p0_states_area_info_df),
-      p3_states_static_pngs
-    )
-  ),
+  # tar_target(
+  #   p3_states_static_pngs_config,
+  #   tibble(
+  #     date = p1_date_incomplete[["date"]],
+  #     local_image_type = paste0(
+  #       p0_local_image_type_prefix,
+  #       "desktop_static_",
+  #       p0_states_area_info_df[["name"]],
+  #       "_image_file"
+  #     ),
+  #     local_image_file = p3_states_static_pngs
+  #   ),
+  #   pattern = map(
+  #     cross(p1_date_incomplete, p0_states_area_info_df),
+  #     p3_states_static_pngs
+  #   )
+  # ),
   
   # full newly generated png config
   tar_target(
@@ -413,8 +413,8 @@ p3_targets <- list(
     bind_rows(p3_desktop_gw_webps_config,
               p3_mobile_gw_webps_config,
               p3_static_gw_pngs_config,
-              p3_states_gw_webps_config,
-              p3_states_static_pngs_config
+              p3_states_gw_webps_config
+              # , p3_states_static_pngs_config
               ) |>
       mutate(
         remote_image_type = str_remove(local_image_type,
@@ -496,70 +496,70 @@ p3_targets <- list(
   
   #### state level:
   # mp4 generation for each state and interval
-  tar_target(
-    p3_gw_states_mp4,
-    build_gw_mp4(
-      interval_start_date = p0_interval_start_dates,
-      interval_end_date = p0_yesterday_date,
-      interval_name = p0_interval_names,
-      gw_png_config = p3_gw_pngs_config,
-      viz_cfg = p0_viz_config_df,
-      img_type_name = paste0(
-        "local_desktop_static_",
-        p0_states_area_info_df[["name"]],
-        "_image_file"
-      ),
-      output_template = file.path(
-        p0_local_image_file_dir,
-        sprintf("gw-movie-%s-%s-%s.mp4", "desktop",
-          p0_states_area_info_df[["name"]],
-          p0_interval_names
-        )
-      )
-    ),
-    pattern = cross(
-      map(p0_interval_start_dates, p0_interval_names),
-      p0_states_area_info_df
-    ),
-    format = "file"
-  ),
-  
-  tar_target(
-    p3_new_gw_states_mp4_config,
-    tibble::tibble(
-      date = p0_yesterday_date,
-      local_image_type = paste0(
-        p0_local_image_type_prefix,
-        "desktop_static_",
-        p0_states_area_info_df[["name"]],
-        "_mp4_",
-        gsub("-", "_", p0_interval_names)
-      ),
-      local_image_file = p3_gw_states_mp4
-    ) |>
-      dplyr::mutate(
-        remote_image_type =
-          stringr::str_remove(local_image_type, p0_local_image_type_prefix),
-        remote_image_file_key =
-          gsub(
-            p0_local_image_file_dir,
-            dirname(p0_remote_video_file_template),
-            local_image_file
-          ),
-        newly_generated = TRUE
-      ),
-    pattern = map(
-      cross(p0_interval_names, p0_states_area_info_df),
-      p3_gw_states_mp4
-    )
-  ),
+  # tar_target(
+  #   p3_gw_states_mp4,
+  #   build_gw_mp4(
+  #     interval_start_date = p0_interval_start_dates,
+  #     interval_end_date = p0_yesterday_date,
+  #     interval_name = p0_interval_names,
+  #     gw_png_config = p3_gw_pngs_config,
+  #     viz_cfg = p0_viz_config_df,
+  #     img_type_name = paste0(
+  #       "local_desktop_static_",
+  #       p0_states_area_info_df[["name"]],
+  #       "_image_file"
+  #     ),
+  #     output_template = file.path(
+  #       p0_local_image_file_dir,
+  #       sprintf("gw-movie-%s-%s-%s.mp4", "desktop",
+  #         p0_states_area_info_df[["name"]],
+  #         p0_interval_names
+  #       )
+  #     )
+  #   ),
+  #   pattern = cross(
+  #     map(p0_interval_start_dates, p0_interval_names),
+  #     p0_states_area_info_df
+  #   ),
+  #   format = "file"
+  # ),
+
+  # tar_target(
+  #   p3_new_gw_states_mp4_config,
+  #   tibble::tibble(
+  #     date = p0_yesterday_date,
+  #     local_image_type = paste0(
+  #       p0_local_image_type_prefix,
+  #       "desktop_static_",
+  #       p0_states_area_info_df[["name"]],
+  #       "_mp4_",
+  #       gsub("-", "_", p0_interval_names)
+  #     ),
+  #     local_image_file = p3_gw_states_mp4
+  #   ) |>
+  #     dplyr::mutate(
+  #       remote_image_type =
+  #         stringr::str_remove(local_image_type, p0_local_image_type_prefix),
+  #       remote_image_file_key =
+  #         gsub(
+  #           p0_local_image_file_dir,
+  #           dirname(p0_remote_video_file_template),
+  #           local_image_file
+  #         ),
+  #       newly_generated = TRUE
+  #     ),
+  #   pattern = map(
+  #     cross(p0_interval_names, p0_states_area_info_df),
+  #     p3_gw_states_mp4
+  #   )
+  # ),
   
   tar_target(
     p3_new_gw_files_config,
     dplyr::bind_rows(
       p3_new_gw_images_config,
-      p3_new_gw_mp4_config,
-      p3_new_gw_states_mp4_config
+      p3_new_gw_mp4_config
+      # , p3_new_gw_states_mp4_config
     )
   ),
   
