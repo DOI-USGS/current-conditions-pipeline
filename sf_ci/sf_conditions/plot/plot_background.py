@@ -47,13 +47,11 @@ def background_setup(
 
     # Add shadow axes
     img_shadow = plt.imread(shadow_image_file)
-    img_shadow_blur = gaussian_filter(img_shadow[:, :, 1], sigma=figure_params["shadow"]["sigma"])
+    alphas = (1. - gaussian_filter(img_shadow[:, :, 1], sigma=figure_params["shadow"]["sigma"])) * figure_params["shadow"]["alpha"]
     ax_shadow = fig.add_axes([0, 0, 1, 1])
     shadow_val = np.min(img_shadow[:, :, 1])
-    # define alpha with a concave decay function
-    alphas = np.ones_like(img_shadow_blur)
-    alphas[img_shadow_blur > shadow_val] = 1.0 - (img_shadow_blur[img_shadow_blur > shadow_val]) ** figure_params["shadow"]["decay"]
-    ax_shadow.imshow(img_shadow_blur, cmap="gray", vmin=0.0, vmax=1.0, alpha = alphas)
+    dark_black = np.zeros_like(alphas)
+    ax_shadow.imshow(dark_black, cmap="gray", vmin=0.0, vmax=1.0, alpha = alphas)
     ax_shadow.set_axis_off()
 
     # Make a list of the layout's extents

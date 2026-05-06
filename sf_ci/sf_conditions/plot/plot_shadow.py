@@ -2,7 +2,7 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 from sf_conditions.plot.plot_functions import get_ax_size_inches
 
-def plot_shadow(fig, ax, boundary_gdf, proj, scale_mult, state_style, reference_scale, shadow_color):
+def plot_shadow(fig, ax, boundary_gdf, proj, scale_mult, state_style, reference_scale):
     """Makes an image of the outlines of the map geometries for generated a shadow effect
 
     Parameters
@@ -21,8 +21,6 @@ def plot_shadow(fig, ax, boundary_gdf, proj, scale_mult, state_style, reference_
         parameters defining the geometry style
     reference_scale: float
         reference scale that is in meters (map dimensions) per inch (canvas dimensions)
-    shadow_color: string
-        hex code color for the shadow
             
     Returns
     -------
@@ -37,8 +35,8 @@ def plot_shadow(fig, ax, boundary_gdf, proj, scale_mult, state_style, reference_
     # plot as `shadow_color`
     boundary_gdf_proj.plot(
         ax=ax,
-        facecolor=shadow_color,
-        edgecolor=shadow_color,
+        facecolor="#000000",
+        edgecolor="#000000",
         linewidth=state_style["linewidth"],
         zorder=1,
     )
@@ -114,8 +112,7 @@ def shadow_plot(
             layout_params["proj"][i],
             layout_params["multi"][i],
             state_params["style"],
-            reference_scale,
-            figure_params["shadow"]["color"]
+            reference_scale
         )
 
     # Save figure

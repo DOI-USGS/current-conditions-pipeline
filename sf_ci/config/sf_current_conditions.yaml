@@ -223,8 +223,7 @@ figure_params:
     fontcolor: "#363636"
   shadow:
     sigma: 25
-    color: "#999999"
-    decay: 50
+    alpha: 0.4
   webp_quality: 75
   dpi: 600
 
