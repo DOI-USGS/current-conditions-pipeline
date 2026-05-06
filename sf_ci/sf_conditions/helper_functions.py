@@ -1,4 +1,5 @@
 import re
+import pytz
 import pandas as pd
 from itertools import chain
 from datetime import datetime, timedelta
@@ -91,6 +92,22 @@ def generate_image_list(
                 full_date_list.append(current.strftime("%Y-%m-%d"))
                 current += timedelta(days=1)
     
+    # metadata cleanup
+    # Find ids not in dataframe
+    missing_dates = set(full_date_list) - set(metadata["date"])
+
+    # Create new rows for missing dates
+    new_rows = pd.DataFrame({"date": list(missing_dates)})
+
+    # Reindex to match df columns (fills others with NA)
+    new_rows = new_rows.reindex(columns=metadata.columns)
+
+    # Append
+    metadata = pd.concat([metadata, new_rows], ignore_index=True)
+
+    # refresh all image files for the latest date
+    metadata.iloc[-1, 1:] = 'NA'
+
     # determine which parquets need downloading
     # Filter to only the dates you care about
     filtered_metadata = metadata[metadata["date"].isin(full_date_list)]
@@ -151,8 +168,10 @@ def generate_image_list(
     # define date dictionary for a json
     date_dict = {}
 
+    # Set timezone to Eastern
+    eastern = pytz.timezone('US/Eastern')
     # add latest-update
-    date_dict["latest-update"] = datetime.now().strftime("%B %d, %Y %I:%M %p")
+    date_dict["latest-update"] = datetime.now(eastern).strftime("%B %d, %Y %I:%M %p %Z")
 
     for interval in intervals:
         for interval in intervals:

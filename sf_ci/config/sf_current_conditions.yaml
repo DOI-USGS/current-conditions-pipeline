@@ -9,7 +9,7 @@ video_intervals:
  - 3m
  - 6m
  - 1y
-
+ 
 layouts:
   conus:
     figure_dimensions: [4,4]
@@ -223,7 +223,7 @@ figure_params:
     fontcolor: "#363636"
   shadow:
     sigma: 25
-    color: "#999999"
+    alpha: 0.4
   webp_quality: 75
   dpi: 600
 

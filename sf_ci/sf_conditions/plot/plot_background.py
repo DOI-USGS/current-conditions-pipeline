@@ -43,13 +43,15 @@ def background_setup(
     reference_length = max(maxx - minx, maxy - miny) * figure_params["axis_buffer"]
 
     # Set up figure
-    fig = plt.figure(1, figsize=(layout_params["figure_dimensions"]))
+    fig = plt.figure(1, figsize=(layout_params["figure_dimensions"]), facecolor='none')
 
     # Add shadow axes
     img_shadow = plt.imread(shadow_image_file)
-    img_shadow_blur = gaussian_filter(img_shadow[:, :, 1], sigma=figure_params["shadow"]["sigma"])
+    alphas = (1. - gaussian_filter(img_shadow[:, :, 1], sigma=figure_params["shadow"]["sigma"])) * figure_params["shadow"]["alpha"]
     ax_shadow = fig.add_axes([0, 0, 1, 1])
-    ax_shadow.imshow(img_shadow_blur, cmap="gray", vmin=0.0, vmax=1.0)
+    shadow_val = np.min(img_shadow[:, :, 1])
+    dark_black = np.zeros_like(alphas)
+    ax_shadow.imshow(dark_black, cmap="gray", vmin=0.0, vmax=1.0, alpha = alphas)
     ax_shadow.set_axis_off()
 
     # Make a list of the layout's extents
@@ -121,7 +123,7 @@ def background_setup(
         circ = map.drawmapboundary(color='#7F7F7F', linewidth=0.2)
         circ.set_clip_on(False)
         # add countries
-        map.fillcontinents(color=(0.75,0.75,0.75),lake_color='#FAFAFA')
+        map.fillcontinents(color=(0.75,0.75,0.75),lake_color='#FFFFFF')
         map.drawcountries(linewidth=0.15, color='#B3B3B3')
         # add latitudes and longitudes
         meridians = map.drawmeridians(np.arange(0, 360, 30), linewidth=0.1, color='#A6A6A6')
