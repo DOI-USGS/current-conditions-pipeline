@@ -748,7 +748,7 @@ plot_gw_image <- function(
   if (output_format == "webp") {
     tmp_png <- tempfile(fileext = ".png")
 
-    message(paste0("Temporarily saving GW image to ", tmp_png))
+    #message(paste0("Temporarily saving GW image to ", tmp_png))
 
     # save transparent png
     ggsave(
@@ -761,7 +761,7 @@ plot_gw_image <- function(
       units = viz_cfg$units
     )
 
-    message("Converting to webp")
+    #message("Converting to webp")
 
     # convert to WebP
     img <- magick::image_read(tmp_png)
@@ -773,8 +773,10 @@ plot_gw_image <- function(
       compression = "WebP"
     )
 
-    unlink(tmp_png)
+    # for testing purposes. seeing an error somewhere around this line as of 5/11/26
+    if(file.exists(tmp_png)) unlink(tmp_png)
   }
+  message(paste0(out_file, " creation ",ifelse(file.exists(out_file), "successful", "failed")))
   return(out_path)
 }
 
