@@ -776,7 +776,7 @@ plot_gw_image <- function(
     # for testing purposes. seeing an error somewhere around this line as of 5/11/26
     if(file.exists(tmp_png)) unlink(tmp_png)
   }
-  message(paste0(out_file, " creation ",ifelse(file.exists(out_file), "successful", "failed")))
+  message(paste0(out_path, " creation ",ifelse(file.exists(out_path), "successful", "failed")))
   return(out_path)
 }
 
