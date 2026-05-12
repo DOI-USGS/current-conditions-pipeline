@@ -9,6 +9,8 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     libgl1 \
     libglib2.0-0 \
+    cmake \
+    libmbedtls-dev \
     fontconfig unzip grep sed \
     && rm -rf /var/lib/apt/lists/*
 
