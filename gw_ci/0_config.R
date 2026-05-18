@@ -69,10 +69,10 @@ p0_targets <- list(
   tar_target(
     p0_intervals,
     c(
-      "last-month" = lubridate::days(7), #base::months(1)
-      "last-3-months" = lubridate::days(14), # base::months(3),
-      "last-6-months" = base::months(1), # base::months(6),
-      "last-year" = base::months(2) # base::months(15) + lubridate::days(21)
+      "last-month" = base::months(1),
+      "last-3-months" = base::months(3),
+      "last-6-months" = base::months(6),
+      "last-year" = base::months(12)
     )
   ),
   tar_target(

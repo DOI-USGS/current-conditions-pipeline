@@ -109,7 +109,7 @@ p1_targets <- list(
     {
       if (nrow(p1_date_complete) == 0) {
         tibble(
-          date = date(0),
+          date = as.Date(character()),
           remote_image_type = character(0),
           remote_image_file_key = character(0),
           local_image_type = character(0),
@@ -134,56 +134,44 @@ p1_targets <- list(
     p1_date_incomplete,
     dplyr::filter(p1_date_config, !complete)
   ),
-  # Download parquet files for incomplete dates, in prep for making images
+  # Download/create parquet files for incomplete dates, in prep for making images
   tar_target(
-    p1_gw_parquets,
+    p1_gw_parquets_incomplete,
     {
       # if the parquet file already exists on S3, download it.
-      if (!is.na(p1_date_config[["parquet_file"]])) {
+      if (!is.na(p1_date_incomplete[["parquet_file"]])) {
         message(paste0(
           "Categorization parquet file already exists for ",
-          p1_date_config[["date"]]
+          p1_date_incomplete[["date"]]
         ))
 
         download_gw_file(
-          filename = p1_date_config[["parquet_file"]],
+          filename = p1_date_incomplete[["parquet_file"]],
           url_prefix = p0_s3_prod_URL,
           outfile = file.path(
             p0_parquet_file_dir,
-            basename(p1_date_config[["parquet_file"]])
+            basename(p1_date_incomplete[["parquet_file"]])
           )
         )
         # otherwise, create it
       } else {
         message(paste0(
           "Creating categorization parquet file for ",
-          p1_date_config[["date"]]
+          p1_date_incomplete[["date"]]
         ))
 
         gw_categorize_daily_vals(
           parquet_path = p1_gw_coverage_parquet,
-          fetch_date = p1_date_config[["date"]],
+          fetch_date = p1_date_incomplete[["date"]],
           end_utc_cutoff = "2015-01-01",
           outfile = file.path(
             p0_parquet_file_dir,
-            paste0("gw_categorizations_", p1_date_config[["date"]], ".parquet")
+            paste0("gw_categorizations_", p1_date_incomplete[["date"]], ".parquet")
           )
         )
       }
     },
-    pattern = map(p1_date_config),
+    pattern = map(p1_date_incomplete),
     format = "file"
-  ),
-  # construct list of parquets for missing image files
-  tar_target(
-    p1_gw_parquets_incomplete,
-    {
-      p1_gw_parquets[
-        stringr::str_detect(
-          p1_gw_parquets,
-          paste0(p1_date_incomplete[["date"]], collapse = "|")
-        )
-      ]
-    }
   )
 )

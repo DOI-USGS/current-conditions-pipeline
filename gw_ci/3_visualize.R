@@ -145,66 +145,66 @@ p3_targets <- list(
   ),
   
   ##### Generate state-level images #####
-  # State foreground webps, branched by state x date
-  tar_target(
-    p3_states_gw_webps,
-    plot_gw_image(
-      gw_parquet_file = p2_gw_clean_parquets,
-      date = p1_date_incomplete[["date"]],
-      area_name = p0_states_area_info_df[["name"]],
-      area_info_df = p0_states_area_info_df,
-      area_sf = p2_states_sf_list,
-      extent_info = p2_states_extents_df,
-      palette = p0_viz_gw_pal,
-      viz_cfg = p0_viz_config_df,
-      scale_cfg = p0_gw_binned_scales,
-      state_lookup = p2_state_lookup,
-      locator_map_png = NULL,
-      image_screen_type = "desktop",
-      layer_mode = "foreground",
-      output_format = "webp",
-      transparent_bg = TRUE,
-      output_template = file.path(
-        p0_local_image_file_dir,
-        gsub("\\.png$", ".webp", basename(p0_remote_image_file_template))
-        )
-      ),
-    pattern = cross(
-      map(p1_date_incomplete, p2_gw_clean_parquets),
-      map(p0_states_area_info_df, p2_states_sf_list, p2_states_extents_df)
-      ),
-    format = "file"
-    ),
+  # # State foreground webps, branched by state x date
+  # tar_target(
+  #   p3_states_gw_webps,
+  #   plot_gw_image(
+  #     gw_parquet_file = p2_gw_clean_parquets,
+  #     date = p1_date_incomplete[["date"]],
+  #     area_name = p0_states_area_info_df[["name"]],
+  #     area_info_df = p0_states_area_info_df,
+  #     area_sf = p2_states_sf_list,
+  #     extent_info = p2_states_extents_df,
+  #     palette = p0_viz_gw_pal,
+  #     viz_cfg = p0_viz_config_df,
+  #     scale_cfg = p0_gw_binned_scales,
+  #     state_lookup = p2_state_lookup,
+  #     locator_map_png = NULL,
+  #     image_screen_type = "desktop",
+  #     layer_mode = "foreground",
+  #     output_format = "webp",
+  #     transparent_bg = TRUE,
+  #     output_template = file.path(
+  #       p0_local_image_file_dir,
+  #       gsub("\\.png$", ".webp", basename(p0_remote_image_file_template))
+  #       )
+  #     ),
+  #   pattern = cross(
+  #     map(p1_date_incomplete, p2_gw_clean_parquets),
+  #     map(p0_states_area_info_df, p2_states_sf_list, p2_states_extents_df)
+  #     ),
+  #   format = "file"
+  #   ),
   
-  # State background webps, one per state, not date branched
-  tar_target(
-    p3_states_bkgd_webps,
-    plot_gw_image(
-      gw_parquet_file = p2_gw_clean_parquets[[1]],
-      date = p1_date_incomplete[["date"]][[1]],
-      area_name = p0_states_area_info_df[["name"]],
-      area_info_df = p0_states_area_info_df,
-      area_sf = p2_states_sf_list,
-      extent_info = p2_states_extents_df,
-      palette = p0_viz_gw_pal,
-      viz_cfg = p0_viz_config_df,
-      scale_cfg = p0_gw_binned_scales,
-      state_lookup = p2_state_lookup,
-      locator_map_png = NULL,
-      image_screen_type = "desktop",
-      layer_mode = "background",
-      output_format = "webp",
-      transparent_bg = TRUE,
-      output_template = file.path(
-        p0_local_image_file_dir,
-        sprintf("gw-%s-%s-background.webp", "desktop",
-                p0_states_area_info_df[["name"]])
-        )
-      ),
-    pattern = map(p0_states_area_info_df, p2_states_sf_list,
-                  p2_states_extents_df),
-    format = "file"
-    ),
+  # # State background webps, one per state, not date branched
+  # tar_target(
+  #   p3_states_bkgd_webps,
+  #   plot_gw_image(
+  #     gw_parquet_file = p2_gw_clean_parquets[[1]],
+  #     date = p1_date_incomplete[["date"]][[1]],
+  #     area_name = p0_states_area_info_df[["name"]],
+  #     area_info_df = p0_states_area_info_df,
+  #     area_sf = p2_states_sf_list,
+  #     extent_info = p2_states_extents_df,
+  #     palette = p0_viz_gw_pal,
+  #     viz_cfg = p0_viz_config_df,
+  #     scale_cfg = p0_gw_binned_scales,
+  #     state_lookup = p2_state_lookup,
+  #     locator_map_png = NULL,
+  #     image_screen_type = "desktop",
+  #     layer_mode = "background",
+  #     output_format = "webp",
+  #     transparent_bg = TRUE,
+  #     output_template = file.path(
+  #       p0_local_image_file_dir,
+  #       sprintf("gw-%s-%s-background.webp", "desktop",
+  #               p0_states_area_info_df[["name"]])
+  #       )
+  #     ),
+  #   pattern = map(p0_states_area_info_df, p2_states_sf_list,
+  #                 p2_states_extents_df),
+  #   format = "file"
+  #   ),
   
   # State static, composite bkgd + foreground per state x date
   # tar_target(
@@ -353,40 +353,40 @@ p3_targets <- list(
     pattern = map(p0_area_info_df, p3_mobile_bkgd_webps)
   ),
   
-  # state foreground config
-  tar_target(
-    p3_states_gw_webps_config,
-    tibble(
-      date = p1_date_incomplete[["date"]],
-      local_image_type = paste0(
-        p0_local_image_type_prefix,
-        "desktop_",
-        p0_states_area_info_df[["name"]],
-        "_webp"
-      ),
-      local_image_file = p3_states_gw_webps
-    ),
-    pattern = map(
-      cross(p1_date_incomplete, p0_states_area_info_df),
-      p3_states_gw_webps
-    )
-  ),
+  # # state foreground config
+  # tar_target(
+  #   p3_states_gw_webps_config,
+  #   tibble(
+  #     date = p1_date_incomplete[["date"]],
+  #     local_image_type = paste0(
+  #       p0_local_image_type_prefix,
+  #       "desktop_",
+  #       p0_states_area_info_df[["name"]],
+  #       "_image_file"
+  #     ),
+  #     local_image_file = p3_states_gw_webps
+  #   ),
+  #   pattern = map(
+  #     cross(p1_date_incomplete, p0_states_area_info_df),
+  #     p3_states_gw_webps
+  #   )
+  # ),
   
-  # state background config
-  tar_target(
-    p3_states_bkgd_webps_config,
-    tibble(
-      date = NA,
-      local_image_type = paste0(
-        p0_local_image_type_prefix,
-        "desktop_",
-        p0_states_area_info_df[["name"]],
-        "_background_webp"
-      ),
-      local_image_file = p3_states_bkgd_webps
-    ),
-    pattern = map(p0_states_area_info_df, p3_states_bkgd_webps)
-  ),
+  # # state background config
+  # tar_target(
+  #   p3_states_bkgd_webps_config,
+  #   tibble(
+  #     date = NA,
+  #     local_image_type = paste0(
+  #       p0_local_image_type_prefix,
+  #       "desktop_",
+  #       p0_states_area_info_df[["name"]],
+  #       "_background_webp"
+  #     ),
+  #     local_image_file = p3_states_bkgd_webps
+  #   ),
+  #   pattern = map(p0_states_area_info_df, p3_states_bkgd_webps)
+  # ),
   
   # state static png config
   # tar_target(
@@ -412,8 +412,8 @@ p3_targets <- list(
     p3_new_gw_images_config,
     bind_rows(p3_desktop_gw_webps_config,
               p3_mobile_gw_webps_config,
-              p3_static_gw_pngs_config,
-              p3_states_gw_webps_config
+              p3_static_gw_pngs_config
+              # , p3_states_gw_webps_config
               # , p3_states_static_pngs_config
               ) |>
       mutate(

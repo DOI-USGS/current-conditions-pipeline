@@ -8,17 +8,21 @@
 #' @return Character string path to the downloaded file.
 download_gw_file <- function(filename,
                              url_prefix,
-                             outfile) {
+                             outfile,
+                             verbose = F) {
   
   remote_url <- paste0(url_prefix, filename)
   
-  message(sprintf(
-    "Downloading %s and saving to %s",
-    remote_url,
-    outfile
-  ))
-
-  download.file(remote_url, outfile, mode = "wb")
+  if (verbose) {
+    message(sprintf(
+      "Downloading %s and saving to %s",
+      remote_url,
+      outfile
+    ))
+    download.file(remote_url, outfile, mode = "wb", quiet = F)
+  } else {
+    download.file(remote_url, outfile, mode = "wb", quiet = T)
+  }
   
   return(outfile)
 }
