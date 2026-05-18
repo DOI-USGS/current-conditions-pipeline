@@ -548,34 +548,34 @@ plot_gw_image <- function(
       draw_scale_markers = draw_scale_markers
     )
 
-    # DELETE LATER
-    # for now, for testing, include date on final image
-    incl_date <- layer_mode %in% c("full", "foreground")
-    if (incl_date) {
-      gw_plot <- gw_plot +
-        draw_label(
-          date_val,
-          x = 0.99,
-          y = 0.99,
-          hjust = 1,
-          vjust = 1,
-          fontfamily = viz_cfg[["annotation_font"]],
-          color = viz_cfg[["annotation_font_color"]],
-          size = viz_cfg[["annotation_font_size"]]
-        )
-    } else {
-      gw_plot <- gw_plot +
-        draw_label(
-          " ",
-          x = 0.99,
-          y = 0.99,
-          hjust = 1,
-          vjust = 1,
-          fontfamily = viz_cfg[["annotation_font"]],
-          color = viz_cfg[["annotation_font_color"]],
-          size = viz_cfg[["annotation_font_size"]]
-        )
-    }
+    # # DELETE LATER
+    # # for now, for testing, include date on final image
+    # incl_date <- layer_mode %in% c("full", "foreground")
+    # if (incl_date) {
+    #   gw_plot <- gw_plot +
+    #     draw_label(
+    #       date_val,
+    #       x = 0.99,
+    #       y = 0.99,
+    #       hjust = 1,
+    #       vjust = 1,
+    #       fontfamily = viz_cfg[["annotation_font"]],
+    #       color = viz_cfg[["annotation_font_color"]],
+    #       size = viz_cfg[["annotation_font_size"]]
+    #     )
+    # } else {
+    #   gw_plot <- gw_plot +
+    #     draw_label(
+    #       " ",
+    #       x = 0.99,
+    #       y = 0.99,
+    #       hjust = 1,
+    #       vjust = 1,
+    #       fontfamily = viz_cfg[["annotation_font"]],
+    #       color = viz_cfg[["annotation_font_color"]],
+    #       size = viz_cfg[["annotation_font_size"]]
+    #     )
+    # }
   } else {
     # generate plot for single area
 
@@ -686,49 +686,49 @@ plot_gw_image <- function(
         )
       )
 
-    # DELETE LATER
-    # for now, for testing, include date on final image
-    incl_date <- layer_mode %in% c("full", "foreground")
-    if (incl_date) {
-      canvas <- grid::rectGrob(
-        x = 0,
-        y = 0,
-        width = export_width,
-        height = export_height,
-        gp = grid::gpar(fill = NA, col = NA)
-      )
-
-      gw_plot <- ggdraw(ylim = c(0, 1), xlim = c(0, 1)) +
-        # a background
-        draw_grob(
-          canvas,
-          x = 0,
-          y = 1,
-          height = export_height,
-          width = export_width,
-          hjust = 0,
-          vjust = 1
-        ) +
-        draw_plot(
-          gw_plot,
-          x = 0,
-          y = 0,
-          width = 1,
-          height = 1,
-          hjust = 0,
-          vjust = 0
-        ) +
-        draw_label(
-          date_val,
-          x = 0.99,
-          y = 0.99,
-          hjust = 1,
-          vjust = 1,
-          fontfamily = viz_cfg[["annotation_font"]],
-          color = viz_cfg[["annotation_font_color"]],
-          size = viz_cfg[["annotation_font_size"]]
-        )
-    }
+    # # DELETE LATER
+    # # for now, for testing, include date on final image
+    # incl_date <- layer_mode %in% c("full", "foreground")
+    # if (incl_date) {
+    #   canvas <- grid::rectGrob(
+    #     x = 0,
+    #     y = 0,
+    #     width = export_width,
+    #     height = export_height,
+    #     gp = grid::gpar(fill = NA, col = NA)
+    #   )
+    # 
+    #   gw_plot <- ggdraw(ylim = c(0, 1), xlim = c(0, 1)) +
+    #     # a background
+    #     draw_grob(
+    #       canvas,
+    #       x = 0,
+    #       y = 1,
+    #       height = export_height,
+    #       width = export_width,
+    #       hjust = 0,
+    #       vjust = 1
+    #     ) +
+    #     draw_plot(
+    #       gw_plot,
+    #       x = 0,
+    #       y = 0,
+    #       width = 1,
+    #       height = 1,
+    #       hjust = 0,
+    #       vjust = 0
+    #     ) +
+    #     draw_label(
+    #       date_val,
+    #       x = 0.99,
+    #       y = 0.99,
+    #       hjust = 1,
+    #       vjust = 1,
+    #       fontfamily = viz_cfg[["annotation_font"]],
+    #       color = viz_cfg[["annotation_font_color"]],
+    #       size = viz_cfg[["annotation_font_size"]]
+    #     )
+    # }
   }
 
   bg_col <- if (transparent_bg) "transparent" else viz_cfg$bg_col
