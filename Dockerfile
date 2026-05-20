@@ -79,7 +79,10 @@ EOF
 # install.packages(c('sfarrow', 'retry', 'rmapshaper', 'av'), repos = 'http://cran.us.r-project.org')
 
 # Install GitHub-only R package (not available on conda-forge)
-RUN pixi run Rscript -e "remotes::install_github('DOI-USGS/dataRetrieval', ref='d5c1a433e477ea746bda8b4ace3e85b1ef10db5c', upgrade='never', lib='/root/R/library')"
+# RUN pixi run Rscript -e "remotes::install_github('DOI-USGS/dataRetrieval', ref='d5c1a433e477ea746bda8b4ace3e85b1ef10db5c', upgrade='never', lib='/root/R/library')"
+
+## DELETE ME once https://github.com/DOI-USGS/dataRetrieval/pull/896 is merged. Update ref above to correct commit sha. ##
+RUN pixi run Rscript -e "remotes::install_github('jzemmels/dataRetrieval', ref='c420214688f4a3db35c2216a23b7d5d097cb41a7', upgrade='never', lib='/root/R/library')"
 
 # Sanity checks
 RUN pixi run R -e "library(dataRetrieval); packageVersion('dataRetrieval')"
