@@ -63,7 +63,7 @@ gw_categorize_daily_vals <- function(
     tidytable::map_dfr(
       gw_split_stat,
       ~ {
-        retry::retry(
+        ret <- retry::retry(
           dataRetrieval::read_waterdata_stats_por(
             parent_time_series_id = .x,
             start_date = focal_month,
@@ -73,6 +73,12 @@ gw_categorize_daily_vals <- function(
           when = "429|500",
           max_tries = 10
         )
+
+        if (nrow(ret) > 0) {
+          ret
+        } else {
+          NULL
+        }
       }
     ) |>
     sf::st_drop_geometry() |>
