@@ -5,10 +5,7 @@ image_prefix: "images/sf-"
 video_prefix: "videos/sf-movie-"
 parquet_prefix: "data/sf_categorizations_"
 video_intervals:
-- 1m
-- 3m
-- 6m
-- 1y
+- 1d
 
 layouts:
   mobile-conus:
