@@ -11,186 +11,2266 @@ video_intervals:
  - 1y
  
 layouts:
-  conus:
-    figure_dimensions: [4,4]
+  mobile-conus:
+    figure_dimensions: [4, 4]
     geojson:
-      - "data/conus_simplified_mobile.geojson"
+    - "data/conus_simplified_mobile.geojson"
     metadata_column: "mobile_CONUS_image_file"
     prefix: "mobile-CONUS-"
-    locator_map: False
-    locator_map_loc: False
-    static: False
-    video: False
-    ax_loc:  
-      - [0.05,0.05,0.9,0.9]
-    multi:  
-      - 1.0
-    proj:  
-      - "EPSG:5070"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:5070"
     scale_bar:
-      - False
+    - false
     scale_text:
-      - False
-  ak:
-    figure_dimensions: [4,4]
+    - false
+  mobile-ak:
+    figure_dimensions: [4, 4]
     geojson:
-      - "data/ak_simplified_mobile.geojson"
+    - "data/ak_simplified_mobile.geojson"
     metadata_column: "mobile_AK_image_file"
     prefix: "mobile-AK-"
-    locator_map: False
-    locator_map_loc: False
-    static: False
-    video: False
-    ax_loc:  
-      - [0.05,0.05,0.9,0.9]
-    multi:  
-      - 1.0
-    proj:  
-      - "EPSG:3338"
-    scale_bar:
-      - False
-    scale_text:
-      - False
-  hi:
-    figure_dimensions: [4,4]
-    geojson:
-      - "data/hi_simplified_mobile.geojson"
-    metadata_column: "mobile_HI_image_file"
-    prefix: "mobile-HI-"
-    locator_map: False
-    locator_map_loc: False
-    static: False
-    video: False
-    ax_loc:  
-      - [0.05,0.05,0.9,0.9]
-    multi:  
-      - 1.0
-    proj:  
-      - "ESRI:102007"
-    scale_bar:
-      - False
-    scale_text:
-      - False
-  prvi:
-    figure_dimensions: [4,4]
-    geojson:
-      - "data/prvi_simplified_mobile.geojson"
-    metadata_column: "mobile_PR_VI_image_file"
-    prefix: "mobile-PR_VI-"
-    locator_map: False
-    locator_map_loc: False
-    static: False
-    video: False
-    ax_loc:  
-      - [0.05,0.05,0.9,0.9]
-    multi:  
-      - 1.0
-    proj:  
-      - "EPSG:2866"
-    scale_bar:
-      - False
-    scale_text:
-      - False
-  gump:
-    figure_dimensions: [4,4]
-    geojson:
-      - "data/gump_simplified_mobile.geojson"
-    metadata_column: "mobile_GU_MP_image_file"
-    prefix: "mobile-GU_MP-"
-    locator_map: False
-    locator_map_loc: False
-    static: False
-    video: False
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
     ax_loc:
-      - [0.05,0.05,0.9,0.9]
-    multi: 
-      - 1.0
-    proj: 
-      - "EPSG:8693"
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:3338"
     scale_bar:
-      - False
+    - false
     scale_text:
-      - False
-  as:
-    figure_dimensions: [6,6]
+    - false
+  mobile-al:
+    figure_dimensions: [4, 4]
     geojson:
-      - "data/as_simplified_mobile.geojson"
+    - "data/al_simplified_mobile.geojson"
+    metadata_column: "mobile_AL_image_file"
+    prefix: "mobile-AL-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26929"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-ar:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/ar_simplified_mobile.geojson"
+    metadata_column: "mobile_AR_image_file"
+    prefix: "mobile-AR-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26951"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-as:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/as_simplified_mobile.geojson"
     metadata_column: "mobile_AS_image_file"
     prefix: "mobile-AS-"
-    locator_map: False
-    locator_map_loc: False
-    static: False
-    video: False
-    ax_loc:  
-      - [0.05,0.05,0.9,0.9]
-    multi:  
-      - 1.0
-    proj:  
-      - "EPSG:6636"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:6636"
     scale_bar:
-      - False
+    - false
     scale_text:
-      - False
-  desktop:
-    figure_dimensions: [8,4]
+    - false
+  mobile-az:
+    figure_dimensions: [4, 4]
     geojson:
-      - "data/conus_simplified_desktop.geojson"
-      - "data/ak_simplified_desktop.geojson"
-      - "data/hi_simplified_desktop.geojson"
-      - "data/prvi_simplified_desktop.geojson"
-      - "data/gump_simplified_desktop.geojson"
-      - "data/as_simplified_desktop.geojson"
+    - "data/az_simplified_mobile.geojson"
+    metadata_column: "mobile_AZ_image_file"
+    prefix: "mobile-AZ-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26949"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-ca:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/ca_simplified_mobile.geojson"
+    metadata_column: "mobile_CA_image_file"
+    prefix: "mobile-CA-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26943"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-co:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/co_simplified_mobile.geojson"
+    metadata_column: "mobile_CO_image_file"
+    prefix: "mobile-CO-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26954"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-ct:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/ct_simplified_mobile.geojson"
+    metadata_column: "mobile_CT_image_file"
+    prefix: "mobile-CT-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26956"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-dc:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/dc_simplified_mobile.geojson"
+    metadata_column: "mobile_DC_image_file"
+    prefix: "mobile-DC-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26985"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-de:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/de_simplified_mobile.geojson"
+    metadata_column: "mobile_DE_image_file"
+    prefix: "mobile-DE-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26957"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-fl:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/fl_simplified_mobile.geojson"
+    metadata_column: "mobile_FL_image_file"
+    prefix: "mobile-FL-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26958"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-ga:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/ga_simplified_mobile.geojson"
+    metadata_column: "mobile_GA_image_file"
+    prefix: "mobile-GA-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26966"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-gu_mp:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/gu_mp_simplified_mobile.geojson"
+    metadata_column: "mobile_GU_MP_image_file"
+    prefix: "mobile-GU_MP-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:8693"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-hi:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/hi_simplified_mobile.geojson"
+    metadata_column: "mobile_HI_image_file"
+    prefix: "mobile-HI-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "ESRI:102007"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-ia:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/ia_simplified_mobile.geojson"
+    metadata_column: "mobile_IA_image_file"
+    prefix: "mobile-IA-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26975"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-id:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/id_simplified_mobile.geojson"
+    metadata_column: "mobile_ID_image_file"
+    prefix: "mobile-ID-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26969"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-il:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/il_simplified_mobile.geojson"
+    metadata_column: "mobile_IL_image_file"
+    prefix: "mobile-IL-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26971"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-in:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/in_simplified_mobile.geojson"
+    metadata_column: "mobile_IN_image_file"
+    prefix: "mobile-IN-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26973"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-ks:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/ks_simplified_mobile.geojson"
+    metadata_column: "mobile_KS_image_file"
+    prefix: "mobile-KS-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26977"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-ky:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/ky_simplified_mobile.geojson"
+    metadata_column: "mobile_KY_image_file"
+    prefix: "mobile-KY-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:02205"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-la:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/la_simplified_mobile.geojson"
+    metadata_column: "mobile_LA_image_file"
+    prefix: "mobile-LA-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26982"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-ma:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/ma_simplified_mobile.geojson"
+    metadata_column: "mobile_MA_image_file"
+    prefix: "mobile-MA-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26986"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-md:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/md_simplified_mobile.geojson"
+    metadata_column: "mobile_MD_image_file"
+    prefix: "mobile-MD-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26985"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-me:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/me_simplified_mobile.geojson"
+    metadata_column: "mobile_ME_image_file"
+    prefix: "mobile-ME-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26983"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-mi:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/mi_simplified_mobile.geojson"
+    metadata_column: "mobile_MI_image_file"
+    prefix: "mobile-MI-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26989"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-mn:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/mn_simplified_mobile.geojson"
+    metadata_column: "mobile_MN_image_file"
+    prefix: "mobile-MN-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26992"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-mo:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/mo_simplified_mobile.geojson"
+    metadata_column: "mobile_MO_image_file"
+    prefix: "mobile-MO-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26997"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-ms:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/ms_simplified_mobile.geojson"
+    metadata_column: "mobile_MS_image_file"
+    prefix: "mobile-MS-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26994"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-mt:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/mt_simplified_mobile.geojson"
+    metadata_column: "mobile_MT_image_file"
+    prefix: "mobile-MT-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32100"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-nc:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/nc_simplified_mobile.geojson"
+    metadata_column: "mobile_NC_image_file"
+    prefix: "mobile-NC-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32119"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-nd:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/nd_simplified_mobile.geojson"
+    metadata_column: "mobile_ND_image_file"
+    prefix: "mobile-ND-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32120"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-ne:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/ne_simplified_mobile.geojson"
+    metadata_column: "mobile_NE_image_file"
+    prefix: "mobile-NE-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32104"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-nh:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/nh_simplified_mobile.geojson"
+    metadata_column: "mobile_NH_image_file"
+    prefix: "mobile-NH-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32110"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-nj:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/nj_simplified_mobile.geojson"
+    metadata_column: "mobile_NJ_image_file"
+    prefix: "mobile-NJ-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32111"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-nm:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/nm_simplified_mobile.geojson"
+    metadata_column: "mobile_NM_image_file"
+    prefix: "mobile-NM-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32113"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-nv:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/nv_simplified_mobile.geojson"
+    metadata_column: "mobile_NV_image_file"
+    prefix: "mobile-NV-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32108"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-ny:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/ny_simplified_mobile.geojson"
+    metadata_column: "mobile_NY_image_file"
+    prefix: "mobile-NY-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32116"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-oh:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/oh_simplified_mobile.geojson"
+    metadata_column: "mobile_OH_image_file"
+    prefix: "mobile-OH-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32122"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-ok:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/ok_simplified_mobile.geojson"
+    metadata_column: "mobile_OK_image_file"
+    prefix: "mobile-OK-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32124"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-or:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/or_simplified_mobile.geojson"
+    metadata_column: "mobile_OR_image_file"
+    prefix: "mobile-OR-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32126"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-pa:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/pa_simplified_mobile.geojson"
+    metadata_column: "mobile_PA_image_file"
+    prefix: "mobile-PA-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32128"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-pr_vi:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/pr_vi_simplified_mobile.geojson"
+    metadata_column: "mobile_PR_VI_image_file"
+    prefix: "mobile-PR_VI-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:2866"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-ri:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/ri_simplified_mobile.geojson"
+    metadata_column: "mobile_RI_image_file"
+    prefix: "mobile-RI-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32130"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-sc:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/sc_simplified_mobile.geojson"
+    metadata_column: "mobile_SC_image_file"
+    prefix: "mobile-SC-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32133"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-sd:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/sd_simplified_mobile.geojson"
+    metadata_column: "mobile_SD_image_file"
+    prefix: "mobile-SD-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32134"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-tn:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/tn_simplified_mobile.geojson"
+    metadata_column: "mobile_TN_image_file"
+    prefix: "mobile-TN-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32136"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-tx:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/tx_simplified_mobile.geojson"
+    metadata_column: "mobile_TX_image_file"
+    prefix: "mobile-TX-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32139"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-ut:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/ut_simplified_mobile.geojson"
+    metadata_column: "mobile_UT_image_file"
+    prefix: "mobile-UT-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32143"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-va:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/va_simplified_mobile.geojson"
+    metadata_column: "mobile_VA_image_file"
+    prefix: "mobile-VA-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32146"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-vt:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/vt_simplified_mobile.geojson"
+    metadata_column: "mobile_VT_image_file"
+    prefix: "mobile-VT-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32145"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-wa:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/wa_simplified_mobile.geojson"
+    metadata_column: "mobile_WA_image_file"
+    prefix: "mobile-WA-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32148"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-wi:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/wi_simplified_mobile.geojson"
+    metadata_column: "mobile_WI_image_file"
+    prefix: "mobile-WI-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32153"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-wv:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/wv_simplified_mobile.geojson"
+    metadata_column: "mobile_WV_image_file"
+    prefix: "mobile-WV-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32150"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  mobile-wy:
+    figure_dimensions: [4, 4]
+    geojson:
+    - "data/wy_simplified_mobile.geojson"
+    metadata_column: "mobile_WY_image_file"
+    prefix: "mobile-WY-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32156"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-conus:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/conus_simplified_desktop.geojson"
+    metadata_column: "desktop_CONUS_image_file"
+    prefix: "desktop-CONUS-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:5070"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-ak:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/ak_simplified_desktop.geojson"
+    metadata_column: "desktop_AK_image_file"
+    prefix: "desktop-AK-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:3338"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-al:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/al_simplified_desktop.geojson"
+    metadata_column: "desktop_AL_image_file"
+    prefix: "desktop-AL-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26929"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-ar:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/ar_simplified_desktop.geojson"
+    metadata_column: "desktop_AR_image_file"
+    prefix: "desktop-AR-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26951"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-as:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/as_simplified_desktop.geojson"
+    metadata_column: "desktop_AS_image_file"
+    prefix: "desktop-AS-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:6636"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-az:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/az_simplified_desktop.geojson"
+    metadata_column: "desktop_AZ_image_file"
+    prefix: "desktop-AZ-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26949"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-ca:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/ca_simplified_desktop.geojson"
+    metadata_column: "desktop_CA_image_file"
+    prefix: "desktop-CA-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26943"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-co:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/co_simplified_desktop.geojson"
+    metadata_column: "desktop_CO_image_file"
+    prefix: "desktop-CO-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26954"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-ct:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/ct_simplified_desktop.geojson"
+    metadata_column: "desktop_CT_image_file"
+    prefix: "desktop-CT-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26956"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-dc:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/dc_simplified_desktop.geojson"
+    metadata_column: "desktop_DC_image_file"
+    prefix: "desktop-DC-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26985"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-de:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/de_simplified_desktop.geojson"
+    metadata_column: "desktop_DE_image_file"
+    prefix: "desktop-DE-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26957"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-fl:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/fl_simplified_desktop.geojson"
+    metadata_column: "desktop_FL_image_file"
+    prefix: "desktop-FL-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26958"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-ga:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/ga_simplified_desktop.geojson"
+    metadata_column: "desktop_GA_image_file"
+    prefix: "desktop-GA-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26966"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-gu_mp:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/gu_mp_simplified_desktop.geojson"
+    metadata_column: "desktop_GU_MP_image_file"
+    prefix: "desktop-GU_MP-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:8693"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-hi:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/hi_simplified_desktop.geojson"
+    metadata_column: "desktop_HI_image_file"
+    prefix: "desktop-HI-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "ESRI:102007"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-ia:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/ia_simplified_desktop.geojson"
+    metadata_column: "desktop_IA_image_file"
+    prefix: "desktop-IA-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26975"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-id:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/id_simplified_desktop.geojson"
+    metadata_column: "desktop_ID_image_file"
+    prefix: "desktop-ID-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26969"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-il:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/il_simplified_desktop.geojson"
+    metadata_column: "desktop_IL_image_file"
+    prefix: "desktop-IL-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26971"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-in:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/in_simplified_desktop.geojson"
+    metadata_column: "desktop_IN_image_file"
+    prefix: "desktop-IN-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26973"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-ks:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/ks_simplified_desktop.geojson"
+    metadata_column: "desktop_KS_image_file"
+    prefix: "desktop-KS-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26977"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-ky:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/ky_simplified_desktop.geojson"
+    metadata_column: "desktop_KY_image_file"
+    prefix: "desktop-KY-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:02205"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-la:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/la_simplified_desktop.geojson"
+    metadata_column: "desktop_LA_image_file"
+    prefix: "desktop-LA-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26982"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-ma:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/ma_simplified_desktop.geojson"
+    metadata_column: "desktop_MA_image_file"
+    prefix: "desktop-MA-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26986"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-md:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/md_simplified_desktop.geojson"
+    metadata_column: "desktop_MD_image_file"
+    prefix: "desktop-MD-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26985"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-me:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/me_simplified_desktop.geojson"
+    metadata_column: "desktop_ME_image_file"
+    prefix: "desktop-ME-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26983"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-mi:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/mi_simplified_desktop.geojson"
+    metadata_column: "desktop_MI_image_file"
+    prefix: "desktop-MI-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26989"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-mn:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/mn_simplified_desktop.geojson"
+    metadata_column: "desktop_MN_image_file"
+    prefix: "desktop-MN-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26992"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-mo:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/mo_simplified_desktop.geojson"
+    metadata_column: "desktop_MO_image_file"
+    prefix: "desktop-MO-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26997"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-ms:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/ms_simplified_desktop.geojson"
+    metadata_column: "desktop_MS_image_file"
+    prefix: "desktop-MS-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:26994"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-mt:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/mt_simplified_desktop.geojson"
+    metadata_column: "desktop_MT_image_file"
+    prefix: "desktop-MT-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32100"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-nc:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/nc_simplified_desktop.geojson"
+    metadata_column: "desktop_NC_image_file"
+    prefix: "desktop-NC-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32119"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-nd:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/nd_simplified_desktop.geojson"
+    metadata_column: "desktop_ND_image_file"
+    prefix: "desktop-ND-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32120"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-ne:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/ne_simplified_desktop.geojson"
+    metadata_column: "desktop_NE_image_file"
+    prefix: "desktop-NE-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32104"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-nh:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/nh_simplified_desktop.geojson"
+    metadata_column: "desktop_NH_image_file"
+    prefix: "desktop-NH-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32110"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-nj:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/nj_simplified_desktop.geojson"
+    metadata_column: "desktop_NJ_image_file"
+    prefix: "desktop-NJ-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32111"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-nm:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/nm_simplified_desktop.geojson"
+    metadata_column: "desktop_NM_image_file"
+    prefix: "desktop-NM-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32113"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-nv:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/nv_simplified_desktop.geojson"
+    metadata_column: "desktop_NV_image_file"
+    prefix: "desktop-NV-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32108"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-ny:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/ny_simplified_desktop.geojson"
+    metadata_column: "desktop_NY_image_file"
+    prefix: "desktop-NY-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32116"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-oh:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/oh_simplified_desktop.geojson"
+    metadata_column: "desktop_OH_image_file"
+    prefix: "desktop-OH-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32122"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-ok:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/ok_simplified_desktop.geojson"
+    metadata_column: "desktop_OK_image_file"
+    prefix: "desktop-OK-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32124"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-or:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/or_simplified_desktop.geojson"
+    metadata_column: "desktop_OR_image_file"
+    prefix: "desktop-OR-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32126"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-pa:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/pa_simplified_desktop.geojson"
+    metadata_column: "desktop_PA_image_file"
+    prefix: "desktop-PA-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32128"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-pr_vi:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/pr_vi_simplified_desktop.geojson"
+    metadata_column: "desktop_PR_VI_image_file"
+    prefix: "desktop-PR_VI-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:2866"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-ri:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/ri_simplified_desktop.geojson"
+    metadata_column: "desktop_RI_image_file"
+    prefix: "desktop-RI-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32130"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-sc:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/sc_simplified_desktop.geojson"
+    metadata_column: "desktop_SC_image_file"
+    prefix: "desktop-SC-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32133"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-sd:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/sd_simplified_desktop.geojson"
+    metadata_column: "desktop_SD_image_file"
+    prefix: "desktop-SD-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32134"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-tn:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/tn_simplified_desktop.geojson"
+    metadata_column: "desktop_TN_image_file"
+    prefix: "desktop-TN-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32136"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-tx:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/tx_simplified_desktop.geojson"
+    metadata_column: "desktop_TX_image_file"
+    prefix: "desktop-TX-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32139"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-ut:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/ut_simplified_desktop.geojson"
+    metadata_column: "desktop_UT_image_file"
+    prefix: "desktop-UT-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32143"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-va:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/va_simplified_desktop.geojson"
+    metadata_column: "desktop_VA_image_file"
+    prefix: "desktop-VA-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32146"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-vt:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/vt_simplified_desktop.geojson"
+    metadata_column: "desktop_VT_image_file"
+    prefix: "desktop-VT-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32145"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-wa:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/wa_simplified_desktop.geojson"
+    metadata_column: "desktop_WA_image_file"
+    prefix: "desktop-WA-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32148"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-wi:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/wi_simplified_desktop.geojson"
+    metadata_column: "desktop_WI_image_file"
+    prefix: "desktop-WI-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32153"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-wv:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/wv_simplified_desktop.geojson"
+    metadata_column: "desktop_WV_image_file"
+    prefix: "desktop-WV-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32150"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-wy:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/wy_simplified_desktop.geojson"
+    metadata_column: "desktop_WY_image_file"
+    prefix: "desktop-WY-"
+    locator_map: false
+    locator_map_loc: false
+    static: false
+    video: false
+    ax_loc:
+    - [0.05, 0.05, 0.9, 0.9]
+    multi:
+    - 1.0
+    proj:
+    - "EPSG:32156"
+    scale_bar:
+    - false
+    scale_text:
+    - false
+  desktop-conus-oconus:
+    figure_dimensions: [8, 4]
+    geojson:
+    - "data/conus_simplified_desktop.geojson"
+    - "data/ak_simplified_desktop.geojson"
+    - "data/hi_simplified_desktop.geojson"
+    - "data/prvi_simplified_desktop.geojson"
+    - "data/gump_simplified_desktop.geojson"
+    - "data/as_simplified_desktop.geojson"
     metadata_column: "desktop_CONUS_OCONUS_image_file"
     prefix: "desktop-CONUS_OCONUS-"
-    locator_map: True
+    locator_map: true
     locator_map_loc: [0.30, 0.05, 0.12, 0.24]
-    static: False
-    video: False
-    ax_loc: 
-      - [0.30, 0.01, 0.69, 0.98]
-      - [0.005, 0.63, 0.28, 0.36]
-      - [0.11, 0.30, 0.185, 0.33]
-      - [0.11, 0.12, 0.185, 0.17]
-      - [0.005, 0.0, 0.1, 0.63]
-      - [0.11, 0.0, 0.185, 0.12]
+    static: false
+    video: false
+    ax_loc:
+    - [0.30, 0.01, 0.69, 0.98]
+    - [0.005, 0.63, 0.28, 0.36]
+    - [0.11, 0.30, 0.185, 0.33]
+    - [0.11, 0.12, 0.185, 0.17]
+    - [0.005, 0.0, 0.1, 0.63]
+    - [0.11, 0.0, 0.185, 0.12]
     multi:
-      - 1.0
-      - 0.5
-      - 2.0
-      - 2.0
-      - 2.0
-      - 2.0
+    - 1.0
+    - 0.5
+    - 2.0
+    - 2.0
+    - 2.0
+    - 2.0
     proj:
-      - "EPSG:5070"
-      - "EPSG:3338"
-      - "ESRI:102007"
-      - "EPSG:2866"
-      - "EPSG:8693"
-      - "EPSG:6636"
+    - "EPSG:5070"
+    - "EPSG:3338"
+    - "ESRI:102007"
+    - "EPSG:2866"
+    - "EPSG:8693"
+    - "EPSG:6636"
     scale_bar:
-      - "upperleft"
-      - "lowerright"
-      - "upperleft"
-      - "upperleft"
-      - "upperleft"
-      - "upperleft"
+    - "upperleft"
+    - "lowerright"
+    - "upperleft"
+    - "upperleft"
+    - "upperleft"
+    - "upperleft"
     scale_text:
-      - "Conterminous United States"
-      - "Alaska"
-      - "Hawaii"
-      - "Puerto Rico & U.S. Virgin Islands"
-      - "Northern\nMariana Islands"
-      - "American Samoa"
-  desktop_static:
-    figure_dimensions: [8,4]
+    - "Conterminous United States"
+    - "Alaska"
+    - "Hawaii"
+    - "Puerto Rico & U.S. Virgin Islands"
+    - "Northern\nMariana Islands"
+    - "American Samoa"
+  desktop-static-conus-oconus:
+    figure_dimensions: [8, 4]
     metadata_column: "desktop_static_CONUS_OCONUS_image_file"
     prefix: "desktop-static-CONUS_OCONUS-"
     source_prefix: "desktop-CONUS_OCONUS-"
-    static: True
-    video: True
-    usgs_img_pos: [0.89,0.01]
+    static: true
+    video: true
+    usgs_img_pos: [0.89, 0.01]
     usgs_img_height: 0.05
-    legend_pos: [0.55,0.9]
+    legend_pos: [0.55, 0.9]
     legend_scale: 1.0
 
 
@@ -271,53 +2351,53 @@ state_params:
 marker_params:
   marker: "o"
   zorder:
-    - 7  # Extremely below
-    - 5  # Much below
-    - 3  # Below normal
-    - 2  # Normal
-    - 4  # Above normal
-    - 6  # Much above
-    - 8  # Extremely above
+  - 7    # Extremely below
+  - 5    # Much below
+  - 3    # Below normal
+  - 2    # Normal
+  - 4    # Above normal
+  - 6    # Much above
+  - 8    # Extremely above
   facecolor:
-    - "#ffffffbf"  # Extremely below
-    - "#ffffffbf"  # Much below
-    - "#ffffffbf"  # Below normal
-    - "#333333ff"  # Normal
-    - "#489dd5ff"  # Above normal
-    - "#2362b3ff"  # Much above
-    - "#003375ff"  # Extremely above
+  - "#ffffffbf"    # Extremely below
+  - "#ffffffbf"    # Much below
+  - "#ffffffbf"    # Below normal
+  - "#333333ff"    # Normal
+  - "#489dd5ff"    # Above normal
+  - "#2362b3ff"    # Much above
+  - "#003375ff"    # Extremely above
   edgecolor:
-    - "#4d2b00ff"  # Extremely below
-    - "#8c5503ff"  # Much below
-    - "#c18b2fff"  # Below normal
-    - "#ffffffff"  # Normal
-    - "#ffffffff"  # Above normal
-    - "#ffffffff"  # Much above
-    - "#ffffffff"  # Extremely above
+  - "#4d2b00ff"    # Extremely below
+  - "#8c5503ff"    # Much below
+  - "#c18b2fff"    # Below normal
+  - "#ffffffff"    # Normal
+  - "#ffffffff"    # Above normal
+  - "#ffffffff"    # Much above
+  - "#ffffffff"    # Extremely above
   markersize:
-    - 7  # Extremely below
-    - 5  # Much below
-    - 3  # Below normal
-    - 1  # Normal
-    - 4.731  # Above normal - modified to have a radius that is larger by 0.25pt (Area_wet = pi * (R_increase + sqrt(Area_dry / pi)) ^ 2)
-    - 7.178  # Much above - modified to have a radius that is larger by 0.25pt
-    - 9.541  # Extremely above - modified to have a radius that is larger by 0.25pt
+  - 7    # Extremely below
+  - 5    # Much below
+  - 3    # Below normal
+  - 1    # Normal
+  - 4.731    # Above normal - modified to have a radius that is larger by 0.25pt (Area_wet = pi * (R_increase + sqrt(Area_dry / pi)) ^ 2)
+  - 7.178    # Much above - modified to have a radius that is larger by 0.25pt
+  - 9.541    # Extremely above - modified to have a radius that is larger by 0.25pt
   linewidth:
-    - 0.5  # Extremely below
-    - 0.5  # Much below
-    - 0.5  # Below normal
-    - 0.25  # Normal
-    - 0.25  # Above normal
-    - 0.25  # Much above
-    - 0.25  # Extremely above
+  - 0.5    # Extremely below
+  - 0.5    # Much below
+  - 0.5    # Below normal
+  - 0.25    # Normal
+  - 0.25    # Above normal
+  - 0.25    # Much above
+  - 0.25    # Extremely above
   label:
-    - "Extremely below"
-    - "Much below"
-    - "Below normal"
-    - "Normal"
-    - "Above normal"
-    - "Much above"
-    - "Extremely above"
+  - "Extremely below"
+  - "Much below"
+  - "Below normal"
+  - "Normal"
+  - "Above normal"
+  - "Much above"
+  - "Extremely above"
   NA:
     marker: 'x'
     color: '#808080'
