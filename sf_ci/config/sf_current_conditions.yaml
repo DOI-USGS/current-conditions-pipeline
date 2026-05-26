@@ -271,10 +271,10 @@ layouts:
     - false
     scale_text:
     - false
-  mobile-gu_mp:
+  mobile-gump:
     figure_dimensions: [4, 4]
     geojson:
-    - "data/gu_mp_simplified_mobile.geojson"
+    - "data/gump_simplified_mobile.geojson"
     metadata_column: "mobile_GU_MP_image_file"
     prefix: "mobile-GU_MP-"
     locator_map: false
@@ -851,10 +851,10 @@ layouts:
     - false
     scale_text:
     - false
-  mobile-pr_vi:
+  mobile-prvi:
     figure_dimensions: [4, 4]
     geojson:
-    - "data/pr_vi_simplified_mobile.geojson"
+    - "data/prvi_simplified_mobile.geojson"
     metadata_column: "mobile_PR_VI_image_file"
     prefix: "mobile-PR_VI-"
     locator_map: false
@@ -1371,10 +1371,10 @@ layouts:
     - false
     scale_text:
     - false
-  desktop-gu_mp:
+  desktop-gump:
     figure_dimensions: [8, 4]
     geojson:
-    - "data/gu_mp_simplified_desktop.geojson"
+    - "data/gump_simplified_desktop.geojson"
     metadata_column: "desktop_GU_MP_image_file"
     prefix: "desktop-GU_MP-"
     locator_map: false
@@ -1951,10 +1951,10 @@ layouts:
     - false
     scale_text:
     - false
-  desktop-pr_vi:
+  desktop-prvi:
     figure_dimensions: [8, 4]
     geojson:
-    - "data/pr_vi_simplified_desktop.geojson"
+    - "data/prvi_simplified_desktop.geojson"
     metadata_column: "desktop_PR_VI_image_file"
     prefix: "desktop-PR_VI-"
     locator_map: false
@@ -2367,8 +2367,8 @@ geometries:
     geojson: data/ga.geojson
     desktop: 50
     mobile: 50
-  gu_mp:
-    geojson: "data/gu_mp.geojson"
+  gump:
+    geojson: "data/gump.geojson"
     desktop: 80
     mobile: 80
   hi:
@@ -2483,8 +2483,8 @@ geometries:
     geojson: data/pa.geojson
     desktop: 50
     mobile: 50
-  pr_vi:
-    geojson: "data/pr_vi.geojson"
+  prvi:
+    geojson: "data/prvi.geojson"
     desktop: 100
     mobile: 100
   ri:
