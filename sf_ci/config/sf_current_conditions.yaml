@@ -5,11 +5,11 @@ image_prefix: "images/sf-"
 video_prefix: "videos/sf-movie-"
 parquet_prefix: "data/sf_categorizations_"
 video_intervals:
- - 1m
- - 3m
- - 6m
- - 1y
- 
+- 1m
+- 3m
+- 6m
+- 1y
+
 layouts:
   mobile-conus:
     figure_dimensions: [4, 4]
@@ -2323,23 +2323,218 @@ geometries:
     geojson: "data/ak.geojson"
     desktop: 20
     mobile: 20
-  hi:
-    geojson: "data/hi.geojson"
+  al:
+    geojson: data/al.geojson
     desktop: 50
     mobile: 50
-  prvi:
-    geojson: "data/prvi.geojson"
-    desktop: 100
-    mobile: 100
-  gump:
-    geojson: "data/gump.geojson"
-    desktop: 80
-    mobile: 80
+  ar:
+    geojson: data/ar.geojson
+    desktop: 50
+    mobile: 50
   as:
     geojson: "data/as.geojson"
     desktop: 100
     mobile: 100
-
+  az:
+    geojson: data/az.geojson
+    desktop: 50
+    mobile: 50
+  ca:
+    geojson: data/ca.geojson
+    desktop: 50
+    mobile: 50
+  co:
+    geojson: data/co.geojson
+    desktop: 50
+    mobile: 50
+  ct:
+    geojson: data/ct.geojson
+    desktop: 50
+    mobile: 50
+  dc:
+    geojson: data/dc.geojson
+    desktop: 50
+    mobile: 50
+  de:
+    geojson: data/de.geojson
+    desktop: 50
+    mobile: 50
+  fl:
+    geojson: data/fl.geojson
+    desktop: 50
+    mobile: 50
+  ga:
+    geojson: data/ga.geojson
+    desktop: 50
+    mobile: 50
+  gu_mp:
+    geojson: "data/gump.geojson"
+    desktop: 80
+    mobile: 80
+  hi:
+    geojson: "data/hi.geojson"
+    desktop: 50
+    mobile: 50
+  ia:
+    geojson: data/ia.geojson
+    desktop: 50
+    mobile: 50
+  id:
+    geojson: data/id.geojson
+    desktop: 50
+    mobile: 50
+  il:
+    geojson: data/il.geojson
+    desktop: 50
+    mobile: 50
+  in:
+    geojson: data/in.geojson
+    desktop: 50
+    mobile: 50
+  ks:
+    geojson: data/ks.geojson
+    desktop: 50
+    mobile: 50
+  ky:
+    geojson: data/ky.geojson
+    desktop: 50
+    mobile: 50
+  la:
+    geojson: data/la.geojson
+    desktop: 50
+    mobile: 50
+  ma:
+    geojson: data/ma.geojson
+    desktop: 50
+    mobile: 50
+  md:
+    geojson: data/md.geojson
+    desktop: 50
+    mobile: 50
+  me:
+    geojson: data/me.geojson
+    desktop: 50
+    mobile: 50
+  mi:
+    geojson: data/mi.geojson
+    desktop: 50
+    mobile: 50
+  mn:
+    geojson: data/mn.geojson
+    desktop: 50
+    mobile: 50
+  mo:
+    geojson: data/mo.geojson
+    desktop: 50
+    mobile: 50
+  ms:
+    geojson: data/ms.geojson
+    desktop: 50
+    mobile: 50
+  mt:
+    geojson: data/mt.geojson
+    desktop: 50
+    mobile: 50
+  nc:
+    geojson: data/nc.geojson
+    desktop: 50
+    mobile: 50
+  nd:
+    geojson: data/nd.geojson
+    desktop: 50
+    mobile: 50
+  ne:
+    geojson: data/ne.geojson
+    desktop: 50
+    mobile: 50
+  nh:
+    geojson: data/nh.geojson
+    desktop: 50
+    mobile: 50
+  nj:
+    geojson: data/nj.geojson
+    desktop: 50
+    mobile: 50
+  nm:
+    geojson: data/nm.geojson
+    desktop: 50
+    mobile: 50
+  nv:
+    geojson: data/nv.geojson
+    desktop: 50
+    mobile: 50
+  ny:
+    geojson: data/ny.geojson
+    desktop: 50
+    mobile: 50
+  oh:
+    geojson: data/oh.geojson
+    desktop: 50
+    mobile: 50
+  ok:
+    geojson: data/ok.geojson
+    desktop: 50
+    mobile: 50
+  or:
+    geojson: data/or.geojson
+    desktop: 50
+    mobile: 50
+  pa:
+    geojson: data/pa.geojson
+    desktop: 50
+    mobile: 50
+  pr_vi:
+    geojson: "data/prvi.geojson"
+    desktop: 100
+    mobile: 100
+  ri:
+    geojson: data/ri.geojson
+    desktop: 50
+    mobile: 50
+  sc:
+    geojson: data/sc.geojson
+    desktop: 50
+    mobile: 50
+  sd:
+    geojson: data/sd.geojson
+    desktop: 50
+    mobile: 50
+  tn:
+    geojson: data/tn.geojson
+    desktop: 50
+    mobile: 50
+  tx:
+    geojson: data/tx.geojson
+    desktop: 50
+    mobile: 50
+  ut:
+    geojson: data/ut.geojson
+    desktop: 50
+    mobile: 50
+  va:
+    geojson: data/va.geojson
+    desktop: 50
+    mobile: 50
+  vt:
+    geojson: data/vt.geojson
+    desktop: 50
+    mobile: 50
+  wa:
+    geojson: data/wa.geojson
+    desktop: 50
+    mobile: 50
+  wi:
+    geojson: data/wi.geojson
+    desktop: 50
+    mobile: 50
+  wv:
+    geojson: data/wv.geojson
+    desktop: 50
+    mobile: 50
+  wy:
+    geojson: data/wy.geojson
+    desktop: 50
+    mobile: 50
 state_params:
   style:
     linewidth: 0.5
