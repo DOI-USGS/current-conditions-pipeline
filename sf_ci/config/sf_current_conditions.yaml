@@ -2368,7 +2368,7 @@ geometries:
     desktop: 50
     mobile: 50
   gu_mp:
-    geojson: "data/gump.geojson"
+    geojson: "data/gu_mp.geojson"
     desktop: 80
     mobile: 80
   hi:
@@ -2484,7 +2484,7 @@ geometries:
     desktop: 50
     mobile: 50
   pr_vi:
-    geojson: "data/prvi.geojson"
+    geojson: "data/pr_vi.geojson"
     desktop: 100
     mobile: 100
   ri:
