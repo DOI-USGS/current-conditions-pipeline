@@ -2536,7 +2536,7 @@ geometries:
     mobile: 50
 state_params:
   style:
-    linewidth: 0.5
+    linewidth: 0.25
     edgecolor: "#949494"
     facecolor: "#ffffff"
     outerlinewidth: 0.25
