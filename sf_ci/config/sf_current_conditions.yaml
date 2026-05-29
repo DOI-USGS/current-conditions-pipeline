@@ -2286,7 +2286,6 @@ figure_params:
     linewidth: 0.25
     color: "#363636"
     scale_length: 0.025
-  axis_buffer: 1.05
   datelabel:
     fontsize: 12
     xloc: 0.89
@@ -2303,7 +2302,7 @@ figure_params:
     fontcolor: "#363636"
   shadow:
     sigma: 25
-    alpha: 0.4
+    alpha: 0.35
   webp_quality: 75
   dpi: 600
 
