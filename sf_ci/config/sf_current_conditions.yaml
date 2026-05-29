@@ -2598,3 +2598,4 @@ marker_params:
     linewidth: 0.5
     size: 2
     zorder: 1
+  marker_scaling: 2.0

@@ -91,6 +91,7 @@ def plot_data(
     scale_mult,
     marker_params,
     reference_scale,
+    marker_scaling
 ):
     """Plots stream flow current conditions data on the specified axis
 
@@ -108,20 +109,12 @@ def plot_data(
         projection crs
     scale_mult: float
         scale multiplier
-    state_style: dictionary
-        parameters defining the geometry style
     marker_params: dictionary
         parameters defining the marker style
-    scale_params: dictionary
-        parameters defining the scale bar style
     reference_scale: float
         reference scale that is in meters (map dimensions) per inch (canvas dimensions)
-    reference_length: float
-        total width or height (whichever is larger) of the geometries extent
-    scale_bar_type: float
-        type of scale bar, none, top left corner, or bottom right corner
-    scale_text: string
-        text to add to the scale bar
+    marker_scaling: float
+        scaling needed for mobile layout
 
     Returns
     -------
@@ -146,8 +139,8 @@ def plot_data(
         ax=ax,
         marker=marker_params["NA"]["marker"],
         color=marker_params["NA"]["color"],
-        linewidth=marker_params["NA"]["linewidth"],
-        markersize=marker_params["NA"]["size"],
+        linewidth=marker_params["NA"]["linewidth"] * marker_scaling,
+        markersize=marker_params["NA"]["size"] * marker_scaling ** 2.0,
         zorder=marker_params["NA"]["zorder"],
     )
 
@@ -155,10 +148,10 @@ def plot_data(
     ax.scatter(
         -99999999,
         -99999999,
-        s=marker_params["NA"]["size"],
+        s=marker_params["NA"]["size"] * marker_scaling ** 2.0,
         marker=marker_params["NA"]["marker"],
         color=marker_params["NA"]["color"],
-        linewidth=marker_params["NA"]["linewidth"],
+        linewidth=marker_params["NA"]["linewidth"] * marker_scaling,
         zorder=-1,
     )
 
@@ -169,8 +162,8 @@ def plot_data(
             marker=marker_params["marker"],
             color=marker_params["facecolor"][i],
             edgecolor=marker_params["edgecolor"][i],
-            linewidth=marker_params["linewidth"][i],
-            markersize=marker_params["markersize"][i],
+            linewidth=marker_params["linewidth"][i] * marker_scaling,
+            markersize=marker_params["markersize"][i] * marker_scaling ** 2.0,
             zorder=marker_params["zorder"][i],
         )
 

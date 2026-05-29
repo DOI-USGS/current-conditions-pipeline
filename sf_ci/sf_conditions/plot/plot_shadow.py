@@ -104,10 +104,8 @@ def shadow_plot(
             inch_buffer = pixel_buffer / figure_params["dpi"]
             if reference_length_x / (ax_dims[0] - 2.0 * inch_buffer) > reference_length_y / (ax_dims[1] - 2.0 * inch_buffer):
                 reference_scale = reference_length_x / (ax_dims[0] - 2.0 * inch_buffer)
-                reference_length = reference_scale * ax_dims[0]
             else: 
                 reference_scale = reference_length_y / (ax_dims[1] - 2.0 * inch_buffer)
-                reference_length = reference_scale * ax_dims[1]
 
         # plot
         plot_shadow(
