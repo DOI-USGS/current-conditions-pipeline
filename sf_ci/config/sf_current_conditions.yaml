@@ -2594,7 +2594,7 @@ marker_params:
   - "Extremely above"
   NA:
     marker: 'x'
-    color: '#808080'
-    linewidth: 0.25
-    size: 1
+    color: '#949494'
+    linewidth: 0.5
+    size: 2
     zorder: 1
