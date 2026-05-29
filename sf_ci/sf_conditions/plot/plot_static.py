@@ -89,17 +89,17 @@ def plot_daily_sf_condition(
         va=figure_params["datelabel"]["va"],
     )
 
-    # add temp date label
-    fig.text(
-        figure_params["datelabel_temp"]["xloc"],
-        figure_params["datelabel_temp"]["yloc"],
-        date,
-        fontsize=figure_params["datelabel_temp"]["fontsize"],
-        weight=figure_params["datelabel_temp"]["fontweight"],
-        color=figure_params["datelabel_temp"]["fontcolor"],
-        ha="right",
-        va="top",
-    )
+    # # add temp date label
+    # fig.text(
+    #     figure_params["datelabel_temp"]["xloc"],
+    #     figure_params["datelabel_temp"]["yloc"],
+    #     date,
+    #     fontsize=figure_params["datelabel_temp"]["fontsize"],
+    #     weight=figure_params["datelabel_temp"]["fontweight"],
+    #     color=figure_params["datelabel_temp"]["fontcolor"],
+    #     ha="right",
+    #     va="top",
+    # )
 
     # Save figure
     fig.savefig(static_image_file, dpi = figure_params["dpi"])
