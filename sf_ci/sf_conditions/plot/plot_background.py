@@ -69,11 +69,11 @@ def background_setup(
             ax_dims = get_ax_size_inches(ax, fig)
             pixel_buffer = figure_params["shadow"]["sigma"] * 4
             inch_buffer = pixel_buffer / figure_params["dpi"]
-            if reference_length_x / (ax_dims[0] - 2.0 * inch_buffer) > reference_length_y / (ax_dims[1] - 2.0 * inch_buffer):
-                reference_scale = reference_length_x / (ax_dims[0] - 2.0 * inch_buffer)
+            if reference_length_x / (ax_dims[0] - inch_buffer) > reference_length_y / (ax_dims[1] - inch_buffer):
+                reference_scale = reference_length_x / (ax_dims[0] - inch_buffer)
                 reference_length = reference_scale * ax_dims[0]
             else: 
-                reference_scale = reference_length_y / (ax_dims[1] - 2.0 * inch_buffer)
+                reference_scale = reference_length_y / (ax_dims[1] - inch_buffer)
                 reference_length = reference_scale * ax_dims[1]
 
         # plot
