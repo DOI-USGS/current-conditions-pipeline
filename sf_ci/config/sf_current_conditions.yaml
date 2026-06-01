@@ -2595,7 +2595,7 @@ marker_params:
   NA:
     marker: 'x'
     color: '#949494'
-    linewidth: 0.5
+    linewidth: 0.25
     size: 2
     zorder: 1
   marker_scaling: 2.0
