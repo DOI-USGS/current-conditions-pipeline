@@ -2281,7 +2281,7 @@ figure_params:
   font: "Source Sans 3"
   fontweight: "light"
   fontcolor: "#363636"
-  fontsize: 7
+  fontsize: 8
   scale_params:
     linewidth: 0.25
     color: "#363636"
