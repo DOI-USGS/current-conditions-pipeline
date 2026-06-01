@@ -80,7 +80,7 @@ def date_text(date):
               "Oct", "Nov", "Dec"]
     
     #return months[int(M)-1] + " " + str(int(D)) + ", " + str(int(Y))
-    return months[int(M)-1] + " " + D + ", " + Y + " | Surface Water Conditions | " 
+    return months[int(M)-1] + " " + D + ", " + Y + " | Surface Water Conditions |" 
 
 def plot_data(
     fig,
@@ -280,8 +280,8 @@ def plot_background(
             else:
                 scale_label = str(scale_mult) + "x " + scale_text
 
-            scale_text_x = ax_pos.x0 + 0.0025
-            scale_text_y = ax_pos.y0 + ax_pos.height - 0.005
+            scale_text_x = ax_pos.x0 + scale_params["scale_text_adjust_x"]
+            scale_text_y = ax_pos.y0 + ax_pos.height - scale_params["scale_text_adjust_y"]
             scale_text_ha = "left"
             scale_text_va = "top"
         elif scale_bar_type == "lowerright":
@@ -307,8 +307,8 @@ def plot_background(
             else:
                 scale_label = scale_text + " " + str(scale_mult) + "x"
 
-            scale_text_x = ax_pos.x0 + ax_pos.width - 0.0025
-            scale_text_y = ax_pos.y0 + 0.005
+            scale_text_x = ax_pos.x0 + ax_pos.width - scale_params["scale_text_adjust_x"]
+            scale_text_y = ax_pos.y0 + scale_params["scale_text_adjust_y"]
             scale_text_ha = "right"
             scale_text_va = "bottom"
         else:

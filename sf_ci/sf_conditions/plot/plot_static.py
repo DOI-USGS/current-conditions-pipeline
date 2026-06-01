@@ -65,7 +65,7 @@ def plot_daily_sf_condition(
     img_usgs = plt.imread(usgs_image_file)
     aspect_usgs = img_usgs.shape[1] / img_usgs.shape[0]
     aspect_usgs_ax = aspect_usgs / (layout_params["figure_dimensions"][0] / layout_params["figure_dimensions"][1])
-    ax_usgs = fig.add_axes([layout_params["usgs_img_pos"][0], layout_params["usgs_img_pos"][1], layout_params["usgs_img_height"] * aspect_usgs_ax, layout_params["usgs_img_height"]])
+    ax_usgs = fig.add_axes([layout_params["usgs_img_pos"][0] - layout_params["usgs_img_width"], layout_params["usgs_img_pos"][1], layout_params["usgs_img_width"], layout_params["usgs_img_width"] / aspect_usgs_ax])
     ax_usgs.imshow(img_usgs)
     ax_usgs.set_axis_off()
 
@@ -73,33 +73,21 @@ def plot_daily_sf_condition(
     img_legend = plt.imread(legend_image_file)
     legend_height_ax = img_legend.shape[0] / (layout_params["figure_dimensions"][1] * figure_params["dpi"]) * layout_params["legend_scale"]
     legend_length_ax = img_legend.shape[1] / (layout_params["figure_dimensions"][0] * figure_params["dpi"]) * layout_params["legend_scale"]
-    ax_legend = fig.add_axes([layout_params["legend_pos"][0], layout_params["legend_pos"][1], legend_length_ax, legend_height_ax])
+    ax_legend = fig.add_axes([layout_params["legend_pos"][0] - legend_length_ax, layout_params["legend_pos"][1] - legend_height_ax, legend_length_ax, legend_height_ax])
     ax_legend.imshow(img_legend)
     ax_legend.set_axis_off()
 
     # add date label
     fig.text(
-        figure_params["datelabel"]["xloc"],
-        figure_params["datelabel"]["yloc"],
+        layout_params["datelabel"]["xloc"],
+        layout_params["datelabel"]["yloc"],
         date_text(date),
-        fontsize=figure_params["datelabel"]["fontsize"],
-        weight=figure_params["datelabel"]["fontweight"],
-        color=figure_params["datelabel"]["fontcolor"],
-        ha=figure_params["datelabel"]["ha"],
-        va=figure_params["datelabel"]["va"],
+        fontsize=layout_params["datelabel"]["fontsize"],
+        weight=layout_params["datelabel"]["fontweight"],
+        color=layout_params["datelabel"]["fontcolor"],
+        ha=layout_params["datelabel"]["ha"],
+        va=layout_params["datelabel"]["va"],
     )
-
-    # # add temp date label
-    # fig.text(
-    #     figure_params["datelabel_temp"]["xloc"],
-    #     figure_params["datelabel_temp"]["yloc"],
-    #     date,
-    #     fontsize=figure_params["datelabel_temp"]["fontsize"],
-    #     weight=figure_params["datelabel_temp"]["fontweight"],
-    #     color=figure_params["datelabel_temp"]["fontcolor"],
-    #     ha="right",
-    #     va="top",
-    # )
 
     # Save figure
     fig.savefig(static_image_file, dpi = figure_params["dpi"])

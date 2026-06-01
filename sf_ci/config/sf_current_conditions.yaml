@@ -2268,10 +2268,18 @@ layouts:
     source_prefix: "desktop-CONUS_OCONUS-"
     static: true
     video: true
-    usgs_img_pos: [0.89, 0.01]
-    usgs_img_height: 0.05
-    legend_pos: [0.55, 0.9]
+    usgs_img_pos: [0.98, 0.024]
+    usgs_img_width: 0.083
+    legend_pos: [0.9, 0.985]
     legend_scale: 1.0
+    datelabel:
+      fontsize: 12
+      xloc: 0.89
+      yloc: 0.0459535
+      va: "center"
+      ha: "right"
+      fontweight: "bold"
+      fontcolor: "#000000"
 
 
 figure_params:
@@ -2280,26 +2288,14 @@ figure_params:
   fontfamily: "sans-serif"
   font: "Source Sans 3"
   fontweight: "light"
-  fontcolor: "#363636"
+  fontcolor: "#6E6E6E"
   fontsize: 8
   scale_params:
     linewidth: 0.25
-    color: "#363636"
-    scale_length: 0.025
-  datelabel:
-    fontsize: 12
-    xloc: 0.89
-    yloc: 0.035
-    va: "center"
-    ha: "right"
-    fontweight: "bold"
-    fontcolor: "#363636"
-  datelabel_temp:
-    fontsize: 8
-    xloc: 0.99
-    yloc: 0.99
-    fontweight: "normal"
-    fontcolor: "#363636"
+    color: "#949494"
+    scale_length: 0.022
+    scale_text_adjust_x:  0.005
+    scale_text_adjust_y: 0.01
   shadow:
     sigma: 25
     alpha: 0.35
