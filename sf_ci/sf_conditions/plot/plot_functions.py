@@ -308,7 +308,7 @@ def plot_background(
                 scale_label = scale_text + " " + str(scale_mult) + "x"
 
             scale_text_x = ax_pos.x0 + ax_pos.width - scale_params["scale_text_adjust_x"]
-            scale_text_y = ax_pos.y0 + scale_params["scale_text_adjust_y"]
+            scale_text_y = ax_pos.y0 + scale_params["scale_text_adjust_y"] / 2.0
             scale_text_ha = "right"
             scale_text_va = "bottom"
         else:
