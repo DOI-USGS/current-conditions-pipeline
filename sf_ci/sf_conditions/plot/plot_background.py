@@ -89,6 +89,8 @@ def background_setup(
             reference_length,
             layout_params["scale_bar"][i],
             layout_params["scale_text"][i],
+            layout_params["label_text"][i],
+            layout_params["label_text_loc"][i],
         )
 
         if layout_params["locator_map"] == True:

@@ -193,6 +193,8 @@ def plot_background(
     reference_length,
     scale_bar_type,
     scale_text,
+    label_text,
+    label_text_loc
 ):
     """Plots boundary geometry data on the specified axis
 
@@ -220,6 +222,10 @@ def plot_background(
         type of scale bar, none, top left corner, or bottom right corner
     scale_text: string
         text to add to the scale bar
+    label_text: string
+        text for optional label
+    label_text_loc: list of floats
+        x,y location of label text in axis coordinates
 
     Returns
     -------
@@ -332,6 +338,18 @@ def plot_background(
             bbox=dict(boxstyle="round,pad=0.5", fc="none", alpha=0.0),
             style="italic",
         )
+    
+    if label_text != False:
+        ax.text(
+            label_text_loc[0],
+            label_text_loc[1],
+            label_text,
+            horizontalalignment="left",
+            verticalalignment="top",
+            transform=ax.transAxes,
+            style="italic",
+        )
+
     return make_extent_gdf(
         boundary_gdf,
     )
