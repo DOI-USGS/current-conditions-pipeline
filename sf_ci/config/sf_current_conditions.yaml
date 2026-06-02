@@ -22,7 +22,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -42,7 +42,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -62,7 +62,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -82,7 +82,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -102,7 +102,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -122,7 +122,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -142,7 +142,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -162,7 +162,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -182,7 +182,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -202,7 +202,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -222,7 +222,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -242,7 +242,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -262,7 +262,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -282,7 +282,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -302,7 +302,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -322,7 +322,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -342,7 +342,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -362,7 +362,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -382,7 +382,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -402,7 +402,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -422,7 +422,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -442,7 +442,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -462,7 +462,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -482,7 +482,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -502,7 +502,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -522,7 +522,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -542,7 +542,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -562,7 +562,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -582,7 +582,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -602,7 +602,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -622,7 +622,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -642,7 +642,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -662,7 +662,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -682,7 +682,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -702,7 +702,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -722,7 +722,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -742,7 +742,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -762,7 +762,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -782,7 +782,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -802,7 +802,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -822,7 +822,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -842,7 +842,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -862,7 +862,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -882,7 +882,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -902,7 +902,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -922,7 +922,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -942,7 +942,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -962,7 +962,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -982,7 +982,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1002,7 +1002,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1022,7 +1022,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1042,7 +1042,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1062,7 +1062,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1082,7 +1082,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1102,7 +1102,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1122,7 +1122,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1142,7 +1142,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1162,7 +1162,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1182,7 +1182,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1202,7 +1202,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1222,7 +1222,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1242,7 +1242,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1262,7 +1262,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1282,7 +1282,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1302,7 +1302,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1322,7 +1322,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1342,7 +1342,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1362,7 +1362,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1382,7 +1382,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1402,7 +1402,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1422,7 +1422,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1442,7 +1442,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1462,7 +1462,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1482,7 +1482,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1502,7 +1502,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1522,7 +1522,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1542,7 +1542,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1562,7 +1562,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1582,7 +1582,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1602,7 +1602,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1622,7 +1622,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1642,7 +1642,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1662,7 +1662,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1682,7 +1682,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1702,7 +1702,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1722,7 +1722,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1742,7 +1742,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1762,7 +1762,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1782,7 +1782,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1802,7 +1802,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1822,7 +1822,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1842,7 +1842,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1862,7 +1862,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1882,7 +1882,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1902,7 +1902,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1922,7 +1922,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1942,7 +1942,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1962,7 +1962,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1982,7 +1982,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -2002,7 +2002,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -2022,7 +2022,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -2042,7 +2042,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -2062,7 +2062,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -2082,7 +2082,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -2102,7 +2102,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -2122,7 +2122,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -2142,7 +2142,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -2162,7 +2162,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -2182,7 +2182,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -2202,7 +2202,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
