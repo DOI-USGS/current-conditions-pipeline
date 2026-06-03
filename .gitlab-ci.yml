@@ -161,6 +161,9 @@ gw_render:
     - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
     - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/gw_coverage.parquet gw_ci/1_fetch/in/gw_coverage.parquet
     - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/metadata/gw_file_metadata.csv gw_ci/1_fetch/in/gw_file_metadata.csv
+    # Add pngquant to the path for R-targets
+    - export PATH="/.pixi/envs/default/lib/node_modules/pngquant-bin/vendor:$PATH"
+    # Run targets pipeline
     - pixi run Rscript -e "setwd('gw_ci'); targets::tar_make()"
     # Daily categorizations parquet files
     - pixi run aws s3 sync gw_ci/1_fetch/out/ s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/stage/
@@ -295,13 +298,22 @@ sf_render:
   script:
     - echo "PIPELINE_MODE=${PIPELINE_MODE}"
     - echo "CI_PIPELINE_SOURCE=${CI_PIPELINE_SOURCE}"
-    # - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/metadata/sf_coverage.parquet sf_ci/metadata/sf_coverage.parquet
-    # - pixi run aws s3 cp s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/metadata/sf_file_metadata.csv sf_ci/metadata/sf_file_metadata.csv
+    # Add mapshaper to the path for Snakemake
+    - export PATH="/.pixi/envs/default/lib/node_modules/mapshaper/bin:$PATH"
+    # Add pngquant to the path for Snakemake
+    - export PATH="/.pixi/envs/default/lib/node_modules/pngquant-bin/vendor:$PATH"
+    # Run Snakemake file
     - pixi run snakemake --snakefile sf_ci/Snakefile --cores all --directory sf_ci --config date=$(date +%F)
+    # Sync date.json
     - pixi run aws s3 cp sf_ci/metadata/sf_dates.json s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/metadata/sf_dates.json
-    - pixi run aws s3 sync sf_ci/data/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/data/
-    - pixi run aws s3 sync sf_ci/images/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/images/
-    - pixi run aws s3 sync sf_ci/videos/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/videos/
+    # Sync all .parquet files
+    - pixi run aws s3 sync sf_ci/data/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/data/ --exclude "*" --include "*.parquet"
+    # Sync all .webp files
+    - pixi run aws s3 sync sf_ci/images/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/images/ --exclude "*" --include "*.webp"
+    # Sync all .png files except the shadow files and uncompressed files
+    - pixi run aws s3 sync sf_ci/images/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/images/ --exclude "*" --include "*.png" --exclude "*-shadow.png" --exclude "uncompressed-*"
+    # Sync all videos
+    - pixi run aws s3 sync sf_ci/videos/ s3://water-visualizations-prod-website/visualizations/current_conditions/streamflow/videos/ --exclude "*" --include "*.mp4"
   tags:
     - water
     - computational_tools
