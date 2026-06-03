@@ -48,7 +48,12 @@ RUN pixi config set --local run-post-link-scripts insecure
 
 # Install all Python + R deps from lock file
 RUN pixi install
+
+# Install software for simplifying geometries, mapshaper
 RUN pixi run install-mapshaper
+
+# Install software for compressing images, pngquant
+RUN pixi run install-pngquant
 
 # Check R libPaths location
 RUN pixi run Rscript -e ".libPaths()"
