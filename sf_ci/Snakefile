@@ -66,10 +66,59 @@ rule gather_census_data:
     output:
         conus_geojson = "data/conus.geojson",
         ak_geojson = "data/ak.geojson",
-        hi_geojson = "data/hi.geojson",
-        prvi_geojson = "data/prvi.geojson",
-        gump_geojson = "data/gump.geojson",
+        al_geojson = "data/al.geojson",
+        ar_geojson = "data/ar.geojson",
         as_geojson = "data/as.geojson",
+        az_geojson = "data/az.geojson",
+        ca_geojson = "data/ca.geojson",
+        co_geojson = "data/co.geojson",
+        ct_geojson = "data/ct.geojson",
+        dc_geojson = "data/dc.geojson",
+        de_geojson = "data/de.geojson",
+        fl_geojson = "data/fl.geojson",
+        ga_geojson = "data/ga.geojson",
+        gump_geojson = "data/gump.geojson",
+        hi_geojson = "data/hi.geojson",
+        ia_geojson = "data/ia.geojson",
+        id_geojson = "data/id.geojson",
+        il_geojson = "data/il.geojson",
+        in_geojson = "data/in.geojson",
+        ks_geojson = "data/ks.geojson",
+        ky_geojson = "data/ky.geojson",
+        la_geojson = "data/la.geojson",
+        ma_geojson = "data/ma.geojson",
+        md_geojson = "data/md.geojson",
+        me_geojson = "data/me.geojson",
+        mi_geojson = "data/mi.geojson",
+        mn_geojson = "data/mn.geojson",
+        mo_geojson = "data/mo.geojson",
+        ms_geojson = "data/ms.geojson",
+        mt_geojson = "data/mt.geojson",
+        nc_geojson = "data/nc.geojson",
+        nd_geojson = "data/nd.geojson",
+        ne_geojson = "data/ne.geojson",
+        nh_geojson = "data/nh.geojson",
+        nj_geojson = "data/nj.geojson",
+        nm_geojson = "data/nm.geojson",
+        nv_geojson = "data/nv.geojson",
+        ny_geojson = "data/ny.geojson",
+        oh_geojson = "data/oh.geojson",
+        ok_geojson = "data/ok.geojson",
+        or_geojson = "data/or.geojson",
+        pa_geojson = "data/pa.geojson",
+        prvi_geojson = "data/prvi.geojson",
+        ri_geojson = "data/ri.geojson",
+        sc_geojson = "data/sc.geojson",
+        sd_geojson = "data/sd.geojson",
+        tn_geojson = "data/tn.geojson",
+        tx_geojson = "data/tx.geojson",
+        ut_geojson = "data/ut.geojson",
+        va_geojson = "data/va.geojson",
+        vt_geojson = "data/vt.geojson",
+        wa_geojson = "data/wa.geojson",
+        wi_geojson = "data/wi.geojson",
+        wv_geojson = "data/wv.geojson",
+        wy_geojson = "data/wy.geojson"
     script:
         "sf_conditions/fetch/get_boundaries.py"
 
@@ -88,8 +137,8 @@ for geometry in params["geometries"].keys():
             mobile_outfile = params["geometries"][geometry]["geojson"][:-8] + "_simplified_mobile.geojson"
         shell:
             r'''
-            npx mapshaper {input.infile} -simplify {params.desktop_simplify}% -o {output.desktop_outfile}
-            npx mapshaper {input.infile} -simplify {params.mobile_simplify}% -o {output.mobile_outfile}
+            mapshaper {input.infile} -simplify {params.desktop_simplify}% -o {output.desktop_outfile}
+            mapshaper {input.infile} -simplify {params.mobile_simplify}% -o {output.mobile_outfile}
             '''
 
 ########################################
@@ -237,11 +286,27 @@ for i, image_file in enumerate(images_for_static_image_generation[:]):
             usgs_image_file = "logos/usgs_logo_black.png",
             legend_image_file = "legends/sf-static-legend.png"
         output:
-            static_image_file = static_images_to_generate[i]
+            static_image_file = os.path.dirname(static_images_to_generate[i]) + "/uncompressed-" + os.path.basename(static_images_to_generate[i])
         script:
             "sf_conditions/plot/plot_static.py"
+    rule:
+        name: 
+            "image_compress: " + static_images_to_generate[i]
+        params:
+            colors = params["image-compression"]["colors"],
+            quality = params["image-compression"]["quality"],
+            speed = params["image-compression"]["speed"],
+            ext = params["image-compression"]["ext"]
+        input:
+            img_in = os.path.dirname(static_images_to_generate[i]) + "/uncompressed-" + os.path.basename(static_images_to_generate[i])
+        output:
+            img_out = static_images_to_generate[i]
+        shell:
+            r'''
+            pngquant {params.colors} --quality {params.quality} --speed {params.speed} --output {output.img_out} {input.img_in}
+            '''
 
-########################################
+#######################################
 ############VIDEO GENERATION############
 ########################################
 for i, video_name in enumerate(video_names):

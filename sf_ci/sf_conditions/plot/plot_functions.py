@@ -80,7 +80,7 @@ def date_text(date):
               "Oct", "Nov", "Dec"]
     
     #return months[int(M)-1] + " " + str(int(D)) + ", " + str(int(Y))
-    return months[int(M)-1] + " " + D + ", " + Y + " | Surface Water Conditions | " 
+    return months[int(M)-1] + " " + D + ", " + Y + " | Surface Water Conditions |" 
 
 def plot_data(
     fig,
@@ -91,6 +91,7 @@ def plot_data(
     scale_mult,
     marker_params,
     reference_scale,
+    marker_scaling
 ):
     """Plots stream flow current conditions data on the specified axis
 
@@ -108,20 +109,12 @@ def plot_data(
         projection crs
     scale_mult: float
         scale multiplier
-    state_style: dictionary
-        parameters defining the geometry style
     marker_params: dictionary
         parameters defining the marker style
-    scale_params: dictionary
-        parameters defining the scale bar style
     reference_scale: float
         reference scale that is in meters (map dimensions) per inch (canvas dimensions)
-    reference_length: float
-        total width or height (whichever is larger) of the geometries extent
-    scale_bar_type: float
-        type of scale bar, none, top left corner, or bottom right corner
-    scale_text: string
-        text to add to the scale bar
+    marker_scaling: float
+        scaling needed for mobile layout
 
     Returns
     -------
@@ -146,8 +139,8 @@ def plot_data(
         ax=ax,
         marker=marker_params["NA"]["marker"],
         color=marker_params["NA"]["color"],
-        linewidth=marker_params["NA"]["linewidth"],
-        markersize=marker_params["NA"]["size"],
+        linewidth=marker_params["NA"]["linewidth"] * marker_scaling,
+        markersize=marker_params["NA"]["size"] * marker_scaling ** 2.0,
         zorder=marker_params["NA"]["zorder"],
     )
 
@@ -155,10 +148,10 @@ def plot_data(
     ax.scatter(
         -99999999,
         -99999999,
-        s=marker_params["NA"]["size"],
+        s=marker_params["NA"]["size"] * marker_scaling ** 2.0,
         marker=marker_params["NA"]["marker"],
         color=marker_params["NA"]["color"],
-        linewidth=marker_params["NA"]["linewidth"],
+        linewidth=marker_params["NA"]["linewidth"] * marker_scaling,
         zorder=-1,
     )
 
@@ -169,8 +162,8 @@ def plot_data(
             marker=marker_params["marker"],
             color=marker_params["facecolor"][i],
             edgecolor=marker_params["edgecolor"][i],
-            linewidth=marker_params["linewidth"][i],
-            markersize=marker_params["markersize"][i],
+            linewidth=marker_params["linewidth"][i] * marker_scaling,
+            markersize=marker_params["markersize"][i] * marker_scaling ** 2.0,
             zorder=marker_params["zorder"][i],
         )
 
@@ -200,6 +193,8 @@ def plot_background(
     reference_length,
     scale_bar_type,
     scale_text,
+    label_text,
+    label_text_loc
 ):
     """Plots boundary geometry data on the specified axis
 
@@ -227,6 +222,10 @@ def plot_background(
         type of scale bar, none, top left corner, or bottom right corner
     scale_text: string
         text to add to the scale bar
+    label_text: string
+        text for optional label
+    label_text_loc: list of floats
+        x,y location of label text in axis coordinates
 
     Returns
     -------
@@ -287,8 +286,8 @@ def plot_background(
             else:
                 scale_label = str(scale_mult) + "x " + scale_text
 
-            scale_text_x = ax_pos.x0 + 0.0025
-            scale_text_y = ax_pos.y0 + ax_pos.height - 0.005
+            scale_text_x = ax_pos.x0 + scale_params["scale_text_adjust_x"]
+            scale_text_y = ax_pos.y0 + ax_pos.height - scale_params["scale_text_adjust_y"]
             scale_text_ha = "left"
             scale_text_va = "top"
         elif scale_bar_type == "lowerright":
@@ -314,8 +313,8 @@ def plot_background(
             else:
                 scale_label = scale_text + " " + str(scale_mult) + "x"
 
-            scale_text_x = ax_pos.x0 + ax_pos.width - 0.0025
-            scale_text_y = ax_pos.y0 + 0.005
+            scale_text_x = ax_pos.x0 + ax_pos.width - scale_params["scale_text_adjust_x"]
+            scale_text_y = ax_pos.y0 + scale_params["scale_text_adjust_y"] / 2.0
             scale_text_ha = "right"
             scale_text_va = "bottom"
         else:
@@ -339,6 +338,18 @@ def plot_background(
             bbox=dict(boxstyle="round,pad=0.5", fc="none", alpha=0.0),
             style="italic",
         )
+    
+    if label_text != False:
+        ax.text(
+            label_text_loc[0],
+            label_text_loc[1],
+            label_text,
+            horizontalalignment="left",
+            verticalalignment="top",
+            transform=ax.transAxes,
+            style="italic",
+        )
+
     return make_extent_gdf(
         boundary_gdf,
     )

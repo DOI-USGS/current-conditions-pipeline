@@ -40,7 +40,8 @@ def background_setup(
     # Set reference scale
     reference_gdf = gpd.read_file(layout_params["geojson"][0])
     minx, miny, maxx, maxy = reference_gdf.to_crs(layout_params["proj"][0]).total_bounds
-    reference_length = max(maxx - minx, maxy - miny) * figure_params["axis_buffer"]
+    reference_length_x = (maxx - minx)
+    reference_length_y = (maxy - miny)
 
     # Set up figure
     fig = plt.figure(1, figsize=(layout_params["figure_dimensions"]), facecolor='none')
@@ -66,10 +67,14 @@ def background_setup(
         # reference everything to first geojson
         if i == 0:
             ax_dims = get_ax_size_inches(ax, fig)
-            if maxx - minx > maxy - miny:
-                reference_scale = reference_length / ax_dims[0]
+            pixel_buffer = figure_params["shadow"]["sigma"] * 4
+            inch_buffer = pixel_buffer / figure_params["dpi"]
+            if reference_length_x / (ax_dims[0] - inch_buffer) > reference_length_y / (ax_dims[1] - inch_buffer):
+                reference_scale = reference_length_x / (ax_dims[0] - inch_buffer)
+                reference_length = reference_scale * ax_dims[0]
             else: 
-                reference_scale = reference_length / ax_dims[1]
+                reference_scale = reference_length_y / (ax_dims[1] - inch_buffer)
+                reference_length = reference_scale * ax_dims[1]
 
         # plot
         gdf_extent = plot_background(
@@ -84,6 +89,8 @@ def background_setup(
             reference_length,
             layout_params["scale_bar"][i],
             layout_params["scale_text"][i],
+            layout_params["label_text"][i],
+            layout_params["label_text_loc"][i],
         )
 
         if layout_params["locator_map"] == True:

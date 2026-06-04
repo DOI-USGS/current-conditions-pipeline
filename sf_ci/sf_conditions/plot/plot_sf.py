@@ -71,7 +71,14 @@ def plot_daily_sf_condition(
     # Set reference scale
     reference_gdf = gpd.read_file(layout_params["geojson"][0])
     minx, miny, maxx, maxy = reference_gdf.to_crs(layout_params["proj"][0]).total_bounds
-    reference_length = max(maxx - minx, maxy - miny) * figure_params["axis_buffer"]
+    reference_length_x = (maxx - minx)
+    reference_length_y = (maxy - miny)
+
+    # Marker scaling if non CONUS view
+    if "CONUS" in layout_params["prefix"]:
+        marker_scaling = 1.0
+    else:
+        marker_scaling = marker_params["marker_scaling"]
 
     # filter out markers outside of the reference gdf (if not conus-oconus)
     reference_gdfs = [gpd.read_file(f) for f in layout_params["geojson"]]
@@ -88,10 +95,12 @@ def plot_daily_sf_condition(
         # reference everything to first geojson
         if i == 0:
             ax_dims = get_ax_size_inches(ax, fig)
-            if maxx - minx > maxy - miny:
-                reference_scale = reference_length / ax_dims[0]
+            pixel_buffer = figure_params["shadow"]["sigma"] * 4
+            inch_buffer = pixel_buffer / figure_params["dpi"]
+            if reference_length_x / (ax_dims[0] - inch_buffer) > reference_length_y / (ax_dims[1] - inch_buffer):
+                reference_scale = reference_length_x / (ax_dims[0] - inch_buffer)
             else: 
-                reference_scale = reference_length / ax_dims[1]
+                reference_scale = reference_length_y / (ax_dims[1] - inch_buffer)
 
         # plot
         plot_data(
@@ -102,7 +111,8 @@ def plot_daily_sf_condition(
             layout_params["proj"][i],
             layout_params["multi"][i],
             marker_params,
-            reference_scale
+            reference_scale,
+            marker_scaling
         )
 
     # Save figure

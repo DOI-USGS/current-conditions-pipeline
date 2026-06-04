@@ -104,6 +104,7 @@ def generate_image_list(
 
     # Append
     metadata = pd.concat([metadata, new_rows], ignore_index=True)
+    metadata = metadata.replace("", "NA")
 
     # refresh all image files for the latest date
     metadata.iloc[-1, 1:] = 'NA'

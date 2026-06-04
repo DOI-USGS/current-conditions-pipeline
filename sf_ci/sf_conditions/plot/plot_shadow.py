@@ -85,7 +85,8 @@ def shadow_plot(
     # Reference scale to CONUS
     reference_gdf = gpd.read_file(layout_params["geojson"][0])
     minx, miny, maxx, maxy = reference_gdf.to_crs(layout_params["proj"][0]).total_bounds
-    reference_length = max(maxx - minx, maxy - miny) * figure_params["axis_buffer"]
+    reference_length_x = (maxx - minx)
+    reference_length_y = (maxy - miny)
 
     # Set up figure
     fig = plt.figure(
@@ -99,10 +100,12 @@ def shadow_plot(
         # reference everything to first geojson
         if i == 0:
             ax_dims = get_ax_size_inches(ax, fig)
-            if maxx - minx > maxy - miny:
-                reference_scale = reference_length / ax_dims[0]
+            pixel_buffer = figure_params["shadow"]["sigma"] * 4
+            inch_buffer = pixel_buffer / figure_params["dpi"]
+            if reference_length_x / (ax_dims[0] - inch_buffer) > reference_length_y / (ax_dims[1] - inch_buffer):
+                reference_scale = reference_length_x / (ax_dims[0] - inch_buffer)
             else: 
-                reference_scale = reference_length / ax_dims[1]
+                reference_scale = reference_length_y / (ax_dims[1] - inch_buffer)
 
         # plot
         plot_shadow(
