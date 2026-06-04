@@ -5,7 +5,7 @@ import pandas as pd
 import numpy
 from io import StringIO
 from datetime import date, timedelta
-from botocore.exceptions import ClientError
+
 
 # --- Config ---
 BUCKET = "water-visualizations-prod-website"
@@ -136,14 +136,14 @@ date_of_interest = date.fromisoformat(args.date)
 #     date_of_interest -= timedelta(days=1)
 
 
-def key_exists(s3_client, bucket, key):
-    try:
-        s3_client.head_object(Bucket=bucket, Key=key)
-        return True
-    except ClientError as e:
-        if e.response["Error"]["Code"] in ("404", "NoSuchKey"):
-            return False
-        raise  # re-raise unexpected errors (auth, etc.)
+def list_existing_keys(s3_client, bucket, prefix):
+    """List all keys under a prefix, handling pagination."""
+    keys = set()
+    paginator = s3_client.get_paginator("list_objects_v2")
+    for page in paginator.paginate(Bucket=bucket, Prefix=prefix):
+        for obj in page.get("Contents", []):
+            keys.add(obj["Key"])
+    return keys
 
 s3 = boto3.client("s3")
 
@@ -181,12 +181,13 @@ dates_to_check = set(incomplete) | {str(date_of_interest)} | set(missing_dates)
 
 print(f"Checking dates: {dates_to_check}")
 
+existing_keys = list_existing_keys(s3, BUCKET, SF_PATH)
+
 for d in dates_to_check:
     row = {"date": d}
     for col, key_template in EXPECTED_OUTPUTS.items():
-        key = key_template.format(date=d)
-        # print(f"[{col}] s3://{BUCKET}/{key} → {'FOUND' if exists else 'MISSING'}", flush=True)
-        row[col] = key if key_exists(s3, BUCKET, SF_PATH + key) else "NA"
+        key = SF_PATH + key_template.format(date=d)
+        row[col] = key_template.format(date=d) if key in existing_keys else "NA"
     meta = meta[meta["date"] != d]
     meta = pd.concat([meta, pd.DataFrame([row])], ignore_index=True)
 
