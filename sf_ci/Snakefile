@@ -10,7 +10,6 @@ with open("config/sf_current_conditions.yaml", "r") as file:
 
 # Load metadata and generate list of files to make
 metadata = pd.read_csv(params["s3_url_prefix"] + "metadata/sf_file_metadata.csv", dtype=str, keep_default_na=False)
-metadata.iloc[:, 2:] = "NA" 
 
 # Set default date if nothing is specified
 date_of_interest = config.get("date", "2026-03-03")
