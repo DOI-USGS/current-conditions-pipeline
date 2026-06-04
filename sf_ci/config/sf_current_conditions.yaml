@@ -10,6 +10,11 @@ video_intervals:
 - 6m
 - 1y
 
+image-compression:
+  colors: 128
+  quality: 60-80
+  speed: 1
+  ext: .png
 layouts:
   mobile-conus:
     figure_dimensions: [4, 4]
@@ -22,7 +27,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -30,6 +35,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-ak:
     figure_dimensions: [4, 4]
@@ -42,7 +51,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -50,6 +59,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-al:
     figure_dimensions: [4, 4]
@@ -62,7 +75,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -70,6 +83,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-ar:
     figure_dimensions: [4, 4]
@@ -82,7 +99,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -90,6 +107,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-as:
     figure_dimensions: [4, 4]
@@ -102,7 +123,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -110,6 +131,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-az:
     figure_dimensions: [4, 4]
@@ -122,7 +147,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -130,6 +155,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-ca:
     figure_dimensions: [4, 4]
@@ -142,7 +171,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -150,6 +179,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-co:
     figure_dimensions: [4, 4]
@@ -162,7 +195,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -170,6 +203,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-ct:
     figure_dimensions: [4, 4]
@@ -182,7 +219,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -190,6 +227,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-dc:
     figure_dimensions: [4, 4]
@@ -202,7 +243,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -210,6 +251,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-de:
     figure_dimensions: [4, 4]
@@ -222,7 +267,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -230,6 +275,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-fl:
     figure_dimensions: [4, 4]
@@ -242,7 +291,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -250,6 +299,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-ga:
     figure_dimensions: [4, 4]
@@ -262,7 +315,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -270,6 +323,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-gump:
     figure_dimensions: [4, 4]
@@ -282,7 +339,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -290,6 +347,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-hi:
     figure_dimensions: [4, 4]
@@ -302,7 +363,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -310,6 +371,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-ia:
     figure_dimensions: [4, 4]
@@ -322,7 +387,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -330,6 +395,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-id:
     figure_dimensions: [4, 4]
@@ -342,7 +411,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -350,6 +419,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-il:
     figure_dimensions: [4, 4]
@@ -362,7 +435,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -370,6 +443,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-in:
     figure_dimensions: [4, 4]
@@ -382,7 +459,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -390,6 +467,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-ks:
     figure_dimensions: [4, 4]
@@ -402,7 +483,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -410,6 +491,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-ky:
     figure_dimensions: [4, 4]
@@ -422,7 +507,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -430,6 +515,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-la:
     figure_dimensions: [4, 4]
@@ -442,7 +531,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -450,6 +539,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-ma:
     figure_dimensions: [4, 4]
@@ -462,7 +555,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -470,6 +563,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-md:
     figure_dimensions: [4, 4]
@@ -482,7 +579,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -490,6 +587,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-me:
     figure_dimensions: [4, 4]
@@ -502,7 +603,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -510,6 +611,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-mi:
     figure_dimensions: [4, 4]
@@ -522,7 +627,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -530,6 +635,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-mn:
     figure_dimensions: [4, 4]
@@ -542,7 +651,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -550,6 +659,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-mo:
     figure_dimensions: [4, 4]
@@ -562,7 +675,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -570,6 +683,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-ms:
     figure_dimensions: [4, 4]
@@ -582,7 +699,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -590,6 +707,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-mt:
     figure_dimensions: [4, 4]
@@ -602,7 +723,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -610,6 +731,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-nc:
     figure_dimensions: [4, 4]
@@ -622,7 +747,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -630,6 +755,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-nd:
     figure_dimensions: [4, 4]
@@ -642,7 +771,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -650,6 +779,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-ne:
     figure_dimensions: [4, 4]
@@ -662,7 +795,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -670,6 +803,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-nh:
     figure_dimensions: [4, 4]
@@ -682,7 +819,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -690,6 +827,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-nj:
     figure_dimensions: [4, 4]
@@ -702,7 +843,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -710,6 +851,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-nm:
     figure_dimensions: [4, 4]
@@ -722,7 +867,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -730,6 +875,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-nv:
     figure_dimensions: [4, 4]
@@ -742,7 +891,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -750,6 +899,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-ny:
     figure_dimensions: [4, 4]
@@ -762,7 +915,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -770,6 +923,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-oh:
     figure_dimensions: [4, 4]
@@ -782,7 +939,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -790,6 +947,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-ok:
     figure_dimensions: [4, 4]
@@ -802,7 +963,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -810,6 +971,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-or:
     figure_dimensions: [4, 4]
@@ -822,7 +987,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -830,6 +995,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-pa:
     figure_dimensions: [4, 4]
@@ -842,7 +1011,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -850,6 +1019,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-prvi:
     figure_dimensions: [4, 4]
@@ -862,7 +1035,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -870,6 +1043,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-ri:
     figure_dimensions: [4, 4]
@@ -882,7 +1059,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -890,6 +1067,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-sc:
     figure_dimensions: [4, 4]
@@ -902,7 +1083,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -910,6 +1091,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-sd:
     figure_dimensions: [4, 4]
@@ -922,7 +1107,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -930,6 +1115,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-tn:
     figure_dimensions: [4, 4]
@@ -942,7 +1131,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -950,6 +1139,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-tx:
     figure_dimensions: [4, 4]
@@ -962,7 +1155,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -970,6 +1163,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-ut:
     figure_dimensions: [4, 4]
@@ -982,7 +1179,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -990,6 +1187,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-va:
     figure_dimensions: [4, 4]
@@ -1002,7 +1203,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1010,6 +1211,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-vt:
     figure_dimensions: [4, 4]
@@ -1022,7 +1227,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1030,6 +1235,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-wa:
     figure_dimensions: [4, 4]
@@ -1042,7 +1251,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1050,6 +1259,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-wi:
     figure_dimensions: [4, 4]
@@ -1062,7 +1275,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1070,6 +1283,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-wv:
     figure_dimensions: [4, 4]
@@ -1082,7 +1299,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1090,6 +1307,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   mobile-wy:
     figure_dimensions: [4, 4]
@@ -1102,7 +1323,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1110,6 +1331,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-conus:
     figure_dimensions: [8, 4]
@@ -1122,7 +1347,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1130,6 +1355,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-ak:
     figure_dimensions: [8, 4]
@@ -1142,7 +1371,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1150,6 +1379,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-al:
     figure_dimensions: [8, 4]
@@ -1162,7 +1395,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1170,6 +1403,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-ar:
     figure_dimensions: [8, 4]
@@ -1182,7 +1419,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1190,6 +1427,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-as:
     figure_dimensions: [8, 4]
@@ -1202,7 +1443,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1210,6 +1451,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-az:
     figure_dimensions: [8, 4]
@@ -1222,7 +1467,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1230,6 +1475,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-ca:
     figure_dimensions: [8, 4]
@@ -1242,7 +1491,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1250,6 +1499,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-co:
     figure_dimensions: [8, 4]
@@ -1262,7 +1515,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1270,6 +1523,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-ct:
     figure_dimensions: [8, 4]
@@ -1282,7 +1539,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1290,6 +1547,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-dc:
     figure_dimensions: [8, 4]
@@ -1302,7 +1563,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1310,6 +1571,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-de:
     figure_dimensions: [8, 4]
@@ -1322,7 +1587,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1330,6 +1595,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-fl:
     figure_dimensions: [8, 4]
@@ -1342,7 +1611,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1350,6 +1619,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-ga:
     figure_dimensions: [8, 4]
@@ -1362,7 +1635,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1370,6 +1643,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-gump:
     figure_dimensions: [8, 4]
@@ -1382,7 +1659,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1390,6 +1667,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-hi:
     figure_dimensions: [8, 4]
@@ -1402,7 +1683,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1410,6 +1691,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-ia:
     figure_dimensions: [8, 4]
@@ -1422,7 +1707,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1430,6 +1715,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-id:
     figure_dimensions: [8, 4]
@@ -1442,7 +1731,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1450,6 +1739,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-il:
     figure_dimensions: [8, 4]
@@ -1462,7 +1755,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1470,6 +1763,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-in:
     figure_dimensions: [8, 4]
@@ -1482,7 +1779,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1490,6 +1787,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-ks:
     figure_dimensions: [8, 4]
@@ -1502,7 +1803,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1510,6 +1811,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-ky:
     figure_dimensions: [8, 4]
@@ -1522,7 +1827,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1530,6 +1835,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-la:
     figure_dimensions: [8, 4]
@@ -1542,7 +1851,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1550,6 +1859,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-ma:
     figure_dimensions: [8, 4]
@@ -1562,7 +1875,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1570,6 +1883,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-md:
     figure_dimensions: [8, 4]
@@ -1582,7 +1899,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1590,6 +1907,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-me:
     figure_dimensions: [8, 4]
@@ -1602,7 +1923,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1610,6 +1931,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-mi:
     figure_dimensions: [8, 4]
@@ -1622,7 +1947,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1630,6 +1955,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-mn:
     figure_dimensions: [8, 4]
@@ -1642,7 +1971,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1650,6 +1979,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-mo:
     figure_dimensions: [8, 4]
@@ -1662,7 +1995,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1670,6 +2003,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-ms:
     figure_dimensions: [8, 4]
@@ -1682,7 +2019,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1690,6 +2027,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-mt:
     figure_dimensions: [8, 4]
@@ -1702,7 +2043,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1710,6 +2051,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-nc:
     figure_dimensions: [8, 4]
@@ -1722,7 +2067,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1730,6 +2075,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-nd:
     figure_dimensions: [8, 4]
@@ -1742,7 +2091,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1750,6 +2099,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-ne:
     figure_dimensions: [8, 4]
@@ -1762,7 +2115,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1770,6 +2123,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-nh:
     figure_dimensions: [8, 4]
@@ -1782,7 +2139,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1790,6 +2147,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-nj:
     figure_dimensions: [8, 4]
@@ -1802,7 +2163,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1810,6 +2171,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-nm:
     figure_dimensions: [8, 4]
@@ -1822,7 +2187,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1830,6 +2195,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-nv:
     figure_dimensions: [8, 4]
@@ -1842,7 +2211,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1850,6 +2219,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-ny:
     figure_dimensions: [8, 4]
@@ -1862,7 +2235,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1870,6 +2243,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-oh:
     figure_dimensions: [8, 4]
@@ -1882,7 +2259,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1890,6 +2267,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-ok:
     figure_dimensions: [8, 4]
@@ -1902,7 +2283,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1910,6 +2291,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-or:
     figure_dimensions: [8, 4]
@@ -1922,7 +2307,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1930,6 +2315,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-pa:
     figure_dimensions: [8, 4]
@@ -1942,7 +2331,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1950,6 +2339,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-prvi:
     figure_dimensions: [8, 4]
@@ -1962,7 +2355,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1970,6 +2363,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-ri:
     figure_dimensions: [8, 4]
@@ -1982,7 +2379,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -1990,6 +2387,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-sc:
     figure_dimensions: [8, 4]
@@ -2002,7 +2403,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -2010,6 +2411,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-sd:
     figure_dimensions: [8, 4]
@@ -2022,7 +2427,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -2030,6 +2435,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-tn:
     figure_dimensions: [8, 4]
@@ -2042,7 +2451,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -2050,6 +2459,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-tx:
     figure_dimensions: [8, 4]
@@ -2062,7 +2475,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -2070,6 +2483,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-ut:
     figure_dimensions: [8, 4]
@@ -2082,7 +2499,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -2090,6 +2507,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-va:
     figure_dimensions: [8, 4]
@@ -2102,7 +2523,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -2110,6 +2531,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-vt:
     figure_dimensions: [8, 4]
@@ -2122,7 +2547,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -2130,6 +2555,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-wa:
     figure_dimensions: [8, 4]
@@ -2142,7 +2571,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -2150,6 +2579,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-wi:
     figure_dimensions: [8, 4]
@@ -2162,7 +2595,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -2170,6 +2603,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-wv:
     figure_dimensions: [8, 4]
@@ -2182,7 +2619,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -2190,6 +2627,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-wy:
     figure_dimensions: [8, 4]
@@ -2202,7 +2643,7 @@ layouts:
     static: false
     video: false
     ax_loc:
-    - [0.05, 0.05, 0.9, 0.9]
+    - [0.0, 0.0, 1.0, 1.0]
     multi:
     - 1.0
     proj:
@@ -2210,6 +2651,10 @@ layouts:
     scale_bar:
     - false
     scale_text:
+    - false
+    label_text:
+    - false
+    label_text_loc:
     - false
   desktop-conus-oconus:
     figure_dimensions: [8, 4]
@@ -2261,17 +2706,39 @@ layouts:
     - "Puerto Rico & U.S. Virgin Islands"
     - "Northern\nMariana Islands"
     - "American Samoa"
-  desktop-static-conus-oconus:
+    label_text:
+    - false
+    - false
+    - false
+    - false
+    - "Guam"
+    - false
+    label_text_loc:
+    - false
+    - false
+    - false
+    - false
+    - [0.5, 0.15]
+    - false
+  static-conus-oconus:
     figure_dimensions: [8, 4]
     metadata_column: "desktop_static_CONUS_OCONUS_image_file"
-    prefix: "desktop-static-CONUS_OCONUS-"
+    prefix: "static-CONUS_OCONUS-"
     source_prefix: "desktop-CONUS_OCONUS-"
     static: true
     video: true
-    usgs_img_pos: [0.89, 0.01]
-    usgs_img_height: 0.05
-    legend_pos: [0.55, 0.9]
+    usgs_img_pos: [0.98, 0.024]
+    usgs_img_width: 0.083
+    legend_pos: [0.9, 0.985]
     legend_scale: 1.0
+    datelabel:
+      fontsize: 12
+      xloc: 0.89
+      yloc: 0.0459535
+      va: "center"
+      ha: "right"
+      fontweight: "bold"
+      fontcolor: "#000000"
 
 
 figure_params:
@@ -2280,30 +2747,17 @@ figure_params:
   fontfamily: "sans-serif"
   font: "Source Sans 3"
   fontweight: "light"
-  fontcolor: "#363636"
-  fontsize: 7
+  fontcolor: "#6E6E6E"
+  fontsize: 8
   scale_params:
     linewidth: 0.25
-    color: "#363636"
-    scale_length: 0.025
-  axis_buffer: 1.05
-  datelabel:
-    fontsize: 12
-    xloc: 0.89
-    yloc: 0.035
-    va: "center"
-    ha: "right"
-    fontweight: "bold"
-    fontcolor: "#363636"
-  datelabel_temp:
-    fontsize: 8
-    xloc: 0.99
-    yloc: 0.99
-    fontweight: "normal"
-    fontcolor: "#363636"
+    color: "#949494"
+    scale_length: 0.022
+    scale_text_adjust_x:  0.005
+    scale_text_adjust_y: 0.01
   shadow:
     sigma: 25
-    alpha: 0.4
+    alpha: 0.35
   webp_quality: 75
   dpi: 600
 
@@ -2537,7 +2991,7 @@ geometries:
     mobile: 50
 state_params:
   style:
-    linewidth: 0.5
+    linewidth: 0.25
     edgecolor: "#949494"
     facecolor: "#ffffff"
     outerlinewidth: 0.25
@@ -2595,7 +3049,8 @@ marker_params:
   - "Extremely above"
   NA:
     marker: 'x'
-    color: '#808080'
+    color: '#949494'
     linewidth: 0.25
-    size: 1
+    size: 2
     zorder: 1
+  marker_scaling: 2.0

@@ -137,8 +137,8 @@ for geometry in params["geometries"].keys():
             mobile_outfile = params["geometries"][geometry]["geojson"][:-8] + "_simplified_mobile.geojson"
         shell:
             r'''
-            npx mapshaper {input.infile} -simplify {params.desktop_simplify}% -o {output.desktop_outfile}
-            npx mapshaper {input.infile} -simplify {params.mobile_simplify}% -o {output.mobile_outfile}
+            mapshaper {input.infile} -simplify {params.desktop_simplify}% -o {output.desktop_outfile}
+            mapshaper {input.infile} -simplify {params.mobile_simplify}% -o {output.mobile_outfile}
             '''
 
 ########################################
@@ -286,11 +286,27 @@ for i, image_file in enumerate(images_for_static_image_generation[:]):
             usgs_image_file = "logos/usgs_logo_black.png",
             legend_image_file = "legends/sf-static-legend.png"
         output:
-            static_image_file = static_images_to_generate[i]
+            static_image_file = os.path.dirname(static_images_to_generate[i]) + "/uncompressed-" + os.path.basename(static_images_to_generate[i])
         script:
             "sf_conditions/plot/plot_static.py"
+    rule:
+        name: 
+            "image_compress: " + static_images_to_generate[i]
+        params:
+            colors = params["image-compression"]["colors"],
+            quality = params["image-compression"]["quality"],
+            speed = params["image-compression"]["speed"],
+            ext = params["image-compression"]["ext"]
+        input:
+            img_in = os.path.dirname(static_images_to_generate[i]) + "/uncompressed-" + os.path.basename(static_images_to_generate[i])
+        output:
+            img_out = static_images_to_generate[i]
+        shell:
+            r'''
+            pngquant {params.colors} --quality {params.quality} --speed {params.speed} --output {output.img_out} {input.img_in}
+            '''
 
-########################################
+#######################################
 ############VIDEO GENERATION############
 ########################################
 for i, video_name in enumerate(video_names):

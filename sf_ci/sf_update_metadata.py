@@ -14,7 +14,7 @@ METADATA_KEY = "metadata/sf_file_metadata.csv"
 EXPECTED_OUTPUTS = {
     "parquet_file": "data/sf_categorizations_{date}.parquet",
     "desktop_CONUS_OCONUS_image_file": "images/sf-desktop-CONUS_OCONUS-{date}.webp",
-    "desktop_static_CONUS_OCONUS_image_file": "images/sf-desktop-static-CONUS_OCONUS-{date}.png",
+    "desktop_static_CONUS_OCONUS_image_file": "images/sf-static-CONUS_OCONUS-{date}.png",
     "desktop_CONUS_image_file": "images/sf-desktop-CONUS-{date}.webp",
     "desktop_AK_image_file": "images/sf-desktop-AK-{date}.webp",
     "desktop_AL_image_file": "images/sf-desktop-AL-{date}.webp",
