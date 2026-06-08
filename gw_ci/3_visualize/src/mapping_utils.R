@@ -448,10 +448,7 @@ plot_gw_image <- function(
   font_hoist(viz_cfg[["plot_font"]], silent = TRUE)
 
   # Export dims
-  if (image_screen_type == "desktop" && area_name == "CONUS_OCONUS") {
-    export_width <- viz_cfg$desktop_conus_oconus_width
-    export_height <- viz_cfg$desktop_height
-  } else if (image_screen_type == "desktop" && !(area_name == "CONUS_OCONUS")) {
+  if (image_screen_type == "desktop") {
     export_width <- viz_cfg$desktop_width
     export_height <- viz_cfg$desktop_height
   } else if (image_screen_type == "mobile") {
@@ -460,7 +457,7 @@ plot_gw_image <- function(
   } else {
     stop(message("image_screen_type must be either 'desktop' or 'mobile'"))
   }
-
+  
   # Build plot
   if (area_name == "CONUS_OCONUS") {
     # generate plots for each area
@@ -578,12 +575,8 @@ plot_gw_image <- function(
     # }
   } else {
     # generate plot for single area
-
+    
     # Build reference scale (m/pixel) based on area x extent and plotted width
-    reference_length <- max(
-      extent_info[["x_extent"]],
-      extent_info[["y_extent"]]
-    )
     # account for the Gaussian blur, so that it doesn't get cut off
     # viz_cfg[["ggfx_sigma"]] = the SD of the Gaussian blur
     # 95% of the Gaussian kernel should fall within +- 2 SD
@@ -592,9 +585,10 @@ plot_gw_image <- function(
     gaussian_blur_px <- 4 * viz_cfg[["ggfx_sigma"]]
     # m per pixel reference scale
     reference_scale <- ifelse(
-      extent_info[["x_extent"]] > extent_info[["y_extent"]],
-      reference_length / (export_width - gaussian_blur_px),
-      reference_length / (export_height - gaussian_blur_px)
+      extent_info[["x_extent"]]/export_width > 
+        extent_info[["y_extent"]]/export_height,
+      extent_info[["x_extent"]] / (export_width - gaussian_blur_px),
+      extent_info[["y_extent"]] / (export_height - gaussian_blur_px)
     )
 
     # Build base plot
@@ -615,35 +609,44 @@ plot_gw_image <- function(
       # Generate appropriate scaling parameters for each area
       # _NOTE: this is a first stab at adjusting these for different areas. I
       # suspect we will also need to make some further adjustments for mobile_
+      # Scale peak geometry up for non-CONUS, non-CONUS_OCONUS single-area views;
+      # applied to _px dimensions so the triangle itself grows, not the fill width
+      peak_multiplier <- if (area_name == "CONUS") 1 else scale_cfg[["single_area_peak_multiplier"]]
       if (image_screen_type == "desktop") {
         scale_cfg <- scale_cfg |>
           mutate(
-            max_vector_height = max_vector_height_px * reference_scale,
-            mid_vector_height = mid_vector_height_px * reference_scale,
-            min_vector_height = min_vector_height_px * reference_scale,
-            max_vector_width = max_vector_width_px * reference_scale,
+            max_vector_height = max_vector_height_px * peak_multiplier * reference_scale,
+            mid_vector_height = mid_vector_height_px * peak_multiplier * reference_scale,
+            min_vector_height = min_vector_height_px * peak_multiplier * reference_scale,
+            max_vector_width = max_vector_width_px * peak_multiplier * reference_scale,
             mid_vector_width = max_vector_width * mid_factor,
             min_vector_width = max_vector_width * min_factor,
             normal_width = max_vector_width * min_factor,
-            max_peak_width = max_factor,
-            mid_peak_width = max_factor * mid_factor,
-            min_peak_width = max_factor * min_factor
+            max_peak_width = max_factor * peak_multiplier,
+            mid_peak_width = max_factor * mid_factor * peak_multiplier,
+            min_peak_width = max_factor * min_factor * peak_multiplier
           )
       } else if (image_screen_type == "mobile") {
         scale_cfg <- scale_cfg |>
           mutate(
-            max_vector_height = mobile_max_vector_height_px * reference_scale,
-            mid_vector_height = mobile_mid_vector_height_px * reference_scale,
-            min_vector_height = mobile_min_vector_height_px * reference_scale,
-            max_vector_width = mobile_max_vector_width_px * reference_scale,
+            max_vector_height = mobile_max_vector_height_px * peak_multiplier * reference_scale,
+            mid_vector_height = mobile_mid_vector_height_px * peak_multiplier * reference_scale,
+            min_vector_height = mobile_min_vector_height_px * peak_multiplier * reference_scale,
+            max_vector_width = mobile_max_vector_width_px * peak_multiplier * reference_scale,
             mid_vector_width = max_vector_width * mid_factor,
             min_vector_width = max_vector_width * min_factor,
             normal_width = max_vector_width * min_factor,
-            max_peak_width = max_factor,
-            mid_peak_width = max_factor * mid_factor,
-            min_peak_width = max_factor * min_factor
+            max_peak_width = max_factor * peak_multiplier,
+            mid_peak_width = max_factor * mid_factor * peak_multiplier,
+            min_peak_width = max_factor * min_factor * peak_multiplier
           )
       }
+
+      viz_cfg_scaled <- viz_cfg |>
+        mutate(
+          na_sites_size_desktop = na_sites_size_desktop * peak_multiplier,
+          na_sites_size_mobile = na_sites_size_mobile * peak_multiplier
+        )
 
       p <- plot_gw(
         gw_parquet_file = gw_parquet_file,
@@ -653,7 +656,7 @@ plot_gw_image <- function(
         area_state_list = area_info_df[["state_list"]],
         area_sf = area_sf,
         palette = palette,
-        viz_cfg = viz_cfg,
+        viz_cfg = viz_cfg_scaled,
         scale_cfg = scale_cfg,
         state_lookup = state_lookup,
         image_screen_type = image_screen_type,
@@ -1017,7 +1020,7 @@ plot_gw_static_png <- function(
   date_val <- as.character(date)
   out_path <- sprintf(
     output_template,
-    paste0("static-", image_screen_type),
+    "static",
     area_name,
     date_val
   )
@@ -1034,10 +1037,7 @@ plot_gw_static_png <- function(
   }
 
   # Export dims
-  if (image_screen_type == "desktop" && area_name == "CONUS_OCONUS") {
-    export_width <- viz_cfg$desktop_conus_oconus_width
-    export_height <- viz_cfg$desktop_height
-  } else if (image_screen_type == "desktop" && !(area_name == "CONUS_OCONUS")) {
+  if (image_screen_type == "desktop") {
     export_width <- viz_cfg$desktop_width
     export_height <- viz_cfg$desktop_height
   } else if (image_screen_type == "mobile") {
@@ -1120,9 +1120,9 @@ plot_gw_static_png <- function(
     # Legend
     draw_image(
       legend_img,
-      x = 0.9,
-      y = 0.98,
-      scale = if (is_state) 0.5 else 0.32,
+      x = 0.90,
+      y = 0.985,
+      scale = if (is_state) 0.5 else 0.34,
       height = 1,
       hjust = 1,
       vjust = 1,

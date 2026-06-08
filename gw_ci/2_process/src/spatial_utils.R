@@ -16,13 +16,17 @@ munge_area_polys <- function(states_sf, area_name, area_state_list, area_proj,
     rmapshaper::ms_simplify(simplification_keep)
   
   if (area_name == 'AS') {
-    state_subset <- state_subset |> 
-      sf::st_cast("POLYGON") |> 
-      dplyr::mutate(ID = sprintf("%s_%s", STUSPS, row_number())) |> 
-      # filter out outlying ring islands
-      # NOTE IDs vary based on level of simplification
-      # this works if simplification_keep = 0.1 for AS
-      dplyr::filter(ID %in% c('AS_1', 'AS_2', 'AS_3', 'AS_4', 'AS_5'))
+    # filter out outlying ring islands
+    counties <- tigris::counties(state = "AS", cb = T, resolution = "500k") |>
+      dplyr::filter(!(NAME %in% c("Swains Island", "Rose Island"))) |>
+      sf::st_transform(area_proj) |> 
+      rmapshaper::ms_simplify(simplification_keep)
+    counties_union <- counties |>
+      dplyr::summarise()
+    state_subset <- state_subset |>
+      sf::st_drop_geometry() |>
+      dplyr::mutate(geometry = counties_union[["geometry"]]) |>
+      sf::st_as_sf()
   }
   
   bbox <- st_bbox(state_subset)

@@ -27,7 +27,7 @@ base_request <- httr2::request(url_begin) |>
 
 expected_parquet <- c("parquet_file" = "gw_categorizations")
 
-expected_webp_images <-
+expected_CONUS_OCONUS_webp_images <-
   c(
     "mobile_CONUS_image_file" = "gw-mobile-CONUS",
     "mobile_AK_image_file" = "gw-mobile-AK",
@@ -35,18 +35,28 @@ expected_webp_images <-
     "mobile_PR_VI_image_file" = "gw-mobile-PR_VI",
     "mobile_GU_MP_image_file" = "gw-mobile-GU_MP",
     "mobile_AS_image_file" = "gw-mobile-AS",
-    "desktop_CONUS_OCONUS_image_file" = "gw-desktop-CONUS_OCONUS"
+    "desktop_CONUS_OCONUS_image_file" = "gw-desktop-CONUS_OCONUS",
+    "desktop_CONUS_image_file" = "gw-desktop-CONUS",
+    "desktop_AK_image_file" = "gw-desktop-AK",
+    "desktop_HI_image_file" = "gw-desktop-HI",
+    "desktop_PR_VI_image_file" = "gw-desktop-PR_VI",
+    "desktop_GU_MP_image_file" = "gw-desktop-GU_MP",
+    "desktop_AS_image_file" = "gw-desktop-AS"
   )
 
 expected_png_images <-
   c(
-    "desktop_static_CONUS_OCONUS_image_file" = "gw-static-desktop-CONUS_OCONUS"
+    "desktop_static_CONUS_OCONUS_image_file" = "gw-static-CONUS_OCONUS"
   )
 
-lower48_states <- state.abb[!state.abb %in% c("AK", "HI")]
-expected_state_webp_images <- setNames(
+lower48_states <- c(state.abb[!state.abb %in% c("AK", "HI")], "DC")
+expected_desktop_lower_48_webp_images <- setNames(
   paste0("gw-desktop-", lower48_states),
-  paste0("desktop_", lower48_states, "_webp")
+  paste0("desktop_", lower48_states, "_image_file")
+)
+expected_mobile_lower_48_webp_images <- setNames(
+  paste0("gw-mobile-", lower48_states),
+  paste0("mobile_", lower48_states, "_image_file")
 )
 
 date_files <-
@@ -55,14 +65,17 @@ date_files <-
     expected_content <-
       c(
         paste0("stage/", expected_parquet, "_", date, ".parquet"),
-        paste0("images/", expected_webp_images, "-", date, ".webp"),
+        paste0("images/", expected_CONUS_OCONUS_webp_images, "-", date, ".webp"),
         paste0("images/", expected_png_images, "-", date, ".png"),
-        paste0("images/", expected_state_webp_images, "-", date, ".webp")
+        paste0("images/", expected_desktop_lower_48_webp_images, "-", date, ".webp"),
+        paste0("images/", expected_mobile_lower_48_webp_images, "-", date, ".webp")
       )
 
     purrr::map2_dfc(
       expected_content,
-      names(c(expected_parquet, expected_webp_images, expected_png_images, expected_state_webp_images)),
+      names(c(expected_parquet, expected_CONUS_OCONUS_webp_images, 
+              expected_png_images, expected_desktop_lower_48_webp_images, 
+              expected_mobile_lower_48_webp_images)),
       function(file_path, col_name) {
         response <- base_request |>
           httr2::req_url_path_append(file_path) |>
