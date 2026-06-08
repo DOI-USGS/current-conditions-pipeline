@@ -2,8 +2,21 @@ tar_source("2_process/src/spatial_utils.R")
 tar_source("2_process/src/process_gw_data.R")
 
 p2_targets <- list(
-  ##### spatial data #####
-  # higher degree of simplification for desktop
+  ##### Spatial data #####
+  
+  ###### State lookup table ######
+  tar_target(
+    p2_state_lookup,
+    tigris::states(cb = TRUE, resolution = "500k") |>
+      sf::st_drop_geometry() |>
+      select(
+        state_name_std = NAME,
+        state_abbr = STUSPS
+      )
+  ),
+  
+  ###### CONUS_OCONUS map ######
+  # higher degree of simplification for desktop CONUS_OCONUS view
   tar_target(
     p2_areas_sf_high_simp_list,
     munge_area_polys(
@@ -47,7 +60,8 @@ p2_targets <- list(
     pattern = map(p0_area_info_df, p2_areas_sf_high_simp_list),
     iteration = "list"
   ),
-  # lower degree of simplification for mobile
+
+  ###### Individual CONUS, AK, HI, + major territories maps ######
   tar_target(
     p2_areas_sf_low_simp_list,
     munge_area_polys(
@@ -84,19 +98,9 @@ p2_targets <- list(
     pattern = map(p0_area_info_df, p2_areas_sf_low_simp_list),
     iteration = "list"
   ),
-  # state lookup table
-  tar_target(
-    p2_state_lookup,
-    tigris::states(cb = TRUE, resolution = "500k") |>
-      sf::st_drop_geometry() |>
-      select(
-        state_name_std = NAME,
-        state_abbr = STUSPS
-      )
-  ),
-  ##### State polygon data #####
+  
+  ###### Individual lower 48 states maps ######
   # State polygons, branched by state row in p0_states_area_info_df
-  # mirrors p2_areas_sf_high_simp_list / p2_areas_high_simp_extents_df
   tar_target(
     p2_states_sf_list,
     munge_area_polys(
@@ -120,7 +124,8 @@ p2_targets <- list(
     pattern = map(p0_states_area_info_df, p2_states_sf_list),
     iteration = "list"
   ),
-  ##### gw data #####
+  
+  ##### GW data #####
   # process parquet files
   tar_target(
     # read in, process, and write out gw data

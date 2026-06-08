@@ -120,7 +120,7 @@ p0_targets <- list(
         'ESRI:102007',
         "EPSG:2866",
         "EPSG:8693",
-        "EPSG:2195"
+        "EPSG:6636"
       ),
       proj_name = c(
         'Albers Equal Area',
@@ -136,7 +136,7 @@ p0_targets <- list(
         'NAD83',
         'NAD83(HARN)',
         'NAD83(MA11)',
-        'NAD83(HARN)'
+        'NAD83(2011)'
       ),
       proj_units = c('meter', 'meter', 'meter', 'meter', 'meter', 'meter'),
       simplification_keep_high_simp = c(0.02, 0.011, 0.13, 0.03, 0.15, 0.03),
@@ -144,8 +144,8 @@ p0_targets <- list(
       scale_factor = c(1, 0.5, 2, 2, 2, 2),
       placement_params = c(
         list(c("x" = 0.30, "y" = 0.01, "width" = 0.69, "height" = 0.98)),
-        list(c("x" = 0.005, "y" = 0.63, "width" = 0.29, "height" = 0.38)),
-        list(c("x" = 0.11, "y" = 0.30, "width" = 0.185, "height" = 0.34)),
+        list(c("x" = 0.005, "y" = 0.63, "width" = 0.28, "height" = 0.36)),
+        list(c("x" = 0.11, "y" = 0.30, "width" = 0.185, "height" = 0.33)),
         list(c("x" = 0.11, "y" = 0.12, "width" = 0.185, "height" = 0.17)),
         list(c("x" = 0.005, "y" = 0, "width" = 0.1, "height" = 0.63)),
         list(c("x" = 0.11, "y" = 0, "width" = 0.185, "height" = 0.12))
@@ -171,9 +171,15 @@ p0_targets <- list(
           proj = proj4_string
         )
 
-      # Join projections onto state metadata
+      # Join projections onto state metadata; bind DC separately since it is not
+      # in state.abb / state_projs but is present in the spatial data
       states_df |>
         left_join(state_projs, by = "name") |>
+        bind_rows(tibble(
+          name = "DC",
+          full_name = "District of Columbia",
+          proj = "EPSG:26985"
+        )) |>
         mutate(
           state_list = as.list(name),
           simplification_keep_low_simp = 0.1,
@@ -199,9 +205,8 @@ p0_targets <- list(
     # background color, font name, and font size
     p0_viz_config_df,
     tibble(
-      desktop_conus_oconus_width = 4800,
       desktop_height = 2400,
-      desktop_width = 2400,
+      desktop_width = 4800,
       mobile_width = 1600,
       mobile_height = 1600,
       leg_width = 300,
@@ -215,8 +220,8 @@ p0_targets <- list(
       inner_states_col = "#949494",
       inner_states_stroke = 0.25,
       outer_states_col = "#949494",
-      outer_states_stroke = 0.1,
-      na_sites_col = "grey70",
+      outer_states_stroke = 0.25,
+      na_sites_col = "#949494",
       na_sites_size_desktop = 1.2,
       na_sites_size_mobile = 0.9,
       na_sites_stroke = 0.25,
@@ -257,6 +262,7 @@ p0_targets <- list(
       max_factor = 2, # Adjust based on plot width to match max_vector_width,
       mid_factor = 0.75,
       min_factor = 0.5,
+      single_area_peak_multiplier = 2,
       mid_vector_width = max_vector_width * mid_factor,
       min_vector_width = max_vector_width * min_factor,
       normal_width = max_vector_width * mid_factor,

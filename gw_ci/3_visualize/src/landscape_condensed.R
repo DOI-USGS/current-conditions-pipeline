@@ -37,7 +37,7 @@ font_hoist <- function(family, silent = FALSE) {
 adjust_plot_lims <- function(raw_plot, fig_dims, extent_info, reference_scale, 
                              scale_factor, viz_config) {
   # Pull the figure width and height, in pixels
-  fig_width <- viz_config$desktop_conus_oconus_width*fig_dims[["width"]]
+  fig_width <- viz_config$desktop_width*fig_dims[["width"]]
   fig_height <- viz_config$desktop_height*fig_dims[["height"]]
   # Identify the center coordinates of the area that is plotted
   center_x <- 0.5 * (extent_info$x_min + extent_info$x_max)
@@ -92,7 +92,7 @@ generate_landscape_condensed <- function(area_info_df, areas_extents,
     set_names(area_info_df[["name"]])
 
   # Build reference scale (m/pixel) based on CONUS x extent and plotted width
-  conus_fig_width <- viz_config$desktop_conus_oconus_width*placement_params[["CONUS"]][["width"]]
+  conus_fig_width <- viz_config$desktop_width*placement_params[["CONUS"]][["width"]]
   reference_length <- areas_extents$CONUS$x_extent
   # account for the Gaussian blur, so that it doesn't get cut off
   # viz_config[["ggfx_sigma"]] = the SD of the Gaussian blur
@@ -140,14 +140,14 @@ generate_landscape_condensed <- function(area_info_df, areas_extents,
   # build final plot
   canvas <- grid::rectGrob(
     x = 0, y = 0, 
-    width = viz_config[["desktop_conus_oconus_width"]], 
+    width = viz_config[["desktop_width"]], 
     height = viz_config[["desktop_height"]],
     gp = grid::gpar(fill = NA, col = NA)
   )
   
   # set up scaling parameters and visual parameters for scale markers
   plot_width_cowplot_scalar <- viz_config[["desktop_height"]] / 
-    viz_config[["desktop_conus_oconus_width"]]
+    viz_config[["desktop_width"]]
   scale_base_height <- 0.03
   scale_base_width <- scale_base_height * plot_width_cowplot_scalar
   scale_buffer_vertical <- 0.01
@@ -161,7 +161,7 @@ generate_landscape_condensed <- function(area_info_df, areas_extents,
       x = 0, 
       y = 1,
       height = viz_config[["desktop_height"]], 
-      width = viz_config[["desktop_conus_oconus_width"]],
+      width = viz_config[["desktop_width"]],
       hjust = 0, 
       vjust = 1)
   
@@ -303,8 +303,8 @@ generate_landscape_condensed <- function(area_info_df, areas_extents,
   if (!is.null(locator_map_png)) {
     locator_img <- magick::image_read(locator_map_png)
     
-    locator_map_x <- 0.02
-    locator_map_y <- locator_map_x / plot_width_cowplot_scalar
+    locator_map_x <- 0.0
+    locator_map_y <- 0.05
     locator_map_width <- 0.12
     locator_map_height <- locator_map_width / plot_width_cowplot_scalar
     

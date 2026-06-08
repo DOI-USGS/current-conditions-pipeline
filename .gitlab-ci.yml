@@ -151,6 +151,7 @@ gw_render:
     name: $IMAGE
   rules:
     - if: '$PIPELINE_MODE == "gw_daily"'
+    - if: '$PIPELINE_MODE == "gw_render"'   # standalone, no gw_metadata
     - if: '$CI_PIPELINE_SOURCE == "push"'
       when: manual
     - when: never
@@ -193,6 +194,7 @@ gw_update_metadata:
     - job: gw_render
       artifacts: false
       optional: true
+  timeout: 3h
   script:
     - pixi run Rscript gw_ci/gw_update_metadata.R $(date +%F)
     - pixi run aws s3 cp gw_ci/4_update/out/gw_file_metadata.csv s3://water-visualizations-prod-website/visualizations/current_conditions/groundwater/metadata/gw_file_metadata.csv
