@@ -273,5 +273,17 @@ p0_targets <- list(
       leg_xlim = 80000,
       leg_ylim = 70000
     )
+  ),
+  
+  ##### video parameters #####
+  tar_target(
+    p0_video_image_types,
+    {
+      image_types <- setNames(paste0(
+        "desktop_static_",
+        p0_desktop_area_name,
+        "_image_file"), c(p0_desktop_area_name))
+      return(image_types)
+    }
   )
 )
