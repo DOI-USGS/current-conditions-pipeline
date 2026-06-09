@@ -679,10 +679,8 @@ p3_targets <- list(
       interval_name = p0_interval_names,
       gw_png_config = p3_gw_pngs_config,
       viz_cfg = p0_viz_config_df,
-      img_type_name = paste0(
-        "local_desktop_static_",
-        p0_desktop_area_name,
-        "_image_file"),
+      img_type_name = paste0(p0_local_image_type_prefix, 
+                             p0_video_image_types[[p0_desktop_area_name]]),
       output_template = file.path(p0_local_image_file_dir,
                                   sprintf("gw-movie-desktop-%s-%s.mp4",
                                           p0_desktop_area_name,

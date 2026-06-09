@@ -64,7 +64,7 @@ p1_targets <- list(
     p1_date_complete,
     dplyr::filter(p1_date_config, complete)
   ),
-  # Download all image files for complete dates
+  # Download all image files needed for video creation for complete dates
   tar_target(
     p1_existing_gw_pngs_config,
     {
@@ -81,7 +81,9 @@ p1_targets <- list(
             cols = matches("_image_file$"),
             names_to = "remote_image_type",
             values_to = "remote_image_file_key"
-          )
+          ) |>
+          # filter to only those images we need for videos
+          dplyr::filter(remote_image_type %in% p0_video_image_types)
       }
     }
   ),
