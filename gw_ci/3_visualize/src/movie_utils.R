@@ -30,26 +30,25 @@ build_gw_mp4 <- function(interval_start_date,
   
   frames <- filtered_df$local_image_file
   
-  interval_str <- format(interval_start_date, "%Y-%m-%d")
-
   message(sprintf(
     "Building mp4 for %s with %s frames",
     interval_name,
     length(frames)
   ))
   
-  # Build vfilter: upscale to movie_fps (frame duplication) and pad to 16:9
-
+  # Duplicate each frame to reach movie_fps (e.g., 8 fps * 3 = 24 fps)
+  frames_expanded <- rep(frames, each = viz_cfg$movie_fps / viz_cfg$fps)
+  
+  # Pad to 16:9 only (no fps resampling needed since input is already at movie_fps)
   vfilter <- sprintf(
-    "fps=%d,pad=iw:iw*9/16:(ow-iw)/2:(oh-ih)/2:color=%s",
-    viz_cfg$movie_fps,
+    "pad=iw:iw*9/16:(ow-iw)/2:(oh-ih)/2:color=%s",
     viz_cfg$bg_col
   )
   
   av::av_encode_video(
-    input = frames,
+    input = frames_expanded,
     output = output_template,
-    framerate = viz_cfg$fps,
+    framerate = viz_cfg$movie_fps,
     vfilter = vfilter
   )
   
