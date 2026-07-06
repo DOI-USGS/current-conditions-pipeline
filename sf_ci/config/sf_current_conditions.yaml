@@ -2762,7 +2762,8 @@ figure_params:
   dpi: 600
 
 movie_params:
-  framerate: 8
+  frames_shown_per_second: 8
+  movie_frame_rate: 24
 
 census_data:
   resolution: "5m"
