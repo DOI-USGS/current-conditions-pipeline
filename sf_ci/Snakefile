@@ -336,6 +336,6 @@ for i, video_name in enumerate(video_names):
             r'''
             ffmpeg -y \
             -safe 0 -f concat -i {input.frame_list} \
-            -vsync vfr -pix_fmt yuv420p -vcodec libx264 \
+            -vf "fps=24,pad=iw:iw*9/16:(ow-iw)/2:(oh-ih)/2:color=#ffffff" -pix_fmt yuv420p -vcodec libx264 \
             {output.outfile}
             '''
