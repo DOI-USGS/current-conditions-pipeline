@@ -315,7 +315,7 @@ for i, video_name in enumerate(video_names):
         name:
             "animation list:" + video_name
         params:
-            framerate = params["movie_params"]["framerate"],
+            framerate = params["movie_params"]["frames_shown_per_second"],
         input:
             image_list = video_frame_lists[i][:] 
         output:
@@ -327,6 +327,8 @@ for i, video_name in enumerate(video_names):
     rule:
         name:
             "animate:" + video_name
+        params:
+            fps = params["movie_params"]["movie_frame_rate"],
         input:
             image_list = video_frame_lists[i][:],
             frame_list = "temp/" + video_name[7:-4] + ".txt"
@@ -336,6 +338,6 @@ for i, video_name in enumerate(video_names):
             r'''
             ffmpeg -y \
             -safe 0 -f concat -i {input.frame_list} \
-            -vsync vfr -pix_fmt yuv420p -vcodec libx264 \
+            -vf "fps={params.fps},pad=iw:iw*9/16:(ow-iw)/2:(oh-ih)/2:color=#ffffff" -pix_fmt yuv420p -vcodec libx264 \
             {output.outfile}
             '''
