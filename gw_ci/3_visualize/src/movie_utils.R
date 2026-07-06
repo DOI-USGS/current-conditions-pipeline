@@ -7,7 +7,7 @@
 #' @param interval_end_date End date for the MP4 interval.
 #' @param interval_name Names of intervals (i.e. `last-month`, `last-3-months`..)
 #' @param gw_png_config Data frame containing PNG metadata.
-#' @param viz_cfg Visualization configuration (contains fps).
+#' @param viz_cfg Visualization configuration (contains fps, movie_fps, bg_col).
 #' @param img_type_name Local image type name to filter by.
 #' @param output_template Directory where MP4 should be saved.
 #'
@@ -38,12 +38,19 @@ build_gw_mp4 <- function(interval_start_date,
     length(frames)
   ))
   
+  # Build vfilter: upscale to movie_fps (frame duplication) and pad to 16:9
+
+  vfilter <- sprintf(
+    "fps=%d,pad=iw:iw*9/16:(ow-iw)/2:(oh-ih)/2:color=%s",
+    viz_cfg$movie_fps,
+    viz_cfg$bg_col
+  )
   
   av::av_encode_video(
     input = frames,
     output = output_template,
     framerate = viz_cfg$fps,
-    vfilter = "scale=trunc(iw/2)*2:trunc(ih/2)*2"
+    vfilter = vfilter
   )
   
   return(output_template)
