@@ -251,6 +251,7 @@ sf_coverage:
   artifacts:
     paths:
       - artifacts/sf_coverage_${SHARD_ID}.parquet
+      - artifacts/sf_percentiles/**
   # these tags are needed to checkout a runner that has automatic access to AWS
   tags:
     - water
