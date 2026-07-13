@@ -15,6 +15,7 @@ required_percentiles = set(int(x) for x in sys.argv[3].split(","))
 
 STATS_BATCH_SIZE = 10  # number of TS IDs per /statistics request
 
+os.makedirs("artifacts/sf_percentiles/", exist_ok = True)
 
 def clean_percentiles(df: pd.DataFrame) -> pd.DataFrame:
     """
