@@ -85,7 +85,6 @@ def generate_image_list(
 
         if delta > max_delta:
             max_delta = delta
-            max_interval = interval
             full_date_list = []
             current = start_date
             while current <= end_date:
@@ -148,7 +147,6 @@ def generate_image_list(
             for interval in intervals:
                 end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
                 start_date = find_start_date(end_date, interval)
-                delta = end_date - start_date
 
                 # Generate list of dates
                 date_list = []
@@ -175,19 +173,17 @@ def generate_image_list(
     date_dict["latest-update"] = datetime.now(eastern).strftime("%B %d, %Y %I:%M %p %Z")
 
     for interval in intervals:
-        for interval in intervals:
-            end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
-            start_date = find_start_date(end_date, interval)
-            delta = end_date - start_date
+        end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
+        start_date = find_start_date(end_date, interval)
 
-            # Generate list of dates
-            date_list = []
-            current = start_date
-            while current <= end_date:
-                date_list.append(current.strftime("%Y-%m-%d"))
-                current += timedelta(days=1)
+        # Generate list of dates
+        date_list = []
+        current = start_date
+        while current <= end_date:
+            date_list.append(current.strftime("%Y-%m-%d"))
+            current += timedelta(days=1)
 
-            date_dict[video_label(interval)] = date_list
+        date_dict[video_label(interval)] = date_list
 
     # Get a list of images that need to be downloaded
     images_to_download = (
