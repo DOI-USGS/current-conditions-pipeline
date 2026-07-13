@@ -15,8 +15,6 @@ required_percentiles = set(int(x) for x in sys.argv[3].split(","))
 
 STATS_BATCH_SIZE = 10  # number of TS IDs per /statistics request
 
-os.makedirs("artifacts/sf_percentiles/", exist_ok = True)
-
 def clean_percentiles(df: pd.DataFrame) -> pd.DataFrame:
     """
     Expands nested percentile outputs from observationNormals and returns
@@ -182,7 +180,7 @@ for batch in batches:#[batch_start + 1:]:
     for mm_dd, group in tidy.groupby("time_of_year"):
         table = pa.Table.from_pandas(group.drop(columns = "geometry", errors = "ignore"), preserve_index=False)
         if mm_dd not in writers:
-            out_path = f"artifacts/sf_percentiles/sf_percentiles_{shard_id}_{mm_dd}.parquet"
+            out_path = f"artifacts/sf_percentiles_{shard_id}_{mm_dd}.parquet"
             writers[mm_dd] = pq.ParquetWriter(out_path, table.schema)
         writers[mm_dd].write_table(table)
 
