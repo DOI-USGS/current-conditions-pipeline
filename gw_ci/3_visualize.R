@@ -58,27 +58,35 @@ p3_targets <- list(
   # Desktop background webp for website rendering
   tar_target(
     p3_desktop_CONUS_OCONUS_bkgd_webps,
-    plot_gw_image(
-      gw_parquet_file = p2_gw_clean_parquets[[1]],
-      date = p1_date_incomplete[["date"]][[1]],
-      area_name = p0_desktop_area_name,
-      area_info_df = p0_area_info_df,
-      area_sf = p2_areas_sf_high_simp_list,
-      extent_info = p2_areas_high_simp_extents_df,
-      palette = p0_viz_gw_pal,
-      viz_cfg = p0_viz_config_df,
-      scale_cfg = p0_gw_binned_scales,
-      state_lookup = p2_state_lookup,
-      locator_map_png = p3_desktop_locator_map_png,
-      image_screen_type = "desktop",
-      layer_mode = "background",
-      output_format = "webp",
-      transparent_bg = TRUE,
-      output_template = file.path(
+    {
+      out <- file.path(
         p0_local_image_file_dir,
         sprintf("gw-%s-%s-background.webp", "desktop", p0_desktop_area_name)
+      )
+      # Download the background from S3 if it exists; otherwise create it.
+      if (!download_gw_bkgd_if_exists(out, p0_s3_prod_URL,
+                                      p0_remote_image_file_template)) {
+        plot_gw_image(
+          gw_parquet_file = NA_character_,
+          date = p0_yesterday_date, 
+          area_name = p0_desktop_area_name,
+          area_info_df = p0_area_info_df,
+          area_sf = p2_areas_sf_high_simp_list,
+          extent_info = p2_areas_high_simp_extents_df,
+          palette = p0_viz_gw_pal,
+          viz_cfg = p0_viz_config_df,
+          scale_cfg = p0_gw_binned_scales,
+          state_lookup = p2_state_lookup,
+          locator_map_png = p3_desktop_locator_map_png,
+          image_screen_type = "desktop",
+          layer_mode = "background",
+          output_format = "webp",
+          transparent_bg = TRUE,
+          output_template = out
         )
-      ),
+      }
+      out
+    },
     format = "file"
   ),
   
@@ -116,27 +124,35 @@ p3_targets <- list(
   # Desktop background webp for website rending
   tar_target(
     p3_desktop_CONUS_AK_HI_territories_bkgd_webps,
-    plot_gw_image(
-      gw_parquet_file = p2_gw_clean_parquets[[1]],
-      date = p1_date_incomplete[["date"]][[1]],
-      area_name = p0_area_info_df[["name"]],
-      area_info_df = p0_area_info_df,
-      area_sf = p2_areas_sf_low_simp_list,
-      extent_info = p2_areas_low_simp_extents_df,
-      palette = p0_viz_gw_pal,
-      viz_cfg = p0_viz_config_df,
-      scale_cfg = p0_gw_binned_scales,
-      state_lookup = p2_state_lookup,
-      locator_map_png = NULL,
-      image_screen_type = "desktop",
-      layer_mode = "background",
-      output_format = "webp",
-      transparent_bg = TRUE,
-      output_template = file.path(
+    {
+      out <- file.path(
         p0_local_image_file_dir,
         sprintf("gw-%s-%s-background.webp", "desktop", p0_area_info_df[["name"]])
       )
-    ),
+      # Download the background from S3 if it exists; otherwise create it.
+      if (!download_gw_bkgd_if_exists(out, p0_s3_prod_URL,
+                                      p0_remote_image_file_template)) {
+        plot_gw_image(
+          gw_parquet_file = NA_character_,   
+          date = p0_yesterday_date,         
+          area_name = p0_area_info_df[["name"]],
+          area_info_df = p0_area_info_df,
+          area_sf = p2_areas_sf_low_simp_list,
+          extent_info = p2_areas_low_simp_extents_df,
+          palette = p0_viz_gw_pal,
+          viz_cfg = p0_viz_config_df,
+          scale_cfg = p0_gw_binned_scales,
+          state_lookup = p2_state_lookup,
+          locator_map_png = NULL,
+          image_screen_type = "desktop",
+          layer_mode = "background",
+          output_format = "webp",
+          transparent_bg = TRUE,
+          output_template = out
+        )
+      }
+      out
+    },
     pattern = cross(
       map(p0_area_info_df, p2_areas_sf_low_simp_list, p2_areas_low_simp_extents_df)
     ),
@@ -178,28 +194,36 @@ p3_targets <- list(
   # State background webps, one per state, not date branched
   tar_target(
     p3_desktop_lower_48_bkgd_webps,
-    plot_gw_image(
-      gw_parquet_file = p2_gw_clean_parquets[[1]],
-      date = p1_date_incomplete[["date"]][[1]],
-      area_name = p0_states_area_info_df[["name"]],
-      area_info_df = p0_states_area_info_df,
-      area_sf = p2_states_sf_list,
-      extent_info = p2_states_extents_df,
-      palette = p0_viz_gw_pal,
-      viz_cfg = p0_viz_config_df,
-      scale_cfg = p0_gw_binned_scales,
-      state_lookup = p2_state_lookup,
-      locator_map_png = NULL,
-      image_screen_type = "desktop",
-      layer_mode = "background",
-      output_format = "webp",
-      transparent_bg = TRUE,
-      output_template = file.path(
+    {
+      out <- file.path(
         p0_local_image_file_dir,
         sprintf("gw-%s-%s-background.webp", "desktop",
                 p0_states_area_info_df[["name"]])
       )
-    ),
+      # Download the background from S3 if it exists; otherwise create it.
+      if (!download_gw_bkgd_if_exists(out, p0_s3_prod_URL,
+                                      p0_remote_image_file_template)) {
+        plot_gw_image(
+          gw_parquet_file = NA_character_,
+          date = p0_yesterday_date,         
+          area_name = p0_states_area_info_df[["name"]],
+          area_info_df = p0_states_area_info_df,
+          area_sf = p2_states_sf_list,
+          extent_info = p2_states_extents_df,
+          palette = p0_viz_gw_pal,
+          viz_cfg = p0_viz_config_df,
+          scale_cfg = p0_gw_binned_scales,
+          state_lookup = p2_state_lookup,
+          locator_map_png = NULL,
+          image_screen_type = "desktop",
+          layer_mode = "background",
+          output_format = "webp",
+          transparent_bg = TRUE,
+          output_template = out
+        )
+      }
+      out
+    },
     pattern = map(p0_states_area_info_df, p2_states_sf_list,
                   p2_states_extents_df),
     format = "file"
@@ -239,27 +263,35 @@ p3_targets <- list(
   # Mobile background webp for website rending
   tar_target(
     p3_mobile_CONUS_AK_HI_territories_bkgd_webps,
-    plot_gw_image(
-      gw_parquet_file = p2_gw_clean_parquets[[1]],
-      date = p1_date_incomplete[["date"]][[1]],
-      area_name = p0_area_info_df[["name"]],
-      area_info_df = p0_area_info_df,
-      area_sf = p2_areas_sf_low_simp_list,
-      extent_info = p2_areas_low_simp_extents_df,
-      palette = p0_viz_gw_pal,
-      viz_cfg = p0_viz_config_df,
-      scale_cfg = p0_gw_binned_scales,
-      state_lookup = p2_state_lookup,
-      locator_map_png = NULL,
-      image_screen_type = "mobile",
-      layer_mode = "background",
-      output_format = "webp",
-      transparent_bg = TRUE,
-      output_template = file.path(
+    {
+      out <- file.path(
         p0_local_image_file_dir,
         sprintf("gw-%s-%s-background.webp", "mobile", p0_area_info_df[["name"]])
       )
-    ),
+      # Download the background from S3 if it exists; otherwise create it.
+      if (!download_gw_bkgd_if_exists(out, p0_s3_prod_URL,
+                                      p0_remote_image_file_template)) {
+        plot_gw_image(
+          gw_parquet_file = NA_character_,
+          date = p0_yesterday_date,
+          area_name = p0_area_info_df[["name"]],
+          area_info_df = p0_area_info_df,
+          area_sf = p2_areas_sf_low_simp_list,
+          extent_info = p2_areas_low_simp_extents_df,
+          palette = p0_viz_gw_pal,
+          viz_cfg = p0_viz_config_df,
+          scale_cfg = p0_gw_binned_scales,
+          state_lookup = p2_state_lookup,
+          locator_map_png = NULL,
+          image_screen_type = "mobile",
+          layer_mode = "background",
+          output_format = "webp",
+          transparent_bg = TRUE,
+          output_template = out
+        )
+      }
+      out
+    },
     pattern = cross(
       map(p0_area_info_df, p2_areas_sf_low_simp_list, p2_areas_low_simp_extents_df)
     ),
@@ -301,28 +333,36 @@ p3_targets <- list(
   # State background webps, one per state, not date branched
   tar_target(
     p3_mobile_lower_48_bkgd_webps,
-    plot_gw_image(
-      gw_parquet_file = p2_gw_clean_parquets[[1]],
-      date = p1_date_incomplete[["date"]][[1]],
-      area_name = p0_states_area_info_df[["name"]],
-      area_info_df = p0_states_area_info_df,
-      area_sf = p2_states_sf_list,
-      extent_info = p2_states_extents_df,
-      palette = p0_viz_gw_pal,
-      viz_cfg = p0_viz_config_df,
-      scale_cfg = p0_gw_binned_scales,
-      state_lookup = p2_state_lookup,
-      locator_map_png = NULL,
-      image_screen_type = "mobile",
-      layer_mode = "background",
-      output_format = "webp",
-      transparent_bg = TRUE,
-      output_template = file.path(
+    {
+      out <- file.path(
         p0_local_image_file_dir,
         sprintf("gw-%s-%s-background.webp", "mobile",
                 p0_states_area_info_df[["name"]])
       )
-    ),
+      # Download the background from S3 if it exists; otherwise create it.
+      if (!download_gw_bkgd_if_exists(out, p0_s3_prod_URL,
+                                      p0_remote_image_file_template)) {
+        plot_gw_image(
+          gw_parquet_file = NA_character_,
+          date = p0_yesterday_date,          
+          area_name = p0_states_area_info_df[["name"]],
+          area_info_df = p0_states_area_info_df,
+          area_sf = p2_states_sf_list,
+          extent_info = p2_states_extents_df,
+          palette = p0_viz_gw_pal,
+          viz_cfg = p0_viz_config_df,
+          scale_cfg = p0_gw_binned_scales,
+          state_lookup = p2_state_lookup,
+          locator_map_png = NULL,
+          image_screen_type = "mobile",
+          layer_mode = "background",
+          output_format = "webp",
+          transparent_bg = TRUE,
+          output_template = out
+        )
+      }
+      out
+    },
     pattern = map(p0_states_area_info_df, p2_states_sf_list,
                   p2_states_extents_df),
     format = "file"
