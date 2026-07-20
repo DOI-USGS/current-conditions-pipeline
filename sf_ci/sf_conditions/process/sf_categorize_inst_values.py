@@ -72,10 +72,6 @@ def categorize_sf(
         )
 
         # For sites with continuous data, pull their percentiles
-        sf_daily_ts = sf_preferred[sf_preferred["inst_ts_id"].isin(sf_ave["time_series_id"])][
-            "daily_ts_id"
-        ]
-        dfs = []
         today_str = str(date_of_interest)[5:]
 
         perc_file = f"https://dfi09q69oy2jm.cloudfront.net/visualizations/current_conditions/streamflow/metadata/sf_percentiles/sf_percentiles_{today_str}.parquet"

@@ -10,7 +10,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 shard_id = int(sys.argv[1])
-min_years_per_yday = int(sys.argv[2])
+#min_years_per_yday = int(sys.argv[2]) # unused now, but keeping in case we want to restore this functionality
 required_percentiles = set(int(x) for x in sys.argv[3].split(","))
 
 STATS_BATCH_SIZE = 10  # number of TS IDs per /statistics request
@@ -139,7 +139,7 @@ LONG_PAUSE_SECONDS = 60
 
 consecutive_failures = 0
 
-for batch in batches:#[batch_start + 1:]:
+for batch in batches:
     print(batch)
 
     try:
