@@ -12,7 +12,7 @@ USGS Information Product Data System (IPDS) no.: IP-193154 (internal agency trac
 A newer version of the software may be available. See https://code.usgs.gov/water/computational-tools/current-conditions-pipeline/-/releases to view all releases.
 
 Citation
-Kwang, J.K., Corson-Dosch, H.R., Azadpourm E., Nell, C., and Zemmels, J.R. 2025. Current Conditions Pipeline. U.S. Geological Survey software release. Reston, VA. https://doi.org/10.5066/P15S8PGB
+Kwang, J.K., Corson-Dosch, H.R., Azadpour E., Nell, C., and Zemmels, J.R. 2025. Current Conditions Pipeline. U.S. Geological Survey software release. Reston, VA. https://doi.org/10.5066/P15S8PGB
 
 ## Introduction
 
