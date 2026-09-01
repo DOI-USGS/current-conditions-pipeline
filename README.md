@@ -1,13 +1,20 @@
 # Current Conditions Pipeline
-Software that processes and visualizes near–real-time groundwater and streamflow data from U.S. Geological Survey (USGS) sources
-Authors: Jeffrey Kwang, Hayley Corson-Dosch, Elmera Azadpour, Cee Nell, and Joe Zemmels
-Point of contact: Jeffrey Kwang (jkwang@usgs.gov)
-Repository Type: GitLab CI, Python, and R scripts
-Year of Origin: 2026 (original publication)
-Year of Version: 2026
-Digital Object Identifier (DOI): https://doi.org/10.5066/P15S8PGB
-USGS Information Product Data System (IPDS) no.: IP-193154 (internal agency tracking)
 
+Software that processes and visualizes near–real-time groundwater and streamflow data from U.S. Geological Survey (USGS) sources
+
+Authors: Jeffrey Kwang, Hayley Corson-Dosch, Elmera Azadpour, Cee Nell, and Joe Zemmels
+
+Point of contact: Jeffrey Kwang (jkwang@usgs.gov)
+
+Repository Type: GitLab CI, Python, and R scripts
+
+Year of Origin: 2026 (original publication)
+
+Year of Version: 2026
+
+Digital Object Identifier (DOI): https://doi.org/10.5066/P15S8PGB
+
+USGS Information Product Data System (IPDS) no.: IP-193154 (internal agency tracking)
 
 A newer version of the software may be available. See https://code.usgs.gov/water/computational-tools/current-conditions-pipeline/-/releases to view all releases.
 
