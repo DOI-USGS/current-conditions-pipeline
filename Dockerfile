@@ -81,8 +81,6 @@ remotes::install_version('tarchetypes', version = '0.14.0', lib='/root/R/library
 remotes::install_version('USAboundaries', version = '0.5.1', lib='/root/R/library', repos='https://cran.rstudio.com/')
 EOF
 
-# install.packages(c('sfarrow', 'retry', 'rmapshaper', 'av'), repos = 'http://cran.us.r-project.org')
-
 # Install GitHub-only R package (not available on conda-forge)
 # dataRetrieval v2.7.25 — first release containing DOI-USGS/dataRetrieval PR #896
 RUN pixi run Rscript -e "remotes::install_github('DOI-USGS/dataRetrieval', ref='52292cd3781fdd3a3d78e85b3eea329052ba8b1c', upgrade='never', lib='/root/R/library')"

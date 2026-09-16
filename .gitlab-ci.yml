@@ -12,15 +12,8 @@ workflow:
     - if: '$CI_PIPELINE_SOURCE == "web"'
     - when: never
 
-# default:
-#   # Activate the pixi environment before each CI job, by-default
-#   # Means we don't need to add "pixi run" before every Rscript/Python command
-#   before_script:
-#     - eval "$(pixi shell-hook)"
-
 variables:
   IMAGE: $CI_REGISTRY_IMAGE:latest
-  # API_USGS_PAT: $API_USGS_PAT
   REQUIRED_PERCENTILES: "0,5,10,25,50,75,90,95,100"
   GW_MIN_YEARS_PER_YDAY: "10"
   GW_PCODES: "72019,62611,62610,72150,72229,62600,30210,62613,62612,72231,72232,72230,72227,72228,72226,61055,62601"
@@ -342,12 +335,3 @@ sf_update_metadata:
     - water
     - computational_tools
     - production
-# pages:
-#   stage: pages
-#   script:
-#     #- cp -r 4_report/out/* public
-#     - mv ./current_conditions_site_list_sandbox.html public/index.html
-#   artifacts:
-#     paths:
-#       # The folder that contains  the files to be exposed at the Page URL
-#       - public
