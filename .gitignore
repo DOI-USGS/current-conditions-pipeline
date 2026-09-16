@@ -57,3 +57,6 @@ sf_ci/logos/*
 sf_ci/legends/*
 !sf_ci/legends/.empty
 usgs_current.py
+
+# Rendered output of the sandbox notebook (generate from the .qmd source; do not commit)
+current_conditions_site_list_sandbox.html

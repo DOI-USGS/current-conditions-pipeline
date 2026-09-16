@@ -71,7 +71,7 @@
     "repositoryURL": "https://code.usgs.gov/water/computational-tools/current-conditions-pipeline.git",
     "vcs": "git",
 
-    "laborHours": 0,
+    "laborHours": 1000,
 
     "tags": [
       "Python",
