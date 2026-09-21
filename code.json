@@ -3,55 +3,6 @@
     "name": "current-conditions-pipeline",
     "organization": "U.S. Geological Survey",
     "description": "Software that processes and visualizes near–real-time groundwater and streamflow data from U.S. Geological Survey (USGS) sources",
-    "version": "main",
-    "status": "Development",
-
-    "permissions": {
-      "usageType": "openSource",
-      "licenses": [
-        {
-          "name": "Public Domain, CC0-1.0",
-          "URL": "https://code.usgs.gov/water/computational-tools/current-conditions-pipeline/-/raw/main/LICENSE.md"
-        }
-      ]
-    },
-
-    "homepageURL": "https://water.usgs.gov/vizlab/current-conditions/surface-water",
-    "downloadURL": "https://code.usgs.gov/water/computational-tools/current-conditions-pipeline/-/archive/main/current-conditions-pipeline-main.zip",
-    "disclaimerURL": "https://code.usgs.gov/water/computational-tools/current-conditions-pipeline/-/raw/main/DISCLAIMER.md",
-    "repositoryURL": "https://code.usgs.gov/water/computational-tools/current-conditions-pipeline.git",
-    "vcs": "git",
-
-    "laborHours": 1000,
-
-    "tags": [
-      "Python",
-      "R",
-      "USGS",
-      "visualization",
-      "streamflow",
-      "groundwater"
-    ],
-
-    "languages": [
-      "Gitlab CI",
-      "Python",
-      "R"
-    ],
-
-    "contact": {
-      "name": "Jeffrey Kwang",
-      "email": "jkwang@usgs.gov"
-    },
-
-    "date": {
-      "metadataLastUpdated": "2026-08-18"
-    }
-  },
-  {
-    "name": "current-conditions-pipeline",
-    "organization": "U.S. Geological Survey",
-    "description": "Software that processes and visualizes near–real-time groundwater and streamflow data from U.S. Geological Survey (USGS) sources",
     "version": "1.0.0",
     "status": "Production",
 
