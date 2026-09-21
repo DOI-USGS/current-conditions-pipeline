@@ -12,15 +12,8 @@ workflow:
     - if: '$CI_PIPELINE_SOURCE == "web"'
     - when: never
 
-# default:
-#   # Activate the pixi environment before each CI job, by-default
-#   # Means we don't need to add "pixi run" before every Rscript/Python command
-#   before_script:
-#     - eval "$(pixi shell-hook)"
-
 variables:
   IMAGE: $CI_REGISTRY_IMAGE:latest
-  # API_USGS_PAT: $API_USGS_PAT
   REQUIRED_PERCENTILES: "0,5,10,25,50,75,90,95,100"
   GW_MIN_YEARS_PER_YDAY: "10"
   GW_PCODES: "72019,62611,62610,72150,72229,62600,30210,62613,62612,72231,72232,72230,72227,72228,72226,61055,62601"
@@ -47,12 +40,23 @@ build-image:
         - Dockerfile
     - when: never
   script:
-    - echo "${CI_REGISTRY_PASSWORD}" | docker login -u "${CI_REGISTRY_USER}" --password-stdin $CI_REGISTRY
-    - docker pull ${CI_REGISTRY_IMAGE}:latest || true
-    - docker build --cache-from ${CI_REGISTRY_IMAGE}:latest -t ${CI_REGISTRY_IMAGE}:latest -t ${CI_REGISTRY_IMAGE}:BUILD_${CI_COMMIT_SHORT_SHA} .
-    # If this is building a git tag, also push the corresponding docker tag
-    - if [ -n "${CI_COMMIT_TAG}" ]; then docker tag "${CI_REGISTRY_IMAGE}:BUILD_${CI_COMMIT_SHORT_SHA}" "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}"; fi
-    - docker push --all-tags ${CI_REGISTRY_IMAGE}
+  - echo "${CI_REGISTRY_PASSWORD}" | docker login -u "${CI_REGISTRY_USER}" --password-stdin $CI_REGISTRY
+  - docker pull ${CI_REGISTRY_IMAGE}:latest || true
+  - docker build --cache-from ${CI_REGISTRY_IMAGE}:latest -t ${CI_REGISTRY_IMAGE}:latest -t ${CI_REGISTRY_IMAGE}:BUILD_${CI_COMMIT_SHORT_SHA} .
+  # If this is building a git tag, also push the corresponding docker tag
+  - if [ -n "${CI_COMMIT_TAG}" ]; then docker tag "${CI_REGISTRY_IMAGE}:BUILD_${CI_COMMIT_SHORT_SHA}" "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}"; fi
+  - |
+    push_with_retry() {
+      for i in 1 2 3; do
+        docker push "$1" && return 0
+        echo "push of $1 failed (attempt $i), retrying in 15s"
+        sleep 15
+      done
+      return 1
+    }
+    push_with_retry "${CI_REGISTRY_IMAGE}:BUILD_${CI_COMMIT_SHORT_SHA}"
+    push_with_retry "${CI_REGISTRY_IMAGE}:latest"
+    if [ -n "${CI_COMMIT_TAG}" ]; then push_with_retry "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}"; fi
   # these tags are needed to checkout a runner that has automatic access to AWS
   tags:
     - water
@@ -342,12 +346,3 @@ sf_update_metadata:
     - water
     - computational_tools
     - production
-# pages:
-#   stage: pages
-#   script:
-#     #- cp -r 4_report/out/* public
-#     - mv ./current_conditions_site_list_sandbox.html public/index.html
-#   artifacts:
-#     paths:
-#       # The folder that contains  the files to be exposed at the Page URL
-#       - public

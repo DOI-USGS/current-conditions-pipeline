@@ -2,7 +2,7 @@ FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Minimal system  deps that conda/pixi can't provide
+# Minimal system deps that  conda/pixi can't provide
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -81,13 +81,9 @@ remotes::install_version('tarchetypes', version = '0.14.0', lib='/root/R/library
 remotes::install_version('USAboundaries', version = '0.5.1', lib='/root/R/library', repos='https://cran.rstudio.com/')
 EOF
 
-# install.packages(c('sfarrow', 'retry', 'rmapshaper', 'av'), repos = 'http://cran.us.r-project.org')
-
 # Install GitHub-only R package (not available on conda-forge)
-# RUN pixi run Rscript -e "remotes::install_github('DOI-USGS/dataRetrieval', ref='d5c1a433e477ea746bda8b4ace3e85b1ef10db5c', upgrade='never', lib='/root/R/library')"
-
-## DELETE ME once https://github.com/DOI-USGS/dataRetrieval/pull/896 is merged. Update ref above to correct commit sha. ##
-RUN pixi run Rscript -e "remotes::install_github('jzemmels/dataRetrieval', ref='c420214688f4a3db35c2216a23b7d5d097cb41a7', upgrade='never', lib='/root/R/library')"
+# dataRetrieval v2.7.25 — first release containing DOI-USGS/dataRetrieval PR #896
+RUN pixi run Rscript -e "remotes::install_github('DOI-USGS/dataRetrieval', ref='52292cd3781fdd3a3d78e85b3eea329052ba8b1c', upgrade='never', lib='/root/R/library')"
 
 # Sanity checks
 RUN pixi run R -e "library(dataRetrieval); packageVersion('dataRetrieval')"

@@ -106,6 +106,21 @@ Each site is symbolized according to where its recent condition falls relative t
 
 Final map products are exported in multiple formats and written to an AWS S3 bucket for downstream use.
 
+## Pipeline schedules
+
+The streamflow and groundwater workflows run as scheduled GitLab CI jobs, as defined in the `.gitlab-ci.yml` file.
+The pipeline schedules are defined at <https://code.usgs.gov/water/computational-tools/current-conditions-pipeline/-/pipeline_schedules>.
+There are two important environment variables defined within those scheduled jobs that affect CI behavior:
+
+* `PIPELINE_MODE` controls which jobs run per schedule. Possible values include: 
+  * `gw_weekly` and `sf_weekly`: trigger weekly jobs that update the active site lists, 
+  * `gw_daily`: triggers daily job that generates the Groundwater visuals,
+  * `sf_inst`: triggers job that runs four times a day to generate the Streamflow visuals,
+  * `gw_metadata` and `sf_metadata`: trigger jobs that update the metadata files on S3, which is used as as the ground-truth index of files on S3. I.e., if a file is missing from the metadata file index, it is considered missing on S3.
+* `IS_FINAL_RUN` affects the behavior of the `sf_inst` job that runs 4 times a day (6 am, 12 pm, 6 pm, and 12:05 am the following day, all in Eastern time). Particularly, there's if/else branching logic in [this file](https://code.usgs.gov/water/computational-tools/current-conditions-pipeline/-/blob/997164b01a214434b795a7a29dc534eca37c8e2f/sf_ci/sf_conditions/process/sf_categorize_inst_values.py) affected by the value of this environment variable.
+  * `IS_FINAL_RUN` is set to `FALSE` for the 6 am, 12 pm, and 6 pm jobs, which are intended to provide a recent snapshot of current conditions that updates throughout the day. This is why the visuals are overwritten with each subsequent run. For each of these runs, the last 24 hours of continuous data are fetched by setting the `time` parameter to `P24H` on [this line](https://code.usgs.gov/water/computational-tools/current-conditions-pipeline/-/blob/997164b01a214434b795a7a29dc534eca37c8e2f/sf_ci/sf_conditions/process/sf_categorize_inst_values.py#L56).
+  * `IS_FINAL_RUN` is set to `TRUE` for the "final" run of the day, which is meant to provide a final snapshot of that day to be used on the website in perpetuity. This job runs at 12:05 am _the following day_ to ensure we can pull the full 24 hours of continuous data for the focal date (we wait 5 minutes after midnight to avoid potential on-the-hour latency in updating the continuous database). In this case, the `time` parameter is set to the range `00:00:00/23:59:59` of the focal date ([these lines](https://code.usgs.gov/water/computational-tools/current-conditions-pipeline/-/blob/997164b01a214434b795a7a29dc534eca37c8e2f/sf_ci/sf_conditions/process/sf_categorize_inst_values.py#L52-54)).
+
 ## Workflow constraints and design trade-offs
 
 Many pipeline design decisions reflect trade-offs between competing constraints.

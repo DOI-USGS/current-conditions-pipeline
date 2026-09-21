@@ -46,6 +46,8 @@ def categorize_sf(
         today = datetime.now(tz=eastern).date()
 
         if date_of_interest != today or os.environ.get("IS_FINAL_RUN") == "true":
+            # On the final (post-midnight) run, produce the finalized snapshot for
+            # the day that just ended rather than the new current day.
             if os.environ.get("IS_FINAL_RUN") == "true":
                 date_of_interest -= timedelta(days=1)
 
