@@ -1,3 +1,4 @@
+import os
 import argparse
 import boto3
 import pandas as pd
@@ -131,6 +132,9 @@ parser.add_argument("--date", required=True)
 args = parser.parse_args()
 
 date_of_interest = date.fromisoformat(args.date)
+# On the final (post-midnight) run, update metadata for the day that just ended.
+if os.environ.get("IS_FINAL_RUN") == "true":
+    date_of_interest -= timedelta(days=1)
 
 
 def list_existing_keys(s3_client, bucket, prefix):

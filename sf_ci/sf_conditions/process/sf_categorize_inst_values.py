@@ -1,7 +1,8 @@
 from dataretrieval import waterdata as wd
+import os
 import pandas as pd
 import numpy as np
-from datetime import date, datetime, time
+from datetime import date, datetime, time, timedelta
 from itertools import islice
 from zoneinfo import ZoneInfo
 from sf_conditions.fetch.get_s3 import download_file_urllib
@@ -44,7 +45,12 @@ def categorize_sf(
         eastern = ZoneInfo("America/New_York")
         today = datetime.now(tz=eastern).date()
 
-        if date_of_interest != today:
+        if date_of_interest != today or os.environ.get("IS_FINAL_RUN") == "true":
+            # On the final (post-midnight) run, produce the finalized snapshot for
+            # the day that just ended rather than the new current day.
+            if os.environ.get("IS_FINAL_RUN") == "true":
+                date_of_interest -= timedelta(days=1)
+
             start_time = datetime.combine(date_of_interest, time.min, tzinfo=eastern)
             end_time = datetime.combine(date_of_interest, time.max, tzinfo=eastern)
             timemark = start_time.isoformat() + "/" + end_time.isoformat()
